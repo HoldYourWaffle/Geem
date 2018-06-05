@@ -1,0 +1,83 @@
+apply plugin: 'com.android.application'
+
+android {
+	sourceSets {
+		main {
+			assets.srcDirs = rootProject.sourceSets.main.resources.srcDirs
+		}
+	}
+	
+	compileSdkVersion 27
+	defaultConfig {
+		applicationId 'info.zthings.geem'
+		minSdkVersion 19
+		targetSdkVersion 27
+		versionCode 1
+		versionName rootProject.version
+		testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+		setProperty('archivesBaseName', "GEEM-$versionName")
+	}
+	
+	compileOptions {
+		sourceCompatibility = 1.8
+		targetCompatibility = 1.8
+	}
+	
+	buildTypes {
+		release {
+			minifyEnabled false
+			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+		}
+	}
+	
+	lintOptions { tasks.lint.enabled = false }
+}
+
+dependencies {
+	configurations { natives }
+	
+	dependencies {
+		api rootProject
+		implementation 'com.badlogicgames.gdx:gdx-backend-android:1.9.8'
+		natives 'com.badlogicgames.gdx:gdx-platform:1.9.8:natives-armeabi'
+		natives 'com.badlogicgames.gdx:gdx-platform:1.9.8:natives-armeabi-v7a'
+		natives 'com.badlogicgames.gdx:gdx-platform:1.9.8:natives-arm64-v8a'
+		natives 'com.badlogicgames.gdx:gdx-platform:1.9.8:natives-x86'
+		natives 'com.badlogicgames.gdx:gdx-platform:1.9.8:natives-x86_64'
+		
+		implementation 'com.badlogicgames.gdx:gdx-freetype:1.9.8'
+		natives 'com.badlogicgames.gdx:gdx-freetype-platform:1.9.8:natives-armeabi'
+		natives 'com.badlogicgames.gdx:gdx-freetype-platform:1.9.8:natives-armeabi-v7a'
+		natives 'com.badlogicgames.gdx:gdx-freetype-platform:1.9.8:natives-arm64-v8a'
+		natives 'com.badlogicgames.gdx:gdx-freetype-platform:1.9.8:natives-x86'
+		natives 'com.badlogicgames.gdx:gdx-freetype-platform:1.9.8:natives-x86_64'
+	}
+}
+
+task copyOutput(type: Copy) {
+	from new File(buildDir, 'outputs/apk')
+	into new File(buildDir, 'libs/apk')
+}
+build.finalizedBy copyOutput
+
+task copyAndroidNatives() {
+	
+	configurations.natives.files.each { jar ->
+		def outputDir = null
+		
+		if (jar.name.endsWith('natives-arm64-v8a.jar')) outputDir = 'arm64-v8a'
+		else if (jar.name.endsWith('natives-armeabi-v7a.jar')) outputDir = 'armeabi-v7a'
+		else if (jar.name.endsWith('natives-armeabi.jar')) outputDir = 'armeabi'
+		else if (jar.name.endsWith('natives-x86_64.jar')) outputDir = 'x86_64'
+		else if (jar.name.endsWith('natives-x86.jar')) outputDir = 'x86'
+
+		if (outputDir != null) {
+			copy {
+				from zipTree(jar)
+				into new File('src/main/jniLibs', outputDir)
+				include '*.so'
+			}
+		}
+	}
+	
+}

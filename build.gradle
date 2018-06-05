@@ -1,0 +1,51 @@
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.1.1'
+    }
+}
+
+allprojects {
+    version = '0.0'
+	
+    repositories {
+        google()
+        jcenter()
+        mavenLocal()
+        mavenCentral()
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+        maven { url 'https://oss.sonatype.org/content/repositories/releases/' }
+    }
+	
+    buildDir = rootProject.buildDir
+}
+
+subprojects {
+	apply plugin: 'eclipse'
+	
+	eclipse {
+		project {
+			name = rootProject.name + '-' + project.name
+		}
+	}
+}
+
+apply plugin: 'java'
+
+sourceCompatibility = targetCompatibility = '1.8'
+
+dependencies {
+    //compile 'com.badlogicgames.gdx:gdx:1.9.8'
+	compile project(':gdx-mod')
+	compile 'com.badlogicgames.gdx:gdx-freetype:1.9.8'
+	compile 'org.apache.commons:commons-lang3:3.7'
+}
+
+jar {
+    archivesBaseName = rootProject.name
+    classifier = 'core'
+}

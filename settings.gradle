@@ -1,0 +1,3 @@
+rootProject.name = 'GEEM'
+include 'desktop'//, 'android'
+include 'gdx-mod'
