@@ -9,8 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import info.zthings.geem.world.LevelGenerator;
@@ -23,49 +22,60 @@ public class GeemLoop implements ApplicationListener {
 	private OrthographicCamera cam;
 	private Viewport view;
 	
-	private LevelGenerator lg = new LevelGenerator(10);
+	private LevelGenerator lg;
+	
+	private final int ww = 10, wh = 25;
 	
 	@Override
 	public void create() {
 		sr = new ShapeRenderer();
 		sr.setAutoShapeType(true);
 		
+		lg = new LevelGenerator(ww, wh);
 		sb = new SpriteBatch();
 		bf = new BitmapFont();
 		bf.getData().setScale(3f);
 		
 		cam = new OrthographicCamera();
-		view = new FitViewport(10, 25, cam);
+		view = new StretchViewport(ww, wh, cam);
 		
-		//cam.rotate(180);
-		cam.position.set(0, 12.5F, 0);
+		cam.position.set(ww/2f-.1f, wh/2f-.1f, 0);
 		view.apply();
 	}
 	
 	@Override
 	public void render() {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-		Gdx.gl.glClearColor(0, .5F, 0, 1);
+		Gdx.gl.glClearColor(.5f, .5f, .5f, 1);
 		
 		sr.setProjectionMatrix(cam.combined);
 		sb.setProjectionMatrix(cam.combined);
 		
 		sr.begin();
+		
 		sr.setColor(Color.BLACK);
-		for (int x = -5; x < 5; x++)
-			sr.line(x, 0, x, 25);
-		for (int y = 0; y < 25; y++)
-			sr.line(-5, y, 5, y);
+		for (int x = 0; x < ww; x++) 
+			sr.line(x, 0, x, wh);
+		
+		for (int y = 0; y < wh; y++) {
+			if (y % 2 == 0) sr.setColor(Color.GOLD);
+			sr.line(0, y, ww, y);
+			sr.setColor(Color.BLACK);
+		}
+		
+		sr.setColor(Color.RED);
+		sr.line(0, 0, ww, 0);		
+		sr.setColor(Color.BLUE);
+		sr.line(0, 0, 0, wh);
+		
 		sr.end();
 		
 		lg.render(sr);
 		
 		if (Gdx.input.isKeyJustPressed(Keys.ENTER)) lg.next();
 		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE)) Gdx.app.exit();
-		if (Gdx.input.isKeyJustPressed(Keys.R)) {
-			lg = new LevelGenerator(10);
-			for (int i=0; i<11; i++) lg.next();
-		}
+		if (Gdx.input.isKeyJustPressed(Keys.R)) lg.reset();
+		if (Gdx.input.isKeyJustPressed(Keys.G)) lg.generate(12);
 	}
 	
 	

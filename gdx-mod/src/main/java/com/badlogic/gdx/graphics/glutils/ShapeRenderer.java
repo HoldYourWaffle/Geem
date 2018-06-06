@@ -240,7 +240,8 @@ public class ShapeRenderer implements Disposable {
 		}
 		renderer.begin(combinedMatrix, shapeType.getGlType());
 	}
-
+	
+	@Deprecated
 	public void set(ShapeType type) {
 		if (shapeType == type)
 			return;
@@ -251,6 +252,8 @@ public class ShapeRenderer implements Disposable {
 		end();
 		begin(type);
 	}
+	
+	public void setShapeType(ShapeType type) { set(type); }
 
 	/**
 	 * Draws a point using {@link ShapeType#Point}, {@link ShapeType#Line} or

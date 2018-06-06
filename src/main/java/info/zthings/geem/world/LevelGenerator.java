@@ -5,62 +5,75 @@ import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
 public class LevelGenerator {
-	private Vector2 currentPos = Vector2.Zero;
+	private Vector2 currentPos;
 	private List<Vector2> gaps = new ArrayList<>();
 	
-	private float tightness = 1.5F, divTightness = 1, gapWidth = 1.5F;
+	private final float tightness, divTightness = 1, gapWidth = 1.5F;
 	
-	private final int worldWidth;
+	private final int ww;
 	
-	public LevelGenerator(int ww) {
-		this.worldWidth = ww;
-		gaps.add(new Vector2(0, 0));
-		next();
+	public LevelGenerator(int ww, int wh) {
+		this.ww = ww;
+		//tightness = wh / (120 * (wh / 1000f)) * 2;
+		tightness = 2;
+		reset();
+	}
+	
+	public void generate(int n) {
+		for (int i=0; i<n; i++) next();
+	}
+	
+	public void reset() {
+		gaps.clear();
+		gaps.add(new Vector2(ww/2f, 0));
+		currentPos = gaps.get(0);
 	}
 	
 	public void next() {
-		double alpha, ydiv, xdiv;
-		do {
-			ydiv = tightness + Math.random() * divTightness;
-			
-			/*double alphamax = Math.PI - Math.atan(ydiv/Math.abs((-worldWidth/2-gapWidth-5) - currentPos.x)) - Math.atan(ydiv/Math.abs((worldWidth/2-gapWidth-5) - currentPos.x)),
-					anglemin = 90;
-			
-			System.out.println((int)Math.toDegrees(alphamax));
-			
-			alpha = Math.min(Math.random() * alphamax, anglemin);*/
-			
-			alpha = Math.random()*Math.PI;
-			xdiv = ydiv / Math.tan(alpha);
-			
-		} while (Math.abs(90 - (int)Math.toDegrees(alpha)) > 50 ||
-				(currentPos.x + xdiv >= worldWidth/2-1 || currentPos.x + xdiv <= -worldWidth/2+2));
+		double alpha, alphaMin, alphaMax,
+				ydiv, xdiv;
 		
-		System.out.println(currentPos.x + xdiv);
-		System.out.println(-worldWidth/2-2);
+		//TODO add deviation rule (further than 50% from middle? -> bias)
+		ydiv = tightness;// + Math.random() * divTightness;
+		
+		float roomLeft = currentPos.x,
+			  roomRight = ww - currentPos.x;
+		
+		alphaMin = Math.atan(ydiv/roomLeft);
+		alphaMax = Math.PI - Math.atan(ydiv/roomRight);
+		
+		alpha = alphaMin + Math.random() * (alphaMax - alphaMin);
+		
+		System.out.println("rL " + roomLeft);
+		System.out.println("rR " + roomRight);
+		System.out.println("min " + (int)Math.toDegrees(alphaMin));
+		System.out.println("max " + (int)Math.toDegrees(alphaMax));
+		System.out.println("alpha " + (int)Math.toDegrees(alpha));
 		System.out.println();
 		
+		xdiv = ydiv / -Math.tan(alpha);
+		//xdiv = 0;
+		
 		currentPos = currentPos.plus(xdiv, ydiv);
-		gaps.add(new Vector2(currentPos));
+		gaps.add(currentPos.cpy());
 	}
 	
 	public void render(ShapeRenderer sr) {
 		sr.begin();
 		
-		Vector2 prev = Vector2.Zero;
+		Vector2 prev = gaps.get(0);
 		for (Vector2 gap : gaps) {
-			sr.setColor(Color.WHITE);
-			sr.line(gap.x-gapWidth, gap.y, gap.x+gapWidth, gap.y);
-			
-			sr.setColor(Color.BLUE);
+			sr.setShapeType(ShapeType.Line);
+			sr.setColor(Color.GREEN);
 			sr.line(prev, gap);
 			
-			/*sr.setColor(Color.RED);
-			sr.line(gap.x-gapWidth, gap.y, gap.x-gapWidth-1, gap.y);
-			sr.line(gap.x+gapWidth, gap.y, gap.x+gapWidth+1, gap.y);*/
+			sr.setColor(Color.PURPLE);
+			sr.setShapeType(ShapeType.Filled);
+			sr.circle(gap.x, gap.y, .3f);
 			
 			prev = gap;
 		}
