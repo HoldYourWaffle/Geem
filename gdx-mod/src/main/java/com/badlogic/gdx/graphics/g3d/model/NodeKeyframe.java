@@ -27,7 +27,7 @@ public class NodeKeyframe<T> {
 	public float keytime;
 	/** the value of this keyframe at the specified timestamp **/
 	public final T value;
-
+	
 	public NodeKeyframe(final float t, final T v) {
 		keytime = t;
 		value = v;

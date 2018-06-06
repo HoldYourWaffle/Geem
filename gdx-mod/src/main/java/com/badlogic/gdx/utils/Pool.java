@@ -27,27 +27,27 @@ abstract public class Pool<T> {
 	public final int max;
 	/** The highest number of free objects. Can be reset any time. */
 	public int peak;
-
+	
 	private final Array<T> freeObjects;
-
+	
 	/** Creates a pool with an initial capacity of 16 and no maximum. */
 	public Pool() {
 		this(16, Integer.MAX_VALUE);
 	}
-
+	
 	/** Creates a pool with the specified initial capacity and no maximum. */
 	public Pool(int initialCapacity) {
 		this(initialCapacity, Integer.MAX_VALUE);
 	}
-
+	
 	/** @param max The maximum number of free objects to store in this pool. */
 	public Pool(int initialCapacity, int max) {
 		freeObjects = new Array(false, initialCapacity);
 		this.max = max;
 	}
-
+	
 	abstract protected T newObject();
-
+	
 	/**
 	 * Returns an object from this pool. The object may be new (from
 	 * {@link #newObject()}) or reused (previously {@link #free(Object) freed}).
@@ -55,7 +55,7 @@ abstract public class Pool<T> {
 	public T obtain() {
 		return freeObjects.size == 0 ? newObject() : freeObjects.pop();
 	}
-
+	
 	/**
 	 * Puts the specified object in the pool, making it eligible to be returned by
 	 * {@link #obtain()}. If the pool already contains {@link #max} free objects,
@@ -70,7 +70,7 @@ abstract public class Pool<T> {
 		}
 		reset(object);
 	}
-
+	
 	/**
 	 * Called when an object is freed to clear the state of the object for possible
 	 * later reuse. The default implementation calls {@link Poolable#reset()} if the
@@ -80,7 +80,7 @@ abstract public class Pool<T> {
 		if (object instanceof Poolable)
 			((Poolable) object).reset();
 	}
-
+	
 	/**
 	 * Puts the specified objects in the pool. Null objects within the array are
 	 * silently ignored.
@@ -102,17 +102,17 @@ abstract public class Pool<T> {
 		}
 		peak = Math.max(peak, freeObjects.size);
 	}
-
+	
 	/** Removes all free objects from this pool. */
 	public void clear() {
 		freeObjects.clear();
 	}
-
+	
 	/** The number of objects available to be obtained. */
 	public int getFree() {
 		return freeObjects.size;
 	}
-
+	
 	/**
 	 * Objects implementing this interface will have {@link #reset()} called when
 	 * passed to {@link Pool#free(Object)}.

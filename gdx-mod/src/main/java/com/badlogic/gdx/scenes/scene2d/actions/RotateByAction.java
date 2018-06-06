@@ -23,16 +23,16 @@ package com.badlogic.gdx.scenes.scene2d.actions;
  */
 public class RotateByAction extends RelativeTemporalAction {
 	private float amount;
-
+	
 	@Override
 	protected void updateRelative(float percentDelta) {
 		target.rotateBy(amount * percentDelta);
 	}
-
+	
 	public float getAmount() {
 		return amount;
 	}
-
+	
 	public void setAmount(float rotationAmount) {
 		amount = rotationAmount;
 	}

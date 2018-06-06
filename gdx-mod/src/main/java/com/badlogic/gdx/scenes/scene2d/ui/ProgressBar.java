@@ -58,16 +58,16 @@ public class ProgressBar extends Widget implements Disableable {
 	boolean disabled;
 	private Interpolation visualInterpolation = Interpolation.linear;
 	private boolean round = true;
-
+	
 	public ProgressBar(float min, float max, float stepSize, boolean vertical, Skin skin) {
 		this(min, max, stepSize, vertical,
 				skin.get("default-" + (vertical ? "vertical" : "horizontal"), ProgressBarStyle.class));
 	}
-
+	
 	public ProgressBar(float min, float max, float stepSize, boolean vertical, Skin skin, String styleName) {
 		this(min, max, stepSize, vertical, skin.get(styleName, ProgressBarStyle.class));
 	}
-
+	
 	/**
 	 * Creates a new progress bar. If horizontal, its width is determined by the
 	 * prefWidth parameter, and its height is determined by the maximum of the
@@ -97,14 +97,14 @@ public class ProgressBar extends Widget implements Disableable {
 		this.value = min;
 		setSize(getPrefWidth(), getPrefHeight());
 	}
-
+	
 	public void setStyle(ProgressBarStyle style) {
 		if (style == null)
 			throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
 		invalidateHierarchy();
 	}
-
+	
 	/**
 	 * Returns the progress bar's style. Modifying the returned style may not have
 	 * an effect until {@link #setStyle(ProgressBarStyle)} is called.
@@ -112,7 +112,7 @@ public class ProgressBar extends Widget implements Disableable {
 	public ProgressBarStyle getStyle() {
 		return style;
 	}
-
+	
 	@Override
 	public void act(float delta) {
 		super.act(delta);
@@ -123,7 +123,7 @@ public class ProgressBar extends Widget implements Disableable {
 				Gdx.graphics.requestRendering();
 		}
 	}
-
+	
 	@Override
 	public void draw(Batch batch, float a) {
 		ProgressBarStyle style = this.style;
@@ -135,7 +135,7 @@ public class ProgressBar extends Widget implements Disableable {
 				: style.knobBefore;
 		final Drawable knobAfter = (disabled && style.disabledKnobAfter != null) ? style.disabledKnobAfter
 				: style.knobAfter;
-
+		
 		Color color = getColor();
 		float x = getX();
 		float y = getY();
@@ -144,12 +144,12 @@ public class ProgressBar extends Widget implements Disableable {
 		float knobHeight = knob == null ? 0 : knob.getMinHeight();
 		float knobWidth = knob == null ? 0 : knob.getMinWidth();
 		float percent = getVisualPercent();
-
+		
 		batch.setColor(color.r, color.g, color.b, color.a * a);
-
+		
 		if (vertical) {
 			float positionHeight = height;
-
+			
 			float bgTopHeight = 0;
 			if (bg != null) {
 				if (round)
@@ -160,7 +160,7 @@ public class ProgressBar extends Widget implements Disableable {
 				bgTopHeight = bg.getTopHeight();
 				positionHeight -= bgTopHeight + bg.getBottomHeight();
 			}
-
+			
 			float knobHeightHalf = 0;
 			if (min != max) {
 				if (knob == null) {
@@ -174,7 +174,7 @@ public class ProgressBar extends Widget implements Disableable {
 				}
 				position = Math.max(0, position);
 			}
-
+			
 			if (knobBefore != null) {
 				float offset = 0;
 				if (bg != null)
@@ -205,7 +205,7 @@ public class ProgressBar extends Widget implements Disableable {
 			}
 		} else {
 			float positionWidth = width;
-
+			
 			float bgLeftWidth = 0;
 			if (bg != null) {
 				if (round)
@@ -216,7 +216,7 @@ public class ProgressBar extends Widget implements Disableable {
 				bgLeftWidth = bg.getLeftWidth();
 				positionWidth -= bgLeftWidth + bg.getRightWidth();
 			}
-
+			
 			float knobWidthHalf = 0;
 			if (min != max) {
 				if (knob == null) {
@@ -230,7 +230,7 @@ public class ProgressBar extends Widget implements Disableable {
 				}
 				position = Math.max(0, position);
 			}
-
+			
 			if (knobBefore != null) {
 				float offset = 0;
 				if (bg != null)
@@ -261,11 +261,11 @@ public class ProgressBar extends Widget implements Disableable {
 			}
 		}
 	}
-
+	
 	public float getValue() {
 		return value;
 	}
-
+	
 	/**
 	 * If {@link #setAnimateDuration(float) animating} the progress bar value, this
 	 * returns the value current displayed.
@@ -275,24 +275,24 @@ public class ProgressBar extends Widget implements Disableable {
 			return animateInterpolation.apply(animateFromValue, value, 1 - animateTime / animateDuration);
 		return value;
 	}
-
+	
 	public float getPercent() {
 		return (value - min) / (max - min);
 	}
-
+	
 	public float getVisualPercent() {
 		return visualInterpolation.apply((getVisualValue() - min) / (max - min));
 	}
-
+	
 	protected Drawable getKnobDrawable() {
 		return (disabled && style.disabledKnob != null) ? style.disabledKnob : style.knob;
 	}
-
+	
 	/** Returns progress bar visual position within the range. */
 	protected float getKnobPosition() {
 		return this.position;
 	}
-
+	
 	/**
 	 * Sets the progress bar position, rounded to the nearest step size and clamped
 	 * to the minimum and maximum values. {@link #clamp(float)} can be overridden to
@@ -319,7 +319,7 @@ public class ProgressBar extends Widget implements Disableable {
 		Pools.free(changeEvent);
 		return !cancelled;
 	}
-
+	
 	/**
 	 * Clamps the value to the progress bar's min/max range. This can be overridden
 	 * to allow a range different from the progress bar knob's range.
@@ -327,7 +327,7 @@ public class ProgressBar extends Widget implements Disableable {
 	protected float clamp(float value) {
 		return MathUtils.clamp(value, min, max);
 	}
-
+	
 	/**
 	 * Sets the range of this progress bar. The progress bar's current value is
 	 * clamped to the range.
@@ -342,13 +342,13 @@ public class ProgressBar extends Widget implements Disableable {
 		else if (value > max)
 			setValue(max);
 	}
-
+	
 	public void setStepSize(float stepSize) {
 		if (stepSize <= 0)
 			throw new IllegalArgumentException("steps must be > 0: " + stepSize);
 		this.stepSize = stepSize;
 	}
-
+	
 	@Override
 	public float getPrefWidth() {
 		if (vertical) {
@@ -359,7 +359,7 @@ public class ProgressBar extends Widget implements Disableable {
 		} else
 			return 140;
 	}
-
+	
 	@Override
 	public float getPrefHeight() {
 		if (vertical)
@@ -371,19 +371,19 @@ public class ProgressBar extends Widget implements Disableable {
 			return Math.max(knob == null ? 0 : knob.getMinHeight(), bg == null ? 0 : bg.getMinHeight());
 		}
 	}
-
+	
 	public float getMinValue() {
 		return this.min;
 	}
-
+	
 	public float getMaxValue() {
 		return this.max;
 	}
-
+	
 	public float getStepSize() {
 		return this.stepSize;
 	}
-
+	
 	/**
 	 * If > 0, changes to the progress bar value via {@link #setValue(float)} will
 	 * happen over this duration in seconds.
@@ -391,19 +391,19 @@ public class ProgressBar extends Widget implements Disableable {
 	public void setAnimateDuration(float duration) {
 		this.animateDuration = duration;
 	}
-
+	
 	/** Sets the interpolation to use for {@link #setAnimateDuration(float)}. */
 	public void setAnimateInterpolation(Interpolation animateInterpolation) {
 		if (animateInterpolation == null)
 			throw new IllegalArgumentException("animateInterpolation cannot be null.");
 		this.animateInterpolation = animateInterpolation;
 	}
-
+	
 	/** Sets the interpolation to use for display. */
 	public void setVisualInterpolation(Interpolation interpolation) {
 		this.visualInterpolation = interpolation;
 	}
-
+	
 	/**
 	 * If true (the default), inner Drawable positions and sizes are rounded to
 	 * integers.
@@ -411,22 +411,22 @@ public class ProgressBar extends Widget implements Disableable {
 	public void setRound(boolean round) {
 		this.round = round;
 	}
-
+	
 	@Override
 	public void setDisabled(boolean disabled) {
 		this.disabled = disabled;
 	}
-
+	
 	@Override
 	public boolean isDisabled() {
 		return disabled;
 	}
-
+	
 	/** True if the progress bar is vertical, false if it is horizontal. **/
 	public boolean isVertical() {
 		return vertical;
 	}
-
+	
 	/**
 	 * The style for a progress bar, see {@link ProgressBar}.
 	 * 
@@ -442,15 +442,15 @@ public class ProgressBar extends Widget implements Disableable {
 		public Drawable knob, disabledKnob;
 		/** Optional. */
 		public Drawable knobBefore, knobAfter, disabledKnobBefore, disabledKnobAfter;
-
+		
 		public ProgressBarStyle() {
 		}
-
+		
 		public ProgressBarStyle(Drawable background, Drawable knob) {
 			this.background = background;
 			this.knob = knob;
 		}
-
+		
 		public ProgressBarStyle(ProgressBarStyle style) {
 			this.background = style.background;
 			this.disabledBackground = style.disabledBackground;

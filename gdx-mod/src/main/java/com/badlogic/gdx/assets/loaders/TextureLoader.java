@@ -44,13 +44,13 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 		TextureData data;
 		Texture texture;
 	};
-
+	
 	TextureLoaderInfo info = new TextureLoaderInfo();
-
+	
 	public TextureLoader(FileHandleResolver resolver) {
 		super(resolver);
 	}
-
+	
 	@Override
 	public void loadAsync(AssetManager manager, String fileName, FileHandle file, TextureParameter parameter) {
 		info.filename = fileName;
@@ -59,13 +59,13 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 			Format format = null;
 			boolean genMipMaps = false;
 			info.texture = null;
-
+			
 			if (parameter != null) {
 				format = parameter.format;
 				genMipMaps = parameter.genMipMaps;
 				info.texture = parameter.texture;
 			}
-
+			
 			info.data = TextureData.Factory.loadFromFile(file, format, genMipMaps);
 		} else {
 			info.data = parameter.textureData;
@@ -74,7 +74,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 		if (!info.data.isPrepared())
 			info.data.prepare();
 	}
-
+	
 	@Override
 	public Texture loadSync(AssetManager manager, String fileName, FileHandle file, TextureParameter parameter) {
 		if (info == null)
@@ -91,12 +91,12 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 		}
 		return texture;
 	}
-
+	
 	@Override
 	public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, TextureParameter parameter) {
 		return null;
 	}
-
+	
 	static public class TextureParameter extends AssetLoaderParameters<Texture> {
 		/** the format of the final Texture. Uses the source images format if null **/
 		public Format format = null;

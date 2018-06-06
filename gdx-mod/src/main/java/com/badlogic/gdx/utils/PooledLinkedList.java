@@ -27,15 +27,15 @@ public class PooledLinkedList<T> {
 		public Item<T> next;
 		public Item<T> prev;
 	}
-
+	
 	private Item<T> head;
 	private Item<T> tail;
 	private Item<T> iter;
 	private Item<T> curr;
 	private int size = 0;
-
+	
 	private final Pool<Item<T>> pool;
-
+	
 	public PooledLinkedList(int maxPoolSize) {
 		this.pool = new Pool<Item<T>>(16, maxPoolSize) {
 			@Override
@@ -44,7 +44,7 @@ public class PooledLinkedList<T> {
 			}
 		};
 	}
-
+	
 	/**
 	 * Adds the specified object to the end of the list regardless of iteration
 	 * status
@@ -54,35 +54,35 @@ public class PooledLinkedList<T> {
 		item.payload = object;
 		item.next = null;
 		item.prev = null;
-
+		
 		if (head == null) {
 			head = item;
 			tail = item;
 			size++;
 			return;
 		}
-
+		
 		item.prev = tail;
 		tail.next = item;
 		tail = item;
 		size++;
 	}
-
+	
 	/** Returns the number of items in the list */
 	public int size() {
 		return size;
 	}
-
+	
 	/** Starts iterating over the list's items from the head of the list */
 	public void iter() {
 		iter = head;
 	}
-
+	
 	/** Starts iterating over the list's items from the tail of the list */
 	public void iterReverse() {
 		iter = tail;
 	}
-
+	
 	/**
 	 * Gets the next item in the list
 	 * 
@@ -91,13 +91,13 @@ public class PooledLinkedList<T> {
 	public T next() {
 		if (iter == null)
 			return null;
-
+		
 		T payload = iter.payload;
 		curr = iter;
 		iter = iter.next;
 		return payload;
 	}
-
+	
 	/**
 	 * Gets the previous item in the list
 	 * 
@@ -106,53 +106,53 @@ public class PooledLinkedList<T> {
 	public T previous() {
 		if (iter == null)
 			return null;
-
+		
 		T payload = iter.payload;
 		curr = iter;
 		iter = iter.prev;
 		return payload;
 	}
-
+	
 	/** Removes the current list item based on the iterator position. */
 	public void remove() {
 		if (curr == null)
 			return;
-
+		
 		size--;
 		pool.free(curr);
-
+		
 		Item<T> c = curr;
 		Item<T> n = curr.next;
 		Item<T> p = curr.prev;
 		curr = null;
-
+		
 		if (size == 0) {
 			head = null;
 			tail = null;
 			return;
 		}
-
+		
 		if (c == head) {
 			n.prev = null;
 			head = n;
 			return;
 		}
-
+		
 		if (c == tail) {
 			p.next = null;
 			tail = p;
 			return;
 		}
-
+		
 		p.next = n;
 		n.prev = p;
 	}
-
+	
 	public void clear() {
 		iter();
 		T v = null;
 		while ((v = next()) != null)
 			remove();
 	}
-
+	
 }

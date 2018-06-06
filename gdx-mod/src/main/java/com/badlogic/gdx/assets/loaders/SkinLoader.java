@@ -45,7 +45,7 @@ public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinPar
 	public SkinLoader(FileHandleResolver resolver) {
 		super(resolver);
 	}
-
+	
 	@Override
 	public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, SkinParameter parameter) {
 		Array<AssetDescriptor> deps = new Array();
@@ -55,11 +55,11 @@ public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinPar
 			deps.add(new AssetDescriptor(parameter.textureAtlasPath, TextureAtlas.class));
 		return deps;
 	}
-
+	
 	@Override
 	public void loadAsync(AssetManager manager, String fileName, FileHandle file, SkinParameter parameter) {
 	}
-
+	
 	@Override
 	public Skin loadSync(AssetManager manager, String fileName, FileHandle file, SkinParameter parameter) {
 		String textureAtlasPath = file.pathWithoutExtension() + ".atlas";
@@ -82,7 +82,7 @@ public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinPar
 		skin.load(file);
 		return skin;
 	}
-
+	
 	/**
 	 * Override to allow subclasses of Skin to be loaded or the skin instance to be
 	 * configured.
@@ -94,23 +94,23 @@ public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinPar
 	protected Skin newSkin(TextureAtlas atlas) {
 		return new Skin(atlas);
 	}
-
+	
 	static public class SkinParameter extends AssetLoaderParameters<Skin> {
 		public final String textureAtlasPath;
 		public final ObjectMap<String, Object> resources;
-
+		
 		public SkinParameter() {
 			this(null, null);
 		}
-
+		
 		public SkinParameter(ObjectMap<String, Object> resources) {
 			this(null, resources);
 		}
-
+		
 		public SkinParameter(String textureAtlasPath) {
 			this(textureAtlasPath, null);
 		}
-
+		
 		public SkinParameter(String textureAtlasPath, ObjectMap<String, Object> resources) {
 			this.textureAtlasPath = textureAtlasPath;
 			this.resources = resources;

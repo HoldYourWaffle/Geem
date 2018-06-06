@@ -38,26 +38,26 @@ public class ObjectSet<T> implements Iterable<T> {
 	private static final int PRIME1 = 0xbe1f14b1;
 	private static final int PRIME2 = 0xb4b82e39;
 	private static final int PRIME3 = 0xced1c241;
-
+	
 	public int size;
-
+	
 	T[] keyTable;
 	int capacity, stashSize;
-
+	
 	private float loadFactor;
 	private int hashShift, mask, threshold;
 	private int stashCapacity;
 	private int pushIterations;
-
+	
 	private ObjectSetIterator iterator1, iterator2;
-
+	
 	/**
 	 * Creates a new set with an initial capacity of 51 and a load factor of 0.8.
 	 */
 	public ObjectSet() {
 		this(51, 0.8f);
 	}
-
+	
 	/**
 	 * Creates a new set with a load factor of 0.8.
 	 * 
@@ -67,7 +67,7 @@ public class ObjectSet<T> implements Iterable<T> {
 	public ObjectSet(int initialCapacity) {
 		this(initialCapacity, 0.8f);
 	}
-
+	
 	/**
 	 * Creates a new set with the specified initial capacity and load factor. This
 	 * set will hold initialCapacity items before growing the backing table.
@@ -82,20 +82,20 @@ public class ObjectSet<T> implements Iterable<T> {
 		if (initialCapacity > 1 << 30)
 			throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
 		capacity = initialCapacity;
-
+		
 		if (loadFactor <= 0)
 			throw new IllegalArgumentException("loadFactor must be > 0: " + loadFactor);
 		this.loadFactor = loadFactor;
-
+		
 		threshold = (int) (capacity * loadFactor);
 		mask = capacity - 1;
 		hashShift = 31 - Integer.numberOfTrailingZeros(capacity);
 		stashCapacity = Math.max(3, (int) Math.ceil(Math.log(capacity)) * 2);
 		pushIterations = Math.max(Math.min(capacity, 8), (int) Math.sqrt(capacity) / 8);
-
+		
 		keyTable = (T[]) new Object[capacity + stashCapacity];
 	}
-
+	
 	/** Creates a new set identical to the specified set. */
 	public ObjectSet(ObjectSet set) {
 		this((int) Math.floor(set.capacity * set.loadFactor), set.loadFactor);
@@ -103,7 +103,7 @@ public class ObjectSet<T> implements Iterable<T> {
 		System.arraycopy(set.keyTable, 0, keyTable, 0, set.keyTable.length);
 		size = set.size;
 	}
-
+	
 	/**
 	 * Returns true if the key was not already in the set. If this set already
 	 * contains the key, the call leaves the set unchanged and returns false.
@@ -112,29 +112,29 @@ public class ObjectSet<T> implements Iterable<T> {
 		if (key == null)
 			throw new IllegalArgumentException("key cannot be null.");
 		T[] keyTable = this.keyTable;
-
+		
 		// Check for existing keys.
 		int hashCode = key.hashCode();
 		int index1 = hashCode & mask;
 		T key1 = keyTable[index1];
 		if (key.equals(key1))
 			return false;
-
+		
 		int index2 = hash2(hashCode);
 		T key2 = keyTable[index2];
 		if (key.equals(key2))
 			return false;
-
+		
 		int index3 = hash3(hashCode);
 		T key3 = keyTable[index3];
 		if (key.equals(key3))
 			return false;
-
+		
 		// Find key in the stash.
 		for (int i = capacity, n = i + stashSize; i < n; i++)
 			if (key.equals(keyTable[i]))
 				return false;
-
+			
 		// Check for empty buckets.
 		if (key1 == null) {
 			keyTable[index1] = key;
@@ -142,52 +142,52 @@ public class ObjectSet<T> implements Iterable<T> {
 				resize(capacity << 1);
 			return true;
 		}
-
+		
 		if (key2 == null) {
 			keyTable[index2] = key;
 			if (size++ >= threshold)
 				resize(capacity << 1);
 			return true;
 		}
-
+		
 		if (key3 == null) {
 			keyTable[index3] = key;
 			if (size++ >= threshold)
 				resize(capacity << 1);
 			return true;
 		}
-
+		
 		push(key, index1, key1, index2, key2, index3, key3);
 		return true;
 	}
-
+	
 	public void addAll(Array<? extends T> array) {
 		addAll(array, 0, array.size);
 	}
-
+	
 	public void addAll(Array<? extends T> array, int offset, int length) {
 		if (offset + length > array.size)
 			throw new IllegalArgumentException(
 					"offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
 		addAll(array.items, offset, length);
 	}
-
+	
 	public void addAll(T... array) {
 		addAll(array, 0, array.length);
 	}
-
+	
 	public void addAll(T[] array, int offset, int length) {
 		ensureCapacity(length);
 		for (int i = offset, n = i + length; i < n; i++)
 			add(array[i]);
 	}
-
+	
 	public void addAll(ObjectSet<T> set) {
 		ensureCapacity(set.size);
 		for (T key : set)
 			add(key);
 	}
-
+	
 	/** Skips checks for existing keys. */
 	private void addResize(T key) {
 		// Check for empty buckets.
@@ -200,7 +200,7 @@ public class ObjectSet<T> implements Iterable<T> {
 				resize(capacity << 1);
 			return;
 		}
-
+		
 		int index2 = hash2(hashCode);
 		T key2 = keyTable[index2];
 		if (key2 == null) {
@@ -209,7 +209,7 @@ public class ObjectSet<T> implements Iterable<T> {
 				resize(capacity << 1);
 			return;
 		}
-
+		
 		int index3 = hash3(hashCode);
 		T key3 = keyTable[index3];
 		if (key3 == null) {
@@ -218,14 +218,14 @@ public class ObjectSet<T> implements Iterable<T> {
 				resize(capacity << 1);
 			return;
 		}
-
+		
 		push(key, index1, key1, index2, key2, index3, key3);
 	}
-
+	
 	private void push(T insertKey, int index1, T key1, int index2, T key2, int index3, T key3) {
 		T[] keyTable = this.keyTable;
 		int mask = this.mask;
-
+		
 		// Push keys until an empty bucket is found.
 		T evictedKey;
 		int i = 0, pushIterations = this.pushIterations;
@@ -245,7 +245,7 @@ public class ObjectSet<T> implements Iterable<T> {
 				keyTable[index3] = insertKey;
 				break;
 			}
-
+			
 			// If the evicted key hashes to an empty bucket, put it there and stop.
 			int hashCode = evictedKey.hashCode();
 			index1 = hashCode & mask;
@@ -256,7 +256,7 @@ public class ObjectSet<T> implements Iterable<T> {
 					resize(capacity << 1);
 				return;
 			}
-
+			
 			index2 = hash2(hashCode);
 			key2 = keyTable[index2];
 			if (key2 == null) {
@@ -265,7 +265,7 @@ public class ObjectSet<T> implements Iterable<T> {
 					resize(capacity << 1);
 				return;
 			}
-
+			
 			index3 = hash3(hashCode);
 			key3 = keyTable[index3];
 			if (key3 == null) {
@@ -274,16 +274,16 @@ public class ObjectSet<T> implements Iterable<T> {
 					resize(capacity << 1);
 				return;
 			}
-
+			
 			if (++i == pushIterations)
 				break;
-
+			
 			insertKey = evictedKey;
 		} while (true);
-
+		
 		addStash(evictedKey);
 	}
-
+	
 	private void addStash(T key) {
 		if (stashSize == stashCapacity) {
 			// Too many pushes occurred and the stash is full, increase the table size.
@@ -297,7 +297,7 @@ public class ObjectSet<T> implements Iterable<T> {
 		stashSize++;
 		size++;
 	}
-
+	
 	/** Returns true if the key was removed. */
 	public boolean remove(T key) {
 		int hashCode = key.hashCode();
@@ -307,24 +307,24 @@ public class ObjectSet<T> implements Iterable<T> {
 			size--;
 			return true;
 		}
-
+		
 		index = hash2(hashCode);
 		if (key.equals(keyTable[index])) {
 			keyTable[index] = null;
 			size--;
 			return true;
 		}
-
+		
 		index = hash3(hashCode);
 		if (key.equals(keyTable[index])) {
 			keyTable[index] = null;
 			size--;
 			return true;
 		}
-
+		
 		return removeStash(key);
 	}
-
+	
 	boolean removeStash(T key) {
 		T[] keyTable = this.keyTable;
 		for (int i = capacity, n = i + stashSize; i < n; i++) {
@@ -336,7 +336,7 @@ public class ObjectSet<T> implements Iterable<T> {
 		}
 		return false;
 	}
-
+	
 	void removeStashIndex(int index) {
 		// If the removed location was not last, move the last tuple to the removed
 		// location.
@@ -345,12 +345,12 @@ public class ObjectSet<T> implements Iterable<T> {
 		if (index < lastIndex)
 			keyTable[index] = keyTable[lastIndex];
 	}
-
+	
 	/** Returns true if the set is empty. */
 	public boolean isEmpty() {
 		return size == 0;
 	}
-
+	
 	/**
 	 * Reduces the size of the backing arrays to be the specified capacity or less.
 	 * If the capacity is already less, nothing is done. If the set contains more
@@ -367,7 +367,7 @@ public class ObjectSet<T> implements Iterable<T> {
 		maximumCapacity = MathUtils.nextPowerOfTwo(maximumCapacity);
 		resize(maximumCapacity);
 	}
-
+	
 	/**
 	 * Clears the set and reduces the size of the backing arrays to be the specified
 	 * capacity if they are larger.
@@ -380,7 +380,7 @@ public class ObjectSet<T> implements Iterable<T> {
 		size = 0;
 		resize(maximumCapacity);
 	}
-
+	
 	public void clear() {
 		if (size == 0)
 			return;
@@ -390,7 +390,7 @@ public class ObjectSet<T> implements Iterable<T> {
 		size = 0;
 		stashSize = 0;
 	}
-
+	
 	public boolean contains(T key) {
 		int hashCode = key.hashCode();
 		int index = hashCode & mask;
@@ -404,7 +404,7 @@ public class ObjectSet<T> implements Iterable<T> {
 		}
 		return true;
 	}
-
+	
 	/** @return May be null. */
 	public T get(T key) {
 		int hashCode = key.hashCode();
@@ -422,7 +422,7 @@ public class ObjectSet<T> implements Iterable<T> {
 		}
 		return found;
 	}
-
+	
 	private T getKeyStash(T key) {
 		T[] keyTable = this.keyTable;
 		for (int i = capacity, n = i + stashSize; i < n; i++)
@@ -430,7 +430,7 @@ public class ObjectSet<T> implements Iterable<T> {
 				return keyTable[i];
 		return null;
 	}
-
+	
 	public T first() {
 		T[] keyTable = this.keyTable;
 		for (int i = 0, n = capacity + stashSize; i < n; i++)
@@ -438,7 +438,7 @@ public class ObjectSet<T> implements Iterable<T> {
 				return keyTable[i];
 		throw new IllegalStateException("ObjectSet is empty.");
 	}
-
+	
 	/**
 	 * Increases the size of the backing array to accommodate the specified number
 	 * of additional items. Useful before adding many items to avoid multiple
@@ -449,21 +449,21 @@ public class ObjectSet<T> implements Iterable<T> {
 		if (sizeNeeded >= threshold)
 			resize(MathUtils.nextPowerOfTwo((int) Math.ceil(sizeNeeded / loadFactor)));
 	}
-
+	
 	private void resize(int newSize) {
 		int oldEndIndex = capacity + stashSize;
-
+		
 		capacity = newSize;
 		threshold = (int) (newSize * loadFactor);
 		mask = newSize - 1;
 		hashShift = 31 - Integer.numberOfTrailingZeros(newSize);
 		stashCapacity = Math.max(3, (int) Math.ceil(Math.log(newSize)) * 2);
 		pushIterations = Math.max(Math.min(newSize, 8), (int) Math.sqrt(newSize) / 8);
-
+		
 		T[] oldKeyTable = keyTable;
-
+		
 		keyTable = (T[]) new Object[newSize + stashCapacity];
-
+		
 		int oldSize = size;
 		size = 0;
 		stashSize = 0;
@@ -475,17 +475,17 @@ public class ObjectSet<T> implements Iterable<T> {
 			}
 		}
 	}
-
+	
 	private int hash2(int h) {
 		h *= PRIME2;
 		return (h ^ h >>> hashShift) & mask;
 	}
-
+	
 	private int hash3(int h) {
 		h *= PRIME3;
 		return (h ^ h >>> hashShift) & mask;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		int h = 0;
@@ -494,7 +494,7 @@ public class ObjectSet<T> implements Iterable<T> {
 				h += keyTable[i].hashCode();
 		return h;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof ObjectSet))
@@ -507,12 +507,12 @@ public class ObjectSet<T> implements Iterable<T> {
 				return false;
 		return true;
 	}
-
+	
 	@Override
 	public String toString() {
 		return '{' + toString(", ") + '}';
 	}
-
+	
 	public String toString(String separator) {
 		if (size == 0)
 			return "";
@@ -535,7 +535,7 @@ public class ObjectSet<T> implements Iterable<T> {
 		}
 		return buffer.toString();
 	}
-
+	
 	/**
 	 * Returns an iterator for the keys in the set. Remove is supported. Note that
 	 * the same iterator instance is returned each time this method is called. Use
@@ -559,31 +559,31 @@ public class ObjectSet<T> implements Iterable<T> {
 		iterator1.valid = false;
 		return iterator2;
 	}
-
+	
 	static public <T> ObjectSet<T> with(T... array) {
 		ObjectSet set = new ObjectSet();
 		set.addAll(array);
 		return set;
 	}
-
+	
 	static public class ObjectSetIterator<K> implements Iterable<K>, Iterator<K> {
 		public boolean hasNext;
-
+		
 		final ObjectSet<K> set;
 		int nextIndex, currentIndex;
 		boolean valid = true;
-
+		
 		public ObjectSetIterator(ObjectSet<K> set) {
 			this.set = set;
 			reset();
 		}
-
+		
 		public void reset() {
 			currentIndex = -1;
 			nextIndex = -1;
 			findNextIndex();
 		}
-
+		
 		void findNextIndex() {
 			hasNext = false;
 			K[] keyTable = set.keyTable;
@@ -594,7 +594,7 @@ public class ObjectSet<T> implements Iterable<T> {
 				}
 			}
 		}
-
+		
 		@Override
 		public void remove() {
 			if (currentIndex < 0)
@@ -609,14 +609,14 @@ public class ObjectSet<T> implements Iterable<T> {
 			currentIndex = -1;
 			set.size--;
 		}
-
+		
 		@Override
 		public boolean hasNext() {
 			if (!valid)
 				throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			return hasNext;
 		}
-
+		
 		@Override
 		public K next() {
 			if (!hasNext)
@@ -628,19 +628,19 @@ public class ObjectSet<T> implements Iterable<T> {
 			findNextIndex();
 			return key;
 		}
-
+		
 		@Override
 		public ObjectSetIterator<K> iterator() {
 			return this;
 		}
-
+		
 		/** Adds the remaining values to the array. */
 		public Array<K> toArray(Array<K> array) {
 			while (hasNext)
 				array.add(next());
 			return array;
 		}
-
+		
 		/** Returns a new array containing the remaining values. */
 		public Array<K> toArray() {
 			return toArray(new Array(true, set.size));

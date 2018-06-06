@@ -28,18 +28,18 @@ import com.badlogic.gdx.graphics.g3d.particles.renderers.ParticleControllerRende
  */
 public interface ParticleBatch<T extends ParticleControllerRenderData>
 		extends RenderableProvider, ResourceData.Configurable {
-
+	
 	/** Must be called once before any drawing operation */
 	public void begin();
-
+	
 	public void draw(T controller);
-
+	
 	/** Must be called after all the drawing operations */
 	public void end();
-
+	
 	@Override
 	public void save(AssetManager manager, ResourceData assetDependencyData);
-
+	
 	@Override
 	public void load(AssetManager manager, ResourceData assetDependencyData);
 }

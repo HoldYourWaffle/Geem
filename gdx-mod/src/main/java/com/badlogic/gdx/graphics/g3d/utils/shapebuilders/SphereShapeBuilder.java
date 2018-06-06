@@ -30,12 +30,12 @@ import com.badlogic.gdx.utils.ShortArray;
  */
 public class SphereShapeBuilder extends BaseShapeBuilder {
 	private final static ShortArray tmpIndices = new ShortArray();
-
+	
 	public static void build(MeshPartBuilder builder, float width, float height, float depth, int divisionsU,
 			int divisionsV) {
 		build(builder, width, height, depth, divisionsU, divisionsV, 0, 360, 0, 180);
 	}
-
+	
 	/**
 	 * @deprecated use {@link MeshPartBuilder#setVertexTransform(Matrix4)} instead
 	 *             of using the method signature taking a matrix.
@@ -45,13 +45,13 @@ public class SphereShapeBuilder extends BaseShapeBuilder {
 			int divisionsU, int divisionsV) {
 		build(builder, transform, width, height, depth, divisionsU, divisionsV, 0, 360, 0, 180);
 	}
-
+	
 	public static void build(MeshPartBuilder builder, float width, float height, float depth, int divisionsU,
 			int divisionsV, float angleUFrom, float angleUTo, float angleVFrom, float angleVTo) {
 		build(builder, matTmp1.idt(), width, height, depth, divisionsU, divisionsV, angleUFrom, angleUTo, angleVFrom,
 				angleVTo);
 	}
-
+	
 	/**
 	 * @deprecated use {@link MeshPartBuilder#setVertexTransform(Matrix4)} instead
 	 *             of using the method signature taking a matrix.
@@ -76,13 +76,13 @@ public class SphereShapeBuilder extends BaseShapeBuilder {
 		float angleV = 0f;
 		VertexInfo curr1 = vertTmp3.set(null, null, null, null);
 		curr1.hasUV = curr1.hasPosition = curr1.hasNormal = true;
-
+		
 		final int s = divisionsU + 3;
 		tmpIndices.clear();
 		tmpIndices.ensureCapacity(divisionsU * 2);
 		tmpIndices.size = s;
 		int tempOffset = 0;
-
+		
 		builder.ensureVertices((divisionsV + 1) * (divisionsU + 1));
 		builder.ensureRectangleIndices(divisionsU);
 		for (int iv = 0; iv <= divisionsV; iv++) {

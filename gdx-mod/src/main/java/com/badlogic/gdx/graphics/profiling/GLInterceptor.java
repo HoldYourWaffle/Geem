@@ -20,19 +20,19 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.FloatCounter;
 
 public abstract class GLInterceptor implements GL20 {
-
+	
 	protected int calls;
 	protected int textureBindings;
 	protected int drawCalls;
 	protected int shaderSwitches;
 	protected final FloatCounter vertexCount = new FloatCounter(0);
-
+	
 	protected GLProfiler glProfiler;
-
+	
 	protected GLInterceptor(GLProfiler profiler) {
 		this.glProfiler = profiler;
 	}
-
+	
 	public static String resolveErrorNumber(int error) {
 		switch (error) {
 		case GL_INVALID_VALUE:
@@ -49,27 +49,27 @@ public abstract class GLInterceptor implements GL20 {
 			return "number " + error;
 		}
 	}
-
+	
 	public int getCalls() {
 		return calls;
 	}
-
+	
 	public int getTextureBindings() {
 		return textureBindings;
 	}
-
+	
 	public int getDrawCalls() {
 		return drawCalls;
 	}
-
+	
 	public int getShaderSwitches() {
 		return shaderSwitches;
 	}
-
+	
 	public FloatCounter getVertexCount() {
 		return vertexCount;
 	}
-
+	
 	public void reset() {
 		calls = 0;
 		textureBindings = 0;

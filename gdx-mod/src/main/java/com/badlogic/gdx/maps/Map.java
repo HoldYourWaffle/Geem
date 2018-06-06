@@ -52,22 +52,22 @@ import com.badlogic.gdx.utils.Disposable;
 public class Map implements Disposable {
 	private MapLayers layers = new MapLayers();
 	private MapProperties properties = new MapProperties();
-
+	
 	/** Creates empty map */
 	public Map() {
-
+		
 	}
-
+	
 	/** @return the map's layers */
 	public MapLayers getLayers() {
 		return layers;
 	}
-
+	
 	/** @return the map's properties */
 	public MapProperties getProperties() {
 		return properties;
 	}
-
+	
 	/**
 	 * Disposes all resources like {@link Texture} instances that the map may own.
 	 */

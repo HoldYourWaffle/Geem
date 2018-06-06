@@ -31,7 +31,7 @@ import com.badlogic.gdx.utils.JsonValue;
  * @author Inferno
  */
 public class RegularEmitter extends Emitter implements Json.Serializable {
-
+	
 	/**
 	 * Possible emission modes. Emission mode does not affect already emitted
 	 * particles.
@@ -47,7 +47,7 @@ public class RegularEmitter extends Emitter implements Json.Serializable {
 	/** Prevents new particle emission. */
 	Disabled
 	}
-
+	
 	public RangedNumericValue delayValue, durationValue;
 	public ScaledNumericValue lifeOffsetValue, lifeValue, emissionValue;
 	protected int emission, emissionDiff, emissionDelta;
@@ -56,65 +56,65 @@ public class RegularEmitter extends Emitter implements Json.Serializable {
 	protected float duration, delay, durationTimer, delayTimer;
 	private boolean continuous;
 	private EmissionMode emissionMode;
-
+	
 	private FloatChannel lifeChannel;
-
+	
 	public RegularEmitter() {
 		delayValue = new RangedNumericValue();
 		durationValue = new RangedNumericValue();
 		lifeOffsetValue = new ScaledNumericValue();
 		lifeValue = new ScaledNumericValue();
 		emissionValue = new ScaledNumericValue();
-
+		
 		durationValue.setActive(true);
 		emissionValue.setActive(true);
 		lifeValue.setActive(true);
 		continuous = true;
 		emissionMode = EmissionMode.Enabled;
 	}
-
+	
 	public RegularEmitter(RegularEmitter regularEmitter) {
 		this();
 		set(regularEmitter);
 	}
-
+	
 	@Override
 	public void allocateChannels() {
 		lifeChannel = controller.particles.addChannel(ParticleChannels.Life);
 	}
-
+	
 	@Override
 	public void start() {
 		delay = delayValue.active ? delayValue.newLowValue() : 0;
 		delayTimer = 0;
 		durationTimer = 0f;
-
+		
 		duration = durationValue.newLowValue();
 		percent = durationTimer / duration;
-
+		
 		emission = (int) emissionValue.newLowValue();
 		emissionDiff = (int) emissionValue.newHighValue();
 		if (!emissionValue.isRelative())
 			emissionDiff -= emission;
-
+		
 		life = (int) lifeValue.newLowValue();
 		lifeDiff = (int) lifeValue.newHighValue();
 		if (!lifeValue.isRelative())
 			lifeDiff -= life;
-
+		
 		lifeOffset = lifeOffsetValue.active ? (int) lifeOffsetValue.newLowValue() : 0;
 		lifeOffsetDiff = (int) lifeOffsetValue.newHighValue();
 		if (!lifeOffsetValue.isRelative())
 			lifeOffsetDiff -= lifeOffset;
 	}
-
+	
 	@Override
 	public void init() {
 		super.init();
 		emissionDelta = 0;
 		durationTimer = duration;
 	}
-
+	
 	@Override
 	public void activateParticles(int startIndex, int count) {
 		int currentTotaLife = life + (int) (lifeDiff * lifeValue.getScale(percent)), currentLife = currentTotaLife;
@@ -125,7 +125,7 @@ public class RegularEmitter extends Emitter implements Json.Serializable {
 			currentLife -= offsetTime;
 		}
 		float lifePercent = 1 - currentLife / (float) currentTotaLife;
-
+		
 		for (int i = startIndex * lifeChannel.strideSize, c = i
 				+ count * lifeChannel.strideSize; i < c; i += lifeChannel.strideSize) {
 			lifeChannel.data[i + ParticleChannels.CurrentLifeOffset] = currentLife;
@@ -133,11 +133,11 @@ public class RegularEmitter extends Emitter implements Json.Serializable {
 			lifeChannel.data[i + ParticleChannels.LifePercentOffset] = lifePercent;
 		}
 	}
-
+	
 	@Override
 	public void update() {
 		float deltaMillis = controller.deltaTime * 1000;
-
+		
 		if (delayTimer < delay) {
 			delayTimer += deltaMillis;
 		} else {
@@ -152,7 +152,7 @@ public class RegularEmitter extends Emitter implements Json.Serializable {
 				else
 					emit = false;
 			}
-
+			
 			if (emit) {
 				// Emit particles
 				emissionDelta += deltaMillis;
@@ -171,7 +171,7 @@ public class RegularEmitter extends Emitter implements Json.Serializable {
 					addParticles(minParticleCount - controller.particles.size);
 			}
 		}
-
+		
 		// Update particles
 		int activeParticles = controller.particles.size;
 		for (int i = 0, k = 0; i < controller.particles.size;) {
@@ -186,12 +186,12 @@ public class RegularEmitter extends Emitter implements Json.Serializable {
 			++i;
 			k += lifeChannel.strideSize;
 		}
-
+		
 		if (controller.particles.size < activeParticles) {
 			controller.killParticles(controller.particles.size, activeParticles - controller.particles.size);
 		}
 	}
-
+	
 	private void addParticles(int count) {
 		count = Math.min(count, maxParticleCount - controller.particles.size);
 		if (count <= 0)
@@ -199,35 +199,35 @@ public class RegularEmitter extends Emitter implements Json.Serializable {
 		controller.activateParticles(controller.particles.size, count);
 		controller.particles.size += count;
 	}
-
+	
 	public ScaledNumericValue getLife() {
 		return lifeValue;
 	}
-
+	
 	public ScaledNumericValue getEmission() {
 		return emissionValue;
 	}
-
+	
 	public RangedNumericValue getDuration() {
 		return durationValue;
 	}
-
+	
 	public RangedNumericValue getDelay() {
 		return delayValue;
 	}
-
+	
 	public ScaledNumericValue getLifeOffset() {
 		return lifeOffsetValue;
 	}
-
+	
 	public boolean isContinuous() {
 		return continuous;
 	}
-
+	
 	public void setContinuous(boolean continuous) {
 		this.continuous = continuous;
 	}
-
+	
 	/**
 	 * Gets current emission mode.
 	 * 
@@ -236,7 +236,7 @@ public class RegularEmitter extends Emitter implements Json.Serializable {
 	public EmissionMode getEmissionMode() {
 		return emissionMode;
 	}
-
+	
 	/**
 	 * Sets emission mode. Emission mode does not affect already emitted particles.
 	 * 
@@ -245,20 +245,20 @@ public class RegularEmitter extends Emitter implements Json.Serializable {
 	public void setEmissionMode(EmissionMode emissionMode) {
 		this.emissionMode = emissionMode;
 	}
-
+	
 	@Override
 	public boolean isComplete() {
 		if (delayTimer < delay)
 			return false;
 		return durationTimer >= duration && controller.particles.size == 0;
 	}
-
+	
 	public float getPercentComplete() {
 		if (delayTimer < delay)
 			return 0;
 		return Math.min(1, durationTimer / duration);
 	}
-
+	
 	public void set(RegularEmitter emitter) {
 		super.set(emitter);
 		delayValue.load(emitter.delayValue);
@@ -279,12 +279,12 @@ public class RegularEmitter extends Emitter implements Json.Serializable {
 		delayTimer = emitter.delayTimer;
 		continuous = emitter.continuous;
 	}
-
+	
 	@Override
 	public ParticleControllerComponent copy() {
 		return new RegularEmitter(this);
 	}
-
+	
 	@Override
 	public void write(Json json) {
 		super.write(json);
@@ -295,7 +295,7 @@ public class RegularEmitter extends Emitter implements Json.Serializable {
 		json.writeValue("life", lifeValue);
 		json.writeValue("lifeOffset", lifeOffsetValue);
 	}
-
+	
 	@Override
 	public void read(Json json, JsonValue jsonData) {
 		super.read(json, jsonData);

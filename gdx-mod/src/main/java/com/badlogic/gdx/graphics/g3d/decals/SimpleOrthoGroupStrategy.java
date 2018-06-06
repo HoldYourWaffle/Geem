@@ -73,12 +73,12 @@ public class SimpleOrthoGroupStrategy implements GroupStrategy {
 	private Comparator comparator = new Comparator();
 	private static final int GROUP_OPAQUE = 0;
 	private static final int GROUP_BLEND = 1;
-
+	
 	@Override
 	public int decideGroup(Decal decal) {
 		return decal.getMaterial().isOpaque() ? GROUP_OPAQUE : GROUP_BLEND;
 	}
-
+	
 	@Override
 	public void beforeGroup(int group, Array<Decal> contents) {
 		if (group == GROUP_BLEND) {
@@ -92,7 +92,7 @@ public class SimpleOrthoGroupStrategy implements GroupStrategy {
 			// FIXME sort by material
 		}
 	}
-
+	
 	@Override
 	public void afterGroup(int group) {
 		if (group == GROUP_BLEND) {
@@ -100,17 +100,17 @@ public class SimpleOrthoGroupStrategy implements GroupStrategy {
 			Gdx.gl.glDisable(GL20.GL_BLEND);
 		}
 	}
-
+	
 	@Override
 	public void beforeGroups() {
 		Gdx.gl.glEnable(GL20.GL_TEXTURE_2D);
 	}
-
+	
 	@Override
 	public void afterGroups() {
 		Gdx.gl.glDisable(GL20.GL_TEXTURE_2D);
 	}
-
+	
 	class Comparator implements java.util.Comparator<Decal> {
 		@Override
 		public int compare(Decal a, Decal b) {
@@ -119,7 +119,7 @@ public class SimpleOrthoGroupStrategy implements GroupStrategy {
 			return a.getZ() - b.getZ() < 0 ? -1 : 1;
 		}
 	}
-
+	
 	@Override
 	public ShaderProgram getGroupShader(int group) {
 		return null;

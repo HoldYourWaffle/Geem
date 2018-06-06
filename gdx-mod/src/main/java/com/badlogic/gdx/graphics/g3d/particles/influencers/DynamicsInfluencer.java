@@ -37,28 +37,28 @@ public class DynamicsInfluencer extends Influencer {
 	private FloatChannel accellerationChannel, positionChannel, previousPositionChannel, rotationChannel,
 			angularVelocityChannel;
 	boolean hasAcceleration, has2dAngularVelocity, has3dAngularVelocity;
-
+	
 	public DynamicsInfluencer() {
 		this.velocities = new Array<>(true, 3, DynamicsModifier.class);
 	}
-
+	
 	public DynamicsInfluencer(DynamicsModifier... velocities) {
 		this.velocities = new Array<>(true, velocities.length, DynamicsModifier.class);
 		for (DynamicsModifier value : velocities) {
 			this.velocities.add((DynamicsModifier) value.copy());
 		}
 	}
-
+	
 	public DynamicsInfluencer(DynamicsInfluencer velocityInfluencer) {
 		this((DynamicsModifier[]) velocityInfluencer.velocities.toArray(DynamicsModifier.class));
 	}
-
+	
 	@Override
 	public void allocateChannels() {
 		for (int k = 0; k < velocities.size; ++k) {
 			velocities.items[k].allocateChannels();
 		}
-
+		
 		// Hack, shouldn't be done but after all the modifiers allocated their channels
 		// it's possible to check if we need to allocate previous position channel
 		accellerationChannel = controller.particles.getChannel(ParticleChannels.Acceleration);
@@ -67,7 +67,7 @@ public class DynamicsInfluencer extends Influencer {
 			positionChannel = controller.particles.addChannel(ParticleChannels.Position);
 			previousPositionChannel = controller.particles.addChannel(ParticleChannels.PreviousPosition);
 		}
-
+		
 		// Angular velocity check
 		angularVelocityChannel = controller.particles.getChannel(ParticleChannels.AngularVelocity2D);
 		has2dAngularVelocity = angularVelocityChannel != null;
@@ -81,7 +81,7 @@ public class DynamicsInfluencer extends Influencer {
 				rotationChannel = controller.particles.addChannel(ParticleChannels.Rotation3D);
 		}
 	}
-
+	
 	@Override
 	public void set(ParticleController particleController) {
 		super.set(particleController);
@@ -89,14 +89,14 @@ public class DynamicsInfluencer extends Influencer {
 			velocities.items[k].set(particleController);
 		}
 	}
-
+	
 	@Override
 	public void init() {
 		for (int k = 0; k < velocities.size; ++k) {
 			velocities.items[k].init();
 		}
 	}
-
+	
 	@Override
 	public void activateParticles(int startIndex, int count) {
 		if (hasAcceleration) {
@@ -119,7 +119,7 @@ public class DynamicsInfluencer extends Influencer {
 				 */
 			}
 		}
-
+		
 		if (has2dAngularVelocity) {
 			// Rotation back to 0
 			for (int i = startIndex * rotationChannel.strideSize, c = i
@@ -137,12 +137,12 @@ public class DynamicsInfluencer extends Influencer {
 				rotationChannel.data[i + ParticleChannels.WOffset] = 1;
 			}
 		}
-
+		
 		for (int k = 0; k < velocities.size; ++k) {
 			velocities.items[k].activateParticles(startIndex, count);
 		}
 	}
-
+	
 	@Override
 	public void update() {
 		// Clean previouse frame velocities
@@ -151,12 +151,12 @@ public class DynamicsInfluencer extends Influencer {
 		if (has2dAngularVelocity || has3dAngularVelocity)
 			Arrays.fill(angularVelocityChannel.data, 0, controller.particles.size * angularVelocityChannel.strideSize,
 					0);
-
+		
 		// Sum all the forces/accelerations
 		for (int k = 0; k < velocities.size; ++k) {
 			velocities.items[k].update();
 		}
-
+		
 		// Apply the forces
 		if (hasAcceleration) {
 			/*
@@ -199,7 +199,7 @@ public class DynamicsInfluencer extends Influencer {
 				previousPositionChannel.data[offset + ParticleChannels.ZOffset] = z;
 			}
 		}
-
+		
 		if (has2dAngularVelocity) {
 			for (int i = 0, offset = 0; i < controller.particles.size; ++i, offset += rotationChannel.strideSize) {
 				float rotation = angularVelocityChannel.data[i] * controller.deltaTime;
@@ -215,7 +215,7 @@ public class DynamicsInfluencer extends Influencer {
 			}
 		} else if (has3dAngularVelocity) {
 			for (int i = 0, offset = 0, angularOffset = 0; i < controller.particles.size; ++i, offset += rotationChannel.strideSize, angularOffset += angularVelocityChannel.strideSize) {
-
+				
 				float wx = angularVelocityChannel.data[angularOffset + ParticleChannels.XOffset],
 						wy = angularVelocityChannel.data[angularOffset + ParticleChannels.YOffset],
 						wz = angularVelocityChannel.data[angularOffset + ParticleChannels.ZOffset],
@@ -231,17 +231,17 @@ public class DynamicsInfluencer extends Influencer {
 			}
 		}
 	}
-
+	
 	@Override
 	public DynamicsInfluencer copy() {
 		return new DynamicsInfluencer(this);
 	}
-
+	
 	@Override
 	public void write(Json json) {
 		json.writeValue("velocities", velocities, Array.class, DynamicsModifier.class);
 	}
-
+	
 	@Override
 	public void read(Json json, JsonValue jsonData) {
 		velocities.addAll(json.readValue("velocities", Array.class, DynamicsModifier.class, jsonData));

@@ -36,12 +36,12 @@ public class PointSpriteRenderer
 	public PointSpriteRenderer() {
 		super(new PointSpriteControllerRenderData());
 	}
-
+	
 	public PointSpriteRenderer(PointSpriteParticleBatch batch) {
 		this();
 		setBatch(batch);
 	}
-
+	
 	@Override
 	public void allocateChannels() {
 		renderData.positionChannel = controller.particles.addChannel(ParticleChannels.Position);
@@ -52,15 +52,15 @@ public class PointSpriteRenderer
 		renderData.rotationChannel = controller.particles.addChannel(ParticleChannels.Rotation2D,
 				Rotation2dInitializer.get());
 	}
-
+	
 	@Override
 	public boolean isCompatible(ParticleBatch<?> batch) {
 		return batch instanceof PointSpriteParticleBatch;
 	}
-
+	
 	@Override
 	public ParticleControllerComponent copy() {
 		return new PointSpriteRenderer(batch);
 	}
-
+	
 }

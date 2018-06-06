@@ -48,21 +48,21 @@ public class VerticalGroup extends WidgetGroup {
 	private float prefWidth, prefHeight, lastPrefWidth;
 	private boolean sizeInvalid = true;
 	private FloatArray columnSizes; // column height, column width, ...
-
+	
 	private int align = Align.top, columnAlign;
 	private boolean reverse, round = true, wrap, expand;
 	private float space, wrapSpace, fill, padTop, padLeft, padBottom, padRight;
-
+	
 	public VerticalGroup() {
 		setTouchable(Touchable.childrenOnly);
 	}
-
+	
 	@Override
 	public void invalidate() {
 		super.invalidate();
 		sizeInvalid = true;
 	}
-
+	
 	private void computeSize() {
 		sizeInvalid = false;
 		SnapshotArray<Actor> children = getChildren();
@@ -85,7 +85,7 @@ public class VerticalGroup extends WidgetGroup {
 			}
 			for (; i != n; i += incr) {
 				Actor child = children.get(i);
-
+				
 				float width, height;
 				if (child instanceof Layout) {
 					Layout layout = (Layout) child;
@@ -95,7 +95,7 @@ public class VerticalGroup extends WidgetGroup {
 					width = child.getWidth();
 					height = child.getHeight();
 				}
-
+				
 				float incrY = height + (y > 0 ? space : 0);
 				if (y + incrY > groupHeight && y > 0) {
 					columnSizes.add(y);
@@ -137,27 +137,27 @@ public class VerticalGroup extends WidgetGroup {
 			prefHeight = Math.round(prefHeight);
 		}
 	}
-
+	
 	@Override
 	public void layout() {
 		if (sizeInvalid)
 			computeSize();
-
+		
 		if (wrap) {
 			layoutWrapped();
 			return;
 		}
-
+		
 		boolean round = this.round;
 		int align = this.align;
 		float space = this.space, padLeft = this.padLeft, fill = this.fill;
 		float columnWidth = (expand ? getWidth() : prefWidth) - padLeft - padRight, y = prefHeight - padTop + space;
-
+		
 		if ((align & Align.top) != 0)
 			y += getHeight() - prefHeight;
 		else if ((align & Align.bottom) == 0) // center
 			y += (getHeight() - prefHeight) / 2;
-
+		
 		float startX;
 		if ((align & Align.left) != 0)
 			startX = padLeft;
@@ -165,9 +165,9 @@ public class VerticalGroup extends WidgetGroup {
 			startX = getWidth() - padRight - columnWidth;
 		else
 			startX = padLeft + (getWidth() - padLeft - padRight - columnWidth) / 2;
-
+		
 		align = columnAlign;
-
+		
 		SnapshotArray<Actor> children = getChildren();
 		int i = 0, n = children.size, incr = 1;
 		if (reverse) {
@@ -177,7 +177,7 @@ public class VerticalGroup extends WidgetGroup {
 		}
 		for (int r = 0; i != n; i += incr) {
 			Actor child = children.get(i);
-
+			
 			float width, height;
 			Layout layout = null;
 			if (child instanceof Layout) {
@@ -188,61 +188,61 @@ public class VerticalGroup extends WidgetGroup {
 				width = child.getWidth();
 				height = child.getHeight();
 			}
-
+			
 			if (fill > 0)
 				width = columnWidth * fill;
-
+			
 			if (layout != null) {
 				width = Math.max(width, layout.getMinWidth());
 				float maxWidth = layout.getMaxWidth();
 				if (maxWidth > 0 && width > maxWidth)
 					width = maxWidth;
 			}
-
+			
 			float x = startX;
 			if ((align & Align.right) != 0)
 				x += columnWidth - width;
 			else if ((align & Align.left) == 0) // center
 				x += (columnWidth - width) / 2;
-
+			
 			y -= height + space;
 			if (round)
 				child.setBounds(Math.round(x), Math.round(y), Math.round(width), Math.round(height));
 			else
 				child.setBounds(x, y, width, height);
-
+			
 			if (layout != null)
 				layout.validate();
 		}
 	}
-
+	
 	private void layoutWrapped() {
 		float prefWidth = getPrefWidth();
 		if (prefWidth != lastPrefWidth) {
 			lastPrefWidth = prefWidth;
 			invalidateHierarchy();
 		}
-
+		
 		int align = this.align;
 		boolean round = this.round;
 		float space = this.space, padLeft = this.padLeft, fill = this.fill, wrapSpace = this.wrapSpace;
 		float maxHeight = prefHeight - padTop - padBottom;
 		float columnX = padLeft, groupHeight = getHeight();
 		float yStart = prefHeight - padTop + space, y = 0, columnWidth = 0;
-
+		
 		if ((align & Align.right) != 0)
 			columnX += getWidth() - prefWidth;
 		else if ((align & Align.left) == 0) // center
 			columnX += (getWidth() - prefWidth) / 2;
-
+		
 		if ((align & Align.top) != 0)
 			yStart += groupHeight - prefHeight;
 		else if ((align & Align.bottom) == 0) // center
 			yStart += (groupHeight - prefHeight) / 2;
-
+		
 		groupHeight -= padTop;
 		align = columnAlign;
-
+		
 		FloatArray columnSizes = this.columnSizes;
 		SnapshotArray<Actor> children = getChildren();
 		int i = 0, n = children.size, incr = 1;
@@ -253,7 +253,7 @@ public class VerticalGroup extends WidgetGroup {
 		}
 		for (int r = 0; i != n; i += incr) {
 			Actor child = children.get(i);
-
+			
 			float width, height;
 			Layout layout = null;
 			if (child instanceof Layout) {
@@ -264,7 +264,7 @@ public class VerticalGroup extends WidgetGroup {
 				width = child.getWidth();
 				height = child.getHeight();
 			}
-
+			
 			if (y - height - space < padBottom || r == 0) {
 				y = yStart;
 				if ((align & Align.bottom) != 0)
@@ -278,41 +278,41 @@ public class VerticalGroup extends WidgetGroup {
 				columnWidth = columnSizes.get(r + 1);
 				r += 2;
 			}
-
+			
 			if (fill > 0)
 				width = columnWidth * fill;
-
+			
 			if (layout != null) {
 				width = Math.max(width, layout.getMinWidth());
 				float maxWidth = layout.getMaxWidth();
 				if (maxWidth > 0 && width > maxWidth)
 					width = maxWidth;
 			}
-
+			
 			float x = columnX;
 			if ((align & Align.right) != 0)
 				x += columnWidth - width;
 			else if ((align & Align.left) == 0) // center
 				x += (columnWidth - width) / 2;
-
+			
 			y -= height + space;
 			if (round)
 				child.setBounds(Math.round(x), Math.round(y), Math.round(width), Math.round(height));
 			else
 				child.setBounds(x, y, width, height);
-
+			
 			if (layout != null)
 				layout.validate();
 		}
 	}
-
+	
 	@Override
 	public float getPrefWidth() {
 		if (sizeInvalid)
 			computeSize();
 		return prefWidth;
 	}
-
+	
 	@Override
 	public float getPrefHeight() {
 		if (wrap)
@@ -321,48 +321,48 @@ public class VerticalGroup extends WidgetGroup {
 			computeSize();
 		return prefHeight;
 	}
-
+	
 	/** If true (the default), positions and sizes are rounded to integers. */
 	public void setRound(boolean round) {
 		this.round = round;
 	}
-
+	
 	/** The children will be displayed last to first. */
 	public VerticalGroup reverse() {
 		this.reverse = true;
 		return this;
 	}
-
+	
 	/** If true, the children will be displayed last to first. */
 	public VerticalGroup reverse(boolean reverse) {
 		this.reverse = reverse;
 		return this;
 	}
-
+	
 	public boolean getReverse() {
 		return reverse;
 	}
-
+	
 	/** Sets the vertical space between children. */
 	public VerticalGroup space(float space) {
 		this.space = space;
 		return this;
 	}
-
+	
 	public float getSpace() {
 		return space;
 	}
-
+	
 	/** Sets the horizontal space between columns when wrap is enabled. */
 	public VerticalGroup wrapSpace(float wrapSpace) {
 		this.wrapSpace = wrapSpace;
 		return this;
 	}
-
+	
 	public float getWrapSpace() {
 		return wrapSpace;
 	}
-
+	
 	/** Sets the padTop, padLeft, padBottom, and padRight to the specified value. */
 	public VerticalGroup pad(float pad) {
 		padTop = pad;
@@ -371,7 +371,7 @@ public class VerticalGroup extends WidgetGroup {
 		padRight = pad;
 		return this;
 	}
-
+	
 	public VerticalGroup pad(float top, float left, float bottom, float right) {
 		padTop = top;
 		padLeft = left;
@@ -379,43 +379,43 @@ public class VerticalGroup extends WidgetGroup {
 		padRight = right;
 		return this;
 	}
-
+	
 	public VerticalGroup padTop(float padTop) {
 		this.padTop = padTop;
 		return this;
 	}
-
+	
 	public VerticalGroup padLeft(float padLeft) {
 		this.padLeft = padLeft;
 		return this;
 	}
-
+	
 	public VerticalGroup padBottom(float padBottom) {
 		this.padBottom = padBottom;
 		return this;
 	}
-
+	
 	public VerticalGroup padRight(float padRight) {
 		this.padRight = padRight;
 		return this;
 	}
-
+	
 	public float getPadTop() {
 		return padTop;
 	}
-
+	
 	public float getPadLeft() {
 		return padLeft;
 	}
-
+	
 	public float getPadBottom() {
 		return padBottom;
 	}
-
+	
 	public float getPadRight() {
 		return padRight;
 	}
-
+	
 	/**
 	 * Sets the alignment of all widgets within the vertical group. Set to
 	 * {@link Align#center}, {@link Align#top}, {@link Align#bottom},
@@ -425,7 +425,7 @@ public class VerticalGroup extends WidgetGroup {
 		this.align = align;
 		return this;
 	}
-
+	
 	/**
 	 * Sets the alignment of all widgets within the vertical group to
 	 * {@link Align#center}. This clears any other alignment.
@@ -434,7 +434,7 @@ public class VerticalGroup extends WidgetGroup {
 		align = Align.center;
 		return this;
 	}
-
+	
 	/**
 	 * Sets {@link Align#top} and clears {@link Align#bottom} for the alignment of
 	 * all widgets within the vertical group.
@@ -444,7 +444,7 @@ public class VerticalGroup extends WidgetGroup {
 		align &= ~Align.bottom;
 		return this;
 	}
-
+	
 	/**
 	 * Adds {@link Align#left} and clears {@link Align#right} for the alignment of
 	 * all widgets within the vertical group.
@@ -454,7 +454,7 @@ public class VerticalGroup extends WidgetGroup {
 		align &= ~Align.right;
 		return this;
 	}
-
+	
 	/**
 	 * Sets {@link Align#bottom} and clears {@link Align#top} for the alignment of
 	 * all widgets within the vertical group.
@@ -464,7 +464,7 @@ public class VerticalGroup extends WidgetGroup {
 		align &= ~Align.top;
 		return this;
 	}
-
+	
 	/**
 	 * Adds {@link Align#right} and clears {@link Align#left} for the alignment of
 	 * all widgets within the vertical group.
@@ -474,31 +474,31 @@ public class VerticalGroup extends WidgetGroup {
 		align &= ~Align.left;
 		return this;
 	}
-
+	
 	public int getAlign() {
 		return align;
 	}
-
+	
 	public VerticalGroup fill() {
 		fill = 1f;
 		return this;
 	}
-
+	
 	/** @param fill 0 will use preferred height. */
 	public VerticalGroup fill(float fill) {
 		this.fill = fill;
 		return this;
 	}
-
+	
 	public float getFill() {
 		return fill;
 	}
-
+	
 	public VerticalGroup expand() {
 		expand = true;
 		return this;
 	}
-
+	
 	/**
 	 * When true and wrap is false, the columns will take up the entire vertical
 	 * group width.
@@ -507,18 +507,18 @@ public class VerticalGroup extends WidgetGroup {
 		this.expand = expand;
 		return this;
 	}
-
+	
 	public boolean getExpand() {
 		return expand;
 	}
-
+	
 	/** Sets fill to 1 and expand to true. */
 	public VerticalGroup grow() {
 		expand = true;
 		fill = 1;
 		return this;
 	}
-
+	
 	/**
 	 * If false, the widgets are arranged in a single column and the preferred
 	 * height is the widget heights plus spacing. If true, the widgets will wrap
@@ -535,16 +535,16 @@ public class VerticalGroup extends WidgetGroup {
 		wrap = true;
 		return this;
 	}
-
+	
 	public VerticalGroup wrap(boolean wrap) {
 		this.wrap = wrap;
 		return this;
 	}
-
+	
 	public boolean getWrap() {
 		return wrap;
 	}
-
+	
 	/**
 	 * Sets the alignment of widgets within each column of the vertical group. Set
 	 * to {@link Align#center}, {@link Align#left}, or {@link Align#right}.
@@ -553,7 +553,7 @@ public class VerticalGroup extends WidgetGroup {
 		this.columnAlign = columnAlign;
 		return this;
 	}
-
+	
 	/**
 	 * Sets the alignment of widgets within each column to {@link Align#center}.
 	 * This clears any other alignment.
@@ -562,7 +562,7 @@ public class VerticalGroup extends WidgetGroup {
 		columnAlign = Align.center;
 		return this;
 	}
-
+	
 	/**
 	 * Adds {@link Align#left} and clears {@link Align#right} for the alignment of
 	 * widgets within each column.
@@ -572,7 +572,7 @@ public class VerticalGroup extends WidgetGroup {
 		columnAlign &= ~Align.right;
 		return this;
 	}
-
+	
 	/**
 	 * Adds {@link Align#right} and clears {@link Align#left} for the alignment of
 	 * widgets within each column.
@@ -582,7 +582,7 @@ public class VerticalGroup extends WidgetGroup {
 		columnAlign &= ~Align.left;
 		return this;
 	}
-
+	
 	@Override
 	protected void drawDebugBounds(ShapeRenderer shapes) {
 		super.drawDebugBounds(shapes);

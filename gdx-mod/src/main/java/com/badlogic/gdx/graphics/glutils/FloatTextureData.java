@@ -33,19 +33,19 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * textures.
  */
 public class FloatTextureData implements TextureData {
-
+	
 	int width = 0;
 	int height = 0;
-
+	
 	int internalFormat;
 	int format;
 	int type;
-
+	
 	boolean isGpuOnly;
-
+	
 	boolean isPrepared = false;
 	FloatBuffer buffer;
-
+	
 	public FloatTextureData(int w, int h, int internalFormat, int format, int type, boolean isGpuOnly) {
 		this.width = w;
 		this.height = h;
@@ -54,17 +54,17 @@ public class FloatTextureData implements TextureData {
 		this.type = type;
 		this.isGpuOnly = isGpuOnly;
 	}
-
+	
 	@Override
 	public TextureDataType getType() {
 		return TextureDataType.Custom;
 	}
-
+	
 	@Override
 	public boolean isPrepared() {
 		return isPrepared;
 	}
-
+	
 	@Override
 	public void prepare() {
 		if (isPrepared)
@@ -85,19 +85,19 @@ public class FloatTextureData implements TextureData {
 		}
 		isPrepared = true;
 	}
-
+	
 	@Override
 	public void consumeCustomData(int target) {
 		if (Gdx.app.getType() == ApplicationType.Android || Gdx.app.getType() == ApplicationType.iOS
 				|| Gdx.app.getType() == ApplicationType.WebGL) {
-
+			
 			if (!Gdx.graphics.supportsExtension("OES_texture_float"))
 				throw new GdxRuntimeException("Extension OES_texture_float not supported!");
-
+				
 			// GLES and WebGL defines texture format by 3rd and 8th argument,
 			// so to get a float texture one needs to supply GL_RGBA and GL_FLOAT there.
 			Gdx.gl.glTexImage2D(target, 0, GL20.GL_RGBA, width, height, 0, GL20.GL_RGBA, GL20.GL_FLOAT, buffer);
-
+			
 		} else {
 			if (!Gdx.graphics.isGL30Available()) {
 				if (!Gdx.graphics.supportsExtension("GL_ARB_texture_float"))
@@ -109,42 +109,42 @@ public class FloatTextureData implements TextureData {
 			Gdx.gl.glTexImage2D(target, 0, internalFormat, width, height, 0, format, GL20.GL_FLOAT, buffer);
 		}
 	}
-
+	
 	@Override
 	public Pixmap consumePixmap() {
 		throw new GdxRuntimeException("This TextureData implementation does not return a Pixmap");
 	}
-
+	
 	@Override
 	public boolean disposePixmap() {
 		throw new GdxRuntimeException("This TextureData implementation does not return a Pixmap");
 	}
-
+	
 	@Override
 	public int getWidth() {
 		return width;
 	}
-
+	
 	@Override
 	public int getHeight() {
 		return height;
 	}
-
+	
 	@Override
 	public Format getFormat() {
 		return Format.RGBA8888; // it's not true, but FloatTextureData.getFormat() isn't used anywhere
 	}
-
+	
 	@Override
 	public boolean useMipMaps() {
 		return false;
 	}
-
+	
 	@Override
 	public boolean isManaged() {
 		return true;
 	}
-
+	
 	public FloatBuffer getBuffer() {
 		return buffer;
 	}

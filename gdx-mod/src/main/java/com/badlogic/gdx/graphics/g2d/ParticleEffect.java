@@ -45,22 +45,22 @@ public class ParticleEffect implements Disposable {
 	protected float xSizeScale = 1f;
 	protected float ySizeScale = 1f;
 	protected float motionScale = 1f;
-
+	
 	public ParticleEffect() {
 		emitters = new Array(8);
 	}
-
+	
 	public ParticleEffect(ParticleEffect effect) {
 		emitters = new Array(true, effect.emitters.size);
 		for (int i = 0, n = effect.emitters.size; i < n; i++)
 			emitters.add(newEmitter(effect.emitters.get(i)));
 	}
-
+	
 	public void start() {
 		for (int i = 0, n = emitters.size; i < n; i++)
 			emitters.get(i).start();
 	}
-
+	
 	/**
 	 * Resets the effect so it can be started again like a new effect. Any changes
 	 * to scale are reverted. See {@link #reset(boolean)}.
@@ -68,7 +68,7 @@ public class ParticleEffect implements Disposable {
 	public void reset() {
 		reset(true);
 	}
-
+	
 	/**
 	 * Resets the effect so it can be started again like a new effect.
 	 * 
@@ -84,27 +84,27 @@ public class ParticleEffect implements Disposable {
 			xSizeScale = ySizeScale = motionScale = 1f;
 		}
 	}
-
+	
 	public void update(float delta) {
 		for (int i = 0, n = emitters.size; i < n; i++)
 			emitters.get(i).update(delta);
 	}
-
+	
 	public void draw(Batch spriteBatch) {
 		for (int i = 0, n = emitters.size; i < n; i++)
 			emitters.get(i).draw(spriteBatch);
 	}
-
+	
 	public void draw(Batch spriteBatch, float delta) {
 		for (int i = 0, n = emitters.size; i < n; i++)
 			emitters.get(i).draw(spriteBatch, delta);
 	}
-
+	
 	public void allowCompletion() {
 		for (int i = 0, n = emitters.size; i < n; i++)
 			emitters.get(i).allowCompletion();
 	}
-
+	
 	public boolean isComplete() {
 		for (int i = 0, n = emitters.size; i < n; i++) {
 			ParticleEmitter emitter = emitters.get(i);
@@ -113,7 +113,7 @@ public class ParticleEffect implements Disposable {
 		}
 		return true;
 	}
-
+	
 	public void setDuration(int duration) {
 		for (int i = 0, n = emitters.size; i < n; i++) {
 			ParticleEmitter emitter = emitters.get(i);
@@ -122,26 +122,26 @@ public class ParticleEffect implements Disposable {
 			emitter.durationTimer = 0;
 		}
 	}
-
+	
 	public void setPosition(float x, float y) {
 		for (int i = 0, n = emitters.size; i < n; i++)
 			emitters.get(i).setPosition(x, y);
 	}
-
+	
 	public void setFlip(boolean flipX, boolean flipY) {
 		for (int i = 0, n = emitters.size; i < n; i++)
 			emitters.get(i).setFlip(flipX, flipY);
 	}
-
+	
 	public void flipY() {
 		for (int i = 0, n = emitters.size; i < n; i++)
 			emitters.get(i).flipY();
 	}
-
+	
 	public Array<ParticleEmitter> getEmitters() {
 		return emitters;
 	}
-
+	
 	/** Returns the emitter with the specified name, or null. */
 	public ParticleEmitter findEmitter(String name) {
 		for (int i = 0, n = emitters.size; i < n; i++) {
@@ -151,7 +151,7 @@ public class ParticleEffect implements Disposable {
 		}
 		return null;
 	}
-
+	
 	public void save(Writer output) throws IOException {
 		int index = 0;
 		for (int i = 0, n = emitters.size; i < n; i++) {
@@ -161,21 +161,21 @@ public class ParticleEffect implements Disposable {
 			emitter.save(output);
 		}
 	}
-
+	
 	public void load(FileHandle effectFile, FileHandle imagesDir) {
 		loadEmitters(effectFile);
 		loadEmitterImages(imagesDir);
 	}
-
+	
 	public void load(FileHandle effectFile, TextureAtlas atlas) {
 		load(effectFile, atlas, null);
 	}
-
+	
 	public void load(FileHandle effectFile, TextureAtlas atlas, String atlasPrefix) {
 		loadEmitters(effectFile);
 		loadEmitterImages(atlas, atlasPrefix);
 	}
-
+	
 	public void loadEmitters(FileHandle effectFile) {
 		InputStream input = effectFile.read();
 		emitters.clear();
@@ -194,11 +194,11 @@ public class ParticleEffect implements Disposable {
 			StreamUtils.closeQuietly(reader);
 		}
 	}
-
+	
 	public void loadEmitterImages(TextureAtlas atlas) {
 		loadEmitterImages(atlas, null);
 	}
-
+	
 	public void loadEmitterImages(TextureAtlas atlas, String atlasPrefix) {
 		for (int i = 0, n = emitters.size; i < n; i++) {
 			ParticleEmitter emitter = emitters.get(i);
@@ -220,7 +220,7 @@ public class ParticleEffect implements Disposable {
 			emitter.setSprites(sprites);
 		}
 	}
-
+	
 	public void loadEmitterImages(FileHandle imagesDir) {
 		ownsTexture = true;
 		ObjectMap<String, Sprite> loadedSprites = new ObjectMap<>(emitters.size);
@@ -241,19 +241,19 @@ public class ParticleEffect implements Disposable {
 			emitter.setSprites(sprites);
 		}
 	}
-
+	
 	protected ParticleEmitter newEmitter(BufferedReader reader) throws IOException {
 		return new ParticleEmitter(reader);
 	}
-
+	
 	protected ParticleEmitter newEmitter(ParticleEmitter emitter) {
 		return new ParticleEmitter(emitter);
 	}
-
+	
 	protected Texture loadTexture(FileHandle file) {
 		return new Texture(file, false);
 	}
-
+	
 	/** Disposes the texture for each sprite for each ParticleEmitter. */
 	@Override
 	public void dispose() {
@@ -266,7 +266,7 @@ public class ParticleEffect implements Disposable {
 			}
 		}
 	}
-
+	
 	/**
 	 * Returns the bounding box for all active particles. z axis will always be
 	 * zero.
@@ -274,14 +274,14 @@ public class ParticleEffect implements Disposable {
 	public BoundingBox getBoundingBox() {
 		if (bounds == null)
 			bounds = new BoundingBox();
-
+		
 		BoundingBox bounds = this.bounds;
 		bounds.inf();
 		for (ParticleEmitter emitter : this.emitters)
 			bounds.ext(emitter.getBoundingBox());
 		return bounds;
 	}
-
+	
 	/**
 	 * Permanently scales all the size and motion parameters of all the emitters in
 	 * this effect. If this effect originated from a {@link ParticleEffectPool}, the
@@ -290,7 +290,7 @@ public class ParticleEffect implements Disposable {
 	public void scaleEffect(float scaleFactor) {
 		scaleEffect(scaleFactor, scaleFactor, scaleFactor);
 	}
-
+	
 	/**
 	 * Permanently scales all the size and motion parameters of all the emitters in
 	 * this effect. If this effect originated from a {@link ParticleEffectPool}, the
@@ -299,7 +299,7 @@ public class ParticleEffect implements Disposable {
 	public void scaleEffect(float scaleFactor, float motionScaleFactor) {
 		scaleEffect(scaleFactor, scaleFactor, motionScaleFactor);
 	}
-
+	
 	/**
 	 * Permanently scales all the size and motion parameters of all the emitters in
 	 * this effect. If this effect originated from a {@link ParticleEffectPool}, the
@@ -314,7 +314,7 @@ public class ParticleEffect implements Disposable {
 			particleEmitter.scaleMotion(motionScaleFactor);
 		}
 	}
-
+	
 	/**
 	 * Sets the
 	 * {@link com.badlogic.gdx.graphics.g2d.ParticleEmitter#setCleansUpBlendFunction(boolean)

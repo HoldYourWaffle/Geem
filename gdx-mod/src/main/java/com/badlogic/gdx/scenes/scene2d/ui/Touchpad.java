@@ -50,7 +50,7 @@ public class Touchpad extends Widget {
 	private final Circle deadzoneBounds = new Circle(0, 0, 0);
 	private final Vector2 knobPosition = new Vector2();
 	private final Vector2 knobPercent = new Vector2();
-
+	
 	/**
 	 * @param deadzoneRadius The distance in pixels from the center of the touchpad
 	 *                       required for the knob to be moved.
@@ -58,7 +58,7 @@ public class Touchpad extends Widget {
 	public Touchpad(float deadzoneRadius, Skin skin) {
 		this(deadzoneRadius, skin.get(TouchpadStyle.class));
 	}
-
+	
 	/**
 	 * @param deadzoneRadius The distance in pixels from the center of the touchpad
 	 *                       required for the knob to be moved.
@@ -66,7 +66,7 @@ public class Touchpad extends Widget {
 	public Touchpad(float deadzoneRadius, Skin skin, String styleName) {
 		this(deadzoneRadius, skin.get(styleName, TouchpadStyle.class));
 	}
-
+	
 	/**
 	 * @param deadzoneRadius The distance in pixels from the center of the touchpad
 	 *                       required for the knob to be moved.
@@ -75,12 +75,12 @@ public class Touchpad extends Widget {
 		if (deadzoneRadius < 0)
 			throw new IllegalArgumentException("deadzoneRadius must be > 0");
 		this.deadzoneRadius = deadzoneRadius;
-
+		
 		knobPosition.set(getWidth() / 2f, getHeight() / 2f);
-
+		
 		setStyle(style);
 		setSize(getPrefWidth(), getPrefHeight());
-
+		
 		addListener(new InputListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -90,12 +90,12 @@ public class Touchpad extends Widget {
 				calculatePositionAndValue(x, y, false);
 				return true;
 			}
-
+			
 			@Override
 			public void touchDragged(InputEvent event, float x, float y, int pointer) {
 				calculatePositionAndValue(x, y, false);
 			}
-
+			
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				touched = false;
@@ -103,7 +103,7 @@ public class Touchpad extends Widget {
 			}
 		});
 	}
-
+	
 	void calculatePositionAndValue(float x, float y, boolean isTouchUp) {
 		float oldPositionX = knobPosition.x;
 		float oldPositionY = knobPosition.y;
@@ -135,14 +135,14 @@ public class Touchpad extends Widget {
 			Pools.free(changeEvent);
 		}
 	}
-
+	
 	public void setStyle(TouchpadStyle style) {
 		if (style == null)
 			throw new IllegalArgumentException("style cannot be null");
 		this.style = style;
 		invalidateHierarchy();
 	}
-
+	
 	/**
 	 * Returns the touchpad's style. Modifying the returned style may not have an
 	 * effect until {@link #setStyle(TouchpadStyle)} is called.
@@ -150,14 +150,14 @@ public class Touchpad extends Widget {
 	public TouchpadStyle getStyle() {
 		return style;
 	}
-
+	
 	@Override
 	public Actor hit(float x, float y, boolean touchable) {
 		if (touchable && this.getTouchable() != Touchable.enabled)
 			return null;
 		return touchBounds.contains(x, y) ? this : null;
 	}
-
+	
 	@Override
 	public void layout() {
 		// Recalc pad and deadzone bounds
@@ -173,23 +173,23 @@ public class Touchpad extends Widget {
 		knobPosition.set(halfWidth, halfHeight);
 		knobPercent.set(0, 0);
 	}
-
+	
 	@Override
 	public void draw(Batch batch, float a) {
 		validate();
-
+		
 		Color c = getColor();
 		batch.setColor(c.r, c.g, c.b, c.a * a);
-
+		
 		float x = getX();
 		float y = getY();
 		float w = getWidth();
 		float h = getHeight();
-
+		
 		final Drawable bg = style.background;
 		if (bg != null)
 			bg.draw(batch, x, y, w, h);
-
+		
 		final Drawable knob = style.knob;
 		if (knob != null) {
 			x += knobPosition.x - knob.getMinWidth() / 2f;
@@ -197,30 +197,30 @@ public class Touchpad extends Widget {
 			knob.draw(batch, x, y, knob.getMinWidth(), knob.getMinHeight());
 		}
 	}
-
+	
 	@Override
 	public float getPrefWidth() {
 		return style.background != null ? style.background.getMinWidth() : 0;
 	}
-
+	
 	@Override
 	public float getPrefHeight() {
 		return style.background != null ? style.background.getMinHeight() : 0;
 	}
-
+	
 	public boolean isTouched() {
 		return touched;
 	}
-
+	
 	public boolean getResetOnTouchUp() {
 		return resetOnTouchUp;
 	}
-
+	
 	/** @param reset Whether to reset the knob to the center on touch up. */
 	public void setResetOnTouchUp(boolean reset) {
 		this.resetOnTouchUp = reset;
 	}
-
+	
 	/**
 	 * @param deadzoneRadius The distance in pixels from the center of the touchpad
 	 *                       required for the knob to be moved.
@@ -231,7 +231,7 @@ public class Touchpad extends Widget {
 		this.deadzoneRadius = deadzoneRadius;
 		invalidate();
 	}
-
+	
 	/**
 	 * Returns the x-position of the knob relative to the center of the widget. The
 	 * positive direction is right.
@@ -239,7 +239,7 @@ public class Touchpad extends Widget {
 	public float getKnobX() {
 		return knobPosition.x;
 	}
-
+	
 	/**
 	 * Returns the y-position of the knob relative to the center of the widget. The
 	 * positive direction is up.
@@ -247,7 +247,7 @@ public class Touchpad extends Widget {
 	public float getKnobY() {
 		return knobPosition.y;
 	}
-
+	
 	/**
 	 * Returns the x-position of the knob as a percentage from the center of the
 	 * touchpad to the edge of the circular movement area. The positive direction is
@@ -256,7 +256,7 @@ public class Touchpad extends Widget {
 	public float getKnobPercentX() {
 		return knobPercent.x;
 	}
-
+	
 	/**
 	 * Returns the y-position of the knob as a percentage from the center of the
 	 * touchpad to the edge of the circular movement area. The positive direction is
@@ -265,7 +265,7 @@ public class Touchpad extends Widget {
 	public float getKnobPercentY() {
 		return knobPercent.y;
 	}
-
+	
 	/**
 	 * The style for a {@link Touchpad}.
 	 * 
@@ -274,18 +274,18 @@ public class Touchpad extends Widget {
 	public static class TouchpadStyle {
 		/** Stretched in both directions. Optional. */
 		public Drawable background;
-
+		
 		/** Optional. */
 		public Drawable knob;
-
+		
 		public TouchpadStyle() {
 		}
-
+		
 		public TouchpadStyle(Drawable background, Drawable knob) {
 			this.background = background;
 			this.knob = knob;
 		}
-
+		
 		public TouchpadStyle(TouchpadStyle style) {
 			this.background = style.background;
 			this.knob = style.knob;

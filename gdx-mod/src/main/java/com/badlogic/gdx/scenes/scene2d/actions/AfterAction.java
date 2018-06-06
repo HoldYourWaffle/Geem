@@ -28,20 +28,20 @@ import com.badlogic.gdx.utils.Array;
  */
 public class AfterAction extends DelegateAction {
 	private Array<Action> waitForActions = new Array(false, 4);
-
+	
 	@Override
 	public void setTarget(Actor target) {
 		if (target != null)
 			waitForActions.addAll(target.getActions());
 		super.setTarget(target);
 	}
-
+	
 	@Override
 	public void restart() {
 		super.restart();
 		waitForActions.clear();
 	}
-
+	
 	@Override
 	protected boolean delegate(float delta) {
 		Array<Action> currentActions = target.getActions();

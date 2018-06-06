@@ -31,17 +31,17 @@ import com.badlogic.gdx.utils.Align;
 public class TextButton extends Button {
 	private final Label label;
 	private TextButtonStyle style;
-
+	
 	public TextButton(String text, Skin skin) {
 		this(text, skin.get(TextButtonStyle.class));
 		setSkin(skin);
 	}
-
+	
 	public TextButton(String text, Skin skin, String styleName) {
 		this(text, skin.get(styleName, TextButtonStyle.class));
 		setSkin(skin);
 	}
-
+	
 	public TextButton(String text, TextButtonStyle style) {
 		super();
 		setStyle(style);
@@ -51,7 +51,7 @@ public class TextButton extends Button {
 		add(label).expand().fill();
 		setSize(getPrefWidth(), getPrefHeight());
 	}
-
+	
 	@Override
 	public void setStyle(ButtonStyle style) {
 		if (style == null)
@@ -68,12 +68,12 @@ public class TextButton extends Button {
 			label.setStyle(labelStyle);
 		}
 	}
-
+	
 	@Override
 	public TextButtonStyle getStyle() {
 		return style;
 	}
-
+	
 	@Override
 	public void draw(Batch batch, float a) {
 		Color fontColor;
@@ -92,23 +92,23 @@ public class TextButton extends Button {
 			label.getStyle().fontColor = fontColor;
 		super.draw(batch, a);
 	}
-
+	
 	public Label getLabel() {
 		return label;
 	}
-
+	
 	public Cell<Label> getLabelCell() {
 		return getCell(label);
 	}
-
+	
 	public void setText(String text) {
 		label.setText(text);
 	}
-
+	
 	public CharSequence getText() {
 		return label.getText();
 	}
-
+	
 	/**
 	 * The style for a text button, see {@link TextButton}.
 	 * 
@@ -118,15 +118,15 @@ public class TextButton extends Button {
 		public BitmapFont font;
 		/** Optional. */
 		public Color fontColor, downFontColor, overFontColor, checkedFontColor, checkedOverFontColor, disabledFontColor;
-
+		
 		public TextButtonStyle() {
 		}
-
+		
 		public TextButtonStyle(Drawable up, Drawable down, Drawable checked, BitmapFont font) {
 			super(up, down, checked);
 			this.font = font;
 		}
-
+		
 		public TextButtonStyle(TextButtonStyle style) {
 			super(style);
 			this.font = style.font;

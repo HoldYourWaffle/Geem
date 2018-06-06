@@ -27,18 +27,18 @@ import com.badlogic.gdx.utils.Pool;
  */
 abstract public class DelegateAction extends Action {
 	protected Action action;
-
+	
 	/** Sets the wrapped action. */
 	public void setAction(Action action) {
 		this.action = action;
 	}
-
+	
 	public Action getAction() {
 		return action;
 	}
-
+	
 	abstract protected boolean delegate(float delta);
-
+	
 	@Override
 	public final boolean act(float delta) {
 		Pool pool = getPool();
@@ -49,33 +49,33 @@ abstract public class DelegateAction extends Action {
 			setPool(pool);
 		}
 	}
-
+	
 	@Override
 	public void restart() {
 		if (action != null)
 			action.restart();
 	}
-
+	
 	@Override
 	public void reset() {
 		super.reset();
 		action = null;
 	}
-
+	
 	@Override
 	public void setActor(Actor actor) {
 		if (action != null)
 			action.setActor(actor);
 		super.setActor(actor);
 	}
-
+	
 	@Override
 	public void setTarget(Actor target) {
 		if (action != null)
 			action.setTarget(target);
 		super.setTarget(target);
 	}
-
+	
 	@Override
 	public String toString() {
 		return super.toString() + (action == null ? "" : "(" + action + ")");

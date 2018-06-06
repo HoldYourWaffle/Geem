@@ -37,7 +37,7 @@ public class ScissorStack {
 	private static Array<Rectangle> scissors = new Array<>();
 	static Vector3 tmp = new Vector3();
 	static final Rectangle viewport = new Rectangle();
-
+	
 	/**
 	 * Pushes a new scissor {@link Rectangle} onto the stack, merging it with the
 	 * current top of the stack. The minimal area of overlap between the top of
@@ -54,7 +54,7 @@ public class ScissorStack {
 	 */
 	public static boolean pushScissors(Rectangle scissor) {
 		fix(scissor);
-
+		
 		if (scissors.size == 0) {
 			if (scissor.width < 1 || scissor.height < 1)
 				return false;
@@ -66,12 +66,12 @@ public class ScissorStack {
 			float maxX = Math.min(parent.x + parent.width, scissor.x + scissor.width);
 			if (maxX - minX < 1)
 				return false;
-
+			
 			float minY = Math.max(parent.y, scissor.y);
 			float maxY = Math.min(parent.y + parent.height, scissor.y + scissor.height);
 			if (maxY - minY < 1)
 				return false;
-
+			
 			scissor.x = minX;
 			scissor.y = minY;
 			scissor.width = maxX - minX;
@@ -81,7 +81,7 @@ public class ScissorStack {
 		HdpiUtils.glScissor((int) scissor.x, (int) scissor.y, (int) scissor.width, (int) scissor.height);
 		return true;
 	}
-
+	
 	/**
 	 * Pops the current scissor rectangle from the stack and sets the new scissor
 	 * area to the new top of stack rectangle. In case no more rectangles are on the
@@ -99,11 +99,11 @@ public class ScissorStack {
 		}
 		return old;
 	}
-
+	
 	public static Rectangle peekScissors() {
 		return scissors.peek();
 	}
-
+	
 	private static void fix(Rectangle rect) {
 		rect.x = Math.round(rect.x);
 		rect.y = Math.round(rect.y);
@@ -118,7 +118,7 @@ public class ScissorStack {
 			rect.y -= rect.height;
 		}
 	}
-
+	
 	/**
 	 * Calculates a scissor rectangle using
 	 * 0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight() as the viewport.
@@ -130,7 +130,7 @@ public class ScissorStack {
 		calculateScissors(camera, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), batchTransform, area,
 				scissor);
 	}
-
+	
 	/**
 	 * Calculates a scissor rectangle in OpenGL ES window coordinates from a
 	 * {@link Camera}, a transformation {@link Matrix4} and an axis aligned
@@ -153,14 +153,14 @@ public class ScissorStack {
 		camera.project(tmp, viewportX, viewportY, viewportWidth, viewportHeight);
 		scissor.x = tmp.x;
 		scissor.y = tmp.y;
-
+		
 		tmp.set(area.x + area.width, area.y + area.height, 0);
 		tmp.mul(batchTransform);
 		camera.project(tmp, viewportX, viewportY, viewportWidth, viewportHeight);
 		scissor.width = tmp.x - scissor.x;
 		scissor.height = tmp.y - scissor.y;
 	}
-
+	
 	/**
 	 * @return the current viewport in OpenGL ES window coordinates based on the
 	 *         currently applied scissor

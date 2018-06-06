@@ -32,10 +32,10 @@ public interface TextureBinder {
 	 * {@link #end()}.
 	 */
 	public void begin();
-
+	
 	/** Disables all used texture units and unbinds textures. Resets the counts. */
 	public void end();
-
+	
 	/**
 	 * Binds the texture to an available unit and applies the filters in the
 	 * descriptor.
@@ -44,7 +44,7 @@ public interface TextureBinder {
 	 * @return the unit the texture was bound to
 	 */
 	public int bind(TextureDescriptor textureDescriptor);
-
+	
 	/**
 	 * Binds the texture to an available unit.
 	 * 
@@ -52,16 +52,16 @@ public interface TextureBinder {
 	 * @return the unit the texture was bound to
 	 */
 	public int bind(GLTexture texture);
-
+	
 	/**
 	 * @return the number of binds actually executed since the last call to
 	 *         {@link #resetCounts()}
 	 */
 	public int getBindCount();
-
+	
 	/** @return the number of binds that could be avoided by reuse */
 	public int getReuseCount();
-
+	
 	/** Resets the bind/reuse counts */
 	public void resetCounts();
 }

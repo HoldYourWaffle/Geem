@@ -64,14 +64,14 @@ public class ModelCache implements Disposable, RenderableProvider {
 		 * @return the obtained Mesh, or null when no mesh could be obtained.
 		 */
 		Mesh obtain(VertexAttributes vertexAttributes, int vertexCount, int indexCount);
-
+		
 		/**
 		 * Releases all previously obtained {@link Mesh}es using the the
 		 * {@link #obtain(VertexAttributes, int, int)} method.
 		 */
 		void flush();
 	}
-
+	
 	/**
 	 * A basic {@link MeshPool} implementation that avoids creating new meshes at
 	 * the cost of memory usage. It does this by making the mesh always the maximum
@@ -84,13 +84,13 @@ public class ModelCache implements Disposable, RenderableProvider {
 		// FIXME Make a better (preferable JNI) MeshPool implementation
 		private Array<Mesh> freeMeshes = new Array<>();
 		private Array<Mesh> usedMeshes = new Array<>();
-
+		
 		@Override
 		public void flush() {
 			freeMeshes.addAll(usedMeshes);
 			usedMeshes.clear();
 		}
-
+		
 		@Override
 		public Mesh obtain(VertexAttributes vertexAttributes, int vertexCount, int indexCount) {
 			for (int i = 0, n = freeMeshes.size; i < n; ++i) {
@@ -108,7 +108,7 @@ public class ModelCache implements Disposable, RenderableProvider {
 			usedMeshes.add(result);
 			return result;
 		}
-
+		
 		@Override
 		public void dispose() {
 			for (Mesh m : usedMeshes)
@@ -119,7 +119,7 @@ public class ModelCache implements Disposable, RenderableProvider {
 			freeMeshes.clear();
 		}
 	}
-
+	
 	/**
 	 * A tight {@link MeshPool} implementation, which is typically used for static
 	 * meshes (create once, use many).
@@ -129,13 +129,13 @@ public class ModelCache implements Disposable, RenderableProvider {
 	public static class TightMeshPool implements MeshPool {
 		private Array<Mesh> freeMeshes = new Array<>();
 		private Array<Mesh> usedMeshes = new Array<>();
-
+		
 		@Override
 		public void flush() {
 			freeMeshes.addAll(usedMeshes);
 			usedMeshes.clear();
 		}
-
+		
 		@Override
 		public Mesh obtain(VertexAttributes vertexAttributes, int vertexCount, int indexCount) {
 			for (int i = 0, n = freeMeshes.size; i < n; ++i) {
@@ -151,7 +151,7 @@ public class ModelCache implements Disposable, RenderableProvider {
 			usedMeshes.add(result);
 			return result;
 		}
-
+		
 		@Override
 		public void dispose() {
 			for (Mesh m : usedMeshes)
@@ -162,7 +162,7 @@ public class ModelCache implements Disposable, RenderableProvider {
 			freeMeshes.clear();
 		}
 	}
-
+	
 	/**
 	 * A {@link RenderableSorter} that sorts by vertex attributes, material
 	 * attributes and primitive types (in that order), so that meshes can be easily
@@ -175,7 +175,7 @@ public class ModelCache implements Disposable, RenderableProvider {
 		public void sort(Camera camera, Array<Renderable> renderables) {
 			renderables.sort(this);
 		}
-
+		
 		@Override
 		public int compare(Renderable arg0, Renderable arg1) {
 			final VertexAttributes va0 = arg0.meshPart.mesh.getVertexAttributes();
@@ -191,7 +191,7 @@ public class ModelCache implements Disposable, RenderableProvider {
 			return vc;
 		}
 	}
-
+	
 	private Array<Renderable> renderables = new Array<>();
 	private FlushablePool<Renderable> renderablesPool = new FlushablePool<Renderable>() {
 		@Override
@@ -205,16 +205,16 @@ public class ModelCache implements Disposable, RenderableProvider {
 			return new MeshPart();
 		}
 	};
-
+	
 	private Array<Renderable> items = new Array<>();
 	private Array<Renderable> tmp = new Array<>();
-
+	
 	private MeshBuilder meshBuilder;
 	private boolean building;
 	private RenderableSorter sorter;
 	private MeshPool meshPool;
 	private Camera camera;
-
+	
 	/**
 	 * Create a ModelCache using the default {@link Sorter} and the
 	 * {@link SimpleMeshPool} implementation. This might not be the most optimal
@@ -223,7 +223,7 @@ public class ModelCache implements Disposable, RenderableProvider {
 	public ModelCache() {
 		this(new Sorter(), new SimpleMeshPool());
 	}
-
+	
 	/**
 	 * Create a ModelCache using the specified {@link RenderableSorter} and
 	 * {@link MeshPool} implementation. The {@link RenderableSorter} implementation
@@ -237,7 +237,7 @@ public class ModelCache implements Disposable, RenderableProvider {
 		this.meshPool = meshPool;
 		meshBuilder = new MeshBuilder();
 	}
-
+	
 	/**
 	 * Begin creating the cache, must be followed by a call to {@link #end()}, in
 	 * between these calls one or more calls to one of the add(...) methods can be
@@ -249,7 +249,7 @@ public class ModelCache implements Disposable, RenderableProvider {
 	public void begin() {
 		begin(null);
 	}
-
+	
 	/**
 	 * Begin creating the cache, must be followed by a call to {@link #end()}, in
 	 * between these calls one or more calls to one of the add(...) methods can be
@@ -265,7 +265,7 @@ public class ModelCache implements Disposable, RenderableProvider {
 		if (building)
 			throw new GdxRuntimeException("Call end() after calling begin()");
 		building = true;
-
+		
 		this.camera = camera;
 		renderablesPool.flush();
 		renderables.clear();
@@ -273,7 +273,7 @@ public class ModelCache implements Disposable, RenderableProvider {
 		meshPartPool.flush();
 		meshPool.flush();
 	}
-
+	
 	private Renderable obtainRenderable(Material material, int primitiveType) {
 		Renderable result = renderablesPool.obtain();
 		result.bones = null;
@@ -291,7 +291,7 @@ public class ModelCache implements Disposable, RenderableProvider {
 		result.worldTransform.idt();
 		return result;
 	}
-
+	
 	/**
 	 * Finishes creating the cache, must be called after a call to {@link #begin()},
 	 * only after this call the cache will be valid (until the next call to
@@ -302,35 +302,35 @@ public class ModelCache implements Disposable, RenderableProvider {
 		if (!building)
 			throw new GdxRuntimeException("Call begin() prior to calling end()");
 		building = false;
-
+		
 		if (items.size == 0)
 			return;
 		sorter.sort(camera, items);
-
+		
 		int itemCount = items.size;
 		int initCount = renderables.size;
-
+		
 		final Renderable first = items.get(0);
 		VertexAttributes vertexAttributes = first.meshPart.mesh.getVertexAttributes();
 		Material material = first.material;
 		int primitiveType = first.meshPart.primitiveType;
 		int offset = renderables.size;
-
+		
 		meshBuilder.begin(vertexAttributes);
 		MeshPart part = meshBuilder.part("", primitiveType, meshPartPool.obtain());
 		renderables.add(obtainRenderable(material, primitiveType));
-
+		
 		for (int i = 0, n = items.size; i < n; ++i) {
 			final Renderable renderable = items.get(i);
 			final VertexAttributes va = renderable.meshPart.mesh.getVertexAttributes();
 			final Material mat = renderable.material;
 			final int pt = renderable.meshPart.primitiveType;
-
+			
 			final boolean sameMesh = va.equals(vertexAttributes)
 					&& renderable.meshPart.size + meshBuilder.getNumVertices() < Short.MAX_VALUE; // comparing indices
 																									// and vertices...
 			final boolean samePart = sameMesh && pt == primitiveType && mat.same(material, true);
-
+			
 			if (!samePart) {
 				if (!sameMesh) {
 					final Mesh mesh = meshBuilder.end(meshPool.obtain(vertexAttributes, meshBuilder.getNumVertices(),
@@ -339,30 +339,30 @@ public class ModelCache implements Disposable, RenderableProvider {
 						renderables.get(offset++).meshPart.mesh = mesh;
 					meshBuilder.begin(vertexAttributes = va);
 				}
-
+				
 				final MeshPart newPart = meshBuilder.part("", pt, meshPartPool.obtain());
 				final Renderable previous = renderables.get(renderables.size - 1);
 				previous.meshPart.offset = part.offset;
 				previous.meshPart.size = part.size;
 				part = newPart;
-
+				
 				renderables.add(obtainRenderable(material = mat, primitiveType = pt));
 			}
-
+			
 			meshBuilder.setVertexTransform(renderable.worldTransform);
 			meshBuilder.addMesh(renderable.meshPart.mesh, renderable.meshPart.offset, renderable.meshPart.size);
 		}
-
+		
 		final Mesh mesh = meshBuilder
 				.end(meshPool.obtain(vertexAttributes, meshBuilder.getNumVertices(), meshBuilder.getNumIndices()));
 		while (offset < renderables.size)
 			renderables.get(offset++).meshPart.mesh = mesh;
-
+		
 		final Renderable previous = renderables.get(renderables.size - 1);
 		previous.meshPart.offset = part.offset;
 		previous.meshPart.size = part.size;
 	}
-
+	
 	/**
 	 * Adds the specified {@link Renderable} to the cache. Must be called in between
 	 * a call to {@link #begin()} and {@link #end()}. All member objects might
@@ -386,7 +386,7 @@ public class ModelCache implements Disposable, RenderableProvider {
 		else
 			renderables.add(renderable);
 	}
-
+	
 	/**
 	 * Adds the specified {@link RenderableProvider} to the cache, see
 	 * {@link #add(Renderable)}.
@@ -397,7 +397,7 @@ public class ModelCache implements Disposable, RenderableProvider {
 			add(tmp.get(i));
 		tmp.clear();
 	}
-
+	
 	/**
 	 * Adds the specified {@link RenderableProvider}s to the cache, see
 	 * {@link #add(Renderable)}.
@@ -406,7 +406,7 @@ public class ModelCache implements Disposable, RenderableProvider {
 		for (final RenderableProvider renderableProvider : renderableProviders)
 			add(renderableProvider);
 	}
-
+	
 	@Override
 	public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
 		if (building)
@@ -417,7 +417,7 @@ public class ModelCache implements Disposable, RenderableProvider {
 		}
 		renderables.addAll(this.renderables);
 	}
-
+	
 	@Override
 	public void dispose() {
 		if (building)

@@ -26,17 +26,17 @@ import com.badlogic.gdx.utils.NumberUtils;
  * @author tonyp7
  */
 public class Ellipse implements Serializable, Shape2D {
-
+	
 	public float x, y;
 	public float width, height;
-
+	
 	private static final long serialVersionUID = 7381533206532032099L;
-
+	
 	/** Construct a new ellipse with all values set to zero */
 	public Ellipse() {
-
+		
 	}
-
+	
 	/**
 	 * Copy constructor
 	 * 
@@ -48,7 +48,7 @@ public class Ellipse implements Serializable, Shape2D {
 		this.width = ellipse.width;
 		this.height = ellipse.height;
 	}
-
+	
 	/**
 	 * Constructs a new ellipse
 	 * 
@@ -63,7 +63,7 @@ public class Ellipse implements Serializable, Shape2D {
 		this.width = width;
 		this.height = height;
 	}
-
+	
 	/**
 	 * Costructs a new ellipse
 	 * 
@@ -77,14 +77,14 @@ public class Ellipse implements Serializable, Shape2D {
 		this.width = width;
 		this.height = height;
 	}
-
+	
 	public Ellipse(Vector2 position, Vector2 size) {
 		this.x = position.x;
 		this.y = position.y;
 		this.width = size.x;
 		this.height = size.y;
 	}
-
+	
 	/**
 	 * Constructs a new {@link Ellipse} from the position and radius of a
 	 * {@link Circle} (since circles are special cases of ellipses).
@@ -97,7 +97,7 @@ public class Ellipse implements Serializable, Shape2D {
 		this.width = circle.radius;
 		this.height = circle.radius;
 	}
-
+	
 	/**
 	 * Checks whether or not this ellipse contains the given point.
 	 * 
@@ -110,10 +110,10 @@ public class Ellipse implements Serializable, Shape2D {
 	public boolean contains(float x, float y) {
 		x = x - this.x;
 		y = y - this.y;
-
+		
 		return (x * x) / (width * 0.5f * width * 0.5f) + (y * y) / (height * 0.5f * height * 0.5f) <= 1.0f;
 	}
-
+	
 	/**
 	 * Checks whether or not this ellipse contains the given point.
 	 * 
@@ -125,7 +125,7 @@ public class Ellipse implements Serializable, Shape2D {
 	public boolean contains(Vector2 point) {
 		return contains(point.x, point.y);
 	}
-
+	
 	/**
 	 * Sets a new position and size for this ellipse.
 	 * 
@@ -140,7 +140,7 @@ public class Ellipse implements Serializable, Shape2D {
 		this.width = width;
 		this.height = height;
 	}
-
+	
 	/**
 	 * Sets a new position and size for this ellipse based upon another ellipse.
 	 * 
@@ -152,21 +152,21 @@ public class Ellipse implements Serializable, Shape2D {
 		width = ellipse.width;
 		height = ellipse.height;
 	}
-
+	
 	public void set(Circle circle) {
 		this.x = circle.x;
 		this.y = circle.y;
 		this.width = circle.radius;
 		this.height = circle.radius;
 	}
-
+	
 	public void set(Vector2 position, Vector2 size) {
 		this.x = position.x;
 		this.y = position.y;
 		this.width = size.x;
 		this.height = size.y;
 	}
-
+	
 	/**
 	 * Sets the x and y-coordinates of ellipse center from a {@link Vector2}.
 	 * 
@@ -176,10 +176,10 @@ public class Ellipse implements Serializable, Shape2D {
 	public Ellipse setPosition(Vector2 position) {
 		this.x = position.x;
 		this.y = position.y;
-
+		
 		return this;
 	}
-
+	
 	/**
 	 * Sets the x and y-coordinates of ellipse center
 	 * 
@@ -190,10 +190,10 @@ public class Ellipse implements Serializable, Shape2D {
 	public Ellipse setPosition(float x, float y) {
 		this.x = x;
 		this.y = y;
-
+		
 		return this;
 	}
-
+	
 	/**
 	 * Sets the width and height of this ellipse
 	 * 
@@ -204,10 +204,10 @@ public class Ellipse implements Serializable, Shape2D {
 	public Ellipse setSize(float width, float height) {
 		this.width = width;
 		this.height = height;
-
+		
 		return this;
 	}
-
+	
 	/**
 	 * @return The area of this {@link Ellipse} as {@link MathUtils#PI} *
 	 *         {@link Ellipse#width} * {@link Ellipse#height}
@@ -215,7 +215,7 @@ public class Ellipse implements Serializable, Shape2D {
 	public float area() {
 		return MathUtils.PI * (this.width * this.height) / 4;
 	}
-
+	
 	/**
 	 * Approximates the circumference of this {@link Ellipse}. Oddly enough, the
 	 * circumference of an ellipse is actually difficult to compute exactly.
@@ -235,7 +235,7 @@ public class Ellipse implements Serializable, Shape2D {
 			return (float) (MathUtils.PI2 * Math.sqrt((a * a + b * b) / 2));
 		}
 	}
-
+	
 	@Override
 	public boolean equals(Object o) {
 		if (o == this)
@@ -245,7 +245,7 @@ public class Ellipse implements Serializable, Shape2D {
 		Ellipse e = (Ellipse) o;
 		return this.x == e.x && this.y == e.y && this.width == e.width && this.height == e.height;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 53;

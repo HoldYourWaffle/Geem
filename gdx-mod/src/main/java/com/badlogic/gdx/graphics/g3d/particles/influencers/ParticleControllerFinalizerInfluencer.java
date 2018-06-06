@@ -34,10 +34,10 @@ public class ParticleControllerFinalizerInfluencer extends Influencer {
 	FloatChannel positionChannel, scaleChannel, rotationChannel;
 	ObjectChannel<ParticleController> controllerChannel;
 	boolean hasScale, hasRotation;
-
+	
 	public ParticleControllerFinalizerInfluencer() {
 	}
-
+	
 	@Override
 	public void init() {
 		controllerChannel = controller.particles.getChannel(ParticleChannels.ParticleController);
@@ -49,12 +49,12 @@ public class ParticleControllerFinalizerInfluencer extends Influencer {
 		hasScale = scaleChannel != null;
 		hasRotation = rotationChannel != null;
 	}
-
+	
 	@Override
 	public void allocateChannels() {
 		positionChannel = controller.particles.addChannel(ParticleChannels.Position);
 	}
-
+	
 	@Override
 	public void update() {
 		for (int i = 0, positionOffset = 0, c = controller.particles.size; i < c; ++i, positionOffset += positionChannel.strideSize) {
@@ -74,7 +74,7 @@ public class ParticleControllerFinalizerInfluencer extends Influencer {
 			particleController.update();
 		}
 	}
-
+	
 	@Override
 	public ParticleControllerFinalizerInfluencer copy() {
 		return new ParticleControllerFinalizerInfluencer();

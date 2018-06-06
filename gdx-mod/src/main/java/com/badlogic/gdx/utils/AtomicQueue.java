@@ -35,15 +35,15 @@ public class AtomicQueue<T> {
 	private final AtomicInteger writeIndex = new AtomicInteger();
 	private final AtomicInteger readIndex = new AtomicInteger();
 	private final AtomicReferenceArray<T> queue;
-
+	
 	public AtomicQueue(int capacity) {
 		queue = new AtomicReferenceArray(capacity);
 	}
-
+	
 	private int next(int idx) {
 		return (idx + 1) % queue.length();
 	}
-
+	
 	public boolean put(T value) {
 		int write = writeIndex.get();
 		int read = readIndex.get();
@@ -54,7 +54,7 @@ public class AtomicQueue<T> {
 		writeIndex.set(next);
 		return true;
 	}
-
+	
 	public T poll() {
 		int read = readIndex.get();
 		int write = writeIndex.get();

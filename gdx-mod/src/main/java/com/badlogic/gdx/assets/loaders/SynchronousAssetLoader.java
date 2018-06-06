@@ -24,6 +24,6 @@ public abstract class SynchronousAssetLoader<T, P extends AssetLoaderParameters<
 	public SynchronousAssetLoader(FileHandleResolver resolver) {
 		super(resolver);
 	}
-
+	
 	public abstract T load(AssetManager assetManager, String fileName, FileHandle file, P parameter);
 }

@@ -46,13 +46,13 @@ public class CubemapLoader extends AsynchronousAssetLoader<Cubemap, CubemapLoade
 		CubemapData data;
 		Cubemap cubemap;
 	};
-
+	
 	CubemapLoaderInfo info = new CubemapLoaderInfo();
-
+	
 	public CubemapLoader(FileHandleResolver resolver) {
 		super(resolver);
 	}
-
+	
 	@Override
 	public void loadAsync(AssetManager manager, String fileName, FileHandle file, CubemapParameter parameter) {
 		info.filename = fileName;
@@ -61,12 +61,12 @@ public class CubemapLoader extends AsynchronousAssetLoader<Cubemap, CubemapLoade
 			Format format = null;
 			boolean genMipMaps = false;
 			info.cubemap = null;
-
+			
 			if (parameter != null) {
 				format = parameter.format;
 				info.cubemap = parameter.cubemap;
 			}
-
+			
 			if (fileName.contains(".ktx") || fileName.contains(".zktx")) {
 				info.data = new KTXTextureData(file, genMipMaps);
 			}
@@ -77,7 +77,7 @@ public class CubemapLoader extends AsynchronousAssetLoader<Cubemap, CubemapLoade
 		if (!info.data.isPrepared())
 			info.data.prepare();
 	}
-
+	
 	@Override
 	public Cubemap loadSync(AssetManager manager, String fileName, FileHandle file, CubemapParameter parameter) {
 		if (info == null)
@@ -94,12 +94,12 @@ public class CubemapLoader extends AsynchronousAssetLoader<Cubemap, CubemapLoade
 		}
 		return cubemap;
 	}
-
+	
 	@Override
 	public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, CubemapParameter parameter) {
 		return null;
 	}
-
+	
 	static public class CubemapParameter extends AssetLoaderParameters<Cubemap> {
 		/** the format of the final Texture. Uses the source images format if null **/
 		public Format format = null;

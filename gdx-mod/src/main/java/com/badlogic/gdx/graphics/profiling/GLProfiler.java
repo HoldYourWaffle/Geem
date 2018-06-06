@@ -32,12 +32,12 @@ import com.badlogic.gdx.math.FloatCounter;
  * @author Jan Polák
  */
 public class GLProfiler {
-
+	
 	private Graphics graphics;
 	private GLInterceptor glInterceptor;
 	private GLErrorListener listener;
 	private boolean enabled = false;
-
+	
 	/**
 	 * Create a new instance of GLProfiler to monitor a
 	 * {@link com.badlogic.gdx.Graphics} instance's gl calls
@@ -56,7 +56,7 @@ public class GLProfiler {
 		}
 		listener = GLErrorListener.LOGGING_LISTENER;
 	}
-
+	
 	/**
 	 * Enables profiling by replacing the {@code GL20} and {@code GL30} instances
 	 * with profiling ones.
@@ -64,17 +64,17 @@ public class GLProfiler {
 	public void enable() {
 		if (enabled)
 			return;
-
+		
 		GL30 gl30 = graphics.getGL30();
 		if (gl30 != null) {
 			graphics.setGL30((GL30) glInterceptor);
 		} else {
 			graphics.setGL20(glInterceptor);
 		}
-
+		
 		enabled = true;
 	}
-
+	
 	/**
 	 * Disables profiling by resetting the {@code GL20} and {@code GL30} instances
 	 * with the original ones.
@@ -82,33 +82,33 @@ public class GLProfiler {
 	public void disable() {
 		if (!enabled)
 			return;
-
+		
 		GL30 gl30 = graphics.getGL30();
 		if (gl30 != null)
 			graphics.setGL30(((GL30Interceptor) graphics.getGL30()).gl30);
 		else
 			graphics.setGL20(((GL20Interceptor) graphics.getGL20()).gl20);
-
+		
 		enabled = false;
 	}
-
+	
 	/**
 	 * Set the current listener for the {@link GLProfiler} to {@code errorListener}
 	 */
 	public void setListener(GLErrorListener errorListener) {
 		this.listener = errorListener;
 	}
-
+	
 	/** @return the current {@link GLErrorListener} */
 	public GLErrorListener getListener() {
 		return listener;
 	}
-
+	
 	/** @return true if the GLProfiler is currently profiling */
 	public boolean isEnabled() {
 		return enabled;
 	}
-
+	
 	/**
 	 *
 	 * @return the total gl calls made since the last reset
@@ -116,7 +116,7 @@ public class GLProfiler {
 	public int getCalls() {
 		return glInterceptor.getCalls();
 	}
-
+	
 	/**
 	 *
 	 * @return the total amount of texture bindings made since the last reset
@@ -124,7 +124,7 @@ public class GLProfiler {
 	public int getTextureBindings() {
 		return glInterceptor.getTextureBindings();
 	}
-
+	
 	/**
 	 *
 	 * @return the total amount of draw calls made since the last reset
@@ -132,7 +132,7 @@ public class GLProfiler {
 	public int getDrawCalls() {
 		return glInterceptor.getDrawCalls();
 	}
-
+	
 	/**
 	 *
 	 * @return the total amount of shader switches made since the last reset
@@ -140,7 +140,7 @@ public class GLProfiler {
 	public int getShaderSwitches() {
 		return glInterceptor.getShaderSwitches();
 	}
-
+	
 	/**
 	 *
 	 * @return {@link FloatCounter} containing information about rendered vertices
@@ -149,7 +149,7 @@ public class GLProfiler {
 	public FloatCounter getVertexCount() {
 		return glInterceptor.getVertexCount();
 	}
-
+	
 	/**
 	 * Will reset the statistical information which has been collected so far. This
 	 * should be called after every frame. Error listener is kept as it is.
@@ -157,5 +157,5 @@ public class GLProfiler {
 	public void reset() {
 		glInterceptor.reset();
 	}
-
+	
 }

@@ -29,13 +29,13 @@ public class DefaultRenderableSorter implements RenderableSorter, Comparator<Ren
 	private Camera camera;
 	private final Vector3 tmpV1 = new Vector3();
 	private final Vector3 tmpV2 = new Vector3();
-
+	
 	@Override
 	public void sort(final Camera camera, final Array<Renderable> renderables) {
 		this.camera = camera;
 		renderables.sort(this);
 	}
-
+	
 	private Vector3 getTranslation(Matrix4 worldTransform, Vector3 center, Vector3 output) {
 		if (center.isZero())
 			worldTransform.getTranslation(output);
@@ -45,7 +45,7 @@ public class DefaultRenderableSorter implements RenderableSorter, Comparator<Ren
 			output.set(center).mul(worldTransform);
 		return output;
 	}
-
+	
 	@Override
 	public int compare(final Renderable o1, final Renderable o2) {
 		final boolean b1 = o1.material.has(BlendingAttribute.Type)

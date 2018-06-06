@@ -35,80 +35,80 @@ public class ColorAttribute extends Attribute {
 	public static final long AmbientLight = register(AmbientLightAlias);
 	public final static String FogAlias = "fogColor";
 	public static final long Fog = register(FogAlias);
-
+	
 	protected static long Mask = Ambient | Diffuse | Specular | Emissive | Reflection | AmbientLight | Fog;
-
+	
 	public final static boolean is(final long mask) {
 		return (mask & Mask) != 0;
 	}
-
+	
 	public final static ColorAttribute createAmbient(final Color color) {
 		return new ColorAttribute(Ambient, color);
 	}
-
+	
 	public final static ColorAttribute createAmbient(float r, float g, float b, float a) {
 		return new ColorAttribute(Ambient, r, g, b, a);
 	}
-
+	
 	public final static ColorAttribute createDiffuse(final Color color) {
 		return new ColorAttribute(Diffuse, color);
 	}
-
+	
 	public final static ColorAttribute createDiffuse(float r, float g, float b, float a) {
 		return new ColorAttribute(Diffuse, r, g, b, a);
 	}
-
+	
 	public final static ColorAttribute createSpecular(final Color color) {
 		return new ColorAttribute(Specular, color);
 	}
-
+	
 	public final static ColorAttribute createSpecular(float r, float g, float b, float a) {
 		return new ColorAttribute(Specular, r, g, b, a);
 	}
-
+	
 	public final static ColorAttribute createReflection(final Color color) {
 		return new ColorAttribute(Reflection, color);
 	}
-
+	
 	public final static ColorAttribute createReflection(float r, float g, float b, float a) {
 		return new ColorAttribute(Reflection, r, g, b, a);
 	}
-
+	
 	public final Color color = new Color();
-
+	
 	public ColorAttribute(final long type) {
 		super(type);
 		if (!is(type))
 			throw new GdxRuntimeException("Invalid type specified");
 	}
-
+	
 	public ColorAttribute(final long type, final Color color) {
 		this(type);
 		if (color != null)
 			this.color.set(color);
 	}
-
+	
 	public ColorAttribute(final long type, float r, float g, float b, float a) {
 		this(type);
 		this.color.set(r, g, b, a);
 	}
-
+	
 	public ColorAttribute(final ColorAttribute copyFrom) {
 		this(copyFrom.type, copyFrom.color);
 	}
-
+	
 	@Override
 	public Attribute copy() {
 		return new ColorAttribute(this);
 	}
-
+	
 	@Override
 	public int hashCode() {
 		int result = super.hashCode();
 		result = 953 * result + color.toIntBits();
 		return result;
 	}
-
+	
 	@Override
 	public int compareTo(Attribute o) {
 		if (type != o.type)

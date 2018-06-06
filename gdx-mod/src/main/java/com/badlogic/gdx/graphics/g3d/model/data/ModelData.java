@@ -34,7 +34,7 @@ public class ModelData {
 	public final Array<ModelMaterial> materials = new Array<>();
 	public final Array<ModelNode> nodes = new Array<>();
 	public final Array<ModelAnimation> animations = new Array<>();
-
+	
 	public void addMesh(ModelMesh mesh) {
 		for (ModelMesh other : meshes) {
 			if (other.id.equals(mesh.id)) {

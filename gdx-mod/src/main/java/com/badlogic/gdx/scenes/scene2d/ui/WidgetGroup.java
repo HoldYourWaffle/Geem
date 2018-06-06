@@ -44,46 +44,46 @@ public class WidgetGroup extends Group implements Layout {
 	private boolean needsLayout = true;
 	private boolean fillParent;
 	private boolean layoutEnabled = true;
-
+	
 	public WidgetGroup() {
 	}
-
+	
 	/** Creates a new widget group containing the specified actors. */
 	public WidgetGroup(Actor... actors) {
 		for (Actor actor : actors)
 			addActor(actor);
 	}
-
+	
 	@Override
 	public float getMinWidth() {
 		return getPrefWidth();
 	}
-
+	
 	@Override
 	public float getMinHeight() {
 		return getPrefHeight();
 	}
-
+	
 	@Override
 	public float getPrefWidth() {
 		return 0;
 	}
-
+	
 	@Override
 	public float getPrefHeight() {
 		return 0;
 	}
-
+	
 	@Override
 	public float getMaxWidth() {
 		return 0;
 	}
-
+	
 	@Override
 	public float getMaxHeight() {
 		return 0;
 	}
-
+	
 	@Override
 	public void setLayoutEnabled(boolean enabled) {
 		if (layoutEnabled == enabled)
@@ -91,7 +91,7 @@ public class WidgetGroup extends Group implements Layout {
 		layoutEnabled = enabled;
 		setLayoutEnabled(this, enabled);
 	}
-
+	
 	private void setLayoutEnabled(Group parent, boolean enabled) {
 		SnapshotArray<Actor> children = parent.getChildren();
 		for (int i = 0, n = children.size; i < n; i++) {
@@ -102,12 +102,12 @@ public class WidgetGroup extends Group implements Layout {
 				setLayoutEnabled((Group) actor, enabled);
 		}
 	}
-
+	
 	@Override
 	public void validate() {
 		if (!layoutEnabled)
 			return;
-
+		
 		Group parent = getParent();
 		if (fillParent && parent != null) {
 			float parentWidth, parentHeight;
@@ -125,12 +125,12 @@ public class WidgetGroup extends Group implements Layout {
 				invalidate();
 			}
 		}
-
+		
 		if (!needsLayout)
 			return;
 		needsLayout = false;
 		layout();
-
+		
 		// Widgets may call invalidateHierarchy during layout (eg, a wrapped label). The
 		// root-most widget group retries layout a
 		// reasonable number of times.
@@ -148,7 +148,7 @@ public class WidgetGroup extends Group implements Layout {
 			}
 		}
 	}
-
+	
 	/**
 	 * Returns true if the widget's layout has been {@link #invalidate()
 	 * invalidated}.
@@ -156,12 +156,12 @@ public class WidgetGroup extends Group implements Layout {
 	public boolean needsLayout() {
 		return needsLayout;
 	}
-
+	
 	@Override
 	public void invalidate() {
 		needsLayout = true;
 	}
-
+	
 	@Override
 	public void invalidateHierarchy() {
 		invalidate();
@@ -169,17 +169,17 @@ public class WidgetGroup extends Group implements Layout {
 		if (parent instanceof Layout)
 			((Layout) parent).invalidateHierarchy();
 	}
-
+	
 	@Override
 	protected void childrenChanged() {
 		invalidateHierarchy();
 	}
-
+	
 	@Override
 	protected void sizeChanged() {
 		invalidate();
 	}
-
+	
 	@Override
 	public void pack() {
 		setSize(getPrefWidth(), getPrefHeight());
@@ -192,16 +192,16 @@ public class WidgetGroup extends Group implements Layout {
 			validate();
 		}
 	}
-
+	
 	@Override
 	public void setFillParent(boolean fillParent) {
 		this.fillParent = fillParent;
 	}
-
+	
 	@Override
 	public void layout() {
 	}
-
+	
 	/**
 	 * If this method is overridden, the super method or {@link #validate()} should
 	 * be called to ensure the widget group is laid out.

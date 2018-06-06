@@ -53,39 +53,39 @@ public class Button extends Table implements Disableable {
 	ButtonGroup buttonGroup;
 	private ClickListener clickListener;
 	private boolean programmaticChangeEvents = true;
-
+	
 	public Button(Skin skin) {
 		super(skin);
 		initialize();
 		setStyle(skin.get(ButtonStyle.class));
 		setSize(getPrefWidth(), getPrefHeight());
 	}
-
+	
 	public Button(Skin skin, String styleName) {
 		super(skin);
 		initialize();
 		setStyle(skin.get(styleName, ButtonStyle.class));
 		setSize(getPrefWidth(), getPrefHeight());
 	}
-
+	
 	public Button(Actor child, Skin skin, String styleName) {
 		this(child, skin.get(styleName, ButtonStyle.class));
 		setSkin(skin);
 	}
-
+	
 	public Button(Actor child, ButtonStyle style) {
 		initialize();
 		add(child);
 		setStyle(style);
 		setSize(getPrefWidth(), getPrefHeight());
 	}
-
+	
 	public Button(ButtonStyle style) {
 		initialize();
 		setStyle(style);
 		setSize(getPrefWidth(), getPrefHeight());
 	}
-
+	
 	/**
 	 * Creates a button without setting the style or size. At least a style must be
 	 * set before using this button.
@@ -93,7 +93,7 @@ public class Button extends Table implements Disableable {
 	public Button() {
 		initialize();
 	}
-
+	
 	private void initialize() {
 		setTouchable(Touchable.enabled);
 		addListener(clickListener = new ClickListener() {
@@ -105,34 +105,34 @@ public class Button extends Table implements Disableable {
 			}
 		});
 	}
-
+	
 	public Button(Drawable up) {
 		this(new ButtonStyle(up, null, null));
 	}
-
+	
 	public Button(Drawable up, Drawable down) {
 		this(new ButtonStyle(up, down, null));
 	}
-
+	
 	public Button(Drawable up, Drawable down, Drawable checked) {
 		this(new ButtonStyle(up, down, checked));
 	}
-
+	
 	public Button(Actor child, Skin skin) {
 		this(child, skin.get(ButtonStyle.class));
 	}
-
+	
 	public void setChecked(boolean isChecked) {
 		setChecked(isChecked, programmaticChangeEvents);
 	}
-
+	
 	void setChecked(boolean isChecked, boolean fireEvent) {
 		if (this.isChecked == isChecked)
 			return;
 		if (buttonGroup != null && !buttonGroup.canCheck(this, isChecked))
 			return;
 		this.isChecked = isChecked;
-
+		
 		if (fireEvent) {
 			ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
 			if (fire(changeEvent))
@@ -140,7 +140,7 @@ public class Button extends Table implements Disableable {
 			Pools.free(changeEvent);
 		}
 	}
-
+	
 	/**
 	 * Toggles the checked state. This method changes the checked state, which fires
 	 * a {@link ChangeEvent} (if programmatic change events are enabled), so can be
@@ -149,28 +149,28 @@ public class Button extends Table implements Disableable {
 	public void toggle() {
 		setChecked(!isChecked);
 	}
-
+	
 	public boolean isChecked() {
 		return isChecked;
 	}
-
+	
 	public boolean isPressed() {
 		return clickListener.isVisualPressed();
 	}
-
+	
 	public boolean isOver() {
 		return clickListener.isOver();
 	}
-
+	
 	public ClickListener getClickListener() {
 		return clickListener;
 	}
-
+	
 	@Override
 	public boolean isDisabled() {
 		return isDisabled;
 	}
-
+	
 	/**
 	 * When true, the button will not toggle {@link #isChecked()} when clicked and
 	 * will not fire a {@link ChangeEvent}.
@@ -179,7 +179,7 @@ public class Button extends Table implements Disableable {
 	public void setDisabled(boolean isDisabled) {
 		this.isDisabled = isDisabled;
 	}
-
+	
 	/**
 	 * If false, {@link #setChecked(boolean)} and {@link #toggle()} will not fire
 	 * {@link ChangeEvent}, event will be fired only when user clicked the button
@@ -187,12 +187,12 @@ public class Button extends Table implements Disableable {
 	public void setProgrammaticChangeEvents(boolean programmaticChangeEvents) {
 		this.programmaticChangeEvents = programmaticChangeEvents;
 	}
-
+	
 	public void setStyle(ButtonStyle style) {
 		if (style == null)
 			throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
-
+		
 		Drawable background = null;
 		if (isPressed() && !isDisabled()) {
 			background = style.down == null ? style.up : style.down;
@@ -208,7 +208,7 @@ public class Button extends Table implements Disableable {
 		}
 		setBackground(background);
 	}
-
+	
 	/**
 	 * Returns the button's style. Modifying the returned style may not have an
 	 * effect until {@link #setStyle(ButtonStyle)} is called.
@@ -216,21 +216,21 @@ public class Button extends Table implements Disableable {
 	public ButtonStyle getStyle() {
 		return style;
 	}
-
+	
 	/** @return May be null. */
 	public ButtonGroup getButtonGroup() {
 		return buttonGroup;
 	}
-
+	
 	@Override
 	public void draw(Batch batch, float a) {
 		validate();
-
+		
 		boolean isDisabled = isDisabled();
 		boolean isPressed = isPressed();
 		boolean isChecked = isChecked();
 		boolean isOver = isOver();
-
+		
 		Drawable background = null;
 		if (isDisabled && style.disabled != null)
 			background = style.disabled;
@@ -243,7 +243,7 @@ public class Button extends Table implements Disableable {
 		else if (style.up != null) //
 			background = style.up;
 		setBackground(background);
-
+		
 		float offsetX = 0, offsetY = 0;
 		if (isPressed && !isDisabled) {
 			offsetX = style.pressedOffsetX;
@@ -255,19 +255,19 @@ public class Button extends Table implements Disableable {
 			offsetX = style.unpressedOffsetX;
 			offsetY = style.unpressedOffsetY;
 		}
-
+		
 		Array<Actor> children = getChildren();
 		for (int i = 0; i < children.size; i++)
 			children.get(i).moveBy(offsetX, offsetY);
 		super.draw(batch, a);
 		for (int i = 0; i < children.size; i++)
 			children.get(i).moveBy(-offsetX, -offsetY);
-
+		
 		Stage stage = getStage();
 		if (stage != null && stage.getActionsRequestRendering() && isPressed != clickListener.isPressed())
 			Gdx.graphics.requestRendering();
 	}
-
+	
 	@Override
 	public float getPrefWidth() {
 		float width = super.getPrefWidth();
@@ -279,7 +279,7 @@ public class Button extends Table implements Disableable {
 			width = Math.max(width, style.checked.getMinWidth());
 		return width;
 	}
-
+	
 	@Override
 	public float getPrefHeight() {
 		float height = super.getPrefHeight();
@@ -291,17 +291,17 @@ public class Button extends Table implements Disableable {
 			height = Math.max(height, style.checked.getMinHeight());
 		return height;
 	}
-
+	
 	@Override
 	public float getMinWidth() {
 		return getPrefWidth();
 	}
-
+	
 	@Override
 	public float getMinHeight() {
 		return getPrefHeight();
 	}
-
+	
 	/**
 	 * The style for a button, see {@link Button}.
 	 * 
@@ -312,16 +312,16 @@ public class Button extends Table implements Disableable {
 		public Drawable up, down, over, checked, checkedOver, disabled;
 		/** Optional. */
 		public float pressedOffsetX, pressedOffsetY, unpressedOffsetX, unpressedOffsetY, checkedOffsetX, checkedOffsetY;
-
+		
 		public ButtonStyle() {
 		}
-
+		
 		public ButtonStyle(Drawable up, Drawable down, Drawable checked) {
 			this.up = up;
 			this.down = down;
 			this.checked = checked;
 		}
-
+		
 		public ButtonStyle(ButtonStyle style) {
 			this.up = style.up;
 			this.down = style.down;

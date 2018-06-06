@@ -100,14 +100,14 @@ public class MeshPart {
 	 * method.
 	 **/
 	private final static BoundingBox bounds = new BoundingBox();
-
+	
 	/**
 	 * Construct a new MeshPart, with null values. The MeshPart is unusable until
 	 * you set all members.
 	 **/
 	public MeshPart() {
 	}
-
+	
 	/**
 	 * Construct a new MeshPart and set all its values.
 	 * 
@@ -122,7 +122,7 @@ public class MeshPart {
 	public MeshPart(final String id, final Mesh mesh, final int offset, final int size, final int type) {
 		set(id, mesh, offset, size, type);
 	}
-
+	
 	/**
 	 * Construct a new MeshPart which is an exact copy of the provided MeshPart.
 	 * 
@@ -131,7 +131,7 @@ public class MeshPart {
 	public MeshPart(final MeshPart copyFrom) {
 		set(copyFrom);
 	}
-
+	
 	/**
 	 * Set this MeshPart to be a copy of the other MeshPart
 	 * 
@@ -149,7 +149,7 @@ public class MeshPart {
 		this.radius = other.radius;
 		return this;
 	}
-
+	
 	/**
 	 * Set this MeshPart to given values, does not {@link #update()} the bounding
 	 * box values.
@@ -167,7 +167,7 @@ public class MeshPart {
 		this.radius = -1f;
 		return this;
 	}
-
+	
 	/**
 	 * Calculates and updates the {@link #center}, {@link #halfExtents} and
 	 * {@link #radius} values. This is considered a costly operation and should not
@@ -183,7 +183,7 @@ public class MeshPart {
 		bounds.getDimensions(halfExtents).scl(0.5f);
 		radius = halfExtents.len();
 	}
-
+	
 	/**
 	 * Compares this MeshPart to the specified MeshPart and returns true if they
 	 * both reference the same {@link Mesh} and the {@link #offset}, {@link #size}
@@ -198,7 +198,7 @@ public class MeshPart {
 		return other == this || (other != null && other.mesh == mesh && other.primitiveType == primitiveType
 				&& other.offset == offset && other.size == size);
 	}
-
+	
 	@Override
 	public boolean equals(final Object arg0) {
 		if (arg0 == null)
@@ -209,7 +209,7 @@ public class MeshPart {
 			return false;
 		return equals((MeshPart) arg0);
 	}
-
+	
 	/**
 	 * Renders the mesh part using the specified shader, must be called in between
 	 * {@link ShaderProgram#begin()} and {@link ShaderProgram#end()}.
@@ -220,7 +220,7 @@ public class MeshPart {
 	public void render(ShaderProgram shader, boolean autoBind) {
 		mesh.render(shader, primitiveType, offset, size, autoBind);
 	}
-
+	
 	/**
 	 * Renders the mesh part using the specified shader, must be called in between
 	 * {@link ShaderProgram#begin()} and {@link ShaderProgram#end()}.

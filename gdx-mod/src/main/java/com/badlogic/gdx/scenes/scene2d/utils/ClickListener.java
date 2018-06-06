@@ -39,7 +39,7 @@ public class ClickListener extends InputListener {
 	 * resulting in a click is released.
 	 */
 	static public float visualPressedDuration = 0.1f;
-
+	
 	private float tapSquareSize = 14, touchDownX = -1, touchDownY = -1;
 	private int pressedPointer = -1;
 	private int pressedButton = -1;
@@ -49,7 +49,7 @@ public class ClickListener extends InputListener {
 	private long tapCountInterval = (long) (0.4f * 1000000000l);
 	private int tapCount;
 	private long lastTapTime;
-
+	
 	/**
 	 * Create a listener where {@link #clicked(InputEvent, float, float)} is only
 	 * called for left clicks.
@@ -58,12 +58,12 @@ public class ClickListener extends InputListener {
 	 */
 	public ClickListener() {
 	}
-
+	
 	/** @see #setButton(int) */
 	public ClickListener(int button) {
 		this.button = button;
 	}
-
+	
 	@Override
 	public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 		if (pressed)
@@ -78,7 +78,7 @@ public class ClickListener extends InputListener {
 		visualPressedTime = TimeUtils.millis() + (long) (visualPressedDuration * 1000);
 		return true;
 	}
-
+	
 	@Override
 	public void touchDragged(InputEvent event, float x, float y, int pointer) {
 		if (pointer != pressedPointer || cancelled)
@@ -89,7 +89,7 @@ public class ClickListener extends InputListener {
 			invalidateTapSquare();
 		}
 	}
-
+	
 	@Override
 	public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 		if (pointer == pressedPointer) {
@@ -113,19 +113,19 @@ public class ClickListener extends InputListener {
 			cancelled = false;
 		}
 	}
-
+	
 	@Override
 	public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
 		if (pointer == -1 && !cancelled)
 			over = true;
 	}
-
+	
 	@Override
 	public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
 		if (pointer == -1 && !cancelled)
 			over = false;
 	}
-
+	
 	/**
 	 * If a touch down is being monitored, the drag and touch up events are ignored
 	 * until the next touch up.
@@ -136,10 +136,10 @@ public class ClickListener extends InputListener {
 		cancelled = true;
 		pressed = false;
 	}
-
+	
 	public void clicked(InputEvent event, float x, float y) {
 	}
-
+	
 	/**
 	 * Returns true if the specified position is over the specified actor or within
 	 * the tap square.
@@ -150,29 +150,29 @@ public class ClickListener extends InputListener {
 			return inTapSquare(x, y);
 		return true;
 	}
-
+	
 	public boolean inTapSquare(float x, float y) {
 		if (touchDownX == -1 && touchDownY == -1)
 			return false;
 		return Math.abs(x - touchDownX) < tapSquareSize && Math.abs(y - touchDownY) < tapSquareSize;
 	}
-
+	
 	/** Returns true if a touch is within the tap square. */
 	public boolean inTapSquare() {
 		return touchDownX != -1;
 	}
-
+	
 	/** The tap square will not longer be used for the current touch. */
 	public void invalidateTapSquare() {
 		touchDownX = -1;
 		touchDownY = -1;
 	}
-
+	
 	/** Returns true if a touch is over the actor or within the tap square. */
 	public boolean isPressed() {
 		return pressed;
 	}
-
+	
 	/**
 	 * Returns true if a touch is over the actor or within the tap square or has
 	 * been very recently. This allows the UI to show a press and release that was
@@ -188,7 +188,7 @@ public class ClickListener extends InputListener {
 		visualPressedTime = 0;
 		return false;
 	}
-
+	
 	/**
 	 * Returns true if the mouse or touch is over the actor or pressed and within
 	 * the tap square.
@@ -196,15 +196,15 @@ public class ClickListener extends InputListener {
 	public boolean isOver() {
 		return over || pressed;
 	}
-
+	
 	public void setTapSquareSize(float halfTapSquareSize) {
 		tapSquareSize = halfTapSquareSize;
 	}
-
+	
 	public float getTapSquareSize() {
 		return tapSquareSize;
 	}
-
+	
 	/**
 	 * @param tapCountInterval time in seconds that must pass for two touch down/up
 	 *                         sequences to be detected as consecutive taps.
@@ -212,7 +212,7 @@ public class ClickListener extends InputListener {
 	public void setTapCountInterval(float tapCountInterval) {
 		this.tapCountInterval = (long) (tapCountInterval * 1000000000l);
 	}
-
+	
 	/**
 	 * Returns the number of taps within the tap count interval for the most recent
 	 * click event.
@@ -220,19 +220,19 @@ public class ClickListener extends InputListener {
 	public int getTapCount() {
 		return tapCount;
 	}
-
+	
 	public void setTapCount(int tapCount) {
 		this.tapCount = tapCount;
 	}
-
+	
 	public float getTouchDownX() {
 		return touchDownX;
 	}
-
+	
 	public float getTouchDownY() {
 		return touchDownY;
 	}
-
+	
 	/**
 	 * The button that initially pressed this button or -1 if the button is not
 	 * pressed.
@@ -240,7 +240,7 @@ public class ClickListener extends InputListener {
 	public int getPressedButton() {
 		return pressedButton;
 	}
-
+	
 	/**
 	 * The pointer that initially pressed this button or -1 if the button is not
 	 * pressed.
@@ -248,12 +248,12 @@ public class ClickListener extends InputListener {
 	public int getPressedPointer() {
 		return pressedPointer;
 	}
-
+	
 	/** @see #setButton(int) */
 	public int getButton() {
 		return button;
 	}
-
+	
 	/**
 	 * Sets the button to listen for, all other buttons are ignored. Default is
 	 * {@link Buttons#LEFT}. Use -1 for any button.

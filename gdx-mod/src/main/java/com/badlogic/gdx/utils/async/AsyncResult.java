@@ -29,16 +29,16 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  */
 public class AsyncResult<T> {
 	private final Future<T> future;
-
+	
 	AsyncResult(Future<T> future) {
 		this.future = future;
 	}
-
+	
 	/** @return whether the {@link AsyncTask} is done */
 	public boolean isDone() {
 		return future.isDone();
 	}
-
+	
 	/**
 	 * @return waits if necessary for the computation to complete and then returns
 	 *         the result

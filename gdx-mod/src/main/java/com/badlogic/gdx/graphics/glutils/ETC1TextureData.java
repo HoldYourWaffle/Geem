@@ -32,31 +32,31 @@ public class ETC1TextureData implements TextureData {
 	int width = 0;
 	int height = 0;
 	boolean isPrepared = false;
-
+	
 	public ETC1TextureData(FileHandle file) {
 		this(file, false);
 	}
-
+	
 	public ETC1TextureData(FileHandle file, boolean useMipMaps) {
 		this.file = file;
 		this.useMipMaps = useMipMaps;
 	}
-
+	
 	public ETC1TextureData(ETC1Data encodedImage, boolean useMipMaps) {
 		this.data = encodedImage;
 		this.useMipMaps = useMipMaps;
 	}
-
+	
 	@Override
 	public TextureDataType getType() {
 		return TextureDataType.Custom;
 	}
-
+	
 	@Override
 	public boolean isPrepared() {
 		return isPrepared;
 	}
-
+	
 	@Override
 	public void prepare() {
 		if (isPrepared)
@@ -70,12 +70,12 @@ public class ETC1TextureData implements TextureData {
 		height = data.height;
 		isPrepared = true;
 	}
-
+	
 	@Override
 	public void consumeCustomData(int target) {
 		if (!isPrepared)
 			throw new GdxRuntimeException("Call prepare() before calling consumeCompressedData()");
-
+		
 		if (!Gdx.graphics.supportsExtension("GL_OES_compressed_ETC1_RGB8_texture")) {
 			Pixmap pixmap = ETC1.decodeImage(data, Format.RGB565);
 			Gdx.gl.glTexImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
@@ -94,37 +94,37 @@ public class ETC1TextureData implements TextureData {
 		data = null;
 		isPrepared = false;
 	}
-
+	
 	@Override
 	public Pixmap consumePixmap() {
 		throw new GdxRuntimeException("This TextureData implementation does not return a Pixmap");
 	}
-
+	
 	@Override
 	public boolean disposePixmap() {
 		throw new GdxRuntimeException("This TextureData implementation does not return a Pixmap");
 	}
-
+	
 	@Override
 	public int getWidth() {
 		return width;
 	}
-
+	
 	@Override
 	public int getHeight() {
 		return height;
 	}
-
+	
 	@Override
 	public Format getFormat() {
 		return Format.RGB565;
 	}
-
+	
 	@Override
 	public boolean useMipMaps() {
 		return useMipMaps;
 	}
-
+	
 	@Override
 	public boolean isManaged() {
 		return true;

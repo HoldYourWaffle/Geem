@@ -61,7 +61,7 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 			CPU_COLOR_OFFSET = (short) (CPU_ATTRIBUTES.findByUsage(Usage.ColorUnpacked).offset / 4),
 			CPU_REGION_OFFSET = (short) (CPU_ATTRIBUTES.findByUsage(Usage.TextureCoordinates).offset / 4),
 			CPU_SIZE_AND_ROTATION_OFFSET = (short) (CPU_ATTRIBUTES.findByUsage(sizeAndRotationUsage).offset / 4);
-
+	
 	private static void enablePointSprites() {
 		Gdx.gl.glEnable(GL20.GL_VERTEX_PROGRAM_POINT_SIZE);
 		if (Gdx.app.getType() == ApplicationType.Desktop) {
@@ -69,30 +69,30 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 		}
 		pointSpritesEnabled = true;
 	}
-
+	
 	private float[] vertices;
 	Renderable renderable;
-
+	
 	public PointSpriteParticleBatch() {
 		this(1000);
 	}
-
+	
 	public PointSpriteParticleBatch(int capacity) {
 		this(capacity, new ParticleShader.Config(ParticleType.Point));
 	}
-
+	
 	public PointSpriteParticleBatch(int capacity, ParticleShader.Config shaderConfig) {
 		super(PointSpriteControllerRenderData.class);
-
+		
 		if (!pointSpritesEnabled)
 			enablePointSprites();
-
+		
 		allocRenderable();
 		ensureCapacity(capacity);
 		renderable.shader = new ParticleShader(renderable, shaderConfig);
 		renderable.shader.init();
 	}
-
+	
 	@Override
 	protected void allocParticlesData(int capacity) {
 		vertices = new float[capacity * CPU_VERTEX_SIZE];
@@ -100,7 +100,7 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 			renderable.meshPart.mesh.dispose();
 		renderable.meshPart.mesh = new Mesh(false, capacity, 0, CPU_ATTRIBUTES);
 	}
-
+	
 	protected void allocRenderable() {
 		renderable = new Renderable();
 		renderable.meshPart.primitiveType = GL20.GL_POINTS;
@@ -108,17 +108,17 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 		renderable.material = new Material(new BlendingAttribute(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA, 1f),
 				new DepthTestAttribute(GL20.GL_LEQUAL, false), TextureAttribute.createDiffuse((Texture) null));
 	}
-
+	
 	public void setTexture(Texture texture) {
 		TextureAttribute attribute = (TextureAttribute) renderable.material.get(TextureAttribute.Diffuse);
 		attribute.textureDescription.texture = texture;
 	}
-
+	
 	public Texture getTexture() {
 		TextureAttribute attribute = (TextureAttribute) renderable.material.get(TextureAttribute.Diffuse);
 		return attribute.textureDescription.texture;
 	}
-
+	
 	@Override
 	protected void flush(int[] offsets) {
 		int tp = 0;
@@ -128,14 +128,14 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 			FloatChannel positionChannel = data.positionChannel;
 			FloatChannel colorChannel = data.colorChannel;
 			FloatChannel rotationChannel = data.rotationChannel;
-
+			
 			for (int p = 0; p < data.controller.particles.size; ++p, ++tp) {
 				int offset = offsets[tp] * CPU_VERTEX_SIZE;
 				int regionOffset = p * regionChannel.strideSize;
 				int positionOffset = p * positionChannel.strideSize;
 				int colorOffset = p * colorChannel.strideSize;
 				int rotationOffset = p * rotationChannel.strideSize;
-
+				
 				vertices[offset + CPU_POSITION_OFFSET] = positionChannel.data[positionOffset
 						+ ParticleChannels.XOffset];
 				vertices[offset + CPU_POSITION_OFFSET + 1] = positionChannel.data[positionOffset
@@ -157,24 +157,24 @@ public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteC
 				vertices[offset + CPU_REGION_OFFSET + 3] = regionChannel.data[regionOffset + ParticleChannels.V2Offset];
 			}
 		}
-
+		
 		renderable.meshPart.size = bufferedParticlesCount;
 		renderable.meshPart.mesh.setVertices(vertices, 0, bufferedParticlesCount * CPU_VERTEX_SIZE);
 		renderable.meshPart.update();
 	}
-
+	
 	@Override
 	public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
 		if (bufferedParticlesCount > 0)
 			renderables.add(pool.obtain().set(renderable));
 	}
-
+	
 	@Override
 	public void save(AssetManager manager, ResourceData resources) {
 		SaveData data = resources.createSaveData("pointSpriteBatch");
 		data.saveAsset(manager.getAssetFileName(getTexture()), Texture.class);
 	}
-
+	
 	@Override
 	public void load(AssetManager manager, ResourceData resources) {
 		SaveData data = resources.getSaveData("pointSpriteBatch");

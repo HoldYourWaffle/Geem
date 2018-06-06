@@ -31,15 +31,15 @@ import com.badlogic.gdx.math.Vector3;
  */
 public class BoundingBox implements Serializable {
 	private static final long serialVersionUID = -1286036817192127343L;
-
+	
 	private final static Vector3 tmpVector = new Vector3();
-
+	
 	public final Vector3 min = new Vector3();
 	public final Vector3 max = new Vector3();
-
+	
 	private final Vector3 cnt = new Vector3();
 	private final Vector3 dim = new Vector3();
-
+	
 	/**
 	 * @param out The {@link Vector3} to receive the center of the bounding box.
 	 * @return The vector specified with the out argument.
@@ -47,51 +47,51 @@ public class BoundingBox implements Serializable {
 	public Vector3 getCenter(Vector3 out) {
 		return out.set(cnt);
 	}
-
+	
 	public float getCenterX() {
 		return cnt.x;
 	}
-
+	
 	public float getCenterY() {
 		return cnt.y;
 	}
-
+	
 	public float getCenterZ() {
 		return cnt.z;
 	}
-
+	
 	public Vector3 getCorner000(final Vector3 out) {
 		return out.set(min.x, min.y, min.z);
 	}
-
+	
 	public Vector3 getCorner001(final Vector3 out) {
 		return out.set(min.x, min.y, max.z);
 	}
-
+	
 	public Vector3 getCorner010(final Vector3 out) {
 		return out.set(min.x, max.y, min.z);
 	}
-
+	
 	public Vector3 getCorner011(final Vector3 out) {
 		return out.set(min.x, max.y, max.z);
 	}
-
+	
 	public Vector3 getCorner100(final Vector3 out) {
 		return out.set(max.x, min.y, min.z);
 	}
-
+	
 	public Vector3 getCorner101(final Vector3 out) {
 		return out.set(max.x, min.y, max.z);
 	}
-
+	
 	public Vector3 getCorner110(final Vector3 out) {
 		return out.set(max.x, max.y, min.z);
 	}
-
+	
 	public Vector3 getCorner111(final Vector3 out) {
 		return out.set(max.x, max.y, max.z);
 	}
-
+	
 	/**
 	 * @param out The {@link Vector3} to receive the dimensions of this bounding box
 	 *            on all three axis.
@@ -100,19 +100,19 @@ public class BoundingBox implements Serializable {
 	public Vector3 getDimensions(final Vector3 out) {
 		return out.set(dim);
 	}
-
+	
 	public float getWidth() {
 		return dim.x;
 	}
-
+	
 	public float getHeight() {
 		return dim.y;
 	}
-
+	
 	public float getDepth() {
 		return dim.z;
 	}
-
+	
 	/**
 	 * @param out The {@link Vector3} to receive the minimum values.
 	 * @return The vector specified with the out argument
@@ -120,7 +120,7 @@ public class BoundingBox implements Serializable {
 	public Vector3 getMin(final Vector3 out) {
 		return out.set(min);
 	}
-
+	
 	/**
 	 * @param out The {@link Vector3} to receive the maximum values.
 	 * @return The vector specified with the out argument
@@ -128,7 +128,7 @@ public class BoundingBox implements Serializable {
 	public Vector3 getMax(final Vector3 out) {
 		return out.set(max);
 	}
-
+	
 	/**
 	 * Constructs a new bounding box with the minimum and maximum vector set to
 	 * zeros.
@@ -136,7 +136,7 @@ public class BoundingBox implements Serializable {
 	public BoundingBox() {
 		clr();
 	}
-
+	
 	/**
 	 * Constructs a new bounding box from the given bounding box.
 	 *
@@ -145,7 +145,7 @@ public class BoundingBox implements Serializable {
 	public BoundingBox(BoundingBox bounds) {
 		this.set(bounds);
 	}
-
+	
 	/**
 	 * Constructs the new bounding box using the given minimum and maximum vector.
 	 *
@@ -155,7 +155,7 @@ public class BoundingBox implements Serializable {
 	public BoundingBox(Vector3 minimum, Vector3 maximum) {
 		this.set(minimum, maximum);
 	}
-
+	
 	/**
 	 * Sets the given bounding box.
 	 *
@@ -165,7 +165,7 @@ public class BoundingBox implements Serializable {
 	public BoundingBox set(BoundingBox bounds) {
 		return this.set(bounds.min, bounds.max);
 	}
-
+	
 	/**
 	 * Sets the given minimum and maximum vector.
 	 *
@@ -182,7 +182,7 @@ public class BoundingBox implements Serializable {
 		dim.set(max).sub(min);
 		return this;
 	}
-
+	
 	/**
 	 * Sets the bounding box minimum and maximum vector from the given points.
 	 *
@@ -195,7 +195,7 @@ public class BoundingBox implements Serializable {
 			this.ext(l_point);
 		return this;
 	}
-
+	
 	/**
 	 * Sets the bounding box minimum and maximum vector from the given points.
 	 *
@@ -208,7 +208,7 @@ public class BoundingBox implements Serializable {
 			this.ext(l_point);
 		return this;
 	}
-
+	
 	/**
 	 * Sets the minimum and maximum vector to positive and negative infinity.
 	 *
@@ -221,7 +221,7 @@ public class BoundingBox implements Serializable {
 		dim.set(0, 0, 0);
 		return this;
 	}
-
+	
 	/**
 	 * Extends the bounding box to incorporate the given {@link Vector3}.
 	 * 
@@ -232,7 +232,7 @@ public class BoundingBox implements Serializable {
 		return this.set(min.set(min(min.x, point.x), min(min.y, point.y), min(min.z, point.z)),
 				max.set(Math.max(max.x, point.x), Math.max(max.y, point.y), Math.max(max.z, point.z)));
 	}
-
+	
 	/**
 	 * Sets the minimum and maximum vector to zeros.
 	 * 
@@ -241,7 +241,7 @@ public class BoundingBox implements Serializable {
 	public BoundingBox clr() {
 		return this.set(min.set(0, 0, 0), max.set(0, 0, 0));
 	}
-
+	
 	/**
 	 * Returns whether this bounding box is valid. This means that {@link #max} is
 	 * greater than or equal to {@link #min}.
@@ -251,7 +251,7 @@ public class BoundingBox implements Serializable {
 	public boolean isValid() {
 		return min.x <= max.x && min.y <= max.y && min.z <= max.z;
 	}
-
+	
 	/**
 	 * Extends this bounding box by the given bounding box.
 	 *
@@ -262,7 +262,7 @@ public class BoundingBox implements Serializable {
 		return this.set(min.set(min(min.x, a_bounds.min.x), min(min.y, a_bounds.min.y), min(min.z, a_bounds.min.z)),
 				max.set(max(max.x, a_bounds.max.x), max(max.y, a_bounds.max.y), max(max.z, a_bounds.max.z)));
 	}
-
+	
 	/**
 	 * Extends this bounding box by the given sphere.
 	 *
@@ -275,7 +275,7 @@ public class BoundingBox implements Serializable {
 				min.set(min(min.x, center.x - radius), min(min.y, center.y - radius), min(min.z, center.z - radius)),
 				max.set(max(max.x, center.x + radius), max(max.y, center.y + radius), max(max.z, center.z + radius)));
 	}
-
+	
 	/**
 	 * Extends this bounding box by the given transformed bounding box.
 	 *
@@ -295,7 +295,7 @@ public class BoundingBox implements Serializable {
 		ext(tmpVector.set(bounds.max.x, bounds.max.y, bounds.max.z).mul(transform));
 		return this;
 	}
-
+	
 	/**
 	 * Multiplies the bounding box by the given matrix. This is achieved by
 	 * multiplying the 8 corner points and then calculating the minimum and maximum
@@ -317,7 +317,7 @@ public class BoundingBox implements Serializable {
 		ext(tmpVector.set(x1, y1, z1).mul(transform));
 		return this;
 	}
-
+	
 	/**
 	 * Returns whether the given bounding box is contained in this bounding box.
 	 * 
@@ -328,7 +328,7 @@ public class BoundingBox implements Serializable {
 		return !isValid() || (min.x <= b.min.x && min.y <= b.min.y && min.z <= b.min.z && max.x >= b.max.x
 				&& max.y >= b.max.y && max.z >= b.max.z);
 	}
-
+	
 	/**
 	 * Returns whether the given bounding box is intersecting this bounding box (at
 	 * least one point in).
@@ -339,22 +339,22 @@ public class BoundingBox implements Serializable {
 	public boolean intersects(BoundingBox b) {
 		if (!isValid())
 			return false;
-
+		
 		// test using SAT (separating axis theorem)
-
+		
 		float lx = Math.abs(this.cnt.x - b.cnt.x);
 		float sumx = (this.dim.x / 2.0f) + (b.dim.x / 2.0f);
-
+		
 		float ly = Math.abs(this.cnt.y - b.cnt.y);
 		float sumy = (this.dim.y / 2.0f) + (b.dim.y / 2.0f);
-
+		
 		float lz = Math.abs(this.cnt.z - b.cnt.z);
 		float sumz = (this.dim.z / 2.0f) + (b.dim.z / 2.0f);
-
+		
 		return (lx <= sumx && ly <= sumy && lz <= sumz);
-
+		
 	}
-
+	
 	/**
 	 * Returns whether the given vector is contained in this bounding box.
 	 * 
@@ -364,12 +364,12 @@ public class BoundingBox implements Serializable {
 	public boolean contains(Vector3 v) {
 		return min.x <= v.x && max.x >= v.x && min.y <= v.y && max.y >= v.y && min.z <= v.z && max.z >= v.z;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "[" + min + "|" + max + "]";
 	}
-
+	
 	/**
 	 * Extends the bounding box by the given vector.
 	 *
@@ -382,11 +382,11 @@ public class BoundingBox implements Serializable {
 		return this.set(min.set(min(min.x, x), min(min.y, y), min(min.z, z)),
 				max.set(max(max.x, x), max(max.y, y), max(max.z, z)));
 	}
-
+	
 	static final float min(final float a, final float b) {
 		return a > b ? b : a;
 	}
-
+	
 	static final float max(final float a, final float b) {
 		return a > b ? a : b;
 	}

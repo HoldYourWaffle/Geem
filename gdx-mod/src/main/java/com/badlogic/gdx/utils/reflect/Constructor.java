@@ -24,13 +24,13 @@ import java.lang.reflect.InvocationTargetException;
  * @author nexsoftware
  */
 public final class Constructor {
-
+	
 	private final java.lang.reflect.Constructor constructor;
-
+	
 	Constructor(java.lang.reflect.Constructor constructor) {
 		this.constructor = constructor;
 	}
-
+	
 	/**
 	 * Returns an array of Class objects that represent the formal parameter types,
 	 * in declaration order, of the constructor.
@@ -38,7 +38,7 @@ public final class Constructor {
 	public Class[] getParameterTypes() {
 		return constructor.getParameterTypes();
 	}
-
+	
 	/**
 	 * Returns the Class object representing the class or interface that declares
 	 * the constructor.
@@ -46,15 +46,15 @@ public final class Constructor {
 	public Class getDeclaringClass() {
 		return constructor.getDeclaringClass();
 	}
-
+	
 	public boolean isAccessible() {
 		return constructor.isAccessible();
 	}
-
+	
 	public void setAccessible(boolean accessible) {
 		constructor.setAccessible(accessible);
 	}
-
+	
 	/**
 	 * Uses the constructor to create and initialize a new instance of the
 	 * constructor's declaring class, with the supplied initialization parameters.
@@ -76,5 +76,5 @@ public final class Constructor {
 					"Exception occurred in constructor for class: " + getDeclaringClass().getName(), e);
 		}
 	}
-
+	
 }

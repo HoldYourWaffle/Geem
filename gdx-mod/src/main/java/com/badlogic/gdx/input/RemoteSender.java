@@ -33,20 +33,20 @@ import com.badlogic.gdx.InputProcessor;
 public class RemoteSender implements InputProcessor {
 	private DataOutputStream out;
 	private boolean connected = false;
-
+	
 	public static final int KEY_DOWN = 0;
 	public static final int KEY_UP = 1;
 	public static final int KEY_TYPED = 2;
-
+	
 	public static final int TOUCH_DOWN = 3;
 	public static final int TOUCH_UP = 4;
 	public static final int TOUCH_DRAGGED = 5;
-
+	
 	public static final int ACCEL = 6;
 	public static final int COMPASS = 7;
 	public static final int SIZE = 8;
 	public static final int GYRO = 9;
-
+	
 	public RemoteSender(String ip, int port) {
 		try {
 			Socket socket = new Socket(ip, port);
@@ -60,7 +60,7 @@ public class RemoteSender implements InputProcessor {
 			Gdx.app.log("RemoteSender", "couldn't connect to " + ip + ":" + port);
 		}
 	}
-
+	
 	public void sendUpdate() {
 		synchronized (this) {
 			if (!connected)
@@ -87,14 +87,14 @@ public class RemoteSender implements InputProcessor {
 			connected = false;
 		}
 	}
-
+	
 	@Override
 	public boolean keyDown(int keycode) {
 		synchronized (this) {
 			if (!connected)
 				return false;
 		}
-
+		
 		try {
 			out.writeInt(KEY_DOWN);
 			out.writeInt(keycode);
@@ -105,14 +105,14 @@ public class RemoteSender implements InputProcessor {
 		}
 		return false;
 	}
-
+	
 	@Override
 	public boolean keyUp(int keycode) {
 		synchronized (this) {
 			if (!connected)
 				return false;
 		}
-
+		
 		try {
 			out.writeInt(KEY_UP);
 			out.writeInt(keycode);
@@ -123,14 +123,14 @@ public class RemoteSender implements InputProcessor {
 		}
 		return false;
 	}
-
+	
 	@Override
 	public boolean keyTyped(char character) {
 		synchronized (this) {
 			if (!connected)
 				return false;
 		}
-
+		
 		try {
 			out.writeInt(KEY_TYPED);
 			out.writeChar(character);
@@ -141,14 +141,14 @@ public class RemoteSender implements InputProcessor {
 		}
 		return false;
 	}
-
+	
 	@Override
 	public boolean touchDown(int x, int y, int pointer, int button) {
 		synchronized (this) {
 			if (!connected)
 				return false;
 		}
-
+		
 		try {
 			out.writeInt(TOUCH_DOWN);
 			out.writeInt(x);
@@ -161,14 +161,14 @@ public class RemoteSender implements InputProcessor {
 		}
 		return false;
 	}
-
+	
 	@Override
 	public boolean touchUp(int x, int y, int pointer, int button) {
 		synchronized (this) {
 			if (!connected)
 				return false;
 		}
-
+		
 		try {
 			out.writeInt(TOUCH_UP);
 			out.writeInt(x);
@@ -181,14 +181,14 @@ public class RemoteSender implements InputProcessor {
 		}
 		return false;
 	}
-
+	
 	@Override
 	public boolean touchDragged(int x, int y, int pointer) {
 		synchronized (this) {
 			if (!connected)
 				return false;
 		}
-
+		
 		try {
 			out.writeInt(TOUCH_DRAGGED);
 			out.writeInt(x);
@@ -201,17 +201,17 @@ public class RemoteSender implements InputProcessor {
 		}
 		return false;
 	}
-
+	
 	@Override
 	public boolean mouseMoved(int x, int y) {
 		return false;
 	}
-
+	
 	@Override
 	public boolean scrolled(int amount) {
 		return false;
 	}
-
+	
 	public boolean isConnected() {
 		synchronized (this) {
 			return connected;

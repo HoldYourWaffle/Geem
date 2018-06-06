@@ -24,7 +24,7 @@ import java.lang.reflect.Modifier;
  * @author nexsoftware
  */
 public final class ClassReflection {
-
+	
 	/**
 	 * Returns the Class object associated with the class or interface with the
 	 * supplied string name.
@@ -36,7 +36,7 @@ public final class ClassReflection {
 			throw new ReflectionException("Class not found: " + name, e);
 		}
 	}
-
+	
 	/**
 	 * Returns the simple name of the underlying class as supplied in the source
 	 * code.
@@ -44,7 +44,7 @@ public final class ClassReflection {
 	static public String getSimpleName(Class c) {
 		return c.getSimpleName();
 	}
-
+	
 	/**
 	 * Determines if the supplied Object is assignment-compatible with the object
 	 * represented by supplied Class.
@@ -52,7 +52,7 @@ public final class ClassReflection {
 	static public boolean isInstance(Class c, Object obj) {
 		return c.isInstance(obj);
 	}
-
+	
 	/**
 	 * Determines if the class or interface represented by first Class parameter is
 	 * either the same as, or is a superclass or superinterface of, the class or
@@ -61,7 +61,7 @@ public final class ClassReflection {
 	static public boolean isAssignableFrom(Class c1, Class c2) {
 		return c1.isAssignableFrom(c2);
 	}
-
+	
 	/**
 	 * Returns true if the class or interface represented by the supplied Class is a
 	 * member class.
@@ -69,7 +69,7 @@ public final class ClassReflection {
 	static public boolean isMemberClass(Class c) {
 		return c.isMemberClass();
 	}
-
+	
 	/**
 	 * Returns true if the class or interface represented by the supplied Class is a
 	 * static class.
@@ -77,37 +77,37 @@ public final class ClassReflection {
 	static public boolean isStaticClass(Class c) {
 		return Modifier.isStatic(c.getModifiers());
 	}
-
+	
 	/** Determines if the supplied Class object represents an array class. */
 	static public boolean isArray(Class c) {
 		return c.isArray();
 	}
-
+	
 	/** Determines if the supplied Class object represents a primitive type. */
 	static public boolean isPrimitive(Class c) {
 		return c.isPrimitive();
 	}
-
+	
 	/** Determines if the supplied Class object represents an enum type. */
 	static public boolean isEnum(Class c) {
 		return c.isEnum();
 	}
-
+	
 	/** Determines if the supplied Class object represents an annotation type. */
 	static public boolean isAnnotation(Class c) {
 		return c.isAnnotation();
 	}
-
+	
 	/** Determines if the supplied Class object represents an interface type. */
 	static public boolean isInterface(Class c) {
 		return c.isInterface();
 	}
-
+	
 	/** Determines if the supplied Class object represents an abstract type. */
 	static public boolean isAbstract(Class c) {
 		return Modifier.isAbstract(c.getModifiers());
 	}
-
+	
 	/** Creates a new instance of the class represented by the supplied Class. */
 	static public <T> T newInstance(Class<T> c) throws ReflectionException {
 		try {
@@ -118,7 +118,7 @@ public final class ClassReflection {
 			throw new ReflectionException("Could not instantiate instance of class: " + c.getName(), e);
 		}
 	}
-
+	
 	/**
 	 * Returns the Class representing the component type of an array. If this class
 	 * does not represent an array class this method returns null.
@@ -126,7 +126,7 @@ public final class ClassReflection {
 	static public Class getComponentType(Class c) {
 		return c.getComponentType();
 	}
-
+	
 	/**
 	 * Returns an array of {@link Constructor} containing the public constructors of
 	 * the class represented by the supplied Class.
@@ -139,7 +139,7 @@ public final class ClassReflection {
 		}
 		return result;
 	}
-
+	
 	/**
 	 * Returns a {@link Constructor} that represents the public constructor for the
 	 * supplied class which takes the supplied parameter types.
@@ -154,7 +154,7 @@ public final class ClassReflection {
 			throw new ReflectionException("Constructor not found for class: " + c.getName(), e);
 		}
 	}
-
+	
 	/**
 	 * Returns a {@link Constructor} that represents the constructor for the
 	 * supplied class which takes the supplied parameter types.
@@ -168,7 +168,7 @@ public final class ClassReflection {
 			throw new ReflectionException("Constructor not found for class: " + c.getName(), e);
 		}
 	}
-
+	
 	/**
 	 * Returns the elements of this enum class or null if this Class object does not
 	 * represent an enum type.
@@ -176,7 +176,7 @@ public final class ClassReflection {
 	static public Object[] getEnumConstants(Class c) {
 		return c.getEnumConstants();
 	}
-
+	
 	/**
 	 * Returns an array of {@link Method} containing the public member methods of
 	 * the class represented by the supplied Class.
@@ -189,7 +189,7 @@ public final class ClassReflection {
 		}
 		return result;
 	}
-
+	
 	/**
 	 * Returns a {@link Method} that represents the public member method for the
 	 * supplied class which takes the supplied parameter types.
@@ -204,7 +204,7 @@ public final class ClassReflection {
 			throw new ReflectionException("Method not found: " + name + ", for class: " + c.getName(), e);
 		}
 	}
-
+	
 	/**
 	 * Returns an array of {@link Method} containing the methods declared by the
 	 * class represented by the supplied Class.
@@ -217,7 +217,7 @@ public final class ClassReflection {
 		}
 		return result;
 	}
-
+	
 	/**
 	 * Returns a {@link Method} that represents the method declared by the supplied
 	 * class which takes the supplied parameter types.
@@ -232,7 +232,7 @@ public final class ClassReflection {
 			throw new ReflectionException("Method not found: " + name + ", for class: " + c.getName(), e);
 		}
 	}
-
+	
 	/**
 	 * Returns an array of {@link Field} containing the public fields of the class
 	 * represented by the supplied Class.
@@ -245,7 +245,7 @@ public final class ClassReflection {
 		}
 		return result;
 	}
-
+	
 	/**
 	 * Returns a {@link Field} that represents the specified public member field for
 	 * the supplied class.
@@ -260,7 +260,7 @@ public final class ClassReflection {
 			throw new ReflectionException("Field not found: " + name + ", for class: " + c.getName(), e);
 		}
 	}
-
+	
 	/**
 	 * Returns an array of {@link Field} objects reflecting all the fields declared
 	 * by the supplied class.
@@ -273,7 +273,7 @@ public final class ClassReflection {
 		}
 		return result;
 	}
-
+	
 	/**
 	 * Returns a {@link Field} that represents the specified declared field for the
 	 * supplied class.
@@ -288,7 +288,7 @@ public final class ClassReflection {
 			throw new ReflectionException("Field not found: " + name + ", for class: " + c.getName(), e);
 		}
 	}
-
+	
 	/**
 	 * Returns true if the supplied class includes an annotation of the given type.
 	 */
@@ -296,7 +296,7 @@ public final class ClassReflection {
 			Class<? extends java.lang.annotation.Annotation> annotationType) {
 		return c.isAnnotationPresent(annotationType);
 	}
-
+	
 	/**
 	 * Returns an array of {@link Annotation} objects reflecting all annotations
 	 * declared by the supplied class, and inherited from its superclass. Returns an
@@ -310,7 +310,7 @@ public final class ClassReflection {
 		}
 		return result;
 	}
-
+	
 	/**
 	 * Returns an {@link Annotation} object reflecting the annotation provided, or
 	 * null if this class doesn't have such an annotation. This is a convenience
@@ -322,7 +322,7 @@ public final class ClassReflection {
 			return new Annotation(annotation);
 		return null;
 	}
-
+	
 	/**
 	 * Returns an array of {@link Annotation} objects reflecting all annotations
 	 * declared by the supplied class, or an empty array if there are none. Does not
@@ -336,7 +336,7 @@ public final class ClassReflection {
 		}
 		return result;
 	}
-
+	
 	/**
 	 * Returns an {@link Annotation} object reflecting the annotation provided, or
 	 * null if this class doesn't have such an annotation. This is a convenience
@@ -351,9 +351,9 @@ public final class ClassReflection {
 		}
 		return null;
 	}
-
+	
 	static public Class[] getInterfaces(Class c) {
 		return c.getInterfaces();
 	}
-
+	
 }

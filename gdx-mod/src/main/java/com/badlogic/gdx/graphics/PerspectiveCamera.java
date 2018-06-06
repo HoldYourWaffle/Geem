@@ -27,10 +27,10 @@ import com.badlogic.gdx.math.Vector3;
 public class PerspectiveCamera extends Camera {
 	/** the field of view of the height, in degrees **/
 	public float fieldOfView = 67;
-
+	
 	public PerspectiveCamera() {
 	}
-
+	
 	/**
 	 * Constructs a new {@link PerspectiveCamera} with the given field of view and
 	 * viewport size. The aspect ratio is derived from the viewport size.
@@ -47,14 +47,14 @@ public class PerspectiveCamera extends Camera {
 		this.viewportHeight = viewportHeight;
 		update();
 	}
-
+	
 	final Vector3 tmp = new Vector3();
-
+	
 	@Override
 	public void update() {
 		update(true);
 	}
-
+	
 	@Override
 	public void update(boolean updateFrustum) {
 		float aspect = viewportWidth / viewportHeight;
@@ -62,7 +62,7 @@ public class PerspectiveCamera extends Camera {
 		view.setToLookAt(position, tmp.set(position).add(direction), up);
 		combined.set(projection);
 		Matrix4.mul(combined.val, view.val);
-
+		
 		if (updateFrustum) {
 			invProjectionView.set(combined);
 			Matrix4.inv(invProjectionView.val);

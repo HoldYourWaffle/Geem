@@ -56,10 +56,10 @@ import com.badlogic.gdx.utils.StreamUtils;
 public class FileHandle {
 	protected File file;
 	protected FileType type;
-
+	
 	protected FileHandle() {
 	}
-
+	
 	/**
 	 * Creates a new absolute FileHandle for the file name. Use this for tools on
 	 * the desktop that don't need any of the backends. Do not use this constructor
@@ -72,7 +72,7 @@ public class FileHandle {
 		this.file = new File(fileName);
 		this.type = FileType.Absolute;
 	}
-
+	
 	/**
 	 * Creates a new absolute FileHandle for the {@link File}. Use this for tools on
 	 * the desktop that don't need any of the backends. Do not use this constructor
@@ -85,17 +85,17 @@ public class FileHandle {
 		this.file = file;
 		this.type = FileType.Absolute;
 	}
-
+	
 	protected FileHandle(String fileName, FileType type) {
 		this.type = type;
 		file = new File(fileName);
 	}
-
+	
 	protected FileHandle(File file, FileType type) {
 		this.file = file;
 		this.type = type;
 	}
-
+	
 	/**
 	 * @return the path of the file as specified on construction, e.g.
 	 *         Gdx.files.internal("dir/file.png") -> dir/file.png. backward slashes
@@ -104,12 +104,12 @@ public class FileHandle {
 	public String path() {
 		return file.getPath().replace('\\', '/');
 	}
-
+	
 	/** @return the name of the file, without any parent paths. */
 	public String name() {
 		return file.getName();
 	}
-
+	
 	public String extension() {
 		String name = file.getName();
 		int dotIndex = name.lastIndexOf('.');
@@ -117,7 +117,7 @@ public class FileHandle {
 			return "";
 		return name.substring(dotIndex + 1);
 	}
-
+	
 	/** @return the name of the file, without parent paths or the extension. */
 	public String nameWithoutExtension() {
 		String name = file.getName();
@@ -126,7 +126,7 @@ public class FileHandle {
 			return name;
 		return name.substring(0, dotIndex);
 	}
-
+	
 	/**
 	 * @return the path and filename without the extension, e.g. dir/dir2/file.png
 	 *         -> dir/dir2/file. backward slashes will be returned as forward
@@ -139,11 +139,11 @@ public class FileHandle {
 			return path;
 		return path.substring(0, dotIndex);
 	}
-
+	
 	public FileType type() {
 		return type;
 	}
-
+	
 	/**
 	 * Returns a java.io.File that represents this file handle. Note the returned
 	 * file will only be usable for {@link FileType#Absolute} and
@@ -154,7 +154,7 @@ public class FileHandle {
 			return new File(Gdx.files.getExternalStoragePath(), file.getPath());
 		return file;
 	}
-
+	
 	/**
 	 * Returns a stream for reading this file as bytes.
 	 * 
@@ -177,7 +177,7 @@ public class FileHandle {
 			throw new GdxRuntimeException("Error reading file: " + file + " (" + type + ")", ex);
 		}
 	}
-
+	
 	/**
 	 * Returns a buffered stream for reading this file as bytes.
 	 * 
@@ -187,7 +187,7 @@ public class FileHandle {
 	public BufferedInputStream read(int bufferSize) {
 		return new BufferedInputStream(read(), bufferSize);
 	}
-
+	
 	/**
 	 * Returns a reader for reading this file as characters.
 	 * 
@@ -197,7 +197,7 @@ public class FileHandle {
 	public Reader reader() {
 		return new InputStreamReader(read());
 	}
-
+	
 	/**
 	 * Returns a reader for reading this file as characters.
 	 * 
@@ -213,7 +213,7 @@ public class FileHandle {
 			throw new GdxRuntimeException("Error reading file: " + this, ex);
 		}
 	}
-
+	
 	/**
 	 * Returns a buffered reader for reading this file as characters.
 	 * 
@@ -223,7 +223,7 @@ public class FileHandle {
 	public BufferedReader reader(int bufferSize) {
 		return new BufferedReader(new InputStreamReader(read()), bufferSize);
 	}
-
+	
 	/**
 	 * Returns a buffered reader for reading this file as characters.
 	 * 
@@ -237,7 +237,7 @@ public class FileHandle {
 			throw new GdxRuntimeException("Error reading file: " + this, ex);
 		}
 	}
-
+	
 	/**
 	 * Reads the entire file into a string using the platform's default charset.
 	 * 
@@ -247,7 +247,7 @@ public class FileHandle {
 	public String readString() {
 		return readString(null);
 	}
-
+	
 	/**
 	 * Reads the entire file into a string using the specified charset.
 	 * 
@@ -277,7 +277,7 @@ public class FileHandle {
 		}
 		return output.toString();
 	}
-
+	
 	/**
 	 * Reads the entire file into a byte array.
 	 * 
@@ -294,12 +294,12 @@ public class FileHandle {
 			StreamUtils.closeQuietly(input);
 		}
 	}
-
+	
 	private int estimateLength() {
 		int length = (int) length();
 		return length != 0 ? length : 512;
 	}
-
+	
 	/**
 	 * Reads the entire file into the byte array. The byte array must be big enough
 	 * to hold the file's data.
@@ -326,7 +326,7 @@ public class FileHandle {
 		}
 		return position - offset;
 	}
-
+	
 	/**
 	 * Returns a stream for writing to this file. Parent directories will be created
 	 * if necessary.
@@ -352,7 +352,7 @@ public class FileHandle {
 			throw new GdxRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
 		}
 	}
-
+	
 	/**
 	 * Returns a buffered stream for writing to this file. Parent directories will
 	 * be created if necessary.
@@ -368,7 +368,7 @@ public class FileHandle {
 	public OutputStream write(boolean append, int bufferSize) {
 		return new BufferedOutputStream(write(append), bufferSize);
 	}
-
+	
 	/**
 	 * Reads the remaining bytes from the specified stream and writes them to this
 	 * file. The stream is closed. Parent directories will be created if necessary.
@@ -391,9 +391,9 @@ public class FileHandle {
 			StreamUtils.closeQuietly(input);
 			StreamUtils.closeQuietly(output);
 		}
-
+		
 	}
-
+	
 	/**
 	 * Returns a writer for writing to this file using the default charset. Parent
 	 * directories will be created if necessary.
@@ -408,7 +408,7 @@ public class FileHandle {
 	public Writer writer(boolean append) {
 		return writer(append, null);
 	}
-
+	
 	/**
 	 * Returns a writer for writing to this file. Parent directories will be created
 	 * if necessary.
@@ -439,7 +439,7 @@ public class FileHandle {
 			throw new GdxRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
 		}
 	}
-
+	
 	/**
 	 * Writes the specified string to the file using the default charset. Parent
 	 * directories will be created if necessary.
@@ -454,7 +454,7 @@ public class FileHandle {
 	public void writeString(String string, boolean append) {
 		writeString(string, append, null);
 	}
-
+	
 	/**
 	 * Writes the specified string to the file using the specified charset. Parent
 	 * directories will be created if necessary.
@@ -478,7 +478,7 @@ public class FileHandle {
 			StreamUtils.closeQuietly(writer);
 		}
 	}
-
+	
 	/**
 	 * Writes the specified bytes to the file. Parent directories will be created if
 	 * necessary.
@@ -500,7 +500,7 @@ public class FileHandle {
 			StreamUtils.closeQuietly(output);
 		}
 	}
-
+	
 	/**
 	 * Writes the specified bytes to the file. Parent directories will be created if
 	 * necessary.
@@ -522,7 +522,7 @@ public class FileHandle {
 			StreamUtils.closeQuietly(output);
 		}
 	}
-
+	
 	/**
 	 * Returns the paths to the children of this directory. Returns an empty list if
 	 * this file handle represents a file and not a directory. On the desktop, an
@@ -543,7 +543,7 @@ public class FileHandle {
 			handles[i] = child(relativePaths[i]);
 		return handles;
 	}
-
+	
 	/**
 	 * Returns the paths to the children of this directory that satisfy the
 	 * specified filter. Returns an empty list if this file handle represents a file
@@ -577,7 +577,7 @@ public class FileHandle {
 		}
 		return handles;
 	}
-
+	
 	/**
 	 * Returns the paths to the children of this directory that satisfy the
 	 * specified filter. Returns an empty list if this file handle represents a file
@@ -610,7 +610,7 @@ public class FileHandle {
 		}
 		return handles;
 	}
-
+	
 	/**
 	 * Returns the paths to the children of this directory with the specified
 	 * suffix. Returns an empty list if this file handle represents a file and not a
@@ -641,7 +641,7 @@ public class FileHandle {
 		}
 		return handles;
 	}
-
+	
 	/**
 	 * Returns true if this file is a directory. Always returns false for classpath
 	 * files. On Android, an {@link FileType#Internal} handle to an empty directory
@@ -653,14 +653,14 @@ public class FileHandle {
 			return false;
 		return file().isDirectory();
 	}
-
+	
 	/** Returns a handle to the child with the specified name. */
 	public FileHandle child(String name) {
 		if (file.getPath().length() == 0)
 			return new FileHandle(new File(name), type);
 		return new FileHandle(new File(file, name), type);
 	}
-
+	
 	/**
 	 * Returns a handle to the sibling with the specified name.
 	 * 
@@ -671,7 +671,7 @@ public class FileHandle {
 			throw new GdxRuntimeException("Cannot get the sibling of the root.");
 		return new FileHandle(new File(file.getParent(), name), type);
 	}
-
+	
 	public FileHandle parent() {
 		File parent = file.getParentFile();
 		if (parent == null) {
@@ -682,7 +682,7 @@ public class FileHandle {
 		}
 		return new FileHandle(parent, type);
 	}
-
+	
 	/**
 	 * @throws GdxRuntimeException if this file handle is a
 	 *                             {@link FileType#Classpath} or
@@ -695,7 +695,7 @@ public class FileHandle {
 			throw new GdxRuntimeException("Cannot mkdirs with an internal file: " + file);
 		file().mkdirs();
 	}
-
+	
 	/**
 	 * Returns true if the file exists. On Android, a {@link FileType#Classpath} or
 	 * {@link FileType#Internal} handle to a directory will always return false.
@@ -712,7 +712,7 @@ public class FileHandle {
 		}
 		return file().exists();
 	}
-
+	
 	/**
 	 * Deletes this file or empty directory and returns success. Will not delete a
 	 * directory that has children.
@@ -728,7 +728,7 @@ public class FileHandle {
 			throw new GdxRuntimeException("Cannot delete an internal file: " + file);
 		return file().delete();
 	}
-
+	
 	/**
 	 * Deletes this file or directory and all children, recursively.
 	 * 
@@ -743,7 +743,7 @@ public class FileHandle {
 			throw new GdxRuntimeException("Cannot delete an internal file: " + file);
 		return deleteDirectory(file());
 	}
-
+	
 	/**
 	 * Deletes all children of this directory, recursively.
 	 * 
@@ -754,7 +754,7 @@ public class FileHandle {
 	public void emptyDirectory() {
 		emptyDirectory(false);
 	}
-
+	
 	/**
 	 * Deletes all children of this directory, recursively. Optionally preserving
 	 * the folder structure.
@@ -770,7 +770,7 @@ public class FileHandle {
 			throw new GdxRuntimeException("Cannot delete an internal file: " + file);
 		emptyDirectory(file(), preserveTree);
 	}
-
+	
 	/**
 	 * Copies this file or directory to the specified file or directory. If this
 	 * handle is a file, then 1) if the destination is a file, it is overwritten, or
@@ -805,7 +805,7 @@ public class FileHandle {
 		}
 		copyDirectory(this, dest.child(name()));
 	}
-
+	
 	/**
 	 * Moves this file to the specified file, overwriting the file if it already
 	 * exists.
@@ -832,7 +832,7 @@ public class FileHandle {
 		if (exists() && isDirectory())
 			deleteDirectory();
 	}
-
+	
 	/**
 	 * Returns the length in bytes of this file, or 0 if this file is a directory,
 	 * does not exist, or the size cannot otherwise be determined.
@@ -850,7 +850,7 @@ public class FileHandle {
 		}
 		return file().length();
 	}
-
+	
 	/**
 	 * Returns the last modified time in milliseconds for this file. Zero is
 	 * returned if the file doesn't exist. Zero is returned for
@@ -861,7 +861,7 @@ public class FileHandle {
 	public long lastModified() {
 		return file().lastModified();
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof FileHandle))
@@ -869,7 +869,7 @@ public class FileHandle {
 		FileHandle other = (FileHandle) obj;
 		return type == other.type && path().equals(other.path());
 	}
-
+	
 	@Override
 	public int hashCode() {
 		int hash = 1;
@@ -877,12 +877,12 @@ public class FileHandle {
 		hash = hash * 67 + path().hashCode();
 		return hash;
 	}
-
+	
 	@Override
 	public String toString() {
 		return file.getPath().replace('\\', '/');
 	}
-
+	
 	static public FileHandle tempFile(String prefix) {
 		try {
 			return new FileHandle(File.createTempFile(prefix, null));
@@ -890,7 +890,7 @@ public class FileHandle {
 			throw new GdxRuntimeException("Unable to create temp file.", ex);
 		}
 	}
-
+	
 	static public FileHandle tempDirectory(String prefix) {
 		try {
 			File file = File.createTempFile(prefix, null);
@@ -903,7 +903,7 @@ public class FileHandle {
 			throw new GdxRuntimeException("Unable to create temp file.", ex);
 		}
 	}
-
+	
 	static private void emptyDirectory(File file, boolean preserveTree) {
 		if (file.exists()) {
 			File[] files = file.listFiles();
@@ -919,12 +919,12 @@ public class FileHandle {
 			}
 		}
 	}
-
+	
 	static private boolean deleteDirectory(File file) {
 		emptyDirectory(file, false);
 		return file.delete();
 	}
-
+	
 	static private void copyFile(FileHandle source, FileHandle dest) {
 		try {
 			dest.write(source.read(), false);
@@ -933,7 +933,7 @@ public class FileHandle {
 					+ "To destination: " + dest.file + " (" + dest.type + ")", ex);
 		}
 	}
-
+	
 	static private void copyDirectory(FileHandle sourceDir, FileHandle destDir) {
 		destDir.mkdirs();
 		FileHandle[] files = sourceDir.list();

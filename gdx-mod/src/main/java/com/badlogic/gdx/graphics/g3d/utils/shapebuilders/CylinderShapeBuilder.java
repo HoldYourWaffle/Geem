@@ -31,13 +31,13 @@ public class CylinderShapeBuilder extends BaseShapeBuilder {
 	public static void build(MeshPartBuilder builder, float width, float height, float depth, int divisions) {
 		build(builder, width, height, depth, divisions, 0, 360);
 	}
-
+	
 	/** Build a cylinder */
 	public static void build(MeshPartBuilder builder, float width, float height, float depth, int divisions,
 			float angleFrom, float angleTo) {
 		build(builder, width, height, depth, divisions, angleFrom, angleTo, true);
 	}
-
+	
 	/** Build a cylinder */
 	public static void build(MeshPartBuilder builder, float width, float height, float depth, int divisions,
 			float angleFrom, float angleTo, boolean close) {
@@ -56,7 +56,7 @@ public class CylinderShapeBuilder extends BaseShapeBuilder {
 		VertexInfo curr2 = vertTmp4.set(null, null, null, null);
 		curr2.hasUV = curr2.hasPosition = curr2.hasNormal = true;
 		short i1, i2, i3 = 0, i4 = 0;
-
+		
 		builder.ensureVertices(2 * (divisions + 1));
 		builder.ensureRectangleIndices(divisions);
 		for (int i = 0; i <= divisions; i++) {

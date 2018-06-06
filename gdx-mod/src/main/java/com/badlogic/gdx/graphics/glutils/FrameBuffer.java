@@ -45,10 +45,10 @@ import com.badlogic.gdx.graphics.Texture.TextureWrap;
  * @author mzechner, realitix
  */
 public class FrameBuffer extends GLFrameBuffer<Texture> {
-
+	
 	FrameBuffer() {
 	}
-
+	
 	/**
 	 * Creates a GLFrameBuffer from the specifications provided by bufferBuilder
 	 *
@@ -57,7 +57,7 @@ public class FrameBuffer extends GLFrameBuffer<Texture> {
 	protected FrameBuffer(GLFrameBufferBuilder<? extends GLFrameBuffer<Texture>> bufferBuilder) {
 		super(bufferBuilder);
 	}
-
+	
 	/**
 	 * Creates a new FrameBuffer having the given dimensions and potentially a depth
 	 * buffer attached.
@@ -65,7 +65,7 @@ public class FrameBuffer extends GLFrameBuffer<Texture> {
 	public FrameBuffer(Pixmap.Format format, int width, int height, boolean hasDepth) {
 		this(format, width, height, hasDepth, false);
 	}
-
+	
 	/**
 	 * Creates a new FrameBuffer having the given dimensions and potentially a depth
 	 * and a stencil buffer attached.
@@ -87,10 +87,10 @@ public class FrameBuffer extends GLFrameBuffer<Texture> {
 		if (hasStencil)
 			frameBufferBuilder.addBasicStencilRenderBuffer();
 		this.bufferBuilder = frameBufferBuilder;
-
+		
 		build();
 	}
-
+	
 	@Override
 	protected Texture createTexture(FrameBufferTextureAttachmentSpec attachmentSpec) {
 		GLOnlyTextureData data = new GLOnlyTextureData(bufferBuilder.width, bufferBuilder.height, 0,
@@ -100,18 +100,18 @@ public class FrameBuffer extends GLFrameBuffer<Texture> {
 		result.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 		return result;
 	}
-
+	
 	@Override
 	protected void disposeColorTexture(Texture colorTexture) {
 		colorTexture.dispose();
 	}
-
+	
 	@Override
 	protected void attachFrameBufferColorTexture(Texture texture) {
 		Gdx.gl20.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, GL20.GL_TEXTURE_2D,
 				texture.getTextureObjectHandle(), 0);
 	}
-
+	
 	/** See {@link GLFrameBuffer#unbind()} */
 	public static void unbind() {
 		GLFrameBuffer.unbind();

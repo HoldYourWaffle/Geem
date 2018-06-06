@@ -16,7 +16,7 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 abstract public class EventAction<T extends Event> extends Action {
 	final Class<? extends T> eventClass;
 	boolean result, active;
-
+	
 	private final EventListener listener = new EventListener() {
 		@Override
 		public boolean handle(Event event) {
@@ -26,17 +26,17 @@ abstract public class EventAction<T extends Event> extends Action {
 			return result;
 		}
 	};
-
+	
 	public EventAction(Class<? extends T> eventClass) {
 		this.eventClass = eventClass;
 	}
-
+	
 	@Override
 	public void restart() {
 		result = false;
 		active = false;
 	}
-
+	
 	@Override
 	public void setTarget(Actor newTarget) {
 		if (target != null)
@@ -45,7 +45,7 @@ abstract public class EventAction<T extends Event> extends Action {
 		if (newTarget != null)
 			newTarget.addListener(listener);
 	}
-
+	
 	/**
 	 * Called when the specific type of event occurs on the actor.
 	 * 
@@ -53,17 +53,17 @@ abstract public class EventAction<T extends Event> extends Action {
 	 *         and this EventAction considered complete.
 	 */
 	abstract public boolean handle(T event);
-
+	
 	@Override
 	public boolean act(float delta) {
 		active = true;
 		return result;
 	}
-
+	
 	public boolean isActive() {
 		return active;
 	}
-
+	
 	public void setActive(boolean active) {
 		this.active = active;
 	}

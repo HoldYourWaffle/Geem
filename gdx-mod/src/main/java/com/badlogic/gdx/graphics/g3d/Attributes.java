@@ -24,9 +24,9 @@ import com.badlogic.gdx.utils.Array;
 public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, Comparable<Attributes> {
 	protected long mask;
 	protected final Array<Attribute> attributes = new Array<>();
-
+	
 	protected boolean sorted = true;
-
+	
 	/** Sort the attributes by their ID */
 	public final void sort() {
 		if (!sorted) {
@@ -34,12 +34,12 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, C
 			sorted = true;
 		}
 	}
-
+	
 	/** @return Bitwise mask of the ID's of all the containing attributes */
 	public final long getMask() {
 		return mask;
 	}
-
+	
 	/**
 	 * Example usage:
 	 * ((BlendingAttribute)material.get(BlendingAttribute.ID)).sourceFunction;
@@ -53,7 +53,7 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, C
 					return attributes.get(i);
 		return null;
 	}
-
+	
 	/**
 	 * Example usage:
 	 * ((BlendingAttribute)material.get(BlendingAttribute.ID)).sourceFunction;
@@ -63,7 +63,7 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, C
 	public final <T extends Attribute> T get(Class<T> clazz, final long type) {
 		return (T) get(type);
 	}
-
+	
 	/**
 	 * Get multiple attributes at once. Example: material.get(out,
 	 * ColorAttribute.Diffuse | ColorAttribute.Specular | TextureAttribute.Diffuse);
@@ -74,26 +74,26 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, C
 				out.add(attributes.get(i));
 		return out;
 	}
-
+	
 	/** Removes all attributes */
 	public void clear() {
 		mask = 0;
 		attributes.clear();
 	}
-
+	
 	/** @return The amount of attributes this material contains. */
 	public int size() {
 		return attributes.size;
 	}
-
+	
 	private final void enable(final long mask) {
 		this.mask |= mask;
 	}
-
+	
 	private final void disable(final long mask) {
 		this.mask &= ~mask;
 	}
-
+	
 	/**
 	 * Add a attribute to this material. If the material already contains an
 	 * attribute of the same type it is overwritten.
@@ -109,7 +109,7 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, C
 		}
 		sort(); // FIXME: See #4186
 	}
-
+	
 	/**
 	 * Add multiple attributes to this material. If the material already contains an
 	 * attribute of the same type it is overwritten.
@@ -118,7 +118,7 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, C
 		set(attribute1);
 		set(attribute2);
 	}
-
+	
 	/**
 	 * Add multiple attributes to this material. If the material already contains an
 	 * attribute of the same type it is overwritten.
@@ -128,7 +128,7 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, C
 		set(attribute2);
 		set(attribute3);
 	}
-
+	
 	/**
 	 * Add multiple attributes to this material. If the material already contains an
 	 * attribute of the same type it is overwritten.
@@ -140,7 +140,7 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, C
 		set(attribute3);
 		set(attribute4);
 	}
-
+	
 	/**
 	 * Add an array of attributes to this material. If the material already contains
 	 * an attribute of the same type it is overwritten.
@@ -149,7 +149,7 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, C
 		for (final Attribute attr : attributes)
 			set(attr);
 	}
-
+	
 	/**
 	 * Add an array of attributes to this material. If the material already contains
 	 * an attribute of the same type it is overwritten.
@@ -158,7 +158,7 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, C
 		for (final Attribute attr : attributes)
 			set(attr);
 	}
-
+	
 	/**
 	 * Removes the attribute from the material, i.e.:
 	 * material.remove(BlendingAttribute.ID); Can also be used to remove multiple
@@ -175,7 +175,7 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, C
 		}
 		sort(); // FIXME: See #4186
 	}
-
+	
 	/**
 	 * @return True if this collection has the specified attribute, i.e.
 	 *         attributes.has(ColorAttribute.Diffuse); Or when multiple attribute
@@ -186,7 +186,7 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, C
 	public final boolean has(final long type) {
 		return type != 0 && (this.mask & type) == type;
 	}
-
+	
 	/**
 	 * @return the index of the attribute with the specified type or negative if not
 	 *         available.
@@ -198,7 +198,7 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, C
 					return i;
 		return -1;
 	}
-
+	
 	/**
 	 * Check if this collection has the same attributes as the other collection. If
 	 * compareValues is true, it also compares the values of each attribute.
@@ -222,7 +222,7 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, C
 				return false;
 		return true;
 	}
-
+	
 	/**
 	 * See {@link #same(Attributes, boolean)}
 	 * 
@@ -232,19 +232,19 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, C
 	public final boolean same(final Attributes other) {
 		return same(other, false);
 	}
-
+	
 	/** Used for sorting attributes by type (not by value) */
 	@Override
 	public final int compare(final Attribute arg0, final Attribute arg1) {
 		return (int) (arg0.type - arg1.type);
 	}
-
+	
 	/** Used for iterating through the attributes */
 	@Override
 	public final Iterator<Attribute> iterator() {
 		return attributes.iterator();
 	}
-
+	
 	/**
 	 * @return A hash code based on only the attribute values, which might be
 	 *         different compared to {@link #hashCode()} because the latter might
@@ -259,12 +259,12 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, C
 			result += mask * attributes.get(i).hashCode() * (m = (m * 7) & 0xFFFF);
 		return (int) (result ^ (result >> 32));
 	}
-
+	
 	@Override
 	public int hashCode() {
 		return attributesHash();
 	}
-
+	
 	@Override
 	public boolean equals(Object other) {
 		if (!(other instanceof Attributes))
@@ -273,7 +273,7 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute>, C
 			return true;
 		return same((Attributes) other, true);
 	}
-
+	
 	@Override
 	public int compareTo(Attributes other) {
 		if (other == this)

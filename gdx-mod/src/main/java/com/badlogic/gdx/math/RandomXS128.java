@@ -32,23 +32,23 @@ import java.util.Random;
  * @author davebaol
  */
 public class RandomXS128 extends Random {
-
+	
 	/** Normalization constant for double. */
 	private static final double NORM_DOUBLE = 1.0 / (1L << 53);
-
+	
 	/** Normalization constant for float. */
 	private static final double NORM_FLOAT = 1.0 / (1L << 24);
-
+	
 	/**
 	 * The first half of the internal state of this pseudo-random number generator.
 	 */
 	private long seed0;
-
+	
 	/**
 	 * The second half of the internal state of this pseudo-random number generator.
 	 */
 	private long seed1;
-
+	
 	/**
 	 * Creates a new random number generator. This constructor sets the seed of the
 	 * random number generator to a value very likely to be distinct from any other
@@ -60,7 +60,7 @@ public class RandomXS128 extends Random {
 	public RandomXS128() {
 		setSeed(new Random().nextLong());
 	}
-
+	
 	/**
 	 * Creates a new random number generator using a single {@code long} seed.
 	 * 
@@ -69,7 +69,7 @@ public class RandomXS128 extends Random {
 	public RandomXS128(long seed) {
 		setSeed(seed);
 	}
-
+	
 	/**
 	 * Creates a new random number generator using two {@code long} seeds.
 	 * 
@@ -79,7 +79,7 @@ public class RandomXS128 extends Random {
 	public RandomXS128(long seed0, long seed1) {
 		setState(seed0, seed1);
 	}
-
+	
 	/**
 	 * Returns the next pseudo-random, uniformly distributed {@code long} value from
 	 * this random number generator's sequence.
@@ -94,7 +94,7 @@ public class RandomXS128 extends Random {
 		s1 ^= s1 << 23;
 		return (this.seed1 = (s1 ^ s0 ^ (s1 >>> 17) ^ (s0 >>> 26))) + s0;
 	}
-
+	
 	/**
 	 * This protected method is final because, contrary to the superclass, it's not
 	 * used anymore by the other methods.
@@ -103,7 +103,7 @@ public class RandomXS128 extends Random {
 	protected final int next(int bits) {
 		return (int) (nextLong() & ((1L << bits) - 1));
 	}
-
+	
 	/**
 	 * Returns the next pseudo-random, uniformly distributed {@code int} value from
 	 * this random number generator's sequence.
@@ -114,7 +114,7 @@ public class RandomXS128 extends Random {
 	public int nextInt() {
 		return (int) nextLong();
 	}
-
+	
 	/**
 	 * Returns a pseudo-random, uniformly distributed {@code int} value between 0
 	 * (inclusive) and the specified value (exclusive), drawn from this random
@@ -130,7 +130,7 @@ public class RandomXS128 extends Random {
 	public int nextInt(final int n) {
 		return (int) nextLong(n);
 	}
-
+	
 	/**
 	 * Returns a pseudo-random, uniformly distributed {@code long} value between 0
 	 * (inclusive) and the specified value (exclusive), drawn from this random
@@ -154,7 +154,7 @@ public class RandomXS128 extends Random {
 				return value;
 		}
 	}
-
+	
 	/**
 	 * Returns a pseudo-random, uniformly distributed {@code double} value between
 	 * 0.0 and 1.0 from this random number generator's sequence.
@@ -165,7 +165,7 @@ public class RandomXS128 extends Random {
 	public double nextDouble() {
 		return (nextLong() >>> 11) * NORM_DOUBLE;
 	}
-
+	
 	/**
 	 * Returns a pseudo-random, uniformly distributed {@code float} value between
 	 * 0.0 and 1.0 from this random number generator's sequence.
@@ -176,7 +176,7 @@ public class RandomXS128 extends Random {
 	public float nextFloat() {
 		return (float) ((nextLong() >>> 40) * NORM_FLOAT);
 	}
-
+	
 	/**
 	 * Returns a pseudo-random, uniformly distributed {@code boolean } value from
 	 * this random number generator's sequence.
@@ -187,7 +187,7 @@ public class RandomXS128 extends Random {
 	public boolean nextBoolean() {
 		return (nextLong() & 1) != 0;
 	}
-
+	
 	/**
 	 * Generates random bytes and places them into a user-supplied byte array. The
 	 * number of random bytes produced is equal to the length of the byte array.
@@ -204,7 +204,7 @@ public class RandomXS128 extends Random {
 				bytes[--i] = (byte) bits;
 		}
 	}
-
+	
 	/**
 	 * Sets the internal seed of this generator based on the given {@code long}
 	 * value.
@@ -221,7 +221,7 @@ public class RandomXS128 extends Random {
 		long seed0 = murmurHash3(seed == 0 ? Long.MIN_VALUE : seed);
 		setState(seed0, murmurHash3(seed0));
 	}
-
+	
 	/**
 	 * Sets the internal state of this generator.
 	 * 
@@ -232,7 +232,7 @@ public class RandomXS128 extends Random {
 		this.seed0 = seed0;
 		this.seed1 = seed1;
 	}
-
+	
 	/**
 	 * Returns the internal seeds to allow state saving.
 	 * 
@@ -242,15 +242,15 @@ public class RandomXS128 extends Random {
 	public long getState(int seed) {
 		return seed == 0 ? seed0 : seed1;
 	}
-
+	
 	private final static long murmurHash3(long x) {
 		x ^= x >>> 33;
 		x *= 0xff51afd7ed558ccdL;
 		x ^= x >>> 33;
 		x *= 0xc4ceb9fe1a85ec53L;
 		x ^= x >>> 33;
-
+		
 		return x;
 	}
-
+	
 }

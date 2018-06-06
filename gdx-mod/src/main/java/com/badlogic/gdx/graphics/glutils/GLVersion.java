@@ -23,18 +23,18 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 
 public class GLVersion {
-
+	
 	private int majorVersion;
 	private int minorVersion;
 	private int releaseVersion;
-
+	
 	private final String vendorString;
 	private final String rendererString;
-
+	
 	private final Type type;
-
+	
 	private final String TAG = "GLVersion";
-
+	
 	public GLVersion(Application.ApplicationType appType, String versionString, String vendorString,
 			String rendererString) {
 		if (appType == Application.ApplicationType.Android)
@@ -49,7 +49,7 @@ public class GLVersion {
 			this.type = Type.WebGL;
 		else
 			this.type = Type.NONE;
-
+		
 		if (type == Type.GLES) {
 			// OpenGL<space>ES<space><version number><space><vendor-specific information>.
 			extractVersion("OpenGL ES (\\d(\\.\\d){0,2})", versionString);
@@ -66,11 +66,11 @@ public class GLVersion {
 			vendorString = "";
 			rendererString = "";
 		}
-
+		
 		this.vendorString = vendorString;
 		this.rendererString = rendererString;
 	}
-
+	
 	private void extractVersion(String patternString, String versionString) {
 		Pattern pattern = Pattern.compile(patternString);
 		Matcher matcher = pattern.matcher(versionString);
@@ -88,7 +88,7 @@ public class GLVersion {
 			releaseVersion = 0;
 		}
 	}
-
+	
 	/**
 	 * Forgiving parsing of gl major, minor and release versions as some
 	 * manufacturers don't adhere to spec
@@ -101,7 +101,7 @@ public class GLVersion {
 			return defaultValue;
 		}
 	}
-
+	
 	/**
 	 * @return what {@link Type} of GL implementation this application has access
 	 *         to, e.g. {@link Type#OpenGL} or {@link Type#GLES}
@@ -109,14 +109,14 @@ public class GLVersion {
 	public Type getType() {
 		return type;
 	}
-
+	
 	/**
 	 * @return the major version of current GL connection. -1 if running headless
 	 */
 	public int getMajorVersion() {
 		return majorVersion;
 	}
-
+	
 	/**
 	 * @return the minor version of the current GL connection. -1 if running
 	 *         headless
@@ -124,7 +124,7 @@ public class GLVersion {
 	public int getMinorVersion() {
 		return minorVersion;
 	}
-
+	
 	/**
 	 * @return the release version of the current GL connection. -1 if running
 	 *         headless
@@ -132,12 +132,12 @@ public class GLVersion {
 	public int getReleaseVersion() {
 		return releaseVersion;
 	}
-
+	
 	/** @return the vendor string associated with the current GL connection */
 	public String getVendorString() {
 		return vendorString;
 	}
-
+	
 	/**
 	 * @return the name of the renderer associated with the current GL connection.
 	 *         This name is typically specific to a particular configuration of a
@@ -146,7 +146,7 @@ public class GLVersion {
 	public String getRendererString() {
 		return rendererString;
 	}
-
+	
 	/**
 	 * Checks to see if the current GL connection version is higher, or equal to the
 	 * provided test versions.
@@ -159,13 +159,13 @@ public class GLVersion {
 		return majorVersion > testMajorVersion
 				|| (majorVersion == testMajorVersion && minorVersion >= testMinorVersion);
 	}
-
+	
 	/** @return a string with the current GL connection data */
 	public String getDebugVersionString() {
 		return "Type: " + type + "\n" + "Version: " + majorVersion + ":" + minorVersion + ":" + releaseVersion + "\n"
 				+ "Vendor: " + vendorString + "\n" + "Renderer: " + rendererString;
 	}
-
+	
 	public enum Type {
 		OpenGL, GLES, WebGL, NONE
 	}

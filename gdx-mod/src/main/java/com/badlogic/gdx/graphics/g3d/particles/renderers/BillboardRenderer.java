@@ -33,16 +33,16 @@ import com.badlogic.gdx.graphics.g3d.particles.batches.ParticleBatch;
  */
 public class BillboardRenderer
 		extends ParticleControllerRenderer<BillboardControllerRenderData, BillboardParticleBatch> {
-
+	
 	public BillboardRenderer() {
 		super(new BillboardControllerRenderData());
 	}
-
+	
 	public BillboardRenderer(BillboardParticleBatch batch) {
 		this();
 		setBatch(batch);
 	}
-
+	
 	@Override
 	public void allocateChannels() {
 		renderData.positionChannel = controller.particles.addChannel(ParticleChannels.Position);
@@ -53,15 +53,15 @@ public class BillboardRenderer
 		renderData.rotationChannel = controller.particles.addChannel(ParticleChannels.Rotation2D,
 				Rotation2dInitializer.get());
 	}
-
+	
 	@Override
 	public ParticleControllerComponent copy() {
 		return new BillboardRenderer(batch);
 	}
-
+	
 	@Override
 	public boolean isCompatible(ParticleBatch<?> batch) {
 		return batch instanceof BillboardParticleBatch;
 	}
-
+	
 }

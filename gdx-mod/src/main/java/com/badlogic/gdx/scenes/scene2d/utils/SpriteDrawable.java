@@ -28,65 +28,65 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasSprite;
  */
 public class SpriteDrawable extends BaseDrawable implements TransformDrawable {
 	private Sprite sprite;
-
+	
 	/**
 	 * Creates an uninitialized SpriteDrawable. The sprite must be set before use.
 	 */
 	public SpriteDrawable() {
 	}
-
+	
 	public SpriteDrawable(Sprite sprite) {
 		setSprite(sprite);
 	}
-
+	
 	public SpriteDrawable(SpriteDrawable drawable) {
 		super(drawable);
 		setSprite(drawable.sprite);
 	}
-
+	
 	@Override
 	public void draw(Batch batch, float x, float y, float width, float height) {
 		Color spriteColor = sprite.getColor();
 		float batchColor = batch.getPackedColor();
 		sprite.setColor(batch.getColor().mul(spriteColor));
-
+		
 		sprite.setRotation(0);
 		sprite.setScale(1, 1);
 		sprite.setBounds(x, y, width, height);
 		sprite.draw(batch);
-
+		
 		sprite.setColor(spriteColor);
 		batch.setColor(batchColor);
 	}
-
+	
 	@Override
 	public void draw(Batch batch, float x, float y, float originX, float originY, float width, float height,
 			float scaleX, float scaleY, float rotation) {
-
+		
 		Color spriteColor = sprite.getColor();
 		float batchColor = batch.getPackedColor();
 		sprite.setColor(batch.getColor().mul(spriteColor));
-
+		
 		sprite.setOrigin(originX, originY);
 		sprite.setRotation(rotation);
 		sprite.setScale(scaleX, scaleY);
 		sprite.setBounds(x, y, width, height);
 		sprite.draw(batch);
-
+		
 		sprite.setColor(spriteColor);
 		batch.setColor(batchColor);
 	}
-
+	
 	public void setSprite(Sprite sprite) {
 		this.sprite = sprite;
 		setMinWidth(sprite.getWidth());
 		setMinHeight(sprite.getHeight());
 	}
-
+	
 	public Sprite getSprite() {
 		return sprite;
 	}
-
+	
 	/**
 	 * Creates a new drawable that renders the same as this drawable tinted the
 	 * specified color.

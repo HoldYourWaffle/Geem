@@ -27,17 +27,17 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
  */
 public class TouchableAction extends Action {
 	private Touchable touchable;
-
+	
 	@Override
 	public boolean act(float delta) {
 		target.setTouchable(touchable);
 		return true;
 	}
-
+	
 	public Touchable getTouchable() {
 		return touchable;
 	}
-
+	
 	public void setTouchable(Touchable touchable) {
 		this.touchable = touchable;
 	}

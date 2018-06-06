@@ -52,7 +52,7 @@ public class NodePart {
 	 * and bounding box calculation.
 	 */
 	public boolean enabled = true;
-
+	
 	/**
 	 * Construct a new NodePart with null values. At least the {@link #meshPart} and
 	 * {@link #material} member must be set before the newly created part can be
@@ -60,7 +60,7 @@ public class NodePart {
 	 */
 	public NodePart() {
 	}
-
+	
 	/**
 	 * Construct a new NodePart referencing the provided {@link MeshPart} and
 	 * {@link Material}.
@@ -72,9 +72,9 @@ public class NodePart {
 		this.meshPart = meshPart;
 		this.material = material;
 	}
-
+	
 	// FIXME add copy constructor and override #equals.
-
+	
 	/**
 	 * Convenience method to set the material, mesh, meshPartOffset, meshPartSize,
 	 * primitiveType and bones members of the specified Renderable. The other member
@@ -91,11 +91,11 @@ public class NodePart {
 		out.bones = bones;
 		return out;
 	}
-
+	
 	public NodePart copy() {
 		return new NodePart().set(this);
 	}
-
+	
 	protected NodePart set(NodePart other) {
 		meshPart = new MeshPart(other.meshPart);
 		material = other.material;
@@ -110,10 +110,10 @@ public class NodePart {
 			else
 				invBoneBindTransforms.clear();
 			invBoneBindTransforms.putAll(other.invBoneBindTransforms);
-
+			
 			if (bones == null || bones.length != invBoneBindTransforms.size)
 				bones = new Matrix4[invBoneBindTransforms.size];
-
+			
 			for (int i = 0; i < bones.length; i++) {
 				if (bones[i] == null)
 					bones[i] = new Matrix4();

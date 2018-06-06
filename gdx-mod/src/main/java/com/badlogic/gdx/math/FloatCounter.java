@@ -39,7 +39,7 @@ public class FloatCounter {
 	public float value;
 	/** Provides access to the WindowedMean if any (can be null) */
 	public final WindowedMean mean;
-
+	
 	/**
 	 * Construct a new FloatCounter
 	 * 
@@ -50,7 +50,7 @@ public class FloatCounter {
 		mean = (windowSize > 1) ? new WindowedMean(windowSize) : null;
 		reset();
 	}
-
+	
 	/**
 	 * Add a value and update all fields.
 	 * 
@@ -61,13 +61,13 @@ public class FloatCounter {
 		total += value;
 		count++;
 		average = total / count;
-
+		
 		if (mean != null) {
 			mean.addValue(value);
 			this.value = mean.getMean();
 		} else
 			this.value = latest;
-
+		
 		if (mean == null || mean.hasEnoughData()) {
 			if (this.value < min)
 				min = this.value;
@@ -75,7 +75,7 @@ public class FloatCounter {
 				max = this.value;
 		}
 	}
-
+	
 	/** Reset all values to their default value. */
 	public void reset() {
 		count = 0;

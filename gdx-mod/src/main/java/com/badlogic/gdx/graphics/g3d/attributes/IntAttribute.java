@@ -21,34 +21,34 @@ import com.badlogic.gdx.graphics.g3d.Attribute;
 public class IntAttribute extends Attribute {
 	public static final String CullFaceAlias = "cullface";
 	public static final long CullFace = register(CullFaceAlias);
-
+	
 	public static IntAttribute createCullFace(int value) {
 		return new IntAttribute(CullFace, value);
 	}
-
+	
 	public int value;
-
+	
 	public IntAttribute(long type) {
 		super(type);
 	}
-
+	
 	public IntAttribute(long type, int value) {
 		super(type);
 		this.value = value;
 	}
-
+	
 	@Override
 	public Attribute copy() {
 		return new IntAttribute(type, value);
 	}
-
+	
 	@Override
 	public int hashCode() {
 		int result = super.hashCode();
 		result = 983 * result + value;
 		return result;
 	}
-
+	
 	@Override
 	public int compareTo(Attribute o) {
 		if (type != o.type)

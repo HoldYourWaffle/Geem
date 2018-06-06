@@ -34,27 +34,27 @@ public class InputEventQueue implements InputProcessor {
 	static private final int TOUCH_DRAGGED = 5;
 	static private final int MOUSE_MOVED = 6;
 	static private final int SCROLLED = 7;
-
+	
 	private InputProcessor processor;
 	private final IntArray queue = new IntArray();
 	private final IntArray processingQueue = new IntArray();
 	private long currentEventTime;
-
+	
 	public InputEventQueue() {
 	}
-
+	
 	public InputEventQueue(InputProcessor processor) {
 		this.processor = processor;
 	}
-
+	
 	public void setProcessor(InputProcessor processor) {
 		this.processor = processor;
 	}
-
+	
 	public InputProcessor getProcessor() {
 		return processor;
 	}
-
+	
 	public void drain() {
 		synchronized (this) {
 			if (processor == null) {
@@ -103,7 +103,7 @@ public class InputEventQueue implements InputProcessor {
 		}
 		processingQueue.clear();
 	}
-
+	
 	private synchronized int next(int nextType, int i) {
 		int[] q = queue.items;
 		for (int n = queue.size; i < n;) {
@@ -145,13 +145,13 @@ public class InputEventQueue implements InputProcessor {
 		}
 		return -1;
 	}
-
+	
 	private void queueTime() {
 		long time = TimeUtils.nanoTime();
 		queue.add((int) (time >> 32));
 		queue.add((int) time);
 	}
-
+	
 	@Override
 	public synchronized boolean keyDown(int keycode) {
 		queue.add(KEY_DOWN);
@@ -159,7 +159,7 @@ public class InputEventQueue implements InputProcessor {
 		queue.add(keycode);
 		return false;
 	}
-
+	
 	@Override
 	public synchronized boolean keyUp(int keycode) {
 		queue.add(KEY_UP);
@@ -167,7 +167,7 @@ public class InputEventQueue implements InputProcessor {
 		queue.add(keycode);
 		return false;
 	}
-
+	
 	@Override
 	public synchronized boolean keyTyped(char character) {
 		queue.add(KEY_TYPED);
@@ -175,7 +175,7 @@ public class InputEventQueue implements InputProcessor {
 		queue.add(character);
 		return false;
 	}
-
+	
 	@Override
 	public synchronized boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		queue.add(TOUCH_DOWN);
@@ -186,7 +186,7 @@ public class InputEventQueue implements InputProcessor {
 		queue.add(button);
 		return false;
 	}
-
+	
 	@Override
 	public synchronized boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		queue.add(TOUCH_UP);
@@ -197,7 +197,7 @@ public class InputEventQueue implements InputProcessor {
 		queue.add(button);
 		return false;
 	}
-
+	
 	@Override
 	public synchronized boolean touchDragged(int screenX, int screenY, int pointer) {
 		// Skip any queued touch dragged events for the same pointer.
@@ -214,7 +214,7 @@ public class InputEventQueue implements InputProcessor {
 		queue.add(pointer);
 		return false;
 	}
-
+	
 	@Override
 	public synchronized boolean mouseMoved(int screenX, int screenY) {
 		// Skip any queued mouse moved events.
@@ -228,7 +228,7 @@ public class InputEventQueue implements InputProcessor {
 		queue.add(screenY);
 		return false;
 	}
-
+	
 	@Override
 	public synchronized boolean scrolled(int amount) {
 		queue.add(SCROLLED);
@@ -236,7 +236,7 @@ public class InputEventQueue implements InputProcessor {
 		queue.add(amount);
 		return false;
 	}
-
+	
 	public long getCurrentEventTime() {
 		return currentEventTime;
 	}

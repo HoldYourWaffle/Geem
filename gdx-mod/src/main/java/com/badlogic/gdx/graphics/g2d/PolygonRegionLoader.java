@@ -40,15 +40,15 @@ import com.badlogic.gdx.utils.StreamUtils;
  * @author dermetfan
  */
 public class PolygonRegionLoader extends SynchronousAssetLoader<PolygonRegion, PolygonRegionParameters> {
-
+	
 	public static class PolygonRegionParameters extends AssetLoaderParameters<PolygonRegion> {
-
+		
 		/**
 		 * what the line starts with that contains the file name of the texture for this
 		 * {@code PolygonRegion}
 		 */
 		public String texturePrefix = "i ";
-
+		
 		/**
 		 * what buffer size of the reader should be used to read the
 		 * {@link #texturePrefix} line
@@ -56,32 +56,32 @@ public class PolygonRegionLoader extends SynchronousAssetLoader<PolygonRegion, P
 		 * @see FileHandle#reader(int)
 		 */
 		public int readerBuffer = 1024;
-
+		
 		/** the possible file name extensions of the texture file */
 		public String[] textureExtensions = new String[] { "png", "PNG", "jpeg", "JPEG", "jpg", "JPG", "cim", "CIM",
 				"etc1", "ETC1", "ktx", "KTX", "zktx", "ZKTX" };
-
+		
 	}
-
+	
 	private PolygonRegionParameters defaultParameters = new PolygonRegionParameters();
-
+	
 	private EarClippingTriangulator triangulator = new EarClippingTriangulator();
-
+	
 	public PolygonRegionLoader() {
 		this(new InternalFileHandleResolver());
 	}
-
+	
 	public PolygonRegionLoader(FileHandleResolver resolver) {
 		super(resolver);
 	}
-
+	
 	@Override
 	public PolygonRegion load(AssetManager manager, String fileName, FileHandle file,
 			PolygonRegionParameters parameter) {
 		Texture texture = manager.get(manager.getDependencies(fileName).first());
 		return load(new TextureRegion(texture), file);
 	}
-
+	
 	/**
 	 * If the PSH file contains a line starting with
 	 * {@link PolygonRegionParameters#texturePrefix params.texturePrefix}, an
@@ -107,23 +107,23 @@ public class PolygonRegionLoader extends SynchronousAssetLoader<PolygonRegion, P
 		} catch (IOException e) {
 			throw new GdxRuntimeException("Error reading " + fileName, e);
 		}
-
+		
 		if (image == null && params.textureExtensions != null)
 			for (String extension : params.textureExtensions) {
 				FileHandle sibling = file.sibling(file.nameWithoutExtension().concat("." + extension));
 				if (sibling.exists())
 					image = sibling.name();
 			}
-
+		
 		if (image != null) {
 			Array<AssetDescriptor> deps = new Array<>(1);
 			deps.add(new AssetDescriptor<>(file.sibling(image), Texture.class));
 			return deps;
 		}
-
+		
 		return null;
 	}
-
+	
 	/**
 	 * Loads a PolygonRegion from a PSH (Polygon SHape) file. The PSH file format
 	 * defines the polygon vertices before triangulation:
@@ -163,5 +163,5 @@ public class PolygonRegionLoader extends SynchronousAssetLoader<PolygonRegion, P
 		}
 		throw new GdxRuntimeException("Polygon shape not found: " + file);
 	}
-
+	
 }

@@ -72,14 +72,14 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 					new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),
 					new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"),
 					new VertexAttribute(Usage.ColorUnpacked, 4, ShaderProgram.COLOR_ATTRIBUTE));
-
+	
 	// Offsets
 	private static final int GPU_POSITION_OFFSET = (short) (GPU_ATTRIBUTES.findByUsage(Usage.Position).offset / 4),
 			GPU_UV_OFFSET = (short) (GPU_ATTRIBUTES.findByUsage(Usage.TextureCoordinates).offset / 4),
 			GPU_SIZE_ROTATION_OFFSET = (short) (GPU_ATTRIBUTES.findByUsage(sizeAndRotationUsage).offset / 4),
 			GPU_COLOR_OFFSET = (short) (GPU_ATTRIBUTES.findByUsage(Usage.ColorUnpacked).offset / 4),
 			GPU_VERTEX_SIZE = GPU_ATTRIBUTES.vertexSize / 4,
-
+			
 			// Ext
 			/*
 			 * GPU_EXT_POSITION_OFFSET =
@@ -94,7 +94,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 			 * (short)(GPU_EXT_ATTRIBUTES.findByUsage(directionUsage).offset/4),
 			 * GPU_EXT_VERTEX_SIZE = GPU_EXT_ATTRIBUTES.vertexSize/4,
 			 */
-
+			
 			// Cpu
 			CPU_POSITION_OFFSET = (short) (CPU_ATTRIBUTES.findByUsage(Usage.Position).offset / 4),
 			CPU_UV_OFFSET = (short) (CPU_ATTRIBUTES.findByUsage(Usage.TextureCoordinates).offset / 4),
@@ -102,30 +102,30 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 			CPU_VERTEX_SIZE = CPU_ATTRIBUTES.vertexSize / 4;
 	private final static int MAX_PARTICLES_PER_MESH = Short.MAX_VALUE / 4,
 			MAX_VERTICES_PER_MESH = MAX_PARTICLES_PER_MESH * 4;
-
+	
 	private class RenderablePool extends Pool<Renderable> {
 		public RenderablePool() {
 		}
-
+		
 		@Override
 		public Renderable newObject() {
 			return allocRenderable();
 		}
 	}
-
+	
 	public static class Config {
 		public Config() {
 		}
-
+		
 		public Config(boolean useGPU, AlignMode mode) {
 			this.useGPU = useGPU;
 			this.mode = mode;
 		}
-
+		
 		boolean useGPU;
 		AlignMode mode;
 	}
-
+	
 	private RenderablePool renderablePool;
 	private Array<Renderable> renderables;
 	private float[] vertices;
@@ -138,7 +138,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 	protected BlendingAttribute blendingAttribute;
 	protected DepthTestAttribute depthTestAttribute;
 	Shader shader;
-
+	
 	/**
 	 * Create a new BillboardParticleBatch
 	 * 
@@ -155,37 +155,37 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 		renderablePool = new RenderablePool();
 		this.blendingAttribute = blendingAttribute;
 		this.depthTestAttribute = depthTestAttribute;
-
+		
 		if (this.blendingAttribute == null)
 			this.blendingAttribute = new BlendingAttribute(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA, 1f);
 		if (this.depthTestAttribute == null)
 			this.depthTestAttribute = new DepthTestAttribute(GL20.GL_LEQUAL, false);
-
+		
 		allocIndices();
 		initRenderData();
 		ensureCapacity(capacity);
 		setUseGpu(useGPU);
 		setAlignMode(mode);
 	}
-
+	
 	public BillboardParticleBatch(AlignMode mode, boolean useGPU, int capacity) {
 		this(mode, useGPU, capacity, null, null);
 	}
-
+	
 	public BillboardParticleBatch() {
 		this(AlignMode.Screen, false, 100);
 	}
-
+	
 	public BillboardParticleBatch(int capacity) {
 		this(AlignMode.Screen, false, capacity);
 	}
-
+	
 	@Override
 	public void allocParticlesData(int capacity) {
 		vertices = new float[currentVertexSize * 4 * capacity];
 		allocRenderables(capacity);
 	}
-
+	
 	protected Renderable allocRenderable() {
 		Renderable renderable = new Renderable();
 		renderable.meshPart.primitiveType = GL20.GL_TRIANGLES;
@@ -198,7 +198,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 		renderable.shader = shader;
 		return renderable;
 	}
-
+	
 	private void allocIndices() {
 		int indicesCount = MAX_PARTICLES_PER_MESH * 6;
 		indices = new short[indicesCount];
@@ -211,7 +211,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 			indices[i + 5] = (short) vertex;
 		}
 	}
-
+	
 	private void allocRenderables(int capacity) {
 		// Free old meshes
 		int meshCount = MathUtils.ceil(capacity / MAX_PARTICLES_PER_MESH), free = renderablePool.getFree();
@@ -220,20 +220,20 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 				renderablePool.free(renderablePool.newObject());
 		}
 	}
-
+	
 	protected Shader getShader(Renderable renderable) {
 		Shader shader = useGPU ? new ParticleShader(renderable, new ParticleShader.Config(mode))
 				: new DefaultShader(renderable);
 		shader.init();
 		return shader;
 	}
-
+	
 	private void allocShader() {
 		Renderable newRenderable = allocRenderable();
 		shader = newRenderable.shader = getShader(newRenderable);
 		renderablePool.free(newRenderable);
 	}
-
+	
 	private void clearRenderablesPool() {
 		renderablePool.freeAll(renderables);
 		for (int i = 0, free = renderablePool.getFree(); i < free; ++i) {
@@ -242,7 +242,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 		}
 		renderables.clear();
 	}
-
+	
 	/** Sets vertex attributes and size */
 	public void setVertexData() {
 		if (useGPU) {
@@ -258,7 +258,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 			currentVertexSize = CPU_VERTEX_SIZE;
 		}
 	}
-
+	
 	/**
 	 * Allocates all the require rendering resources like Renderables,Shaders,Meshes
 	 * according to the current batch configuration.
@@ -269,7 +269,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 		allocShader();
 		resetCapacity();
 	}
-
+	
 	/**
 	 * Sets the current align mode. It will reallocate internal data, use only when
 	 * necessary.
@@ -283,11 +283,11 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 			}
 		}
 	}
-
+	
 	public AlignMode getAlignMode() {
 		return mode;
 	}
-
+	
 	/**
 	 * Sets the current align mode. It will reallocate internal data, use only when
 	 * necessary.
@@ -299,11 +299,11 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 			allocRenderables(bufferedParticlesCount);
 		}
 	}
-
+	
 	public boolean isUseGPU() {
 		return useGPU;
 	}
-
+	
 	public void setTexture(Texture texture) {
 		renderablePool.freeAll(renderables);
 		renderables.clear();
@@ -314,18 +314,18 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 		}
 		this.texture = texture;
 	}
-
+	
 	public Texture getTexture() {
 		return texture;
 	}
-
+	
 	@Override
 	public void begin() {
 		super.begin();
 		renderablePool.freeAll(renderables);
 		renderables.clear();
 	}
-
+	
 	// GPU
 	// Required + Color + Rotation
 	private static void putVertex(float[] vertices, int offset, float x, float y, float z, float u, float v,
@@ -348,7 +348,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 		vertices[offset + GPU_COLOR_OFFSET + 2] = b;
 		vertices[offset + GPU_COLOR_OFFSET + 3] = a;
 	}
-
+	
 	/*
 	 * //Required + Color + Rotation + Direction private static void putVertex(
 	 * float[] vertices, int offset, float x, float y, float z, float u, float v,
@@ -368,7 +368,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 	 * GPU_EXT_DIRECTION_OFFSET +1] = direction.y; vertices[offset +
 	 * GPU_EXT_DIRECTION_OFFSET +2] = direction.z; }
 	 */
-
+	
 	// CPU
 	// Required
 	private static void putVertex(float[] vertices, int offset, Vector3 p, float u, float v, float r, float g, float b,
@@ -386,7 +386,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 		vertices[offset + CPU_COLOR_OFFSET + 2] = b;
 		vertices[offset + CPU_COLOR_OFFSET + 3] = a;
 	}
-
+	
 	private void fillVerticesGPU(int[] particlesOffset) {
 		int tp = 0;
 		for (BillboardControllerRenderData data : renderData) {
@@ -417,7 +417,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 				float a = colorChannel.data[colorOffset + ParticleChannels.AlphaOffset];
 				float cosRotation = rotationChannel.data[rotationOffset + ParticleChannels.CosineOffset];
 				float sinRotation = rotationChannel.data[rotationOffset + ParticleChannels.SineOffset];
-
+				
 				// bottom left, bottom right, top right, top left
 				putVertex(vertices, baseOffset, px, py, pz, u, v2, -sx, -sy, cosRotation, sinRotation, r, g, b, a);
 				baseOffset += currentVertexSize;
@@ -430,7 +430,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 			}
 		}
 	}
-
+	
 	/*
 	 * private void fillVerticesToParticleDirectionGPU (int[] particlesOffset) { int
 	 * tp=0; for(BillboardControllerRenderData data : renderData){ FloatChannel
@@ -542,7 +542,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 	 * TMP_V6.set(-TMP_V1.x+TMP_V2.x+px, -TMP_V1.y+TMP_V2.y+py,
 	 * -TMP_V1.z+TMP_V2.z+pz), u, v, r, g, b, a); } } } }
 	 */
-
+	
 	private void fillVerticesToViewPointCPU(int[] particlesOffset) {
 		int tp = 0;
 		for (BillboardControllerRenderData data : renderData) {
@@ -551,7 +551,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 			FloatChannel positionChannel = data.positionChannel;
 			FloatChannel colorChannel = data.colorChannel;
 			FloatChannel rotationChannel = data.rotationChannel;
-
+			
 			for (int p = 0, c = data.controller.particles.size; p < c; ++p, ++tp) {
 				int baseOffset = particlesOffset[tp] * currentVertexSize * 4;
 				float scale = scaleChannel.data[p * scaleChannel.strideSize];
@@ -579,7 +579,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 						up = TMP_V2.set(look).crs(right);
 				right.scl(sx);
 				up.scl(sy);
-
+				
 				if (cosRotation != 1) {
 					TMP_M3.setToRotation(look, cosRotation, sinRotation);
 					putVertex(vertices, baseOffset,
@@ -621,12 +621,12 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 			}
 		}
 	}
-
+	
 	private void fillVerticesToScreenCPU(int[] particlesOffset) {
 		Vector3 look = TMP_V3.set(camera.direction).scl(-1), // normal
 				right = TMP_V4.set(camera.up).crs(look).nor(), // tangent
 				up = camera.up;
-
+		
 		int tp = 0;
 		for (BillboardControllerRenderData data : renderData) {
 			FloatChannel scaleChannel = data.scaleChannel;
@@ -634,7 +634,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 			FloatChannel positionChannel = data.positionChannel;
 			FloatChannel colorChannel = data.colorChannel;
 			FloatChannel rotationChannel = data.rotationChannel;
-
+			
 			for (int p = 0, c = data.controller.particles.size; p < c; ++p, ++tp) {
 				int baseOffset = particlesOffset[tp] * currentVertexSize * 4;
 				float scale = scaleChannel.data[p * scaleChannel.strideSize];
@@ -659,7 +659,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 				float sinRotation = rotationChannel.data[rotationOffset + ParticleChannels.SineOffset];
 				TMP_V1.set(right).scl(sx);
 				TMP_V2.set(up).scl(sy);
-
+				
 				if (cosRotation != 1) {
 					TMP_M3.setToRotation(look, cosRotation, sinRotation);
 					putVertex(vertices, baseOffset,
@@ -701,10 +701,10 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 			}
 		}
 	}
-
+	
 	@Override
 	protected void flush(int[] offsets) {
-
+		
 		// fill vertices
 		if (useGPU) {
 			// if(mode != AlignMode.ParticleDirection)
@@ -719,7 +719,7 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 			// else
 			// fillVerticesToParticleDirectionCPU(offsets);
 		}
-
+		
 		// send vertices to meshes
 		int addedVertexCount = 0;
 		int vCount = bufferedParticlesCount * 4;
@@ -732,20 +732,20 @@ public class BillboardParticleBatch extends BufferedParticleBatch<BillboardContr
 			renderables.add(renderable);
 		}
 	}
-
+	
 	@Override
 	public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
 		for (Renderable renderable : this.renderables)
 			renderables.add(pool.obtain().set(renderable));
 	}
-
+	
 	@Override
 	public void save(AssetManager manager, ResourceData resources) {
 		SaveData data = resources.createSaveData("billboardBatch");
 		data.save("cfg", new Config(useGPU, mode));
 		data.saveAsset(manager.getAssetFileName(texture), Texture.class);
 	}
-
+	
 	@Override
 	public void load(AssetManager manager, ResourceData resources) {
 		SaveData data = resources.getSaveData("billboardBatch");

@@ -29,17 +29,17 @@ import com.badlogic.gdx.utils.Disposable;
 public class TiledMap extends Map {
 	private TiledMapTileSets tilesets;
 	private Array<? extends Disposable> ownedResources;
-
+	
 	/** @return collection of tilesets for this map. */
 	public TiledMapTileSets getTileSets() {
 		return tilesets;
 	}
-
+	
 	/** Creates an empty TiledMap. */
 	public TiledMap() {
 		tilesets = new TiledMapTileSets();
 	}
-
+	
 	/**
 	 * Used by loaders to set resources when loading the map directly, without
 	 * {@link AssetManager}. To be disposed in {@link #dispose()}.
@@ -49,7 +49,7 @@ public class TiledMap extends Map {
 	public void setOwnedResources(Array<? extends Disposable> resources) {
 		this.ownedResources = resources;
 	}
-
+	
 	@Override
 	public void dispose() {
 		if (ownedResources != null) {

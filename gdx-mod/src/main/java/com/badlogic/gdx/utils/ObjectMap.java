@@ -38,29 +38,29 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	private static final int PRIME1 = 0xbe1f14b1;
 	private static final int PRIME2 = 0xb4b82e39;
 	private static final int PRIME3 = 0xced1c241;
-
+	
 	public int size;
-
+	
 	K[] keyTable;
 	V[] valueTable;
 	int capacity, stashSize;
-
+	
 	private float loadFactor;
 	private int hashShift, mask, threshold;
 	private int stashCapacity;
 	private int pushIterations;
-
+	
 	private Entries entries1, entries2;
 	private Values values1, values2;
 	private Keys keys1, keys2;
-
+	
 	/**
 	 * Creates a new map with an initial capacity of 51 and a load factor of 0.8.
 	 */
 	public ObjectMap() {
 		this(51, 0.8f);
 	}
-
+	
 	/**
 	 * Creates a new map with a load factor of 0.8.
 	 * 
@@ -70,7 +70,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	public ObjectMap(int initialCapacity) {
 		this(initialCapacity, 0.8f);
 	}
-
+	
 	/**
 	 * Creates a new map with the specified initial capacity and load factor. This
 	 * map will hold initialCapacity items before growing the backing table.
@@ -85,21 +85,21 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		if (initialCapacity > 1 << 30)
 			throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
 		capacity = initialCapacity;
-
+		
 		if (loadFactor <= 0)
 			throw new IllegalArgumentException("loadFactor must be > 0: " + loadFactor);
 		this.loadFactor = loadFactor;
-
+		
 		threshold = (int) (capacity * loadFactor);
 		mask = capacity - 1;
 		hashShift = 31 - Integer.numberOfTrailingZeros(capacity);
 		stashCapacity = Math.max(3, (int) Math.ceil(Math.log(capacity)) * 2);
 		pushIterations = Math.max(Math.min(capacity, 8), (int) Math.sqrt(capacity) / 8);
-
+		
 		keyTable = (K[]) new Object[capacity + stashCapacity];
 		valueTable = (V[]) new Object[keyTable.length];
 	}
-
+	
 	/** Creates a new map identical to the specified map. */
 	public ObjectMap(ObjectMap<? extends K, ? extends V> map) {
 		this((int) Math.floor(map.capacity * map.loadFactor), map.loadFactor);
@@ -108,17 +108,17 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		System.arraycopy(map.valueTable, 0, valueTable, 0, map.valueTable.length);
 		size = map.size;
 	}
-
+	
 	/** Returns the old value associated with the specified key, or null. */
 	public V put(K key, V value) {
 		if (key == null)
 			throw new IllegalArgumentException("key cannot be null.");
 		return put_internal(key, value);
 	}
-
+	
 	private V put_internal(K key, V value) {
 		K[] keyTable = this.keyTable;
-
+		
 		// Check for existing keys.
 		int hashCode = key.hashCode();
 		int index1 = hashCode & mask;
@@ -128,7 +128,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			valueTable[index1] = value;
 			return oldValue;
 		}
-
+		
 		int index2 = hash2(hashCode);
 		K key2 = keyTable[index2];
 		if (key.equals(key2)) {
@@ -136,7 +136,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			valueTable[index2] = value;
 			return oldValue;
 		}
-
+		
 		int index3 = hash3(hashCode);
 		K key3 = keyTable[index3];
 		if (key.equals(key3)) {
@@ -144,7 +144,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			valueTable[index3] = value;
 			return oldValue;
 		}
-
+		
 		// Update key in the stash.
 		for (int i = capacity, n = i + stashSize; i < n; i++) {
 			if (key.equals(keyTable[i])) {
@@ -153,7 +153,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 				return oldValue;
 			}
 		}
-
+		
 		// Check for empty buckets.
 		if (key1 == null) {
 			keyTable[index1] = key;
@@ -162,7 +162,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 				resize(capacity << 1);
 			return null;
 		}
-
+		
 		if (key2 == null) {
 			keyTable[index2] = key;
 			valueTable[index2] = value;
@@ -170,7 +170,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 				resize(capacity << 1);
 			return null;
 		}
-
+		
 		if (key3 == null) {
 			keyTable[index3] = key;
 			valueTable[index3] = value;
@@ -178,17 +178,17 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 				resize(capacity << 1);
 			return null;
 		}
-
+		
 		push(key, value, index1, key1, index2, key2, index3, key3);
 		return null;
 	}
-
+	
 	public void putAll(ObjectMap<K, V> map) {
 		ensureCapacity(map.size);
 		for (Entry<K, V> entry : map)
 			put(entry.key, entry.value);
 	}
-
+	
 	/** Skips checks for existing keys. */
 	private void putResize(K key, V value) {
 		// Check for empty buckets.
@@ -202,7 +202,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 				resize(capacity << 1);
 			return;
 		}
-
+		
 		int index2 = hash2(hashCode);
 		K key2 = keyTable[index2];
 		if (key2 == null) {
@@ -212,7 +212,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 				resize(capacity << 1);
 			return;
 		}
-
+		
 		int index3 = hash3(hashCode);
 		K key3 = keyTable[index3];
 		if (key3 == null) {
@@ -222,15 +222,15 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 				resize(capacity << 1);
 			return;
 		}
-
+		
 		push(key, value, index1, key1, index2, key2, index3, key3);
 	}
-
+	
 	private void push(K insertKey, V insertValue, int index1, K key1, int index2, K key2, int index3, K key3) {
 		K[] keyTable = this.keyTable;
 		V[] valueTable = this.valueTable;
 		int mask = this.mask;
-
+		
 		// Push keys until an empty bucket is found.
 		K evictedKey;
 		V evictedValue;
@@ -257,7 +257,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 				valueTable[index3] = insertValue;
 				break;
 			}
-
+			
 			// If the evicted key hashes to an empty bucket, put it there and stop.
 			int hashCode = evictedKey.hashCode();
 			index1 = hashCode & mask;
@@ -269,7 +269,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 					resize(capacity << 1);
 				return;
 			}
-
+			
 			index2 = hash2(hashCode);
 			key2 = keyTable[index2];
 			if (key2 == null) {
@@ -279,7 +279,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 					resize(capacity << 1);
 				return;
 			}
-
+			
 			index3 = hash3(hashCode);
 			key3 = keyTable[index3];
 			if (key3 == null) {
@@ -289,17 +289,17 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 					resize(capacity << 1);
 				return;
 			}
-
+			
 			if (++i == pushIterations)
 				break;
-
+			
 			insertKey = evictedKey;
 			insertValue = evictedValue;
 		} while (true);
-
+		
 		putStash(evictedKey, evictedValue);
 	}
-
+	
 	private void putStash(K key, V value) {
 		if (stashSize == stashCapacity) {
 			// Too many pushes occurred and the stash is full, increase the table size.
@@ -314,7 +314,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		stashSize++;
 		size++;
 	}
-
+	
 	/**
 	 * Returns the value for the specified key, or null if the key is not in the
 	 * map.
@@ -332,7 +332,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		}
 		return valueTable[index];
 	}
-
+	
 	/**
 	 * Returns the value for the specified key, or the default value if the key is
 	 * not in the map.
@@ -350,7 +350,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		}
 		return valueTable[index];
 	}
-
+	
 	private V getStash(K key, V defaultValue) {
 		K[] keyTable = this.keyTable;
 		for (int i = capacity, n = i + stashSize; i < n; i++)
@@ -358,7 +358,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 				return valueTable[i];
 		return defaultValue;
 	}
-
+	
 	public V remove(K key) {
 		int hashCode = key.hashCode();
 		int index = hashCode & mask;
@@ -369,7 +369,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			size--;
 			return oldValue;
 		}
-
+		
 		index = hash2(hashCode);
 		if (key.equals(keyTable[index])) {
 			keyTable[index] = null;
@@ -378,7 +378,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			size--;
 			return oldValue;
 		}
-
+		
 		index = hash3(hashCode);
 		if (key.equals(keyTable[index])) {
 			keyTable[index] = null;
@@ -387,10 +387,10 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			size--;
 			return oldValue;
 		}
-
+		
 		return removeStash(key);
 	}
-
+	
 	V removeStash(K key) {
 		K[] keyTable = this.keyTable;
 		for (int i = capacity, n = i + stashSize; i < n; i++) {
@@ -403,7 +403,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		}
 		return null;
 	}
-
+	
 	void removeStashIndex(int index) {
 		// If the removed location was not last, move the last tuple to the removed
 		// location.
@@ -416,12 +416,12 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		} else
 			valueTable[index] = null;
 	}
-
+	
 	/** Returns true if the map is empty. */
 	public boolean isEmpty() {
 		return size == 0;
 	}
-
+	
 	/**
 	 * Reduces the size of the backing arrays to be the specified capacity or less.
 	 * If the capacity is already less, nothing is done. If the map contains more
@@ -438,7 +438,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		maximumCapacity = MathUtils.nextPowerOfTwo(maximumCapacity);
 		resize(maximumCapacity);
 	}
-
+	
 	/**
 	 * Clears the map and reduces the size of the backing arrays to be the specified
 	 * capacity if they are larger.
@@ -451,7 +451,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		size = 0;
 		resize(maximumCapacity);
 	}
-
+	
 	public void clear() {
 		if (size == 0)
 			return;
@@ -464,7 +464,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		size = 0;
 		stashSize = 0;
 	}
-
+	
 	/**
 	 * Returns true if the specified value is in the map. Note this traverses the
 	 * entire map and compares every value, which may be an expensive operation.
@@ -490,7 +490,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		}
 		return false;
 	}
-
+	
 	public boolean containsKey(K key) {
 		int hashCode = key.hashCode();
 		int index = hashCode & mask;
@@ -504,7 +504,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		}
 		return true;
 	}
-
+	
 	private boolean containsKeyStash(K key) {
 		K[] keyTable = this.keyTable;
 		for (int i = capacity, n = i + stashSize; i < n; i++)
@@ -512,7 +512,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 				return true;
 		return false;
 	}
-
+	
 	/**
 	 * Returns the key for the specified value, or null if it is not in the map.
 	 * Note this traverses the entire map and compares every value, which may be an
@@ -539,7 +539,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		}
 		return null;
 	}
-
+	
 	/**
 	 * Increases the size of the backing array to accommodate the specified number
 	 * of additional items. Useful before adding many items to avoid multiple
@@ -550,23 +550,23 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		if (sizeNeeded >= threshold)
 			resize(MathUtils.nextPowerOfTwo((int) Math.ceil(sizeNeeded / loadFactor)));
 	}
-
+	
 	private void resize(int newSize) {
 		int oldEndIndex = capacity + stashSize;
-
+		
 		capacity = newSize;
 		threshold = (int) (newSize * loadFactor);
 		mask = newSize - 1;
 		hashShift = 31 - Integer.numberOfTrailingZeros(newSize);
 		stashCapacity = Math.max(3, (int) Math.ceil(Math.log(newSize)) * 2);
 		pushIterations = Math.max(Math.min(newSize, 8), (int) Math.sqrt(newSize) / 8);
-
+		
 		K[] oldKeyTable = keyTable;
 		V[] oldValueTable = valueTable;
-
+		
 		keyTable = (K[]) new Object[newSize + stashCapacity];
 		valueTable = (V[]) new Object[newSize + stashCapacity];
-
+		
 		int oldSize = size;
 		size = 0;
 		stashSize = 0;
@@ -578,17 +578,17 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			}
 		}
 	}
-
+	
 	private int hash2(int h) {
 		h *= PRIME2;
 		return (h ^ h >>> hashShift) & mask;
 	}
-
+	
 	private int hash3(int h) {
 		h *= PRIME3;
 		return (h ^ h >>> hashShift) & mask;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		int h = 0;
@@ -598,7 +598,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			K key = keyTable[i];
 			if (key != null) {
 				h += key.hashCode() * 31;
-
+				
 				V value = valueTable[i];
 				if (value != null) {
 					h += value.hashCode();
@@ -607,7 +607,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		}
 		return h;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == this)
@@ -636,16 +636,16 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		}
 		return true;
 	}
-
+	
 	public String toString(String separator) {
 		return toString(separator, false);
 	}
-
+	
 	@Override
 	public String toString() {
 		return toString(", ", true);
 	}
-
+	
 	private String toString(String separator, boolean braces) {
 		if (size == 0)
 			return braces ? "{}" : "";
@@ -677,12 +677,12 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			buffer.append('}');
 		return buffer.toString();
 	}
-
+	
 	@Override
 	public Entries<K, V> iterator() {
 		return entries();
 	}
-
+	
 	/**
 	 * Returns an iterator for the entries in the map. Remove is supported. Note
 	 * that the same iterator instance is returned each time this method is called.
@@ -704,7 +704,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		entries1.valid = false;
 		return entries2;
 	}
-
+	
 	/**
 	 * Returns an iterator for the values in the map. Remove is supported. Note that
 	 * the same iterator instance is returned each time this method is called. Use
@@ -726,7 +726,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		values1.valid = false;
 		return values2;
 	}
-
+	
 	/**
 	 * Returns an iterator for the keys in the map. Remove is supported. Note that
 	 * the same iterator instance is returned each time this method is called. Use
@@ -748,35 +748,35 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		keys1.valid = false;
 		return keys2;
 	}
-
+	
 	static public class Entry<K, V> {
 		public K key;
 		public V value;
-
+		
 		@Override
 		public String toString() {
 			return key + "=" + value;
 		}
 	}
-
+	
 	static private abstract class MapIterator<K, V, I> implements Iterable<I>, Iterator<I> {
 		public boolean hasNext;
-
+		
 		final ObjectMap<K, V> map;
 		int nextIndex, currentIndex;
 		boolean valid = true;
-
+		
 		public MapIterator(ObjectMap<K, V> map) {
 			this.map = map;
 			reset();
 		}
-
+		
 		public void reset() {
 			currentIndex = -1;
 			nextIndex = -1;
 			findNextIndex();
 		}
-
+		
 		void findNextIndex() {
 			hasNext = false;
 			K[] keyTable = map.keyTable;
@@ -787,7 +787,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 				}
 			}
 		}
-
+		
 		@Override
 		public void remove() {
 			if (currentIndex < 0)
@@ -804,14 +804,14 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			map.size--;
 		}
 	}
-
+	
 	static public class Entries<K, V> extends MapIterator<K, V, Entry<K, V>> {
 		Entry<K, V> entry = new Entry();
-
+		
 		public Entries(ObjectMap<K, V> map) {
 			super(map);
 		}
-
+		
 		/** Note the same entry instance is returned each time this method is called. */
 		@Override
 		public Entry<K, V> next() {
@@ -826,32 +826,32 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			findNextIndex();
 			return entry;
 		}
-
+		
 		@Override
 		public boolean hasNext() {
 			if (!valid)
 				throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			return hasNext;
 		}
-
+		
 		@Override
 		public Entries<K, V> iterator() {
 			return this;
 		}
 	}
-
+	
 	static public class Values<V> extends MapIterator<Object, V, V> {
 		public Values(ObjectMap<?, V> map) {
 			super((ObjectMap<Object, V>) map);
 		}
-
+		
 		@Override
 		public boolean hasNext() {
 			if (!valid)
 				throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			return hasNext;
 		}
-
+		
 		@Override
 		public V next() {
 			if (!hasNext)
@@ -863,17 +863,17 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			findNextIndex();
 			return value;
 		}
-
+		
 		@Override
 		public Values<V> iterator() {
 			return this;
 		}
-
+		
 		/** Returns a new array containing the remaining values. */
 		public Array<V> toArray() {
 			return toArray(new Array(true, map.size));
 		}
-
+		
 		/** Adds the remaining values to the specified array. */
 		public Array<V> toArray(Array<V> array) {
 			while (hasNext)
@@ -881,19 +881,19 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			return array;
 		}
 	}
-
+	
 	static public class Keys<K> extends MapIterator<K, Object, K> {
 		public Keys(ObjectMap<K, ?> map) {
 			super((ObjectMap<K, Object>) map);
 		}
-
+		
 		@Override
 		public boolean hasNext() {
 			if (!valid)
 				throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			return hasNext;
 		}
-
+		
 		@Override
 		public K next() {
 			if (!hasNext)
@@ -905,17 +905,17 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			findNextIndex();
 			return key;
 		}
-
+		
 		@Override
 		public Keys<K> iterator() {
 			return this;
 		}
-
+		
 		/** Returns a new array containing the remaining keys. */
 		public Array<K> toArray() {
 			return toArray(new Array(true, map.size));
 		}
-
+		
 		/** Adds the remaining keys to the array. */
 		public Array<K> toArray(Array<K> array) {
 			while (hasNext)

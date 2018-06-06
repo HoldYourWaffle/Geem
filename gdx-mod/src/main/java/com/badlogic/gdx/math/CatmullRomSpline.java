@@ -36,7 +36,7 @@ public class CatmullRomSpline<T extends Vector<T>> implements Path<T> {
 		u -= i;
 		return calculate(out, i, u, points, continuous, tmp);
 	}
-
+	
 	/**
 	 * Calculates the catmullrom value for the given span (i) at the given position
 	 * (u).
@@ -64,7 +64,7 @@ public class CatmullRomSpline<T extends Vector<T>> implements Path<T> {
 			out.add(tmp.set(points[(i + 2) % n]).scl(0.5f * u3 - 0.5f * u2));
 		return out;
 	}
-
+	
 	/**
 	 * Calculates the derivative of the catmullrom spline for the given position
 	 * (t).
@@ -84,7 +84,7 @@ public class CatmullRomSpline<T extends Vector<T>> implements Path<T> {
 		u -= i;
 		return derivative(out, i, u, points, continuous, tmp);
 	}
-
+	
 	/**
 	 * Calculates the derivative of the catmullrom spline for the given span (i) at
 	 * the given position (u).
@@ -116,21 +116,21 @@ public class CatmullRomSpline<T extends Vector<T>> implements Path<T> {
 			out.add(tmp.set(points[(i + 2) % n]).scl(-u + u2 * 1.5f));
 		return out;
 	}
-
+	
 	public T[] controlPoints;
 	public boolean continuous;
 	public int spanCount;
 	private T tmp;
 	private T tmp2;
 	private T tmp3;
-
+	
 	public CatmullRomSpline() {
 	}
-
+	
 	public CatmullRomSpline(final T[] controlPoints, final boolean continuous) {
 		set(controlPoints, continuous);
 	}
-
+	
 	public CatmullRomSpline set(final T[] controlPoints, final boolean continuous) {
 		if (tmp == null)
 			tmp = controlPoints[0].cpy();
@@ -143,7 +143,7 @@ public class CatmullRomSpline<T extends Vector<T>> implements Path<T> {
 		this.spanCount = continuous ? controlPoints.length : controlPoints.length - 3;
 		return this;
 	}
-
+	
 	@Override
 	public T valueAt(T out, float t) {
 		final int n = spanCount;
@@ -152,12 +152,12 @@ public class CatmullRomSpline<T extends Vector<T>> implements Path<T> {
 		u -= i;
 		return valueAt(out, i, u);
 	}
-
+	
 	/** @return The value of the spline at position u of the specified span */
 	public T valueAt(final T out, final int span, final float u) {
 		return calculate(out, continuous ? span : (span + 1), u, controlPoints, continuous, tmp);
 	}
-
+	
 	@Override
 	public T derivativeAt(T out, float t) {
 		final int n = spanCount;
@@ -166,17 +166,17 @@ public class CatmullRomSpline<T extends Vector<T>> implements Path<T> {
 		u -= i;
 		return derivativeAt(out, i, u);
 	}
-
+	
 	/** @return The derivative of the spline at position u of the specified span */
 	public T derivativeAt(final T out, final int span, final float u) {
 		return derivative(out, continuous ? span : (span + 1), u, controlPoints, continuous, tmp);
 	}
-
+	
 	/** @return The span closest to the specified value */
 	public int nearest(final T in) {
 		return nearest(in, 0, spanCount);
 	}
-
+	
 	/**
 	 * @return The span closest to the specified value, restricting to the specified
 	 *         spans.
@@ -196,16 +196,16 @@ public class CatmullRomSpline<T extends Vector<T>> implements Path<T> {
 		}
 		return result;
 	}
-
+	
 	@Override
 	public float approximate(T v) {
 		return approximate(v, nearest(v));
 	}
-
+	
 	public float approximate(final T in, int start, final int count) {
 		return approximate(in, nearest(in, start, count));
 	}
-
+	
 	public float approximate(final T in, final int near) {
 		int n = near;
 		final T nearest = controlPoints[n];
@@ -232,12 +232,12 @@ public class CatmullRomSpline<T extends Vector<T>> implements Path<T> {
 		float u = MathUtils.clamp((L1 - s) / L1, 0f, 1f);
 		return (n + u) / spanCount;
 	}
-
+	
 	@Override
 	public float locate(T v) {
 		return approximate(v);
 	}
-
+	
 	@Override
 	public float approxLength(int samples) {
 		float tempLength = 0;

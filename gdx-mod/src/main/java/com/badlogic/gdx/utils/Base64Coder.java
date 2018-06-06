@@ -33,7 +33,7 @@ public class Base64Coder {
 	public static class CharMap {
 		protected final char[] encodingMap = new char[64];
 		protected final byte[] decodingMap = new byte[128];
-
+		
 		public CharMap(char char63, char char64) {
 			int i = 0;
 			for (char c = 'A'; c <= 'Z'; c++) {
@@ -54,21 +54,21 @@ public class Base64Coder {
 				decodingMap[encodingMap[i]] = (byte) i;
 			}
 		}
-
+		
 		public byte[] getDecodingMap() {
 			return decodingMap;
 		}
-
+		
 		public char[] getEncodingMap() {
 			return encodingMap;
 		}
 	}
-
+	
 	// The line separator string of the operating system.
 	private static final String systemLineSeparator = "\n";
-
+	
 	public static final CharMap regularMap = new CharMap('+', '/'), urlsafeMap = new CharMap('-', '_');
-
+	
 	/**
 	 * Encodes a string into Base64 format. No blanks or line breaks are inserted.
 	 * 
@@ -78,11 +78,11 @@ public class Base64Coder {
 	public static String encodeString(String s) {
 		return encodeString(s, false);
 	}
-
+	
 	public static String encodeString(String s, boolean useUrlsafeEncoding) {
 		return new String(encode(s.getBytes(), useUrlsafeEncoding ? urlsafeMap.encodingMap : regularMap.encodingMap));
 	}
-
+	
 	/**
 	 * Encodes a byte array into Base 64 format and breaks the output into lines of
 	 * 76 characters. This method is compatible with
@@ -94,12 +94,12 @@ public class Base64Coder {
 	public static String encodeLines(byte[] in) {
 		return encodeLines(in, 0, in.length, 76, systemLineSeparator, regularMap.encodingMap);
 	}
-
+	
 	public static String encodeLines(byte[] in, int iOff, int iLen, int lineLen, String lineSeparator,
 			CharMap charMap) {
 		return encodeLines(in, iOff, iLen, lineLen, lineSeparator, charMap.encodingMap);
 	}
-
+	
 	/**
 	 * Encodes a byte array into Base 64 format and breaks the output into lines.
 	 * 
@@ -132,7 +132,7 @@ public class Base64Coder {
 		}
 		return buf.toString();
 	}
-
+	
 	/**
 	 * Encodes a byte array into Base64 format. No blanks or line breaks are
 	 * inserted in the output.
@@ -143,15 +143,15 @@ public class Base64Coder {
 	public static char[] encode(byte[] in) {
 		return encode(in, regularMap.encodingMap);
 	}
-
+	
 	public static char[] encode(byte[] in, CharMap charMap) {
 		return encode(in, 0, in.length, charMap);
 	}
-
+	
 	public static char[] encode(byte[] in, char[] charMap) {
 		return encode(in, 0, in.length, charMap);
 	}
-
+	
 	/**
 	 * Encodes a byte array into Base64 format. No blanks or line breaks are
 	 * inserted in the output.
@@ -163,11 +163,11 @@ public class Base64Coder {
 	public static char[] encode(byte[] in, int iLen) {
 		return encode(in, 0, iLen, regularMap.encodingMap);
 	}
-
+	
 	public static char[] encode(byte[] in, int iOff, int iLen, CharMap charMap) {
 		return encode(in, iOff, iLen, charMap.encodingMap);
 	}
-
+	
 	/**
 	 * Encodes a byte array into Base64 format. No blanks or line breaks are
 	 * inserted in the output.
@@ -203,7 +203,7 @@ public class Base64Coder {
 		}
 		return out;
 	}
-
+	
 	/**
 	 * Decodes a string from Base64 format. No blanks or line breaks are allowed
 	 * within the Base64 encoded input data.
@@ -216,20 +216,20 @@ public class Base64Coder {
 	public static String decodeString(String s) {
 		return decodeString(s, false);
 	}
-
+	
 	public static String decodeString(String s, boolean useUrlSafeEncoding) {
 		return new String(
 				decode(s.toCharArray(), useUrlSafeEncoding ? urlsafeMap.decodingMap : regularMap.decodingMap));
 	}
-
+	
 	public static byte[] decodeLines(String s) {
 		return decodeLines(s, regularMap.decodingMap);
 	}
-
+	
 	public static byte[] decodeLines(String s, CharMap inverseCharMap) {
 		return decodeLines(s, inverseCharMap.decodingMap);
 	}
-
+	
 	/**
 	 * Decodes a byte array from Base64 format and ignores line separators, tabs and
 	 * blanks. CR, LF, Tab and Space characters are ignored in the input data. This
@@ -253,7 +253,7 @@ public class Base64Coder {
 		}
 		return decode(buf, 0, p, inverseCharMap);
 	}
-
+	
 	/**
 	 * Decodes a byte array from Base64 format. No blanks or line breaks are allowed
 	 * within the Base64 encoded input data.
@@ -266,7 +266,7 @@ public class Base64Coder {
 	public static byte[] decode(String s) {
 		return decode(s.toCharArray());
 	}
-
+	
 	/**
 	 * Decodes a byte array from Base64 format. No blanks or line breaks are allowed
 	 * within the Base64 encoded input data.
@@ -280,15 +280,15 @@ public class Base64Coder {
 	public static byte[] decode(String s, CharMap inverseCharMap) {
 		return decode(s.toCharArray(), inverseCharMap);
 	}
-
+	
 	public static byte[] decode(char[] in, byte[] inverseCharMap) {
 		return decode(in, 0, in.length, inverseCharMap);
 	}
-
+	
 	public static byte[] decode(char[] in, CharMap inverseCharMap) {
 		return decode(in, 0, in.length, inverseCharMap);
 	}
-
+	
 	/**
 	 * Decodes a byte array from Base64 format. No blanks or line breaks are allowed
 	 * within the Base64 encoded input data.
@@ -301,11 +301,11 @@ public class Base64Coder {
 	public static byte[] decode(char[] in) {
 		return decode(in, 0, in.length, regularMap.decodingMap);
 	}
-
+	
 	public static byte[] decode(char[] in, int iOff, int iLen, CharMap inverseCharMap) {
 		return decode(in, iOff, iLen, inverseCharMap.decodingMap);
 	}
-
+	
 	/**
 	 * Decodes a byte array from Base64 format. No blanks or line breaks are allowed
 	 * within the Base64 encoded input data.
@@ -360,7 +360,7 @@ public class Base64Coder {
 		}
 		return out;
 	}
-
+	
 	// Dummy constructor.
 	private Base64Coder() {
 	}

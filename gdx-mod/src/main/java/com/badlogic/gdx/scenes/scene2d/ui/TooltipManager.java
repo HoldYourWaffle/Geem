@@ -40,7 +40,7 @@ import com.badlogic.gdx.utils.Timer.Task;
 public class TooltipManager {
 	static private TooltipManager instance;
 	static private Files files;
-
+	
 	/**
 	 * Seconds from when an actor is hovered to when the tooltip is shown. Default
 	 * is 2. Call {@link #hideAll()} after changing to reset internal state.
@@ -72,9 +72,9 @@ public class TooltipManager {
 	 * the actor will be shown on the other side of the mouse cursor. Default is 7.
 	 */
 	public float edgeDistance = 7;
-
+	
 	final Array<Tooltip> shown = new Array();
-
+	
 	float time = initialTime;
 	final Task resetTask = new Task() {
 		@Override
@@ -82,31 +82,31 @@ public class TooltipManager {
 			time = initialTime;
 		}
 	};
-
+	
 	Tooltip showTooltip;
 	final Task showTask = new Task() {
 		@Override
 		public void run() {
 			if (showTooltip == null || showTooltip.targetActor == null)
 				return;
-
+			
 			Stage stage = showTooltip.targetActor.getStage();
 			if (stage == null)
 				return;
 			stage.addActor(showTooltip.container);
 			showTooltip.container.toFront();
 			shown.add(showTooltip);
-
+			
 			showTooltip.container.clearActions();
 			showAction(showTooltip);
-
+			
 			if (!showTooltip.instant) {
 				time = subsequentTime;
 				resetTask.cancel();
 			}
 		}
 	};
-
+	
 	public void touchDown(Tooltip tooltip) {
 		showTask.cancel();
 		if (tooltip.container.remove())
@@ -117,7 +117,7 @@ public class TooltipManager {
 			Timer.schedule(showTask, time);
 		}
 	}
-
+	
 	public void enter(Tooltip tooltip) {
 		showTooltip = tooltip;
 		showTask.cancel();
@@ -128,7 +128,7 @@ public class TooltipManager {
 				Timer.schedule(showTask, time);
 		}
 	}
-
+	
 	public void hide(Tooltip tooltip) {
 		showTooltip = null;
 		showTask.cancel();
@@ -139,7 +139,7 @@ public class TooltipManager {
 			Timer.schedule(resetTask, resetTime);
 		}
 	}
-
+	
 	/**
 	 * Called when tooltip is shown. Default implementation sets actions to animate
 	 * showing.
@@ -151,7 +151,7 @@ public class TooltipManager {
 		tooltip.container.setScale(0.05f);
 		tooltip.container.addAction(parallel(fadeIn(actionTime, fade), scaleTo(1, 1, actionTime, Interpolation.fade)));
 	}
-
+	
 	/**
 	 * Called when tooltip is hidden. Default implementation sets actions to animate
 	 * hiding and to remove the actor from the stage when the actions are complete.
@@ -161,18 +161,18 @@ public class TooltipManager {
 		tooltip.container.addAction(sequence(
 				parallel(alpha(0.2f, 0.2f, fade), scaleTo(0.05f, 0.05f, 0.2f, Interpolation.fade)), removeActor()));
 	}
-
+	
 	public void hideAll() {
 		resetTask.cancel();
 		showTask.cancel();
 		time = initialTime;
 		showTooltip = null;
-
+		
 		for (Tooltip tooltip : shown)
 			tooltip.hide();
 		shown.clear();
 	}
-
+	
 	/**
 	 * Shows all tooltips on hover without a delay for {@link #resetTime} seconds.
 	 */
@@ -181,7 +181,7 @@ public class TooltipManager {
 		showTask.run();
 		showTask.cancel();
 	}
-
+	
 	static public TooltipManager getInstance() {
 		if (files == null || files != Gdx.files) {
 			files = Gdx.files;

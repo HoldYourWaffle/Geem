@@ -29,20 +29,20 @@ import com.badlogic.gdx.utils.NumberUtils;
  */
 public class Vector2 implements Serializable, Vector<Vector2> {
 	private static final long serialVersionUID = 913902788239530931L;
-
+	
 	public final static Vector2 X = new Vector2(1, 0);
 	public final static Vector2 Y = new Vector2(0, 1);
 	public final static Vector2 Zero = new Vector2(0, 0);
-
+	
 	/** the x-component of this vector **/
 	public float x;
 	/** the y-component of this vector **/
 	public float y;
-
+	
 	/** Constructs a new vector at (0,0) */
 	public Vector2() {
 	}
-
+	
 	/**
 	 * Constructs a vector with the given components
 	 * 
@@ -55,10 +55,10 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	}
 	
 	public Vector2(double x, double y) {
-		this.x = (float)x;
-		this.y = (float)y;
+		this.x = (float) x;
+		this.y = (float) y;
 	}
-
+	
 	/**
 	 * Constructs a vector from the given vector
 	 * 
@@ -67,37 +67,37 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	public Vector2(Vector2 v) {
 		set(v);
 	}
-
+	
 	@Override
 	public Vector2 cpy() {
 		return new Vector2(this);
 	}
-
+	
 	public static float len(float x, float y) {
 		return (float) Math.sqrt(x * x + y * y);
 	}
-
+	
 	@Override
 	public float len() {
 		return (float) Math.sqrt(x * x + y * y);
 	}
-
+	
 	public static float len2(float x, float y) {
 		return x * x + y * y;
 	}
-
+	
 	@Override
 	public float len2() {
 		return x * x + y * y;
 	}
-
+	
 	@Override
 	public Vector2 set(Vector2 v) {
 		x = v.x;
 		y = v.y;
 		return this;
 	}
-
+	
 	/**
 	 * Sets the components of this vector
 	 * 
@@ -110,7 +110,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		this.y = y;
 		return this;
 	}
-
+	
 	@Override
 	public Vector2 sub(Vector2 v) {
 		x -= v.x;
@@ -130,7 +130,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		this.y -= y;
 		return this;
 	}
-
+	
 	@Override
 	public Vector2 nor() {
 		float len = len();
@@ -140,14 +140,14 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		}
 		return this;
 	}
-
+	
 	@Override
 	public Vector2 add(Vector2 v) {
 		x += v.x;
 		y += v.y;
 		return this;
 	}
-
+	
 	/**
 	 * Adds the given components to this vector
 	 * 
@@ -160,27 +160,27 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		this.y += y;
 		return this;
 	}
-
+	
 	public static float dot(float x1, float y1, float x2, float y2) {
 		return x1 * x2 + y1 * y2;
 	}
-
+	
 	@Override
 	public float dot(Vector2 v) {
 		return x * v.x + y * v.y;
 	}
-
+	
 	public float dot(float ox, float oy) {
 		return x * ox + y * oy;
 	}
-
+	
 	@Override
 	public Vector2 scl(float scalar) {
 		x *= scalar;
 		y *= scalar;
 		return this;
 	}
-
+	
 	/**
 	 * Multiplies this vector by a scalar
 	 * 
@@ -191,41 +191,41 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		this.y *= y;
 		return this;
 	}
-
+	
 	@Override
 	public Vector2 scl(Vector2 v) {
 		this.x *= v.x;
 		this.y *= v.y;
 		return this;
 	}
-
+	
 	@Override
 	public Vector2 mulAdd(Vector2 vec, float scalar) {
 		this.x += vec.x * scalar;
 		this.y += vec.y * scalar;
 		return this;
 	}
-
+	
 	@Override
 	public Vector2 mulAdd(Vector2 vec, Vector2 mulVec) {
 		this.x += vec.x * mulVec.x;
 		this.y += vec.y * mulVec.y;
 		return this;
 	}
-
+	
 	public static float dst(float x1, float y1, float x2, float y2) {
 		final float x_d = x2 - x1;
 		final float y_d = y2 - y1;
 		return (float) Math.sqrt(x_d * x_d + y_d * y_d);
 	}
-
+	
 	@Override
 	public float dst(Vector2 v) {
 		final float x_d = v.x - x;
 		final float y_d = v.y - y;
 		return (float) Math.sqrt(x_d * x_d + y_d * y_d);
 	}
-
+	
 	/**
 	 * @param x The x-component of the other vector
 	 * @param y The y-component of the other vector
@@ -236,20 +236,20 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		final float y_d = y - this.y;
 		return (float) Math.sqrt(x_d * x_d + y_d * y_d);
 	}
-
+	
 	public static float dst2(float x1, float y1, float x2, float y2) {
 		final float x_d = x2 - x1;
 		final float y_d = y2 - y1;
 		return x_d * x_d + y_d * y_d;
 	}
-
+	
 	@Override
 	public float dst2(Vector2 v) {
 		final float x_d = v.x - x;
 		final float y_d = v.y - y;
 		return x_d * x_d + y_d * y_d;
 	}
-
+	
 	/**
 	 * @param x The x-component of the other vector
 	 * @param y The y-component of the other vector
@@ -260,12 +260,12 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		final float y_d = y - this.y;
 		return x_d * x_d + y_d * y_d;
 	}
-
+	
 	@Override
 	public Vector2 limit(float limit) {
 		return limit2(limit * limit);
 	}
-
+	
 	@Override
 	public Vector2 limit2(float limit2) {
 		float len2 = len2();
@@ -274,7 +274,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		}
 		return this;
 	}
-
+	
 	@Override
 	public Vector2 clamp(float min, float max) {
 		final float len2 = len2();
@@ -288,18 +288,18 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 			return scl((float) Math.sqrt(min2 / len2));
 		return this;
 	}
-
+	
 	@Override
 	public Vector2 setLength(float len) {
 		return setLength2(len * len);
 	}
-
+	
 	@Override
 	public Vector2 setLength2(float len2) {
 		float oldLen2 = len2();
 		return (oldLen2 == 0 || oldLen2 == len2) ? this : scl((float) Math.sqrt(len2 / oldLen2));
 	}
-
+	
 	/**
 	 * Converts this {@code Vector2} to a string in the format {@code (x,y)}.
 	 * 
@@ -309,7 +309,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	public String toString() {
 		return "(" + x + "," + y + ")";
 	}
-
+	
 	/**
 	 * Sets this {@code Vector2} to the value represented by the specified string
 	 * according to the format of {@link #toString()}.
@@ -330,7 +330,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		}
 		throw new GdxRuntimeException("Malformed Vector2: " + v);
 	}
-
+	
 	/**
 	 * Left-multiplies this vector by the given matrix
 	 * 
@@ -344,7 +344,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		this.y = y;
 		return this;
 	}
-
+	
 	/**
 	 * Calculates the 2D cross product between this and the given vector.
 	 * 
@@ -354,7 +354,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	public float crs(Vector2 v) {
 		return this.x * v.y - this.y * v.x;
 	}
-
+	
 	/**
 	 * Calculates the 2D cross product between this and the given vector.
 	 * 
@@ -365,7 +365,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	public float crs(float x, float y) {
 		return this.x * y - this.y * x;
 	}
-
+	
 	/**
 	 * @return the angle in degrees of this vector (point) relative to the x-axis.
 	 *         Angles are towards the positive y-axis (typically counter-clockwise)
@@ -377,7 +377,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 			angle += 360;
 		return angle;
 	}
-
+	
 	/**
 	 * @return the angle in degrees of this vector (point) relative to the given
 	 *         vector. Angles are towards the positive y-axis (typically
@@ -386,7 +386,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	public float angle(Vector2 reference) {
 		return (float) Math.atan2(crs(reference), dot(reference)) * MathUtils.radiansToDegrees;
 	}
-
+	
 	/**
 	 * @return the angle in radians of this vector (point) relative to the x-axis.
 	 *         Angles are towards the positive y-axis. (typically counter-clockwise)
@@ -394,7 +394,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	public float angleRad() {
 		return (float) Math.atan2(y, x);
 	}
-
+	
 	/**
 	 * @return the angle in radians of this vector (point) relative to the given
 	 *         vector. Angles are towards the positive y-axis. (typically
@@ -403,7 +403,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	public float angleRad(Vector2 reference) {
 		return (float) Math.atan2(crs(reference), dot(reference));
 	}
-
+	
 	/**
 	 * Sets the angle of the vector in degrees relative to the x-axis, towards the
 	 * positive y-axis (typically counter-clockwise).
@@ -413,7 +413,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	public Vector2 setAngle(float degrees) {
 		return setAngleRad(degrees * MathUtils.degreesToRadians);
 	}
-
+	
 	/**
 	 * Sets the angle of the vector in radians relative to the x-axis, towards the
 	 * positive y-axis (typically counter-clockwise).
@@ -423,10 +423,10 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	public Vector2 setAngleRad(float radians) {
 		this.set(len(), 0f);
 		this.rotateRad(radians);
-
+		
 		return this;
 	}
-
+	
 	/**
 	 * Rotates the Vector2 by the given angle, counter-clockwise assuming the y-axis
 	 * points up.
@@ -436,7 +436,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	public Vector2 rotate(float degrees) {
 		return rotateRad(degrees * MathUtils.degreesToRadians);
 	}
-
+	
 	/**
 	 * Rotates the Vector2 by the given angle around reference vector,
 	 * counter-clockwise assuming the y-axis points up.
@@ -447,7 +447,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	public Vector2 rotateAround(Vector2 reference, float degrees) {
 		return this.sub(reference).rotate(degrees).add(reference);
 	}
-
+	
 	/**
 	 * Rotates the Vector2 by the given angle, counter-clockwise assuming the y-axis
 	 * points up.
@@ -457,16 +457,16 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	public Vector2 rotateRad(float radians) {
 		float cos = (float) Math.cos(radians);
 		float sin = (float) Math.sin(radians);
-
+		
 		float newX = this.x * cos - this.y * sin;
 		float newY = this.x * sin + this.y * cos;
-
+		
 		this.x = newX;
 		this.y = newY;
-
+		
 		return this;
 	}
-
+	
 	/**
 	 * Rotates the Vector2 by the given angle around reference vector,
 	 * counter-clockwise assuming the y-axis points up.
@@ -477,7 +477,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	public Vector2 rotateAroundRad(Vector2 reference, float radians) {
 		return this.sub(reference).rotateRad(radians).add(reference);
 	}
-
+	
 	/**
 	 * Rotates the Vector2 by 90 degrees in the specified direction, where >= 0 is
 	 * counter-clockwise and < 0 is clockwise.
@@ -493,7 +493,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		}
 		return this;
 	}
-
+	
 	@Override
 	public Vector2 lerp(Vector2 target, float alpha) {
 		final float invAlpha = 1.0f - alpha;
@@ -501,18 +501,18 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		this.y = (y * invAlpha) + (target.y * alpha);
 		return this;
 	}
-
+	
 	@Override
 	public Vector2 interpolate(Vector2 target, float alpha, Interpolation interpolation) {
 		return lerp(target, interpolation.apply(alpha));
 	}
-
+	
 	@Override
 	public Vector2 setToRandomDirection() {
 		float theta = MathUtils.random(0f, MathUtils.PI2);
 		return this.set(MathUtils.cos(theta), MathUtils.sin(theta));
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -521,7 +521,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		result = prime * result + NumberUtils.floatToIntBits(y);
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -537,7 +537,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 			return false;
 		return true;
 	}
-
+	
 	@Override
 	public boolean epsilonEquals(Vector2 other, float epsilon) {
 		if (other == null)
@@ -548,7 +548,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 			return false;
 		return true;
 	}
-
+	
 	/**
 	 * Compares this vector with the other vector, using the supplied epsilon for
 	 * fuzzy equality testing.
@@ -562,7 +562,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 			return false;
 		return true;
 	}
-
+	
 	/**
 	 * Compares this vector with the other vector using
 	 * MathUtils.FLOAT_ROUNDING_ERROR for fuzzy equality testing
@@ -573,7 +573,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	public boolean epsilonEquals(final Vector2 other) {
 		return epsilonEquals(other, MathUtils.FLOAT_ROUNDING_ERROR);
 	}
-
+	
 	/**
 	 * Compares this vector with the other vector using
 	 * MathUtils.FLOAT_ROUNDING_ERROR for fuzzy equality testing
@@ -585,77 +585,77 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	public boolean epsilonEquals(float x, float y) {
 		return epsilonEquals(x, y, MathUtils.FLOAT_ROUNDING_ERROR);
 	}
-
+	
 	@Override
 	public boolean isUnit() {
 		return isUnit(0.000000001f);
 	}
-
+	
 	@Override
 	public boolean isUnit(final float margin) {
 		return Math.abs(len2() - 1f) < margin;
 	}
-
+	
 	@Override
 	public boolean isZero() {
 		return x == 0 && y == 0;
 	}
-
+	
 	@Override
 	public boolean isZero(final float margin) {
 		return len2() < margin;
 	}
-
+	
 	@Override
 	public boolean isOnLine(Vector2 other) {
 		return MathUtils.isZero(x * other.y - y * other.x);
 	}
-
+	
 	@Override
 	public boolean isOnLine(Vector2 other, float epsilon) {
 		return MathUtils.isZero(x * other.y - y * other.x, epsilon);
 	}
-
+	
 	@Override
 	public boolean isCollinear(Vector2 other, float epsilon) {
 		return isOnLine(other, epsilon) && dot(other) > 0f;
 	}
-
+	
 	@Override
 	public boolean isCollinear(Vector2 other) {
 		return isOnLine(other) && dot(other) > 0f;
 	}
-
+	
 	@Override
 	public boolean isCollinearOpposite(Vector2 other, float epsilon) {
 		return isOnLine(other, epsilon) && dot(other) < 0f;
 	}
-
+	
 	@Override
 	public boolean isCollinearOpposite(Vector2 other) {
 		return isOnLine(other) && dot(other) < 0f;
 	}
-
+	
 	@Override
 	public boolean isPerpendicular(Vector2 vector) {
 		return MathUtils.isZero(dot(vector));
 	}
-
+	
 	@Override
 	public boolean isPerpendicular(Vector2 vector, float epsilon) {
 		return MathUtils.isZero(dot(vector), epsilon);
 	}
-
+	
 	@Override
 	public boolean hasSameDirection(Vector2 vector) {
 		return dot(vector) > 0;
 	}
-
+	
 	@Override
 	public boolean hasOppositeDirection(Vector2 vector) {
 		return dot(vector) < 0;
 	}
-
+	
 	@Override
 	public Vector2 setZero() {
 		this.x = 0;
@@ -663,30 +663,28 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return this;
 	}
 	
-	
-	
 	/** Does not modify this vector */
 	public Vector2 minus(Vector2 v) {
-		return new Vector2(x-v.x, y-v.y);
+		return new Vector2(x - v.x, y - v.y);
 	}
 	
 	/** Does not modify this vector */
 	public Vector2 plus(Vector2 v) {
-		return new Vector2(x+v.x, y+v.y);
+		return new Vector2(x + v.x, y + v.y);
 	}
 	
 	/** Does not modify this vector */
 	public Vector2 minus(float x, float y) {
-		return new Vector2(this.x-x, this.y-y);
+		return new Vector2(this.x - x, this.y - y);
 	}
 	
 	/** Does not modify this vector */
 	public Vector2 plus(float x, float y) {
-		return new Vector2(this.x+x, this.y+y);
+		return new Vector2(this.x + x, this.y + y);
 	}
-
+	
 	public Vector2 plus(double x, double y) {
-		return plus((float)x, (float)y);
+		return plus((float) x, (float) y);
 	}
 	
 }

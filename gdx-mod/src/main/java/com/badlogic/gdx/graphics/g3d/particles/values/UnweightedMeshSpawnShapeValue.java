@@ -31,15 +31,15 @@ public final class UnweightedMeshSpawnShapeValue extends MeshSpawnShapeValue {
 	private float[] vertices;
 	private short[] indices;
 	private int positionOffset, vertexSize, vertexCount, triangleCount;
-
+	
 	public UnweightedMeshSpawnShapeValue(UnweightedMeshSpawnShapeValue value) {
 		super(value);
 		load(value);
 	}
-
+	
 	public UnweightedMeshSpawnShapeValue() {
 	}
-
+	
 	@Override
 	public void setMesh(Mesh mesh, Model model) {
 		super.setMesh(mesh, model);
@@ -56,7 +56,7 @@ public final class UnweightedMeshSpawnShapeValue extends MeshSpawnShapeValue {
 		vertices = new float[vertexCount * vertexSize];
 		mesh.getVertices(vertices);
 	}
-
+	
 	@Override
 	public void spawnAux(Vector3 vector, float percent) {
 		if (indices == null) {
@@ -80,10 +80,10 @@ public final class UnweightedMeshSpawnShapeValue extends MeshSpawnShapeValue {
 			Triangle.pick(x1, y1, z1, x2, y2, z2, x3, y3, z3, vector);
 		}
 	}
-
+	
 	@Override
 	public SpawnShapeValue copy() {
 		return new UnweightedMeshSpawnShapeValue(this);
 	}
-
+	
 }

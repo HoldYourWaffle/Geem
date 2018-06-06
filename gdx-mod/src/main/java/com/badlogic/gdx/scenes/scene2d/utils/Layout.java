@@ -34,7 +34,7 @@ public interface Layout {
 	 * {@link #validate()} should be used.
 	 */
 	public void layout();
-
+	
 	/**
 	 * Invalidates this actor's layout, causing {@link #layout()} to happen the next
 	 * time {@link #validate()} is called. This method should be called when state
@@ -43,7 +43,7 @@ public interface Layout {
 	 * the parent actor's layout).
 	 */
 	public void invalidate();
-
+	
 	/**
 	 * Invalidates this actor and all its ancestors, calling {@link #invalidate()}
 	 * on each. This method should be called when state changes in the actor that
@@ -51,7 +51,7 @@ public interface Layout {
 	 * it potentially affects the parent actor's layout).
 	 */
 	public void invalidateHierarchy();
-
+	
 	/**
 	 * Ensures the actor has been laid out. Calls {@link #layout()} if
 	 * {@link #invalidate()} has been called since the last time {@link #validate()}
@@ -60,7 +60,7 @@ public interface Layout {
 	 * drawing is performed.
 	 */
 	public void validate();
-
+	
 	/**
 	 * Sizes this actor to its preferred width and height, then calls
 	 * {@link #validate()}.
@@ -73,7 +73,7 @@ public interface Layout {
 	 * with groups that do not layout their children.
 	 */
 	public void pack();
-
+	
 	/**
 	 * If true, this actor will be sized to the parent in {@link #validate()}. If
 	 * the parent is the stage, the actor will be sized to the stage. This method is
@@ -81,7 +81,7 @@ public interface Layout {
 	 * children (such as the stage).
 	 */
 	public void setFillParent(boolean fillParent);
-
+	
 	/**
 	 * Enables or disables the layout for this actor and all child actors,
 	 * recursively. When false, {@link #validate()} will not cause a layout to
@@ -89,18 +89,18 @@ public interface Layout {
 	 * as with actions. Default is true.
 	 */
 	public void setLayoutEnabled(boolean enabled);
-
+	
 	public float getMinWidth();
-
+	
 	public float getMinHeight();
-
+	
 	public float getPrefWidth();
-
+	
 	public float getPrefHeight();
-
+	
 	/** Zero indicates no max width. */
 	public float getMaxWidth();
-
+	
 	/** Zero indicates no max height. */
 	public float getMaxHeight();
 }

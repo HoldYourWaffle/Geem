@@ -30,14 +30,14 @@ public class InputEvent extends Event {
 	private int pointer, button, keyCode, scrollAmount;
 	private char character;
 	private Actor relatedActor;
-
+	
 	@Override
 	public void reset() {
 		super.reset();
 		relatedActor = null;
 		button = -1;
 	}
-
+	
 	/**
 	 * The stage x coordinate where the event occurred. Valid for: touchDown,
 	 * touchDragged, touchUp, mouseMoved, enter, and exit.
@@ -45,11 +45,11 @@ public class InputEvent extends Event {
 	public float getStageX() {
 		return stageX;
 	}
-
+	
 	public void setStageX(float stageX) {
 		this.stageX = stageX;
 	}
-
+	
 	/**
 	 * The stage x coordinate where the event occurred. Valid for: touchDown,
 	 * touchDragged, touchUp, mouseMoved, enter, and exit.
@@ -57,20 +57,20 @@ public class InputEvent extends Event {
 	public float getStageY() {
 		return stageY;
 	}
-
+	
 	public void setStageY(float stageY) {
 		this.stageY = stageY;
 	}
-
+	
 	/** The type of input event. */
 	public Type getType() {
 		return type;
 	}
-
+	
 	public void setType(Type type) {
 		this.type = type;
 	}
-
+	
 	/**
 	 * The pointer index for the event. The first touch is index 0, second touch is
 	 * index 1, etc. Always -1 on desktop. Valid for: touchDown, touchDragged,
@@ -79,11 +79,11 @@ public class InputEvent extends Event {
 	public int getPointer() {
 		return pointer;
 	}
-
+	
 	public void setPointer(int pointer) {
 		this.pointer = pointer;
 	}
-
+	
 	/**
 	 * The index for the mouse button pressed. Always 0 on Android. Valid for:
 	 * touchDown and touchUp.
@@ -93,38 +93,38 @@ public class InputEvent extends Event {
 	public int getButton() {
 		return button;
 	}
-
+	
 	public void setButton(int button) {
 		this.button = button;
 	}
-
+	
 	/** The key code of the key that was pressed. Valid for: keyDown and keyUp. */
 	public int getKeyCode() {
 		return keyCode;
 	}
-
+	
 	public void setKeyCode(int keyCode) {
 		this.keyCode = keyCode;
 	}
-
+	
 	/** The character for the key that was type. Valid for: keyTyped. */
 	public char getCharacter() {
 		return character;
 	}
-
+	
 	public void setCharacter(char character) {
 		this.character = character;
 	}
-
+	
 	/** The amount the mouse was scrolled. Valid for: scrolled. */
 	public int getScrollAmount() {
 		return scrollAmount;
 	}
-
+	
 	public void setScrollAmount(int scrollAmount) {
 		this.scrollAmount = scrollAmount;
 	}
-
+	
 	/**
 	 * The actor related to the event. Valid for: enter and exit. For enter, this is
 	 * the actor being exited, or null. For exit, this is the actor being entered,
@@ -133,12 +133,12 @@ public class InputEvent extends Event {
 	public Actor getRelatedActor() {
 		return relatedActor;
 	}
-
+	
 	/** @param relatedActor May be null. */
 	public void setRelatedActor(Actor relatedActor) {
 		this.relatedActor = relatedActor;
 	}
-
+	
 	/**
 	 * Sets actorCoords to this event's coordinates relative to the specified actor.
 	 * 
@@ -149,7 +149,7 @@ public class InputEvent extends Event {
 		actor.stageToLocalCoordinates(actorCoords);
 		return actorCoords;
 	}
-
+	
 	/**
 	 * Returns true of this event is a touchUp triggered by
 	 * {@link Stage#cancelTouchFocus()}.
@@ -157,12 +157,12 @@ public class InputEvent extends Event {
 	public boolean isTouchFocusCancel() {
 		return stageX == Integer.MIN_VALUE || stageY == Integer.MIN_VALUE;
 	}
-
+	
 	@Override
 	public String toString() {
 		return type.toString();
 	}
-
+	
 	/** Types of low-level input events supported by scene2d. */
 	static public enum Type {
 		/** A new touch for a pointer on the stage was detected */

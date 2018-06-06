@@ -54,7 +54,7 @@ public class IndexBufferObjectSubData implements IndexData {
 	boolean isDirty = true;
 	boolean isBound = false;
 	final int usage;
-
+	
 	/**
 	 * Creates a new IndexBufferObject.
 	 * 
@@ -64,14 +64,14 @@ public class IndexBufferObjectSubData implements IndexData {
 	public IndexBufferObjectSubData(boolean isStatic, int maxIndices) {
 		byteBuffer = BufferUtils.newByteBuffer(maxIndices * 2);
 		isDirect = true;
-
+		
 		usage = isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_DYNAMIC_DRAW;
 		buffer = byteBuffer.asShortBuffer();
 		buffer.flip();
 		byteBuffer.flip();
 		bufferHandle = createBufferObject();
 	}
-
+	
 	/**
 	 * Creates a new IndexBufferObject to be used with vertex arrays.
 	 * 
@@ -80,14 +80,14 @@ public class IndexBufferObjectSubData implements IndexData {
 	public IndexBufferObjectSubData(int maxIndices) {
 		byteBuffer = BufferUtils.newByteBuffer(maxIndices * 2);
 		this.isDirect = true;
-
+		
 		usage = GL20.GL_STATIC_DRAW;
 		buffer = byteBuffer.asShortBuffer();
 		buffer.flip();
 		byteBuffer.flip();
 		bufferHandle = createBufferObject();
 	}
-
+	
 	private int createBufferObject() {
 		int result = Gdx.gl20.glGenBuffer();
 		Gdx.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, result);
@@ -95,19 +95,19 @@ public class IndexBufferObjectSubData implements IndexData {
 		Gdx.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
 		return result;
 	}
-
+	
 	/** @return the number of indices currently stored in this buffer */
 	@Override
 	public int getNumIndices() {
 		return buffer.limit();
 	}
-
+	
 	/** @return the maximum number of indices this IndexBufferObject can store. */
 	@Override
 	public int getNumMaxIndices() {
 		return buffer.capacity();
 	}
-
+	
 	/**
 	 * <p>
 	 * Sets the indices of this IndexBufferObject, discarding the old indices. The
@@ -132,13 +132,13 @@ public class IndexBufferObjectSubData implements IndexData {
 		buffer.flip();
 		byteBuffer.position(0);
 		byteBuffer.limit(count << 1);
-
+		
 		if (isBound) {
 			Gdx.gl20.glBufferSubData(GL20.GL_ELEMENT_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
 			isDirty = false;
 		}
 	}
-
+	
 	@Override
 	public void setIndices(ShortBuffer indices) {
 		int pos = indices.position();
@@ -149,13 +149,13 @@ public class IndexBufferObjectSubData implements IndexData {
 		indices.position(pos);
 		byteBuffer.position(0);
 		byteBuffer.limit(buffer.limit() << 1);
-
+		
 		if (isBound) {
 			Gdx.gl20.glBufferSubData(GL20.GL_ELEMENT_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
 			isDirty = false;
 		}
 	}
-
+	
 	@Override
 	public void updateIndices(int targetOffset, short[] indices, int offset, int count) {
 		isDirty = true;
@@ -164,13 +164,13 @@ public class IndexBufferObjectSubData implements IndexData {
 		BufferUtils.copy(indices, offset, byteBuffer, count);
 		byteBuffer.position(pos);
 		buffer.position(0);
-
+		
 		if (isBound) {
 			Gdx.gl20.glBufferSubData(GL20.GL_ELEMENT_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
 			isDirty = false;
 		}
 	}
-
+	
 	/**
 	 * <p>
 	 * Returns the underlying ShortBuffer. If you modify the buffer contents they
@@ -185,13 +185,13 @@ public class IndexBufferObjectSubData implements IndexData {
 		isDirty = true;
 		return buffer;
 	}
-
+	
 	/** Binds this IndexBufferObject for rendering with glDrawElements. */
 	@Override
 	public void bind() {
 		if (bufferHandle == 0)
 			throw new GdxRuntimeException("IndexBufferObject cannot be used after it has been disposed.");
-
+		
 		Gdx.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, bufferHandle);
 		if (isDirty) {
 			byteBuffer.limit(buffer.limit() * 2);
@@ -200,14 +200,14 @@ public class IndexBufferObjectSubData implements IndexData {
 		}
 		isBound = true;
 	}
-
+	
 	/** Unbinds this IndexBufferObject. */
 	@Override
 	public void unbind() {
 		Gdx.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
 		isBound = false;
 	}
-
+	
 	/**
 	 * Invalidates the IndexBufferObject so a new OpenGL buffer handle is created.
 	 * Use this in case of a context loss.
@@ -217,7 +217,7 @@ public class IndexBufferObjectSubData implements IndexData {
 		bufferHandle = createBufferObject();
 		isDirty = true;
 	}
-
+	
 	/** Disposes this IndexBufferObject and all its associated OpenGL resources. */
 	@Override
 	public void dispose() {

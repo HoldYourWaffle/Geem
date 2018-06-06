@@ -55,9 +55,9 @@ public class NinePatch {
 	// alphabetically first in javadoc
 	public static final int BOTTOM_CENTER = 7;
 	public static final int BOTTOM_RIGHT = 8;
-
+	
 	static private final Color tmpDrawColor = new Color();
-
+	
 	private Texture texture;
 	private int bottomLeft = -1, bottomCenter = -1, bottomRight = -1;
 	private int middleLeft = -1, middleCenter = -1, middleRight = -1;
@@ -67,7 +67,7 @@ public class NinePatch {
 	private int idx;
 	private final Color color = new Color(Color.WHITE);
 	private float padLeft = -1, padRight = -1, padTop = -1, padBottom = -1;
-
+	
 	/**
 	 * Create a ninepatch by cutting up the given texture into nine patches. The
 	 * subsequent parameters define the 4 lines that will cut the texture region
@@ -81,7 +81,7 @@ public class NinePatch {
 	public NinePatch(Texture texture, int left, int right, int top, int bottom) {
 		this(new TextureRegion(texture), left, right, top, bottom);
 	}
-
+	
 	/**
 	 * Create a ninepatch by cutting up the given texture region into nine patches.
 	 * The subsequent parameters define the 4 lines that will cut the texture region
@@ -97,7 +97,7 @@ public class NinePatch {
 			throw new IllegalArgumentException("region cannot be null.");
 		final int middleWidth = region.getRegionWidth() - left - right;
 		final int middleHeight = region.getRegionHeight() - top - bottom;
-
+		
 		TextureRegion[] patches = new TextureRegion[9];
 		if (top > 0) {
 			if (left > 0)
@@ -124,7 +124,7 @@ public class NinePatch {
 				patches[BOTTOM_RIGHT] = new TextureRegion(region, left + middleWidth, top + middleHeight, right,
 						bottom);
 		}
-
+		
 		// If split only vertical, move splits from right to center.
 		if (left == 0 && middleWidth == 0) {
 			patches[TOP_CENTER] = patches[TOP_RIGHT];
@@ -143,27 +143,27 @@ public class NinePatch {
 			patches[BOTTOM_CENTER] = null;
 			patches[BOTTOM_RIGHT] = null;
 		}
-
+		
 		load(patches);
 	}
-
+	
 	/** Construct a degenerate "nine" patch with only a center component. */
 	public NinePatch(Texture texture, Color color) {
 		this(texture);
 		setColor(color);
 	}
-
+	
 	/** Construct a degenerate "nine" patch with only a center component. */
 	public NinePatch(Texture texture) {
 		this(new TextureRegion(texture));
 	}
-
+	
 	/** Construct a degenerate "nine" patch with only a center component. */
 	public NinePatch(TextureRegion region, Color color) {
 		this(region);
 		setColor(color);
 	}
-
+	
 	/** Construct a degenerate "nine" patch with only a center component. */
 	public NinePatch(TextureRegion region) {
 		load(new TextureRegion[] {
@@ -173,7 +173,7 @@ public class NinePatch {
 				null, null, null //
 		});
 	}
-
+	
 	/**
 	 * Construct a nine patch from the given nine texture regions. The provided
 	 * patches must be consistently sized (e.g., any left edge textures must have
@@ -183,30 +183,30 @@ public class NinePatch {
 	public NinePatch(TextureRegion... patches) {
 		if (patches == null || patches.length != 9)
 			throw new IllegalArgumentException("NinePatch needs nine TextureRegions");
-
+		
 		load(patches);
-
+		
 		float leftWidth = getLeftWidth();
 		if ((patches[TOP_LEFT] != null && patches[TOP_LEFT].getRegionWidth() != leftWidth)
 				|| (patches[MIDDLE_LEFT] != null && patches[MIDDLE_LEFT].getRegionWidth() != leftWidth)
 				|| (patches[BOTTOM_LEFT] != null && patches[BOTTOM_LEFT].getRegionWidth() != leftWidth)) {
 			throw new GdxRuntimeException("Left side patches must have the same width");
 		}
-
+		
 		float rightWidth = getRightWidth();
 		if ((patches[TOP_RIGHT] != null && patches[TOP_RIGHT].getRegionWidth() != rightWidth)
 				|| (patches[MIDDLE_RIGHT] != null && patches[MIDDLE_RIGHT].getRegionWidth() != rightWidth)
 				|| (patches[BOTTOM_RIGHT] != null && patches[BOTTOM_RIGHT].getRegionWidth() != rightWidth)) {
 			throw new GdxRuntimeException("Right side patches must have the same width");
 		}
-
+		
 		float bottomHeight = getBottomHeight();
 		if ((patches[BOTTOM_LEFT] != null && patches[BOTTOM_LEFT].getRegionHeight() != bottomHeight)
 				|| (patches[BOTTOM_CENTER] != null && patches[BOTTOM_CENTER].getRegionHeight() != bottomHeight)
 				|| (patches[BOTTOM_RIGHT] != null && patches[BOTTOM_RIGHT].getRegionHeight() != bottomHeight)) {
 			throw new GdxRuntimeException("Bottom side patches must have the same height");
 		}
-
+		
 		float topHeight = getTopHeight();
 		if ((patches[TOP_LEFT] != null && patches[TOP_LEFT].getRegionHeight() != topHeight)
 				|| (patches[TOP_CENTER] != null && patches[TOP_CENTER].getRegionHeight() != topHeight)
@@ -214,14 +214,14 @@ public class NinePatch {
 			throw new GdxRuntimeException("Top side patches must have the same height");
 		}
 	}
-
+	
 	public NinePatch(NinePatch ninePatch) {
 		this(ninePatch, ninePatch.color);
 	}
-
+	
 	public NinePatch(NinePatch ninePatch, Color color) {
 		texture = ninePatch.texture;
-
+		
 		bottomLeft = ninePatch.bottomLeft;
 		bottomCenter = ninePatch.bottomCenter;
 		bottomRight = ninePatch.bottomRight;
@@ -231,28 +231,28 @@ public class NinePatch {
 		topLeft = ninePatch.topLeft;
 		topCenter = ninePatch.topCenter;
 		topRight = ninePatch.topRight;
-
+		
 		leftWidth = ninePatch.leftWidth;
 		rightWidth = ninePatch.rightWidth;
 		middleWidth = ninePatch.middleWidth;
 		middleHeight = ninePatch.middleHeight;
 		topHeight = ninePatch.topHeight;
 		bottomHeight = ninePatch.bottomHeight;
-
+		
 		padLeft = ninePatch.padLeft;
 		padTop = ninePatch.padTop;
 		padBottom = ninePatch.padBottom;
 		padRight = ninePatch.padRight;
-
+		
 		vertices = new float[ninePatch.vertices.length];
 		System.arraycopy(ninePatch.vertices, 0, vertices, 0, ninePatch.vertices.length);
 		idx = ninePatch.idx;
 		this.color.set(color);
 	}
-
+	
 	private void load(TextureRegion[] patches) {
 		final float color = Color.WHITE.toFloatBits(); // placeholder color, overwritten at draw time
-
+		
 		if (patches[BOTTOM_LEFT] != null) {
 			bottomLeft = add(patches[BOTTOM_LEFT], color, false, false);
 			leftWidth = patches[BOTTOM_LEFT].getRegionWidth();
@@ -304,18 +304,18 @@ public class NinePatch {
 			vertices = newVertices;
 		}
 	}
-
+	
 	private int add(TextureRegion region, float color, boolean isStretchW, boolean isStretchH) {
 		if (texture == null)
 			texture = region.getTexture();
 		else if (texture != region.getTexture()) //
 			throw new IllegalArgumentException("All regions must be from the same texture.");
-
+		
 		float u = region.u;
 		float v = region.v2;
 		float u2 = region.u2;
 		float v2 = region.v;
-
+		
 		// Add half pixel offsets on stretchable dimensions to avoid color bleeding when
 		// GL_LINEAR
 		// filtering is used for the texture. This nudges the texture coordinate to the
@@ -334,29 +334,29 @@ public class NinePatch {
 				v2 += halfTexelHeight;
 			}
 		}
-
+		
 		final float[] vertices = this.vertices;
-
+		
 		vertices[idx + 2] = color;
 		vertices[idx + 3] = u;
 		vertices[idx + 4] = v;
-
+		
 		vertices[idx + 7] = color;
 		vertices[idx + 8] = u;
 		vertices[idx + 9] = v2;
-
+		
 		vertices[idx + 12] = color;
 		vertices[idx + 13] = u2;
 		vertices[idx + 14] = v2;
-
+		
 		vertices[idx + 17] = color;
 		vertices[idx + 18] = u2;
 		vertices[idx + 19] = v;
 		idx += 20;
-
+		
 		return idx - 20;
 	}
-
+	
 	/** Set the coordinates and color of a ninth of the patch. */
 	private void set(int idx, float x, float y, float width, float height, float color) {
 		final float fx2 = x + width;
@@ -365,27 +365,27 @@ public class NinePatch {
 		vertices[idx] = x;
 		vertices[idx + 1] = y;
 		vertices[idx + 2] = color;
-
+		
 		vertices[idx + 5] = x;
 		vertices[idx + 6] = fy2;
 		vertices[idx + 7] = color;
-
+		
 		vertices[idx + 10] = fx2;
 		vertices[idx + 11] = fy2;
 		vertices[idx + 12] = color;
-
+		
 		vertices[idx + 15] = fx2;
 		vertices[idx + 16] = y;
 		vertices[idx + 17] = color;
 	}
-
+	
 	private void prepareVertices(Batch batch, float x, float y, float width, float height) {
 		final float centerColumnX = x + leftWidth;
 		final float rightColumnX = x + width - rightWidth;
 		final float middleRowY = y + bottomHeight;
 		final float topRowY = y + height - topHeight;
 		final float c = tmpDrawColor.set(color).mul(batch.getColor()).toFloatBits();
-
+		
 		if (bottomLeft != -1)
 			set(bottomLeft, x, y, centerColumnX - x, middleRowY - y, c);
 		if (bottomCenter != -1)
@@ -405,12 +405,12 @@ public class NinePatch {
 		if (topRight != -1)
 			set(topRight, rightColumnX, topRowY, x + width - rightColumnX, y + height - topRowY, c);
 	}
-
+	
 	public void draw(Batch batch, float x, float y, float width, float height) {
 		prepareVertices(batch, x, y, width, height);
 		batch.draw(texture, vertices, 0, idx);
 	}
-
+	
 	public void draw(Batch batch, float x, float y, float originX, float originY, float width, float height,
 			float scaleX, float scaleY, float rotation) {
 		prepareVertices(batch, x, y, width, height);
@@ -432,7 +432,7 @@ public class NinePatch {
 		}
 		batch.draw(texture, vertices, 0, n);
 	}
-
+	
 	/**
 	 * Copy given color. The color will be blended with the batch color, then
 	 * combined with the texture colors at
@@ -442,51 +442,51 @@ public class NinePatch {
 	public void setColor(Color color) {
 		this.color.set(color);
 	}
-
+	
 	public Color getColor() {
 		return color;
 	}
-
+	
 	public float getLeftWidth() {
 		return leftWidth;
 	}
-
+	
 	/** Set the draw-time width of the three left edge patches */
 	public void setLeftWidth(float leftWidth) {
 		this.leftWidth = leftWidth;
 	}
-
+	
 	public float getRightWidth() {
 		return rightWidth;
 	}
-
+	
 	/** Set the draw-time width of the three right edge patches */
 	public void setRightWidth(float rightWidth) {
 		this.rightWidth = rightWidth;
 	}
-
+	
 	public float getTopHeight() {
 		return topHeight;
 	}
-
+	
 	/** Set the draw-time height of the three top edge patches */
 	public void setTopHeight(float topHeight) {
 		this.topHeight = topHeight;
 	}
-
+	
 	public float getBottomHeight() {
 		return bottomHeight;
 	}
-
+	
 	/** Set the draw-time height of the three bottom edge patches */
 	public void setBottomHeight(float bottomHeight) {
 		this.bottomHeight = bottomHeight;
 	}
-
+	
 	public float getMiddleWidth() {
 		return middleWidth;
 	}
-
+	
 	/**
 	 * Set the width of the middle column of the patch. At render time, this is
 	 * implicitly the requested render-width of the entire nine patch, minus the
@@ -496,11 +496,11 @@ public class NinePatch {
 	public void setMiddleWidth(float middleWidth) {
 		this.middleWidth = middleWidth;
 	}
-
+	
 	public float getMiddleHeight() {
 		return middleHeight;
 	}
-
+	
 	/**
 	 * Set the height of the middle row of the patch. At render time, this is
 	 * implicitly the requested render-height of the entire nine patch, minus the
@@ -510,15 +510,15 @@ public class NinePatch {
 	public void setMiddleHeight(float middleHeight) {
 		this.middleHeight = middleHeight;
 	}
-
+	
 	public float getTotalWidth() {
 		return leftWidth + middleWidth + rightWidth;
 	}
-
+	
 	public float getTotalHeight() {
 		return topHeight + middleHeight + bottomHeight;
 	}
-
+	
 	/**
 	 * Set the padding for content inside this ninepatch. By default the padding is
 	 * set to match the exterior of the ninepatch, so the content should fit exactly
@@ -530,43 +530,43 @@ public class NinePatch {
 		this.padTop = top;
 		this.padBottom = bottom;
 	}
-
+	
 	/** Returns the left padding if set, else returns {@link #getLeftWidth()}. */
 	public float getPadLeft() {
 		if (padLeft == -1)
 			return getLeftWidth();
 		return padLeft;
 	}
-
+	
 	/** See {@link #setPadding(float, float, float, float)} */
 	public void setPadLeft(float left) {
 		this.padLeft = left;
 	}
-
+	
 	/** Returns the right padding if set, else returns {@link #getRightWidth()}. */
 	public float getPadRight() {
 		if (padRight == -1)
 			return getRightWidth();
 		return padRight;
 	}
-
+	
 	/** See {@link #setPadding(float, float, float, float)} */
 	public void setPadRight(float right) {
 		this.padRight = right;
 	}
-
+	
 	/** Returns the top padding if set, else returns {@link #getTopHeight()}. */
 	public float getPadTop() {
 		if (padTop == -1)
 			return getTopHeight();
 		return padTop;
 	}
-
+	
 	/** See {@link #setPadding(float, float, float, float)} */
 	public void setPadTop(float top) {
 		this.padTop = top;
 	}
-
+	
 	/**
 	 * Returns the bottom padding if set, else returns {@link #getBottomHeight()}.
 	 */
@@ -575,12 +575,12 @@ public class NinePatch {
 			return getBottomHeight();
 		return padBottom;
 	}
-
+	
 	/** See {@link #setPadding(float, float, float, float)} */
 	public void setPadBottom(float bottom) {
 		this.padBottom = bottom;
 	}
-
+	
 	/**
 	 * Multiplies the top/left/bottom/right sizes and padding by the specified
 	 * amount.
@@ -601,7 +601,7 @@ public class NinePatch {
 		if (padBottom != -1)
 			padBottom *= scaleY;
 	}
-
+	
 	public Texture getTexture() {
 		return texture;
 	}

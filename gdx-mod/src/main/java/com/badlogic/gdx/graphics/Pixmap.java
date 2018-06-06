@@ -57,7 +57,7 @@ public class Pixmap implements Disposable {
 	 */
 	public enum Format {
 	Alpha, Intensity, LuminanceAlpha, RGB565, RGBA4444, RGB888, RGBA8888;
-
+		
 		public static int toGdx2DPixmapFormat(Format format) {
 			if (format == Alpha)
 				return Gdx2DPixmap.GDX2D_FORMAT_ALPHA;
@@ -75,7 +75,7 @@ public class Pixmap implements Disposable {
 				return Gdx2DPixmap.GDX2D_FORMAT_RGBA8888;
 			throw new GdxRuntimeException("Unknown Format: " + format);
 		}
-
+		
 		public static Format fromGdx2DPixmapFormat(int format) {
 			if (format == Gdx2DPixmap.GDX2D_FORMAT_ALPHA)
 				return Alpha;
@@ -91,16 +91,16 @@ public class Pixmap implements Disposable {
 				return RGBA8888;
 			throw new GdxRuntimeException("Unknown Gdx2DPixmap Format: " + format);
 		}
-
+		
 		public static int toGlFormat(Format format) {
 			return Gdx2DPixmap.toGlFormat(toGdx2DPixmapFormat(format));
 		}
-
+		
 		public static int toGlType(Format format) {
 			return Gdx2DPixmap.toGlType(toGdx2DPixmapFormat(format));
 		}
 	}
-
+	
 	/**
 	 * Blending functions to be set with {@link Pixmap#setBlending}.
 	 * 
@@ -109,7 +109,7 @@ public class Pixmap implements Disposable {
 	public enum Blending {
 		None, SourceOver
 	}
-
+	
 	/**
 	 * Filters to be used with
 	 * {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)}.
@@ -119,15 +119,15 @@ public class Pixmap implements Disposable {
 	public enum Filter {
 		NearestNeighbour, BiLinear
 	}
-
+	
 	private Blending blending = Blending.SourceOver;
 	private Filter filter = Filter.BiLinear;
-
+	
 	final Gdx2DPixmap pixmap;
 	int color = 0;
-
+	
 	private boolean disposed;
-
+	
 	/**
 	 * Sets the type of {@link Blending} to be used for all operations. Default is
 	 * {@link Blending#SourceOver}.
@@ -138,7 +138,7 @@ public class Pixmap implements Disposable {
 		this.blending = blending;
 		pixmap.setBlend(blending == Blending.None ? 0 : 1);
 	}
-
+	
 	/**
 	 * Sets the type of interpolation {@link Filter} to be used in conjunction with
 	 * {@link Pixmap#drawPixmap(Pixmap, int, int, int, int, int, int, int, int)}.
@@ -150,7 +150,7 @@ public class Pixmap implements Disposable {
 		pixmap.setScale(
 				filter == Filter.NearestNeighbour ? Gdx2DPixmap.GDX2D_SCALE_NEAREST : Gdx2DPixmap.GDX2D_SCALE_LINEAR);
 	}
-
+	
 	/**
 	 * Creates a new Pixmap instance with the given width, height and format.
 	 * 
@@ -163,7 +163,7 @@ public class Pixmap implements Disposable {
 		setColor(0, 0, 0, 0);
 		fill();
 	}
-
+	
 	/**
 	 * Creates a new Pixmap instance from the given encoded image data. The image
 	 * can be encoded as JPEG, PNG or BMP.
@@ -179,7 +179,7 @@ public class Pixmap implements Disposable {
 			throw new GdxRuntimeException("Couldn't load pixmap from image data", e);
 		}
 	}
-
+	
 	/**
 	 * Creates a new Pixmap instance from the given file. The file must be a Png,
 	 * Jpeg or Bitmap. Paletted formats are not supported.
@@ -194,7 +194,7 @@ public class Pixmap implements Disposable {
 			throw new GdxRuntimeException("Couldn't load file: " + file, e);
 		}
 	}
-
+	
 	/**
 	 * Constructs a new Pixmap from a {@link Gdx2DPixmap}.
 	 * 
@@ -203,7 +203,7 @@ public class Pixmap implements Disposable {
 	public Pixmap(Gdx2DPixmap pixmap) {
 		this.pixmap = pixmap;
 	}
-
+	
 	/**
 	 * Sets the color for the following drawing operations
 	 * 
@@ -212,7 +212,7 @@ public class Pixmap implements Disposable {
 	public void setColor(int color) {
 		this.color = color;
 	}
-
+	
 	/**
 	 * Sets the color for the following drawing operations.
 	 * 
@@ -224,7 +224,7 @@ public class Pixmap implements Disposable {
 	public void setColor(float r, float g, float b, float a) {
 		color = Color.rgba8888(r, g, b, a);
 	}
-
+	
 	/**
 	 * Sets the color for the following drawing operations.
 	 * 
@@ -233,19 +233,19 @@ public class Pixmap implements Disposable {
 	public void setColor(Color color) {
 		this.color = Color.rgba8888(color.r, color.g, color.b, color.a);
 	}
-
+	
 	/** Fills the complete bitmap with the currently set color. */
 	public void fill() {
 		pixmap.clear(color);
 	}
-
+	
 // /**
 // * Sets the width in pixels of strokes.
 // *
 // * @param width The stroke width in pixels.
 // */
 // public void setStrokeWidth (int width);
-
+	
 	/**
 	 * Draws a line between the given coordinates using the currently set color.
 	 * 
@@ -257,7 +257,7 @@ public class Pixmap implements Disposable {
 	public void drawLine(int x, int y, int x2, int y2) {
 		pixmap.drawLine(x, y, x2, y2, color);
 	}
-
+	
 	/**
 	 * Draws a rectangle outline starting at x, y extending by width to the right
 	 * and by height downwards (y-axis points downwards) using the current color.
@@ -270,7 +270,7 @@ public class Pixmap implements Disposable {
 	public void drawRectangle(int x, int y, int width, int height) {
 		pixmap.drawRect(x, y, width, height, color);
 	}
-
+	
 	/**
 	 * Draws an area from another Pixmap to this Pixmap.
 	 * 
@@ -281,7 +281,7 @@ public class Pixmap implements Disposable {
 	public void drawPixmap(Pixmap pixmap, int x, int y) {
 		drawPixmap(pixmap, x, y, 0, 0, pixmap.getWidth(), pixmap.getHeight());
 	}
-
+	
 	/**
 	 * Draws an area from another Pixmap to this Pixmap.
 	 * 
@@ -296,7 +296,7 @@ public class Pixmap implements Disposable {
 	public void drawPixmap(Pixmap pixmap, int x, int y, int srcx, int srcy, int srcWidth, int srcHeight) {
 		this.pixmap.drawPixmap(pixmap.pixmap, srcx, srcy, x, y, srcWidth, srcHeight);
 	}
-
+	
 	/**
 	 * Draws an area from another Pixmap to this Pixmap. This will automatically
 	 * scale and stretch the source image to the specified target rectangle. Use
@@ -317,7 +317,7 @@ public class Pixmap implements Disposable {
 			int dstWidth, int dstHeight) {
 		this.pixmap.drawPixmap(pixmap.pixmap, srcx, srcy, srcWidth, srcHeight, dstx, dsty, dstWidth, dstHeight);
 	}
-
+	
 	/**
 	 * Fills a rectangle starting at x, y extending by width to the right and by
 	 * height downwards (y-axis points downwards) using the current color.
@@ -330,7 +330,7 @@ public class Pixmap implements Disposable {
 	public void fillRectangle(int x, int y, int width, int height) {
 		pixmap.fillRect(x, y, width, height, color);
 	}
-
+	
 	/**
 	 * Draws a circle outline with the center at x,y and a radius using the current
 	 * color and stroke width.
@@ -342,7 +342,7 @@ public class Pixmap implements Disposable {
 	public void drawCircle(int x, int y, int radius) {
 		pixmap.drawCircle(x, y, radius, color);
 	}
-
+	
 	/**
 	 * Fills a circle with the center at x,y and a radius using the current color.
 	 * 
@@ -353,7 +353,7 @@ public class Pixmap implements Disposable {
 	public void fillCircle(int x, int y, int radius) {
 		pixmap.fillCircle(x, y, radius, color);
 	}
-
+	
 	/**
 	 * Fills a triangle with vertices at x1,y1 and x2,y2 and x3,y3 using the current
 	 * color.
@@ -368,7 +368,7 @@ public class Pixmap implements Disposable {
 	public void fillTriangle(int x1, int y1, int x2, int y2, int x3, int y3) {
 		pixmap.fillTriangle(x1, y1, x2, y2, x3, y3, color);
 	}
-
+	
 	/**
 	 * Returns the 32-bit RGBA8888 value of the pixel at x, y. For Alpha formats the
 	 * RGB components will be one.
@@ -380,17 +380,17 @@ public class Pixmap implements Disposable {
 	public int getPixel(int x, int y) {
 		return pixmap.getPixel(x, y);
 	}
-
+	
 	/** @return The width of the Pixmap in pixels. */
 	public int getWidth() {
 		return pixmap.getWidth();
 	}
-
+	
 	/** @return The height of the Pixmap in pixels. */
 	public int getHeight() {
 		return pixmap.getHeight();
 	}
-
+	
 	/** Releases all resources associated with this Pixmap. */
 	@Override
 	public void dispose() {
@@ -399,7 +399,7 @@ public class Pixmap implements Disposable {
 		pixmap.dispose();
 		disposed = true;
 	}
-
+	
 	/**
 	 * Draws a pixel at the given location with the current color.
 	 * 
@@ -409,7 +409,7 @@ public class Pixmap implements Disposable {
 	public void drawPixel(int x, int y) {
 		pixmap.setPixel(x, y, color);
 	}
-
+	
 	/**
 	 * Draws a pixel at the given location with the given color.
 	 * 
@@ -420,7 +420,7 @@ public class Pixmap implements Disposable {
 	public void drawPixel(int x, int y, int color) {
 		pixmap.setPixel(x, y, color);
 	}
-
+	
 	/**
 	 * Returns the OpenGL ES format of this Pixmap. Used as the seventh parameter to
 	 * {@link GL20#glTexImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
@@ -431,7 +431,7 @@ public class Pixmap implements Disposable {
 	public int getGLFormat() {
 		return pixmap.getGLFormat();
 	}
-
+	
 	/**
 	 * Returns the OpenGL ES format of this Pixmap. Used as the third parameter to
 	 * {@link GL20#glTexImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
@@ -442,7 +442,7 @@ public class Pixmap implements Disposable {
 	public int getGLInternalFormat() {
 		return pixmap.getGLInternalFormat();
 	}
-
+	
 	/**
 	 * Returns the OpenGL ES type of this Pixmap. Used as the eighth parameter to
 	 * {@link GL20#glTexImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
@@ -453,7 +453,7 @@ public class Pixmap implements Disposable {
 	public int getGLType() {
 		return pixmap.getGLType();
 	}
-
+	
 	/**
 	 * Returns the direct ByteBuffer holding the pixel data. For the format Alpha
 	 * each value is encoded as a byte. For the format LuminanceAlpha the luminance
@@ -469,17 +469,17 @@ public class Pixmap implements Disposable {
 			throw new GdxRuntimeException("Pixmap already disposed");
 		return pixmap.getPixels();
 	}
-
+	
 	/** @return the {@link Format} of this Pixmap. */
 	public Format getFormat() {
 		return Format.fromGdx2DPixmapFormat(pixmap.getFormat());
 	}
-
+	
 	/** @return the currently set {@link Blending} */
 	public Blending getBlending() {
 		return blending;
 	}
-
+	
 	/** @return the currently set {@link Filter} */
 	public Filter getFilter() {
 		return filter;

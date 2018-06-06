@@ -32,17 +32,17 @@ public class ShortArray {
 	public short[] items;
 	public int size;
 	public boolean ordered;
-
+	
 	/** Creates an ordered array with a capacity of 16. */
 	public ShortArray() {
 		this(true, 16);
 	}
-
+	
 	/** Creates an ordered array with the specified capacity. */
 	public ShortArray(int capacity) {
 		this(true, capacity);
 	}
-
+	
 	/**
 	 * @param ordered  If false, methods that remove elements may change the order
 	 *                 of other elements in the array, which avoids a memory copy.
@@ -53,7 +53,7 @@ public class ShortArray {
 		this.ordered = ordered;
 		items = new short[capacity];
 	}
-
+	
 	/**
 	 * Creates a new array containing the elements in the specific array. The new
 	 * array will be ordered if the specific array is ordered. The capacity is set
@@ -66,7 +66,7 @@ public class ShortArray {
 		items = new short[size];
 		System.arraycopy(array.items, 0, items, 0, size);
 	}
-
+	
 	/**
 	 * Creates a new ordered array containing the elements in the specified array.
 	 * The capacity is set to the number of elements, so any subsequent elements
@@ -75,7 +75,7 @@ public class ShortArray {
 	public ShortArray(short[] array) {
 		this(true, array, 0, array.length);
 	}
-
+	
 	/**
 	 * Creates a new array containing the elements in the specified array. The
 	 * capacity is set to the number of elements, so any subsequent elements added
@@ -89,7 +89,7 @@ public class ShortArray {
 		size = count;
 		System.arraycopy(array, startIndex, items, 0, count);
 	}
-
+	
 	/** Casts the specified value to short and adds it. */
 	public void add(int value) {
 		short[] items = this.items;
@@ -97,14 +97,14 @@ public class ShortArray {
 			items = resize(Math.max(8, (int) (size * 1.75f)));
 		items[size++] = (short) value;
 	}
-
+	
 	public void add(short value) {
 		short[] items = this.items;
 		if (size == items.length)
 			items = resize(Math.max(8, (int) (size * 1.75f)));
 		items[size++] = value;
 	}
-
+	
 	public void add(short value1, short value2) {
 		short[] items = this.items;
 		if (size + 1 >= items.length)
@@ -113,7 +113,7 @@ public class ShortArray {
 		items[size + 1] = value2;
 		size += 2;
 	}
-
+	
 	public void add(short value1, short value2, short value3) {
 		short[] items = this.items;
 		if (size + 2 >= items.length)
@@ -123,7 +123,7 @@ public class ShortArray {
 		items[size + 2] = value3;
 		size += 3;
 	}
-
+	
 	public void add(short value1, short value2, short value3, short value4) {
 		short[] items = this.items;
 		if (size + 3 >= items.length)
@@ -134,22 +134,22 @@ public class ShortArray {
 		items[size + 3] = value4;
 		size += 4;
 	}
-
+	
 	public void addAll(ShortArray array) {
 		addAll(array, 0, array.size);
 	}
-
+	
 	public void addAll(ShortArray array, int offset, int length) {
 		if (offset + length > array.size)
 			throw new IllegalArgumentException(
 					"offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
 		addAll(array.items, offset, length);
 	}
-
+	
 	public void addAll(short... array) {
 		addAll(array, 0, array.length);
 	}
-
+	
 	public void addAll(short[] array, int offset, int length) {
 		short[] items = this.items;
 		int sizeNeeded = size + length;
@@ -158,31 +158,31 @@ public class ShortArray {
 		System.arraycopy(array, offset, items, size, length);
 		size += length;
 	}
-
+	
 	public short get(int index) {
 		if (index >= size)
 			throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		return items[index];
 	}
-
+	
 	public void set(int index, short value) {
 		if (index >= size)
 			throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] = value;
 	}
-
+	
 	public void incr(int index, short value) {
 		if (index >= size)
 			throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] += value;
 	}
-
+	
 	public void mul(int index, short value) {
 		if (index >= size)
 			throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] *= value;
 	}
-
+	
 	public void insert(int index, short value) {
 		if (index > size)
 			throw new IndexOutOfBoundsException("index can't be > size: " + index + " > " + size);
@@ -196,7 +196,7 @@ public class ShortArray {
 		size++;
 		items[index] = value;
 	}
-
+	
 	public void swap(int first, int second) {
 		if (first >= size)
 			throw new IndexOutOfBoundsException("first can't be >= size: " + first + " >= " + size);
@@ -207,7 +207,7 @@ public class ShortArray {
 		items[first] = items[second];
 		items[second] = firstValue;
 	}
-
+	
 	public boolean contains(short value) {
 		int i = size - 1;
 		short[] items = this.items;
@@ -216,7 +216,7 @@ public class ShortArray {
 				return true;
 		return false;
 	}
-
+	
 	public int indexOf(short value) {
 		short[] items = this.items;
 		for (int i = 0, n = size; i < n; i++)
@@ -224,7 +224,7 @@ public class ShortArray {
 				return i;
 		return -1;
 	}
-
+	
 	public int lastIndexOf(char value) {
 		short[] items = this.items;
 		for (int i = size - 1; i >= 0; i--)
@@ -232,7 +232,7 @@ public class ShortArray {
 				return i;
 		return -1;
 	}
-
+	
 	public boolean removeValue(short value) {
 		short[] items = this.items;
 		for (int i = 0, n = size; i < n; i++) {
@@ -243,7 +243,7 @@ public class ShortArray {
 		}
 		return false;
 	}
-
+	
 	/** Removes and returns the item at the specified index. */
 	public short removeIndex(int index) {
 		if (index >= size)
@@ -257,7 +257,7 @@ public class ShortArray {
 			items[index] = items[size];
 		return value;
 	}
-
+	
 	/** Removes the items between the specified indices, inclusive. */
 	public void removeRange(int start, int end) {
 		if (end >= size)
@@ -275,7 +275,7 @@ public class ShortArray {
 		}
 		size -= count;
 	}
-
+	
 	/**
 	 * Removes from this array all of elements contained in the specified array.
 	 * 
@@ -297,33 +297,33 @@ public class ShortArray {
 		}
 		return size != startSize;
 	}
-
+	
 	/** Removes and returns the last item. */
 	public short pop() {
 		return items[--size];
 	}
-
+	
 	/** Returns the last item. */
 	public short peek() {
 		return items[size - 1];
 	}
-
+	
 	/** Returns the first item. */
 	public short first() {
 		if (size == 0)
 			throw new IllegalStateException("Array is empty.");
 		return items[0];
 	}
-
+	
 	/** Returns true if the array is empty. */
 	public boolean isEmpty() {
 		return size == 0;
 	}
-
+	
 	public void clear() {
 		size = 0;
 	}
-
+	
 	/**
 	 * Reduces the size of the backing array to the size of the actual items. This
 	 * is useful to release memory when many items have been removed, or if it is
@@ -336,7 +336,7 @@ public class ShortArray {
 			resize(size);
 		return items;
 	}
-
+	
 	/**
 	 * Increases the size of the backing array to accommodate the specified number
 	 * of additional items. Useful before adding many items to avoid multiple
@@ -350,7 +350,7 @@ public class ShortArray {
 			resize(Math.max(8, sizeNeeded));
 		return items;
 	}
-
+	
 	/**
 	 * Sets the array size, leaving any values beyond the current size undefined.
 	 * 
@@ -362,7 +362,7 @@ public class ShortArray {
 		size = newSize;
 		return items;
 	}
-
+	
 	protected short[] resize(int newSize) {
 		short[] newItems = new short[newSize];
 		short[] items = this.items;
@@ -370,11 +370,11 @@ public class ShortArray {
 		this.items = newItems;
 		return newItems;
 	}
-
+	
 	public void sort() {
 		Arrays.sort(items, 0, size);
 	}
-
+	
 	public void reverse() {
 		short[] items = this.items;
 		for (int i = 0, lastIndex = size - 1, n = size / 2; i < n; i++) {
@@ -384,7 +384,7 @@ public class ShortArray {
 			items[ii] = temp;
 		}
 	}
-
+	
 	public void shuffle() {
 		short[] items = this.items;
 		for (int i = size - 1; i >= 0; i--) {
@@ -394,7 +394,7 @@ public class ShortArray {
 			items[ii] = temp;
 		}
 	}
-
+	
 	/**
 	 * Reduces the size of the array to the specified size. If the array is already
 	 * smaller than the specified size, no action is taken.
@@ -403,20 +403,20 @@ public class ShortArray {
 		if (size > newSize)
 			size = newSize;
 	}
-
+	
 	/** Returns a random item from the array, or zero if the array is empty. */
 	public short random() {
 		if (size == 0)
 			return 0;
 		return items[MathUtils.random(0, size - 1)];
 	}
-
+	
 	public short[] toArray() {
 		short[] array = new short[size];
 		System.arraycopy(items, 0, array, 0, size);
 		return array;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		if (!ordered)
@@ -427,7 +427,7 @@ public class ShortArray {
 			h = h * 31 + items[i];
 		return h;
 	}
-
+	
 	@Override
 	public boolean equals(Object object) {
 		if (object == this)
@@ -449,7 +449,7 @@ public class ShortArray {
 				return false;
 		return true;
 	}
-
+	
 	@Override
 	public String toString() {
 		if (size == 0)
@@ -465,7 +465,7 @@ public class ShortArray {
 		buffer.append(']');
 		return buffer.toString();
 	}
-
+	
 	public String toString(String separator) {
 		if (size == 0)
 			return "";
@@ -478,7 +478,7 @@ public class ShortArray {
 		}
 		return buffer.toString();
 	}
-
+	
 	/** @see #ShortArray(short[]) */
 	static public ShortArray with(short... array) {
 		return new ShortArray(array);

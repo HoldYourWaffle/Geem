@@ -26,17 +26,17 @@ import com.badlogic.gdx.utils.IntMap;
  */
 public abstract class PluggableGroupStrategy implements GroupStrategy {
 	private IntMap<GroupPlug> plugs = new IntMap<>();
-
+	
 	@Override
 	public void beforeGroup(int group, Array<Decal> contents) {
 		plugs.get(group).beforeGroup(contents);
 	}
-
+	
 	@Override
 	public void afterGroup(int group) {
 		plugs.get(group).afterGroup();
 	}
-
+	
 	/**
 	 * Set the plug used for a specific group. The plug will automatically be
 	 * invoked.
@@ -47,7 +47,7 @@ public abstract class PluggableGroupStrategy implements GroupStrategy {
 	public void plugIn(GroupPlug plug, int group) {
 		plugs.put(group, plug);
 	}
-
+	
 	/**
 	 * Remove a plug from the strategy
 	 * 

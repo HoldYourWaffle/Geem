@@ -29,10 +29,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 abstract public class Value {
 	/** @param context May be null. */
 	abstract public float get(Actor context);
-
+	
 	/** A value that is always zero. */
 	static public final Fixed zero = new Fixed(0);
-
+	
 	/**
 	 * A fixed value that is not computed each time it is used.
 	 * 
@@ -40,17 +40,17 @@ abstract public class Value {
 	 */
 	static public class Fixed extends Value {
 		private final float value;
-
+		
 		public Fixed(float value) {
 			this.value = value;
 		}
-
+		
 		@Override
 		public float get(Actor context) {
 			return value;
 		}
 	}
-
+	
 	/** Value that is the minWidth of the actor in the cell. */
 	static public Value minWidth = new Value() {
 		@Override
@@ -60,7 +60,7 @@ abstract public class Value {
 			return context == null ? 0 : context.getWidth();
 		}
 	};
-
+	
 	/** Value that is the minHeight of the actor in the cell. */
 	static public Value minHeight = new Value() {
 		@Override
@@ -70,7 +70,7 @@ abstract public class Value {
 			return context == null ? 0 : context.getHeight();
 		}
 	};
-
+	
 	/** Value that is the prefWidth of the actor in the cell. */
 	static public Value prefWidth = new Value() {
 		@Override
@@ -78,10 +78,10 @@ abstract public class Value {
 			if (context instanceof Layout)
 				return ((Layout) context).getPrefWidth();
 			return context == null ? 0 : context.getWidth();
-
+			
 		}
 	};
-
+	
 	/** Value that is the prefHeight of the actor in the cell. */
 	static public Value prefHeight = new Value() {
 		@Override
@@ -91,7 +91,7 @@ abstract public class Value {
 			return context == null ? 0 : context.getHeight();
 		}
 	};
-
+	
 	/** Value that is the maxWidth of the actor in the cell. */
 	static public Value maxWidth = new Value() {
 		@Override
@@ -101,7 +101,7 @@ abstract public class Value {
 			return context == null ? 0 : context.getWidth();
 		}
 	};
-
+	
 	/** Value that is the maxHeight of the actor in the cell. */
 	static public Value maxHeight = new Value() {
 		@Override
@@ -111,7 +111,7 @@ abstract public class Value {
 			return context == null ? 0 : context.getHeight();
 		}
 	};
-
+	
 	/** Returns a value that is a percentage of the actor's width. */
 	static public Value percentWidth(final float percent) {
 		return new Value() {
@@ -121,7 +121,7 @@ abstract public class Value {
 			}
 		};
 	}
-
+	
 	/** Returns a value that is a percentage of the actor's height. */
 	static public Value percentHeight(final float percent) {
 		return new Value() {
@@ -131,7 +131,7 @@ abstract public class Value {
 			}
 		};
 	}
-
+	
 	/**
 	 * Returns a value that is a percentage of the specified actor's width. The
 	 * context actor is ignored.
@@ -146,7 +146,7 @@ abstract public class Value {
 			}
 		};
 	}
-
+	
 	/**
 	 * Returns a value that is a percentage of the specified actor's height. The
 	 * context actor is ignored.

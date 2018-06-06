@@ -26,16 +26,16 @@ import java.util.Locale;
  * @author davebaol
  */
 class TextFormatter {
-
+	
 	private MessageFormat messageFormat;
 	private StringBuilder buffer;
-
+	
 	public TextFormatter(Locale locale, boolean useMessageFormat) {
 		buffer = new StringBuilder();
 		if (useMessageFormat)
 			messageFormat = new MessageFormat("", locale);
 	}
-
+	
 	/**
 	 * Formats the given {@code pattern} replacing its placeholders with the actual
 	 * arguments specified by {@code args}.
@@ -76,7 +76,7 @@ class TextFormatter {
 		}
 		return simpleFormat(pattern, args);
 	}
-
+	
 	// This code is needed because a simple replacement like
 	// pattern.replace("'", "''").replace("{{", "'{'");
 	// can't properly manage some special cases.
@@ -114,7 +114,7 @@ class TextFormatter {
 		}
 		return changed ? buffer.toString() : pattern;
 	}
-
+	
 	/**
 	 * Formats the given {@code pattern} replacing any placeholder of the form {0},
 	 * {1}, {2} and so on with the corresponding object from {@code args} converted
@@ -171,7 +171,7 @@ class TextFormatter {
 		}
 		if (placeholder >= 0)
 			throw new IllegalArgumentException("Unmatched braces in the pattern.");
-
+		
 		return changed ? buffer.toString() : pattern;
 	}
 }

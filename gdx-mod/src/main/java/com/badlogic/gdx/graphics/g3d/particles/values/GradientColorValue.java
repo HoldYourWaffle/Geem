@@ -26,31 +26,31 @@ import com.badlogic.gdx.utils.JsonValue;
  */
 public class GradientColorValue extends ParticleValue {
 	static private float[] temp = new float[3];
-
+	
 	private float[] colors = { 1, 1, 1 };
 	public float[] timeline = { 0 };
-
+	
 	public float[] getTimeline() {
 		return timeline;
 	}
-
+	
 	public void setTimeline(float[] timeline) {
 		this.timeline = timeline;
 	}
-
+	
 	public float[] getColors() {
 		return colors;
 	}
-
+	
 	public void setColors(float[] colors) {
 		this.colors = colors;
 	}
-
+	
 	public float[] getColor(float percent) {
 		getColor(percent, temp, 0);
 		return temp;
 	}
-
+	
 	public void getColor(float percent, float[] out, int index) {
 		int startIndex = 0, endIndex = -1;
 		float[] timeline = this.timeline;
@@ -80,21 +80,21 @@ public class GradientColorValue extends ParticleValue {
 		out[index + 1] = g1 + (colors[endIndex + 1] - g1) * factor;
 		out[index + 2] = b1 + (colors[endIndex + 2] - b1) * factor;
 	}
-
+	
 	@Override
 	public void write(Json json) {
 		super.write(json);
 		json.writeValue("colors", colors);
 		json.writeValue("timeline", timeline);
 	}
-
+	
 	@Override
 	public void read(Json json, JsonValue jsonData) {
 		super.read(json, jsonData);
 		colors = json.readValue("colors", float[].class, jsonData);
 		timeline = json.readValue("timeline", float[].class, jsonData);
 	}
-
+	
 	public void load(GradientColorValue value) {
 		super.load(value);
 		colors = new float[value.colors.length];

@@ -31,14 +31,14 @@ import com.badlogic.gdx.utils.ObjectMap.Entry;
  * line-oriented syntax supported by {@code java.util.Properties}.
  */
 public final class PropertiesUtils {
-
+	
 	private static final int NONE = 0, SLASH = 1, UNICODE = 2, CONTINUE = 3, KEY_DONE = 4, IGNORE = 5;
-
+	
 	private static final String LINE_SEPARATOR = "\n";
-
+	
 	private PropertiesUtils() {
 	}
-
+	
 	/**
 	 * Adds to the specified {@code ObjectMap} the key/value pairs loaded from the
 	 * {@code Reader} in a simple line-oriented format compatible with
@@ -62,16 +62,16 @@ public final class PropertiesUtils {
 		char nextChar, buf[] = new char[40];
 		int offset = 0, keyLength = -1, intVal;
 		boolean firstChar = true;
-
+		
 		BufferedReader br = new BufferedReader(reader);
-
+		
 		while (true) {
 			intVal = br.read();
 			if (intVal == -1) {
 				break;
 			}
 			nextChar = (char) intVal;
-
+			
 			if (offset == buf.length) {
 				char[] newBuf = new char[buf.length * 2];
 				System.arraycopy(buf, 0, newBuf, 0, offset);
@@ -216,7 +216,7 @@ public final class PropertiesUtils {
 			properties.put(key, value);
 		}
 	}
-
+	
 	/**
 	 * Writes the key/value pairs of the specified <code>ObjectMap</code> to the
 	 * output character stream in a simple line-oriented format compatible with
@@ -245,7 +245,7 @@ public final class PropertiesUtils {
 	public static void store(ObjectMap<String, String> properties, Writer writer, String comment) throws IOException {
 		storeImpl(properties, writer, comment, false);
 	}
-
+	
 	private static void storeImpl(ObjectMap<String, String> properties, Writer writer, String comment,
 			boolean escapeUnicode) throws IOException {
 		if (comment != null) {
@@ -254,7 +254,7 @@ public final class PropertiesUtils {
 		writer.write("#");
 		writer.write(new Date().toString());
 		writer.write(LINE_SEPARATOR);
-
+		
 		StringBuilder sb = new StringBuilder(200);
 		for (Entry<String, String> entry : properties.entries()) {
 			dumpString(sb, entry.key, true, escapeUnicode);
@@ -266,7 +266,7 @@ public final class PropertiesUtils {
 		}
 		writer.flush();
 	}
-
+	
 	private static void dumpString(StringBuilder outBuffer, String string, boolean escapeSpace, boolean escapeUnicode) {
 		int len = string.length();
 		for (int i = 0; i < len; i++) {
@@ -317,7 +317,7 @@ public final class PropertiesUtils {
 			}
 		}
 	}
-
+	
 	private static void writeComment(Writer writer, String comment) throws IOException {
 		writer.write("#");
 		int len = comment.length();

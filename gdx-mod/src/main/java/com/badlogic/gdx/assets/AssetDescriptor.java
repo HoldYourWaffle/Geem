@@ -31,22 +31,22 @@ public class AssetDescriptor<T> {
 	public final AssetLoaderParameters params;
 	/** The resolved file. May be null if the fileName has not been resolved yet. */
 	public FileHandle file;
-
+	
 	public AssetDescriptor(String fileName, Class<T> assetType) {
 		this(fileName, assetType, null);
 	}
-
+	
 	/** Creates an AssetDescriptor with an already resolved name. */
 	public AssetDescriptor(FileHandle file, Class<T> assetType) {
 		this(file, assetType, null);
 	}
-
+	
 	public AssetDescriptor(String fileName, Class<T> assetType, AssetLoaderParameters<T> params) {
 		this.fileName = fileName.replaceAll("\\\\", "/");
 		this.type = assetType;
 		this.params = params;
 	}
-
+	
 	/** Creates an AssetDescriptor with an already resolved name. */
 	public AssetDescriptor(FileHandle file, Class<T> assetType, AssetLoaderParameters<T> params) {
 		this.fileName = file.path().replaceAll("\\\\", "/");
@@ -54,7 +54,7 @@ public class AssetDescriptor<T> {
 		this.type = assetType;
 		this.params = params;
 	}
-
+	
 	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();

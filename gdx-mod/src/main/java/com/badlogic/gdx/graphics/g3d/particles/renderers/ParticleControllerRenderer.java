@@ -30,19 +30,19 @@ public abstract class ParticleControllerRenderer<D extends ParticleControllerRen
 		extends ParticleControllerComponent {
 	protected T batch;
 	protected D renderData;
-
+	
 	protected ParticleControllerRenderer() {
 	}
-
+	
 	protected ParticleControllerRenderer(D renderData) {
 		this.renderData = renderData;
 	}
-
+	
 	@Override
 	public void update() {
 		batch.draw(renderData);
 	}
-
+	
 	public boolean setBatch(ParticleBatch<?> batch) {
 		if (isCompatible(batch)) {
 			this.batch = (T) batch;
@@ -50,9 +50,9 @@ public abstract class ParticleControllerRenderer<D extends ParticleControllerRen
 		}
 		return false;
 	}
-
+	
 	public abstract boolean isCompatible(ParticleBatch<?> batch);
-
+	
 	@Override
 	public void set(ParticleController particleController) {
 		super.set(particleController);

@@ -38,7 +38,7 @@ public class Gdx {
 	public static Input input;
 	public static Files files;
 	public static Net net;
-
+	
 	public static GL20 gl;
 	public static GL20 gl20;
 	public static GL30 gl30;

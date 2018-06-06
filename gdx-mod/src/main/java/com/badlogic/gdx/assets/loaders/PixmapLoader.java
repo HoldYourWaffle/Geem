@@ -33,27 +33,27 @@ public class PixmapLoader extends AsynchronousAssetLoader<Pixmap, PixmapLoader.P
 	public PixmapLoader(FileHandleResolver resolver) {
 		super(resolver);
 	}
-
+	
 	Pixmap pixmap;
-
+	
 	@Override
 	public void loadAsync(AssetManager manager, String fileName, FileHandle file, PixmapParameter parameter) {
 		pixmap = null;
 		pixmap = new Pixmap(file);
 	}
-
+	
 	@Override
 	public Pixmap loadSync(AssetManager manager, String fileName, FileHandle file, PixmapParameter parameter) {
 		Pixmap pixmap = this.pixmap;
 		this.pixmap = null;
 		return pixmap;
 	}
-
+	
 	@Override
 	public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, PixmapParameter parameter) {
 		return null;
 	}
-
+	
 	static public class PixmapParameter extends AssetLoaderParameters<Pixmap> {
 	}
 }

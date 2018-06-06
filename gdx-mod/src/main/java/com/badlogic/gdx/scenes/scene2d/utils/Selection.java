@@ -25,7 +25,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	boolean required;
 	private boolean programmaticChangeEvents = true;
 	T lastSelected;
-
+	
 	/**
 	 * @param actor An actor to fire {@link ChangeEvent} on when the selection
 	 *              changes, or null.
@@ -33,7 +33,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	public void setActor(Actor actor) {
 		this.actor = actor;
 	}
-
+	
 	/**
 	 * Selects or deselects the specified item based on how the selection is
 	 * configured, whether ctrl is currently pressed, etc. This is typically invoked
@@ -71,42 +71,42 @@ public class Selection<T> implements Disableable, Iterable<T> {
 			cleanup();
 		}
 	}
-
+	
 	public boolean hasItems() {
 		return selected.size > 0;
 	}
-
+	
 	public boolean isEmpty() {
 		return selected.size == 0;
 	}
-
+	
 	public int size() {
 		return selected.size;
 	}
-
+	
 	public OrderedSet<T> items() {
 		return selected;
 	}
-
+	
 	/** Returns the first selected item, or null. */
 	public T first() {
 		return selected.size == 0 ? null : selected.first();
 	}
-
+	
 	void snapshot() {
 		old.clear();
 		old.addAll(selected);
 	}
-
+	
 	void revert() {
 		selected.clear();
 		selected.addAll(old);
 	}
-
+	
 	void cleanup() {
 		old.clear(32);
 	}
-
+	
 	/** Sets the selection to only the specified item. */
 	public void set(T item) {
 		if (item == null)
@@ -124,7 +124,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		}
 		cleanup();
 	}
-
+	
 	public void setAll(Array<T> items) {
 		boolean added = false;
 		snapshot();
@@ -147,7 +147,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		}
 		cleanup();
 	}
-
+	
 	/** Adds the item to the selection. */
 	public void add(T item) {
 		if (item == null)
@@ -161,7 +161,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 			changed();
 		}
 	}
-
+	
 	public void addAll(Array<T> items) {
 		boolean added = false;
 		snapshot();
@@ -182,7 +182,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		}
 		cleanup();
 	}
-
+	
 	public void remove(T item) {
 		if (item == null)
 			throw new IllegalArgumentException("item cannot be null.");
@@ -195,7 +195,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 			changed();
 		}
 	}
-
+	
 	public void removeAll(Array<T> items) {
 		boolean removed = false;
 		snapshot();
@@ -216,7 +216,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		}
 		cleanup();
 	}
-
+	
 	public void clear() {
 		if (selected.size == 0)
 			return;
@@ -230,13 +230,13 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		}
 		cleanup();
 	}
-
+	
 	/**
 	 * Called after the selection changes. The default implementation does nothing.
 	 */
 	protected void changed() {
 	}
-
+	
 	/**
 	 * Fires a change event on the selection's actor, if any. Called internally when
 	 * the selection changes, depending on
@@ -254,13 +254,13 @@ public class Selection<T> implements Disableable, Iterable<T> {
 			Pools.free(changeEvent);
 		}
 	}
-
+	
 	public boolean contains(T item) {
 		if (item == null)
 			return false;
 		return selected.contains(item);
 	}
-
+	
 	/**
 	 * Makes a best effort to return the last item selected, else returns an
 	 * arbitrary item or null if the selection is empty.
@@ -273,20 +273,20 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		}
 		return null;
 	}
-
+	
 	@Override
 	public Iterator<T> iterator() {
 		return selected.iterator();
 	}
-
+	
 	public Array<T> toArray() {
 		return selected.iterator().toArray();
 	}
-
+	
 	public Array<T> toArray(Array<T> array) {
 		return selected.iterator().toArray(array);
 	}
-
+	
 	/**
 	 * If true, prevents {@link #choose(Object)} from changing the selection.
 	 * Default is false.
@@ -295,16 +295,16 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	public void setDisabled(boolean isDisabled) {
 		this.isDisabled = isDisabled;
 	}
-
+	
 	@Override
 	public boolean isDisabled() {
 		return isDisabled;
 	}
-
+	
 	public boolean getToggle() {
 		return toggle;
 	}
-
+	
 	/**
 	 * If true, prevents {@link #choose(Object)} from clearing the selection.
 	 * Default is false.
@@ -312,11 +312,11 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	public void setToggle(boolean toggle) {
 		this.toggle = toggle;
 	}
-
+	
 	public boolean getMultiple() {
 		return multiple;
 	}
-
+	
 	/**
 	 * If true, allows {@link #choose(Object)} to select multiple items. Default is
 	 * false.
@@ -324,11 +324,11 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	public void setMultiple(boolean multiple) {
 		this.multiple = multiple;
 	}
-
+	
 	public boolean getRequired() {
 		return required;
 	}
-
+	
 	/**
 	 * If true, prevents {@link #choose(Object)} from selecting none. Default is
 	 * false.
@@ -336,7 +336,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	public void setRequired(boolean required) {
 		this.required = required;
 	}
-
+	
 	/**
 	 * If false, only {@link #choose(Object)} will fire a change event. Default is
 	 * true.
@@ -344,7 +344,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	public void setProgrammaticChangeEvents(boolean programmaticChangeEvents) {
 		this.programmaticChangeEvents = programmaticChangeEvents;
 	}
-
+	
 	@Override
 	public String toString() {
 		return selected.toString();

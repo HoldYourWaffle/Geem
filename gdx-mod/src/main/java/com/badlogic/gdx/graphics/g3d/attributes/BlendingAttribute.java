@@ -24,11 +24,11 @@ import com.badlogic.gdx.utils.NumberUtils;
 public class BlendingAttribute extends Attribute {
 	public final static String Alias = "blended";
 	public final static long Type = register(Alias);
-
+	
 	public final static boolean is(final long mask) {
 		return (mask & Type) == mask;
 	}
-
+	
 	/**
 	 * Whether this material should be considered blended (default: true). This is
 	 * used for sorting (back to front instead of front to back).
@@ -49,11 +49,11 @@ public class BlendingAttribute extends Attribute {
 	 * 1 (fully opaque), (default: 1).
 	 */
 	public float opacity = 1.f;
-
+	
 	public BlendingAttribute() {
 		this(null);
 	}
-
+	
 	public BlendingAttribute(final boolean blended, final int sourceFunc, final int destFunc, final float opacity) {
 		super(Type);
 		this.blended = blended;
@@ -61,34 +61,34 @@ public class BlendingAttribute extends Attribute {
 		this.destFunction = destFunc;
 		this.opacity = opacity;
 	}
-
+	
 	public BlendingAttribute(final int sourceFunc, final int destFunc, final float opacity) {
 		this(true, sourceFunc, destFunc, opacity);
 	}
-
+	
 	public BlendingAttribute(final int sourceFunc, final int destFunc) {
 		this(sourceFunc, destFunc, 1.f);
 	}
-
+	
 	public BlendingAttribute(final boolean blended, final float opacity) {
 		this(blended, GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, opacity);
 	}
-
+	
 	public BlendingAttribute(final float opacity) {
 		this(true, opacity);
 	}
-
+	
 	public BlendingAttribute(final BlendingAttribute copyFrom) {
 		this(copyFrom == null ? true : copyFrom.blended, copyFrom == null ? GL20.GL_SRC_ALPHA : copyFrom.sourceFunction,
 				copyFrom == null ? GL20.GL_ONE_MINUS_SRC_ALPHA : copyFrom.destFunction,
 				copyFrom == null ? 1.f : copyFrom.opacity);
 	}
-
+	
 	@Override
 	public BlendingAttribute copy() {
 		return new BlendingAttribute(this);
 	}
-
+	
 	@Override
 	public int hashCode() {
 		int result = super.hashCode();
@@ -98,7 +98,7 @@ public class BlendingAttribute extends Attribute {
 		result = 947 * result + NumberUtils.floatToRawIntBits(opacity);
 		return result;
 	}
-
+	
 	@Override
 	public int compareTo(Attribute o) {
 		if (type != o.type)

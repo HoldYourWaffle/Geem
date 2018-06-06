@@ -29,16 +29,16 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author noblemaster
  */
 public class NetJavaSocketImpl implements Socket {
-
+	
 	/** Our socket or null for disposed, aka closed. */
 	private java.net.Socket socket;
-
+	
 	public NetJavaSocketImpl(Protocol protocol, String host, int port, SocketHints hints) {
 		try {
 			// create the socket
 			socket = new java.net.Socket();
 			applyHints(hints); // better to call BEFORE socket is connected!
-
+			
 			// and connect...
 			InetSocketAddress address = new InetSocketAddress(host, port);
 			if (hints != null) {
@@ -50,12 +50,12 @@ public class NetJavaSocketImpl implements Socket {
 			throw new GdxRuntimeException("Error making a socket connection to " + host + ":" + port, e);
 		}
 	}
-
+	
 	public NetJavaSocketImpl(java.net.Socket socket, SocketHints hints) {
 		this.socket = socket;
 		applyHints(hints);
 	}
-
+	
 	private void applyHints(SocketHints hints) {
 		if (hints != null) {
 			try {
@@ -73,7 +73,7 @@ public class NetJavaSocketImpl implements Socket {
 			}
 		}
 	}
-
+	
 	@Override
 	public boolean isConnected() {
 		if (socket != null) {
@@ -82,7 +82,7 @@ public class NetJavaSocketImpl implements Socket {
 			return false;
 		}
 	}
-
+	
 	@Override
 	public InputStream getInputStream() {
 		try {
@@ -91,7 +91,7 @@ public class NetJavaSocketImpl implements Socket {
 			throw new GdxRuntimeException("Error getting input stream from socket.", e);
 		}
 	}
-
+	
 	@Override
 	public OutputStream getOutputStream() {
 		try {
@@ -100,12 +100,12 @@ public class NetJavaSocketImpl implements Socket {
 			throw new GdxRuntimeException("Error getting output stream from socket.", e);
 		}
 	}
-
+	
 	@Override
 	public String getRemoteAddress() {
 		return socket.getRemoteSocketAddress().toString();
 	}
-
+	
 	@Override
 	public void dispose() {
 		if (socket != null) {

@@ -18,28 +18,28 @@ import com.badlogic.gdx.utils.Array;
 public class DirectionalLightsAttribute extends Attribute {
 	public final static String Alias = "directionalLights";
 	public final static long Type = register(Alias);
-
+	
 	public final static boolean is(final long mask) {
 		return (mask & Type) == mask;
 	}
-
+	
 	public final Array<DirectionalLight> lights;
-
+	
 	public DirectionalLightsAttribute() {
 		super(Type);
 		lights = new Array<>(1);
 	}
-
+	
 	public DirectionalLightsAttribute(final DirectionalLightsAttribute copyFrom) {
 		this();
 		lights.addAll(copyFrom.lights);
 	}
-
+	
 	@Override
 	public DirectionalLightsAttribute copy() {
 		return new DirectionalLightsAttribute(this);
 	}
-
+	
 	@Override
 	public int hashCode() {
 		int result = super.hashCode();
@@ -47,7 +47,7 @@ public class DirectionalLightsAttribute extends Attribute {
 			result = 1229 * result + (light == null ? 0 : light.hashCode());
 		return result;
 	}
-
+	
 	@Override
 	public int compareTo(Attribute o) {
 		if (type != o.type)

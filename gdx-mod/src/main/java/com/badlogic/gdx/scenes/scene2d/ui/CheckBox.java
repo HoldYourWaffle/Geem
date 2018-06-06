@@ -33,15 +33,15 @@ public class CheckBox extends TextButton {
 	private Image image;
 	private Cell imageCell;
 	private CheckBoxStyle style;
-
+	
 	public CheckBox(String text, Skin skin) {
 		this(text, skin.get(CheckBoxStyle.class));
 	}
-
+	
 	public CheckBox(String text, Skin skin, String styleName) {
 		this(text, skin.get(styleName, CheckBoxStyle.class));
 	}
-
+	
 	public CheckBox(String text, CheckBoxStyle style) {
 		super(text, style);
 		clearChildren();
@@ -51,7 +51,7 @@ public class CheckBox extends TextButton {
 		label.setAlignment(Align.left);
 		setSize(getPrefWidth(), getPrefHeight());
 	}
-
+	
 	@Override
 	public void setStyle(ButtonStyle style) {
 		if (!(style instanceof CheckBoxStyle))
@@ -59,7 +59,7 @@ public class CheckBox extends TextButton {
 		super.setStyle(style);
 		this.style = (CheckBoxStyle) style;
 	}
-
+	
 	/**
 	 * Returns the checkbox's style. Modifying the returned style may not have an
 	 * effect until {@link #setStyle(ButtonStyle)} is called.
@@ -68,7 +68,7 @@ public class CheckBox extends TextButton {
 	public CheckBoxStyle getStyle() {
 		return style;
 	}
-
+	
 	@Override
 	public void draw(Batch batch, float a) {
 		Drawable checkbox = null;
@@ -90,15 +90,15 @@ public class CheckBox extends TextButton {
 		image.setDrawable(checkbox);
 		super.draw(batch, a);
 	}
-
+	
 	public Image getImage() {
 		return image;
 	}
-
+	
 	public Cell getImageCell() {
 		return imageCell;
 	}
-
+	
 	/**
 	 * The style for a select box, see {@link CheckBox}.
 	 * 
@@ -108,17 +108,17 @@ public class CheckBox extends TextButton {
 		public Drawable checkboxOn, checkboxOff;
 		/** Optional. */
 		public Drawable checkboxOnOver, checkboxOver, checkboxOnDisabled, checkboxOffDisabled;
-
+		
 		public CheckBoxStyle() {
 		}
-
+		
 		public CheckBoxStyle(Drawable checkboxOff, Drawable checkboxOn, BitmapFont font, Color fontColor) {
 			this.checkboxOff = checkboxOff;
 			this.checkboxOn = checkboxOn;
 			this.font = font;
 			this.fontColor = fontColor;
 		}
-
+		
 		public CheckBoxStyle(CheckBoxStyle style) {
 			super(style);
 			this.checkboxOff = style.checkboxOff;

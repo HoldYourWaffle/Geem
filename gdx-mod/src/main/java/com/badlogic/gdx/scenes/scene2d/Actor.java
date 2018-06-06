@@ -72,7 +72,7 @@ public class Actor {
 	private final DelayedRemovalArray<EventListener> listeners = new DelayedRemovalArray(0);
 	private final DelayedRemovalArray<EventListener> captureListeners = new DelayedRemovalArray(0);
 	private final Array<Action> actions = new Array(0);
-
+	
 	private String name;
 	private Touchable touchable = Touchable.enabled;
 	private boolean visible = true, debug;
@@ -83,7 +83,7 @@ public class Actor {
 	float rotation;
 	final Color color = new Color(1, 1, 1, 1);
 	private Object userObject;
-
+	
 	/**
 	 * Draws the actor. The batch is configured to draw in the parent's coordinate
 	 * system.
@@ -100,7 +100,7 @@ public class Actor {
 	 */
 	public void draw(Batch batch, float a) {
 	}
-
+	
 	/**
 	 * Updates the actor based on time. Typically this is called each frame by
 	 * {@link Stage#act(float)}.
@@ -129,7 +129,7 @@ public class Actor {
 			}
 		}
 	}
-
+	
 	/**
 	 * Sets this actor as the event {@link Event#setTarget(Actor) target} and
 	 * propagates the event to this actor and ancestor actors as necessary. If this
@@ -153,7 +153,7 @@ public class Actor {
 		if (event.getStage() == null)
 			event.setStage(getStage());
 		event.setTarget(this);
-
+		
 		// Collect ancestors so event propagation is unaffected by hierarchy changes.
 		Array<Group> ancestors = Pools.obtain(Array.class);
 		Group parent = this.parent;
@@ -161,7 +161,7 @@ public class Actor {
 			ancestors.add(parent);
 			parent = parent.parent;
 		}
-
+		
 		try {
 			// Notify all parent capture listeners, starting at the root. Ancestors may stop
 			// an event before children receive it.
@@ -172,19 +172,19 @@ public class Actor {
 				if (event.isStopped())
 					return event.isCancelled();
 			}
-
+			
 			// Notify the target capture listeners.
 			notify(event, true);
 			if (event.isStopped())
 				return event.isCancelled();
-
+			
 			// Notify the target listeners.
 			notify(event, false);
 			if (!event.getBubbles())
 				return event.isCancelled();
 			if (event.isStopped())
 				return event.isCancelled();
-
+				
 			// Notify all parent listeners, starting at the target. Children may stop an
 			// event before ancestors receive it.
 			for (int i = 0, n = ancestors.size; i < n; i++) {
@@ -192,14 +192,14 @@ public class Actor {
 				if (event.isStopped())
 					return event.isCancelled();
 			}
-
+			
 			return event.isCancelled();
 		} finally {
 			ancestors.clear();
 			Pools.free(ancestors);
 		}
 	}
-
+	
 	/**
 	 * Notifies this actor's listeners of the event. The event is not propagated to
 	 * any parents. Before notifying the listeners, this actor is set as the
@@ -215,16 +215,16 @@ public class Actor {
 	public boolean notify(Event event, boolean capture) {
 		if (event.getTarget() == null)
 			throw new IllegalArgumentException("The event target cannot be null.");
-
+		
 		DelayedRemovalArray<EventListener> listeners = capture ? captureListeners : this.listeners;
 		if (listeners.size == 0)
 			return event.isCancelled();
-
+		
 		event.setListenerActor(this);
 		event.setCapture(capture);
 		if (event.getStage() == null)
 			event.setStage(stage);
-
+		
 		listeners.begin();
 		for (int i = 0, n = listeners.size; i < n; i++) {
 			EventListener listener = listeners.get(i);
@@ -240,10 +240,10 @@ public class Actor {
 			}
 		}
 		listeners.end();
-
+		
 		return event.isCancelled();
 	}
-
+	
 	/**
 	 * Returns the deepest actor that contains the specified point and is
 	 * {@link #getTouchable() touchable} and {@link #isVisible() visible}, or null
@@ -266,7 +266,7 @@ public class Actor {
 			return null;
 		return x >= 0 && x < width && y >= 0 && y < height ? this : null;
 	}
-
+	
 	/**
 	 * Removes this actor from its parent, if it has a parent.
 	 * 
@@ -277,7 +277,7 @@ public class Actor {
 			return parent.removeActor(this, true);
 		return false;
 	}
-
+	
 	/**
 	 * Add a listener to receive events that {@link #hit(float, float, boolean) hit}
 	 * this actor. See {@link #fire(Event)}.
@@ -294,17 +294,17 @@ public class Actor {
 		}
 		return false;
 	}
-
+	
 	public boolean removeListener(EventListener listener) {
 		if (listener == null)
 			throw new IllegalArgumentException("listener cannot be null.");
 		return listeners.removeValue(listener, true);
 	}
-
+	
 	public Array<EventListener> getListeners() {
 		return listeners;
 	}
-
+	
 	/**
 	 * Adds a listener that is only notified during the capture phase.
 	 * 
@@ -317,65 +317,65 @@ public class Actor {
 			captureListeners.add(listener);
 		return true;
 	}
-
+	
 	public boolean removeCaptureListener(EventListener listener) {
 		if (listener == null)
 			throw new IllegalArgumentException("listener cannot be null.");
 		return captureListeners.removeValue(listener, true);
 	}
-
+	
 	public Array<EventListener> getCaptureListeners() {
 		return captureListeners;
 	}
-
+	
 	public void addAction(Action action) {
 		action.setActor(this);
 		actions.add(action);
-
+		
 		if (stage != null && stage.getActionsRequestRendering())
 			Gdx.graphics.requestRendering();
 	}
-
+	
 	public void removeAction(Action action) {
 		if (actions.removeValue(action, true))
 			action.setActor(null);
 	}
-
+	
 	public Array<Action> getActions() {
 		return actions;
 	}
-
+	
 	/** Returns true if the actor has one or more actions. */
 	public boolean hasActions() {
 		return actions.size > 0;
 	}
-
+	
 	/** Removes all actions on this actor. */
 	public void clearActions() {
 		for (int i = actions.size - 1; i >= 0; i--)
 			actions.get(i).setActor(null);
 		actions.clear();
 	}
-
+	
 	/** Removes all listeners on this actor. */
 	public void clearListeners() {
 		listeners.clear();
 		captureListeners.clear();
 	}
-
+	
 	/** Removes all actions and listeners on this actor. */
 	public void clear() {
 		clearActions();
 		clearListeners();
 	}
-
+	
 	/**
 	 * Returns the stage that this actor is currently in, or null if not in a stage.
 	 */
 	public Stage getStage() {
 		return stage;
 	}
-
+	
 	/**
 	 * Called by the framework when this actor or any parent is added to a group
 	 * that is in the stage.
@@ -385,7 +385,7 @@ public class Actor {
 	protected void setStage(Stage stage) {
 		this.stage = stage;
 	}
-
+	
 	/**
 	 * Returns true if this actor is the same as or is the descendant of the
 	 * specified actor.
@@ -402,7 +402,7 @@ public class Actor {
 			parent = parent.parent;
 		}
 	}
-
+	
 	/**
 	 * Returns true if this actor is the same as or is the ascendant of the
 	 * specified actor.
@@ -418,7 +418,7 @@ public class Actor {
 			actor = actor.parent;
 		}
 	}
-
+	
 	/**
 	 * Returns this actor or the first ascendant of this actor that is assignable
 	 * with the specified type, or null if none were found.
@@ -434,17 +434,17 @@ public class Actor {
 		} while (actor != null);
 		return null;
 	}
-
+	
 	/** Returns true if the actor's parent is not null. */
 	public boolean hasParent() {
 		return parent != null;
 	}
-
+	
 	/** Returns the parent actor, or null if not in a group. */
 	public Group getParent() {
 		return parent;
 	}
-
+	
 	/**
 	 * Called by the framework when an actor is added to or removed from a group.
 	 * 
@@ -453,16 +453,16 @@ public class Actor {
 	protected void setParent(Group parent) {
 		this.parent = parent;
 	}
-
+	
 	/** Returns true if input events are processed by this actor. */
 	public boolean isTouchable() {
 		return touchable == Touchable.enabled;
 	}
-
+	
 	public Touchable getTouchable() {
 		return touchable;
 	}
-
+	
 	/**
 	 * Determines how touch events are distributed to this actor. Default is
 	 * {@link Touchable#enabled}.
@@ -470,11 +470,11 @@ public class Actor {
 	public void setTouchable(Touchable touchable) {
 		this.touchable = touchable;
 	}
-
+	
 	public boolean isVisible() {
 		return visible;
 	}
-
+	
 	/**
 	 * If false, the actor will not be drawn and will not receive touch events.
 	 * Default is true.
@@ -482,22 +482,22 @@ public class Actor {
 	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}
-
+	
 	/** Returns an application specific object for convenience, or null. */
 	public Object getUserObject() {
 		return userObject;
 	}
-
+	
 	/** Sets an application specific object for convenience. */
 	public void setUserObject(Object userObject) {
 		this.userObject = userObject;
 	}
-
+	
 	/** Returns the X position of the actor's left edge. */
 	public float getX() {
 		return x;
 	}
-
+	
 	/** Returns the X position of the specified {@link Align alignment}. */
 	public float getX(int alignment) {
 		float x = this.x;
@@ -507,60 +507,60 @@ public class Actor {
 			x += width / 2;
 		return x;
 	}
-
+	
 	public void setX(float x) {
 		if (this.x != x) {
 			this.x = x;
 			positionChanged();
 		}
 	}
-
+	
 	/**
 	 * Sets the x position using the specified {@link Align alignment}. Note this
 	 * may set the position to non-integer coordinates.
 	 */
 	public void setX(float x, int alignment) {
-
+		
 		if ((alignment & right) != 0)
 			x -= width;
 		else if ((alignment & left) == 0) //
 			x -= width / 2;
-
+		
 		if (this.x != x) {
 			this.x = x;
 			positionChanged();
 		}
 	}
-
+	
 	/** Returns the Y position of the actor's bottom edge. */
 	public float getY() {
 		return y;
 	}
-
+	
 	public void setY(float y) {
 		if (this.y != y) {
 			this.y = y;
 			positionChanged();
 		}
 	}
-
+	
 	/**
 	 * Sets the y position using the specified {@link Align alignment}. Note this
 	 * may set the position to non-integer coordinates.
 	 */
 	public void setY(float y, int alignment) {
-
+		
 		if ((alignment & top) != 0)
 			y -= height;
 		else if ((alignment & bottom) == 0) //
 			y -= height / 2;
-
+		
 		if (this.y != y) {
 			this.y = y;
 			positionChanged();
 		}
 	}
-
+	
 	/** Returns the Y position of the specified {@link Align alignment}. */
 	public float getY(int alignment) {
 		float y = this.y;
@@ -570,7 +570,7 @@ public class Actor {
 			y += height / 2;
 		return y;
 	}
-
+	
 	/** Sets the position of the actor's bottom left corner. */
 	public void setPosition(float x, float y) {
 		if (this.x != x || this.y != y) {
@@ -579,7 +579,7 @@ public class Actor {
 			positionChanged();
 		}
 	}
-
+	
 	/**
 	 * Sets the position using the specified {@link Align alignment}. Note this may
 	 * set the position to non-integer coordinates.
@@ -589,19 +589,19 @@ public class Actor {
 			x -= width;
 		else if ((alignment & left) == 0) //
 			x -= width / 2;
-
+		
 		if ((alignment & top) != 0)
 			y -= height;
 		else if ((alignment & bottom) == 0) //
 			y -= height / 2;
-
+		
 		if (this.x != x || this.y != y) {
 			this.x = x;
 			this.y = y;
 			positionChanged();
 		}
 	}
-
+	
 	/** Add x and y to current position */
 	public void moveBy(float x, float y) {
 		if (x != 0 || y != 0) {
@@ -610,51 +610,51 @@ public class Actor {
 			positionChanged();
 		}
 	}
-
+	
 	public float getWidth() {
 		return width;
 	}
-
+	
 	public void setWidth(float width) {
 		if (this.width != width) {
 			this.width = width;
 			sizeChanged();
 		}
 	}
-
+	
 	public float getHeight() {
 		return height;
 	}
-
+	
 	public void setHeight(float height) {
 		if (this.height != height) {
 			this.height = height;
 			sizeChanged();
 		}
 	}
-
+	
 	/** Returns y plus height. */
 	public float getTop() {
 		return y + height;
 	}
-
+	
 	/** Returns x plus width. */
 	public float getRight() {
 		return x + width;
 	}
-
+	
 	/** Called when the actor's position has been changed. */
 	protected void positionChanged() {
 	}
-
+	
 	/** Called when the actor's size has been changed. */
 	protected void sizeChanged() {
 	}
-
+	
 	/** Called when the actor's rotation has been changed. */
 	protected void rotationChanged() {
 	}
-
+	
 	/** Sets the width and height. */
 	public void setSize(float width, float height) {
 		if (this.width != width || this.height != height) {
@@ -663,7 +663,7 @@ public class Actor {
 			sizeChanged();
 		}
 	}
-
+	
 	/** Adds the specified size to the current size. */
 	public void sizeBy(float size) {
 		if (size != 0) {
@@ -672,7 +672,7 @@ public class Actor {
 			sizeChanged();
 		}
 	}
-
+	
 	/** Adds the specified size to the current size. */
 	public void sizeBy(float width, float height) {
 		if (width != 0 || height != 0) {
@@ -681,7 +681,7 @@ public class Actor {
 			sizeChanged();
 		}
 	}
-
+	
 	/** Set bounds the x, y, width, and height. */
 	public void setBounds(float x, float y, float width, float height) {
 		if (this.x != x || this.y != y) {
@@ -695,23 +695,23 @@ public class Actor {
 			sizeChanged();
 		}
 	}
-
+	
 	public float getOriginX() {
 		return originX;
 	}
-
+	
 	public void setOriginX(float originX) {
 		this.originX = originX;
 	}
-
+	
 	public float getOriginY() {
 		return originY;
 	}
-
+	
 	public void setOriginY(float originY) {
 		this.originY = originY;
 	}
-
+	
 	/**
 	 * Sets the origin position which is relative to the actor's bottom left corner.
 	 */
@@ -719,7 +719,7 @@ public class Actor {
 		this.originX = originX;
 		this.originY = originY;
 	}
-
+	
 	/** Sets the origin position to the specified {@link Align alignment}. */
 	public void setOrigin(int alignment) {
 		if ((alignment & left) != 0)
@@ -728,7 +728,7 @@ public class Actor {
 			originX = width;
 		else
 			originX = width / 2;
-
+		
 		if ((alignment & bottom) != 0)
 			originY = 0;
 		else if ((alignment & top) != 0)
@@ -736,58 +736,58 @@ public class Actor {
 		else
 			originY = height / 2;
 	}
-
+	
 	public float getScaleX() {
 		return scaleX;
 	}
-
+	
 	public void setScaleX(float scaleX) {
 		this.scaleX = scaleX;
 	}
-
+	
 	public float getScaleY() {
 		return scaleY;
 	}
-
+	
 	public void setScaleY(float scaleY) {
 		this.scaleY = scaleY;
 	}
-
+	
 	/** Sets the scale for both X and Y */
 	public void setScale(float scaleXY) {
 		this.scaleX = scaleXY;
 		this.scaleY = scaleXY;
 	}
-
+	
 	/** Sets the scale X and scale Y. */
 	public void setScale(float scaleX, float scaleY) {
 		this.scaleX = scaleX;
 		this.scaleY = scaleY;
 	}
-
+	
 	/** Adds the specified scale to the current scale. */
 	public void scaleBy(float scale) {
 		scaleX += scale;
 		scaleY += scale;
 	}
-
+	
 	/** Adds the specified scale to the current scale. */
 	public void scaleBy(float scaleX, float scaleY) {
 		this.scaleX += scaleX;
 		this.scaleY += scaleY;
 	}
-
+	
 	public float getRotation() {
 		return rotation;
 	}
-
+	
 	public void setRotation(float degrees) {
 		if (this.rotation != degrees) {
 			this.rotation = degrees;
 			rotationChanged();
 		}
 	}
-
+	
 	/** Adds the specified rotation to the current rotation. */
 	public void rotateBy(float amountInDegrees) {
 		if (amountInDegrees != 0) {
@@ -795,15 +795,15 @@ public class Actor {
 			rotationChanged();
 		}
 	}
-
+	
 	public void setColor(Color color) {
 		this.color.set(color);
 	}
-
+	
 	public void setColor(float r, float g, float b, float a) {
 		color.set(r, g, b, a);
 	}
-
+	
 	/**
 	 * Returns the color the actor will be tinted when drawn. The returned instance
 	 * can be modified to change the color.
@@ -811,7 +811,7 @@ public class Actor {
 	public Color getColor() {
 		return color;
 	}
-
+	
 	/**
 	 * @see #setName(String)
 	 * @return May be null.
@@ -819,7 +819,7 @@ public class Actor {
 	public String getName() {
 		return name;
 	}
-
+	
 	/**
 	 * Set the actor's name, which is used for identification convenience and by
 	 * {@link #toString()}.
@@ -830,17 +830,17 @@ public class Actor {
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	
 	/** Changes the z-order for this actor so it is in front of all siblings. */
 	public void toFront() {
 		setZIndex(Integer.MAX_VALUE);
 	}
-
+	
 	/** Changes the z-order for this actor so it is in back of all siblings. */
 	public void toBack() {
 		setZIndex(0);
 	}
-
+	
 	/**
 	 * Sets the z-index of this actor. The z-index is the index into the parent's
 	 * {@link Group#getChildren() children}, where a lower index is below a higher
@@ -863,7 +863,7 @@ public class Actor {
 			return;
 		children.insert(index, this);
 	}
-
+	
 	/**
 	 * Returns the z-index of this actor.
 	 * 
@@ -875,7 +875,7 @@ public class Actor {
 			return -1;
 		return parent.children.indexOf(this, true);
 	}
-
+	
 	/**
 	 * Calls {@link #clipBegin(float, float, float, float)} to clip this actor's
 	 * bounds.
@@ -883,7 +883,7 @@ public class Actor {
 	public boolean clipBegin() {
 		return clipBegin(x, y, width, height);
 	}
-
+	
 	/**
 	 * Clips the specified screen aligned rectangle, specified relative to the
 	 * transform matrix of the stage's Batch. The transform matrix and the stage's
@@ -909,12 +909,12 @@ public class Actor {
 		Pools.free(scissorBounds);
 		return false;
 	}
-
+	
 	/** Ends clipping begun by {@link #clipBegin(float, float, float, float)}. */
 	public void clipEnd() {
 		Pools.free(ScissorStack.popScissors());
 	}
-
+	
 	/**
 	 * Transforms the specified point in screen coordinates to the actor's local
 	 * coordinate system.
@@ -927,7 +927,7 @@ public class Actor {
 			return screenCoords;
 		return stageToLocalCoordinates(stage.screenToStageCoordinates(screenCoords));
 	}
-
+	
 	/**
 	 * Transforms the specified point in the stage's coordinates to the actor's
 	 * local coordinate system.
@@ -938,7 +938,7 @@ public class Actor {
 		parentToLocalCoordinates(stageCoords);
 		return stageCoords;
 	}
-
+	
 	/**
 	 * Converts the coordinates given in the parent's coordinate system to this
 	 * actor's coordinate system.
@@ -971,7 +971,7 @@ public class Actor {
 		}
 		return parentCoords;
 	}
-
+	
 	/**
 	 * Transforms the specified point in the actor's coordinates to be in screen
 	 * coordinates.
@@ -984,7 +984,7 @@ public class Actor {
 			return localCoords;
 		return stage.stageToScreenCoordinates(localToAscendantCoordinates(null, localCoords));
 	}
-
+	
 	/**
 	 * Transforms the specified point in the actor's coordinates to be in the
 	 * stage's coordinates.
@@ -992,7 +992,7 @@ public class Actor {
 	public Vector2 localToStageCoordinates(Vector2 localCoords) {
 		return localToAscendantCoordinates(null, localCoords);
 	}
-
+	
 	/**
 	 * Transforms the specified point in the actor's coordinates to be in the
 	 * parent's coordinates.
@@ -1025,7 +1025,7 @@ public class Actor {
 		}
 		return localCoords;
 	}
-
+	
 	/**
 	 * Converts coordinates for this actor to those of a parent actor. The ascendant
 	 * does not need to be a direct parent.
@@ -1040,7 +1040,7 @@ public class Actor {
 		}
 		return localCoords;
 	}
-
+	
 	/**
 	 * Converts coordinates for this actor to those of another actor, which can be
 	 * anywhere in the stage.
@@ -1049,12 +1049,12 @@ public class Actor {
 		localToStageCoordinates(localCoords);
 		return actor.stageToLocalCoordinates(localCoords);
 	}
-
+	
 	/** Draws this actor's debug lines if {@link #getDebug()} is true. */
 	public void drawDebug(ShapeRenderer shapes) {
 		drawDebugBounds(shapes);
 	}
-
+	
 	/**
 	 * Draws a rectange for the bounds of this actor if {@link #getDebug()} is true.
 	 */
@@ -1065,24 +1065,24 @@ public class Actor {
 		shapes.setColor(stage.getDebugColor());
 		shapes.rect(x, y, originX, originY, width, height, scaleX, scaleY, rotation);
 	}
-
+	
 	/** If true, {@link #drawDebug(ShapeRenderer)} will be called for this actor. */
 	public void setDebug(boolean enabled) {
 		debug = enabled;
 		if (enabled)
 			Stage.debug = true;
 	}
-
+	
 	public boolean getDebug() {
 		return debug;
 	}
-
+	
 	/** Calls {@link #setDebug(boolean)} with {@code true}. */
 	public Actor debug() {
 		setDebug(true);
 		return this;
 	}
-
+	
 	@Override
 	public String toString() {
 		String name = this.name;

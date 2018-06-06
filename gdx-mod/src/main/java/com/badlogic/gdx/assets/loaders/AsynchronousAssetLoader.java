@@ -31,11 +31,11 @@ import com.badlogic.gdx.files.FileHandle;
  * @param <P>
  */
 public abstract class AsynchronousAssetLoader<T, P extends AssetLoaderParameters<T>> extends AssetLoader<T, P> {
-
+	
 	public AsynchronousAssetLoader(FileHandleResolver resolver) {
 		super(resolver);
 	}
-
+	
 	/**
 	 * Loads the non-OpenGL part of the asset and injects any dependencies of the
 	 * asset into the AssetManager.
@@ -46,7 +46,7 @@ public abstract class AsynchronousAssetLoader<T, P extends AssetLoaderParameters
 	 * @param parameter the parameters to use for loading the asset
 	 */
 	public abstract void loadAsync(AssetManager manager, String fileName, FileHandle file, P parameter);
-
+	
 	/**
 	 * Loads the OpenGL part of the asset.
 	 * 

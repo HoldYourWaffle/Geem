@@ -46,26 +46,26 @@ import com.badlogic.gdx.utils.SnapshotArray;
 public class Stack extends WidgetGroup {
 	private float prefWidth, prefHeight, minWidth, minHeight, maxWidth, maxHeight;
 	private boolean sizeInvalid = true;
-
+	
 	public Stack() {
 		setTransform(false);
 		setWidth(150);
 		setHeight(150);
 		setTouchable(Touchable.childrenOnly);
 	}
-
+	
 	public Stack(Actor... actors) {
 		this();
 		for (Actor actor : actors)
 			addActor(actor);
 	}
-
+	
 	@Override
 	public void invalidate() {
 		super.invalidate();
 		sizeInvalid = true;
 	}
-
+	
 	private void computeSize() {
 		sizeInvalid = false;
 		prefWidth = 0;
@@ -100,11 +100,11 @@ public class Stack extends WidgetGroup {
 				maxHeight = maxHeight == 0 ? childMaxHeight : Math.min(maxHeight, childMaxHeight);
 		}
 	}
-
+	
 	public void add(Actor actor) {
 		addActor(actor);
 	}
-
+	
 	@Override
 	public void layout() {
 		if (sizeInvalid)
@@ -118,42 +118,42 @@ public class Stack extends WidgetGroup {
 				((Layout) child).validate();
 		}
 	}
-
+	
 	@Override
 	public float getPrefWidth() {
 		if (sizeInvalid)
 			computeSize();
 		return prefWidth;
 	}
-
+	
 	@Override
 	public float getPrefHeight() {
 		if (sizeInvalid)
 			computeSize();
 		return prefHeight;
 	}
-
+	
 	@Override
 	public float getMinWidth() {
 		if (sizeInvalid)
 			computeSize();
 		return minWidth;
 	}
-
+	
 	@Override
 	public float getMinHeight() {
 		if (sizeInvalid)
 			computeSize();
 		return minHeight;
 	}
-
+	
 	@Override
 	public float getMaxWidth() {
 		if (sizeInvalid)
 			computeSize();
 		return maxWidth;
 	}
-
+	
 	@Override
 	public float getMaxHeight() {
 		if (sizeInvalid)

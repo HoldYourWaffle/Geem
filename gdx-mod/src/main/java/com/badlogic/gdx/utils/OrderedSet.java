@@ -30,27 +30,27 @@ import java.util.NoSuchElementException;
 public class OrderedSet<T> extends ObjectSet<T> {
 	final Array<T> items;
 	OrderedSetIterator iterator1, iterator2;
-
+	
 	public OrderedSet() {
 		items = new Array();
 	}
-
+	
 	public OrderedSet(int initialCapacity, float loadFactor) {
 		super(initialCapacity, loadFactor);
 		items = new Array(capacity);
 	}
-
+	
 	public OrderedSet(int initialCapacity) {
 		super(initialCapacity);
 		items = new Array(capacity);
 	}
-
+	
 	public OrderedSet(OrderedSet set) {
 		super(set);
 		items = new Array(capacity);
 		items.addAll(set.items);
 	}
-
+	
 	@Override
 	public boolean add(T key) {
 		if (!super.add(key))
@@ -58,7 +58,7 @@ public class OrderedSet<T> extends ObjectSet<T> {
 		items.add(key);
 		return true;
 	}
-
+	
 	public boolean add(T key, int index) {
 		if (!super.add(key)) {
 			items.removeValue(key, true);
@@ -68,29 +68,29 @@ public class OrderedSet<T> extends ObjectSet<T> {
 		items.insert(index, key);
 		return true;
 	}
-
+	
 	@Override
 	public boolean remove(T key) {
 		items.removeValue(key, false);
 		return super.remove(key);
 	}
-
+	
 	@Override
 	public void clear(int maximumCapacity) {
 		items.clear();
 		super.clear(maximumCapacity);
 	}
-
+	
 	@Override
 	public void clear() {
 		items.clear();
 		super.clear();
 	}
-
+	
 	public Array<T> orderedItems() {
 		return items;
 	}
-
+	
 	@Override
 	public OrderedSetIterator<T> iterator() {
 		if (iterator1 == null) {
@@ -108,7 +108,7 @@ public class OrderedSet<T> extends ObjectSet<T> {
 		iterator1.valid = false;
 		return iterator2;
 	}
-
+	
 	@Override
 	public String toString() {
 		if (size == 0)
@@ -124,26 +124,26 @@ public class OrderedSet<T> extends ObjectSet<T> {
 		buffer.append('}');
 		return buffer.toString();
 	}
-
+	
 	@Override
 	public String toString(String separator) {
 		return items.toString(separator);
 	}
-
+	
 	static public class OrderedSetIterator<T> extends ObjectSetIterator<T> {
 		private Array<T> items;
-
+		
 		public OrderedSetIterator(OrderedSet<T> set) {
 			super(set);
 			items = set.items;
 		}
-
+		
 		@Override
 		public void reset() {
 			nextIndex = 0;
 			hasNext = set.size > 0;
 		}
-
+		
 		@Override
 		public T next() {
 			if (!hasNext)
@@ -155,7 +155,7 @@ public class OrderedSet<T> extends ObjectSet<T> {
 			hasNext = nextIndex < set.size;
 			return key;
 		}
-
+		
 		@Override
 		public void remove() {
 			if (nextIndex < 0)

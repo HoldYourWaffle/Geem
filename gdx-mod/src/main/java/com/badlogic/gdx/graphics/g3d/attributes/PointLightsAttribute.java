@@ -18,28 +18,28 @@ import com.badlogic.gdx.utils.Array;
 public class PointLightsAttribute extends Attribute {
 	public final static String Alias = "pointLights";
 	public final static long Type = register(Alias);
-
+	
 	public final static boolean is(final long mask) {
 		return (mask & Type) == mask;
 	}
-
+	
 	public final Array<PointLight> lights;
-
+	
 	public PointLightsAttribute() {
 		super(Type);
 		lights = new Array<>(1);
 	}
-
+	
 	public PointLightsAttribute(final PointLightsAttribute copyFrom) {
 		this();
 		lights.addAll(copyFrom.lights);
 	}
-
+	
 	@Override
 	public PointLightsAttribute copy() {
 		return new PointLightsAttribute(this);
 	}
-
+	
 	@Override
 	public int hashCode() {
 		int result = super.hashCode();
@@ -47,7 +47,7 @@ public class PointLightsAttribute extends Attribute {
 			result = 1231 * result + (light == null ? 0 : light.hashCode());
 		return result;
 	}
-
+	
 	@Override
 	public int compareTo(Attribute o) {
 		if (type != o.type)

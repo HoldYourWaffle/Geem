@@ -52,7 +52,7 @@ public class PatchShapeBuilder extends BaseShapeBuilder {
 			}
 		}
 	}
-
+	
 	/**
 	 * Build a patch shape. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive
 	 * type.
@@ -64,7 +64,7 @@ public class PatchShapeBuilder extends BaseShapeBuilder {
 				vertTmp3.set(corner11, normal, null, null).setUV(1f, 0f),
 				vertTmp4.set(corner01, normal, null, null).setUV(0f, 0f), divisionsU, divisionsV);
 	}
-
+	
 	/**
 	 * Build a patch shape. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive
 	 * type.

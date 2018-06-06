@@ -15,33 +15,33 @@ import com.badlogic.gdx.math.Rectangle;
  * @author jshapcott
  */
 public class PixmapPackerIO {
-
+	
 	/** Image formats which can be used when saving a PixmapPacker. */
 	public static enum ImageFormat {
 	/** A simple compressed image format which is libgdx specific. */
 	CIM(".cim"),
 	/** A standard compressed image format which is not libgdx specific. */
 	PNG(".png");
-
+		
 		private final String extension;
-
+		
 		/** Returns the file extension for the image format. */
 		public String getExtension() {
 			return extension;
 		}
-
+		
 		ImageFormat(String extension) {
 			this.extension = extension;
 		}
 	}
-
+	
 	/** Additional parameters which will be used when writing a PixmapPacker. */
 	public static class SaveParameters {
 		public ImageFormat format = ImageFormat.PNG;
 		public TextureFilter minFilter = TextureFilter.Nearest;
 		public TextureFilter magFilter = TextureFilter.Nearest;
 	}
-
+	
 	/**
 	 * Saves the provided PixmapPacker to the provided file. The resulting file will
 	 * use the standard TextureAtlas file format and can be loaded by TextureAtlas
@@ -56,7 +56,7 @@ public class PixmapPackerIO {
 	public void save(FileHandle file, PixmapPacker packer) throws IOException {
 		save(file, packer, new SaveParameters());
 	}
-
+	
 	/**
 	 * Saves the provided PixmapPacker to the provided file. The resulting file will
 	 * use the standard TextureAtlas file format and can be loaded by TextureAtlas
@@ -105,5 +105,5 @@ public class PixmapPackerIO {
 		}
 		writer.close();
 	}
-
+	
 }

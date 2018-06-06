@@ -43,7 +43,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class Cubemap extends GLTexture {
 	private static AssetManager assetManager;
 	final static Map<Application, Array<Cubemap>> managedCubemaps = new HashMap<>();
-
+	
 	/** Enum to identify each side of a Cubemap */
 	public enum CubemapSide {
 		/** The positive X and first side of the cubemap */
@@ -58,7 +58,7 @@ public class Cubemap extends GLTexture {
 		PositiveZ(4, GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, -1, 0, 0, 0, 1),
 		/** The negative Z and sixth side of the cubemap */
 		NegativeZ(5, GL20.GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, -1, 0, 0, 0, -1);
-
+		
 		/** The zero based index of the side in the cubemap */
 		public final int index;
 		/** The OpenGL target (used for glTexImage2D) of the side. */
@@ -67,7 +67,7 @@ public class Cubemap extends GLTexture {
 		public final Vector3 up;
 		/** The direction vector to target the side. */
 		public final Vector3 direction;
-
+		
 		CubemapSide(int index, int glEnum, float upX, float upY, float upZ, float directionX, float directionY,
 				float directionZ) {
 			this.index = index;
@@ -75,32 +75,32 @@ public class Cubemap extends GLTexture {
 			this.up = new Vector3(upX, upY, upZ);
 			this.direction = new Vector3(directionX, directionY, directionZ);
 		}
-
+		
 		/** @return The OpenGL target (used for glTexImage2D) of the side. */
 		public int getGLEnum() {
 			return glEnum;
 		}
-
+		
 		/** @return The up vector of the side. */
 		public Vector3 getUp(Vector3 out) {
 			return out.set(up);
 		}
-
+		
 		/** @return The direction vector of the side. */
 		public Vector3 getDirection(Vector3 out) {
 			return out.set(direction);
 		}
 	}
-
+	
 	protected CubemapData data;
-
+	
 	/** Construct a Cubemap based on the given CubemapData. */
 	public Cubemap(CubemapData data) {
 		super(GL20.GL_TEXTURE_CUBE_MAP);
 		this.data = data;
 		load(data);
 	}
-
+	
 	/**
 	 * Construct a Cubemap with the specified texture files for the sides, does not
 	 * generate mipmaps.
@@ -109,7 +109,7 @@ public class Cubemap extends GLTexture {
 			FileHandle positiveZ, FileHandle negativeZ) {
 		this(positiveX, negativeX, positiveY, negativeY, positiveZ, negativeZ, false);
 	}
-
+	
 	/**
 	 * Construct a Cubemap with the specified texture files for the sides,
 	 * optionally generating mipmaps.
@@ -123,7 +123,7 @@ public class Cubemap extends GLTexture {
 				TextureData.Factory.loadFromFile(positiveZ, useMipMaps),
 				TextureData.Factory.loadFromFile(negativeZ, useMipMaps));
 	}
-
+	
 	/**
 	 * Construct a Cubemap with the specified {@link Pixmap}s for the sides, does
 	 * not generate mipmaps.
@@ -132,7 +132,7 @@ public class Cubemap extends GLTexture {
 			Pixmap negativeZ) {
 		this(positiveX, negativeX, positiveY, negativeY, positiveZ, negativeZ, false);
 	}
-
+	
 	/**
 	 * Construct a Cubemap with the specified {@link Pixmap}s for the sides,
 	 * optionally generating mipmaps.
@@ -146,7 +146,7 @@ public class Cubemap extends GLTexture {
 				positiveZ == null ? null : new PixmapTextureData(positiveZ, null, useMipMaps, false),
 				negativeZ == null ? null : new PixmapTextureData(negativeZ, null, useMipMaps, false));
 	}
-
+	
 	/**
 	 * Construct a Cubemap with {@link Pixmap}s for each side of the specified size.
 	 */
@@ -158,7 +158,7 @@ public class Cubemap extends GLTexture {
 				new PixmapTextureData(new Pixmap(width, height, format), null, false, true),
 				new PixmapTextureData(new Pixmap(width, height, format), null, false, true));
 	}
-
+	
 	/**
 	 * Construct a Cubemap with the specified {@link TextureData}'s for the sides
 	 */
@@ -172,7 +172,7 @@ public class Cubemap extends GLTexture {
 		data = new FacedCubemapData(positiveX, negativeX, positiveY, negativeY, positiveZ, negativeZ);
 		load(data);
 	}
-
+	
 	/** Sets the sides of this cubemap to the specified {@link CubemapData}. */
 	public void load(CubemapData data) {
 		if (!data.isPrepared())
@@ -183,16 +183,16 @@ public class Cubemap extends GLTexture {
 		data.consumeCubemapData();
 		Gdx.gl.glBindTexture(glTarget, 0);
 	}
-
+	
 	public CubemapData getCubemapData() {
 		return data;
 	}
-
+	
 	@Override
 	public boolean isManaged() {
 		return data.isManaged();
 	}
-
+	
 	@Override
 	protected void reload() {
 		if (!isManaged())
@@ -200,22 +200,22 @@ public class Cubemap extends GLTexture {
 		glHandle = Gdx.gl.glGenTexture();
 		load(data);
 	}
-
+	
 	@Override
 	public int getWidth() {
 		return data.getWidth();
 	}
-
+	
 	@Override
 	public int getHeight() {
 		return data.getHeight();
 	}
-
+	
 	@Override
 	public int getDepth() {
 		return 0;
 	}
-
+	
 	/** Disposes all resources associated with the cubemap */
 	@Override
 	public void dispose() {
@@ -233,7 +233,7 @@ public class Cubemap extends GLTexture {
 			if (managedCubemaps.get(Gdx.app) != null)
 				managedCubemaps.get(Gdx.app).removeValue(this, true);
 	}
-
+	
 	private static void addManagedCubemap(Application app, Cubemap cubemap) {
 		Array<Cubemap> managedCubemapArray = managedCubemaps.get(app);
 		if (managedCubemapArray == null)
@@ -241,12 +241,12 @@ public class Cubemap extends GLTexture {
 		managedCubemapArray.add(cubemap);
 		managedCubemaps.put(app, managedCubemapArray);
 	}
-
+	
 	/** Clears all managed cubemaps. This is an internal method. Do not use it! */
 	public static void clearAllCubemaps(Application app) {
 		managedCubemaps.remove(app);
 	}
-
+	
 	/**
 	 * Invalidate all managed cubemaps. This is an internal method. Do not use it!
 	 */
@@ -254,7 +254,7 @@ public class Cubemap extends GLTexture {
 		Array<Cubemap> managedCubemapArray = managedCubemaps.get(app);
 		if (managedCubemapArray == null)
 			return;
-
+		
 		if (assetManager == null) {
 			for (int i = 0; i < managedCubemapArray.size; i++) {
 				Cubemap cubemap = managedCubemapArray.get(i);
@@ -265,7 +265,7 @@ public class Cubemap extends GLTexture {
 			// otherwise the ref counting trick below wouldn't work (when a cubemap is
 			// currently on the task stack of the manager.)
 			assetManager.finishLoading();
-
+			
 			// next we go through each cubemap and reload either directly or via the
 			// asset manager.
 			Array<Cubemap> cubemaps = new Array<>(managedCubemapArray);
@@ -281,7 +281,7 @@ public class Cubemap extends GLTexture {
 					final int refCount = assetManager.getReferenceCount(fileName);
 					assetManager.setReferenceCount(fileName, 0);
 					cubemap.glHandle = 0;
-
+					
 					// create the parameters, passing the reference to the cubemap as
 					// well as a callback that sets the ref count.
 					CubemapParameter params = new CubemapParameter();
@@ -293,7 +293,7 @@ public class Cubemap extends GLTexture {
 					params.cubemap = cubemap; // special parameter which will ensure that the references stay the same.
 					params.loadedCallback = (assetManager, fileName1, type) -> assetManager.setReferenceCount(fileName1,
 							refCount);
-
+					
 					// unload the c, create a new gl handle then reload it.
 					assetManager.unload(fileName);
 					cubemap.glHandle = Gdx.gl.glGenTexture();
@@ -304,7 +304,7 @@ public class Cubemap extends GLTexture {
 			managedCubemapArray.addAll(cubemaps);
 		}
 	}
-
+	
 	/**
 	 * Sets the {@link AssetManager}. When the context is lost, cubemaps managed by
 	 * the asset manager are reloaded by the manager on a separate thread (provided
@@ -317,7 +317,7 @@ public class Cubemap extends GLTexture {
 	public static void setAssetManager(AssetManager manager) {
 		Cubemap.assetManager = manager;
 	}
-
+	
 	public static String getManagedStatus() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Managed cubemap/app: { ");
@@ -328,10 +328,10 @@ public class Cubemap extends GLTexture {
 		builder.append("}");
 		return builder.toString();
 	}
-
+	
 	/** @return the number of managed cubemaps currently loaded */
 	public static int getNumManagedCubemaps() {
 		return managedCubemaps.get(Gdx.app).size;
 	}
-
+	
 }

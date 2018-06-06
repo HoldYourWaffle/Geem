@@ -34,7 +34,7 @@ import com.badlogic.gdx.math.MathUtils;
  * @author espitz
  */
 public final class ScreenUtils {
-
+	
 	/**
 	 * Returns the default framebuffer contents as a {@link TextureRegion} with a
 	 * width and height equal to the current screen size. The base {@link Texture}
@@ -48,7 +48,7 @@ public final class ScreenUtils {
 		final int h = Gdx.graphics.getBackBufferHeight();
 		return getFrameBufferTexture(0, 0, w, h);
 	}
-
+	
 	/**
 	 * Returns a portion of the default framebuffer contents specified by x, y,
 	 * width and height as a {@link TextureRegion} with the same dimensions. The
@@ -68,7 +68,7 @@ public final class ScreenUtils {
 	public static TextureRegion getFrameBufferTexture(int x, int y, int w, int h) {
 		final int potW = MathUtils.nextPowerOfTwo(w);
 		final int potH = MathUtils.nextPowerOfTwo(h);
-
+		
 		final Pixmap pixmap = getFrameBufferPixmap(x, y, w, h);
 		final Pixmap potPixmap = new Pixmap(potW, potH, Format.RGBA8888);
 		potPixmap.drawPixmap(pixmap, 0, 0);
@@ -76,20 +76,20 @@ public final class ScreenUtils {
 		TextureRegion textureRegion = new TextureRegion(texture, 0, h, w, -h);
 		potPixmap.dispose();
 		pixmap.dispose();
-
+		
 		return textureRegion;
 	}
-
+	
 	public static Pixmap getFrameBufferPixmap(int x, int y, int w, int h) {
 		Gdx.gl.glPixelStorei(GL20.GL_PACK_ALIGNMENT, 1);
-
+		
 		final Pixmap pixmap = new Pixmap(w, h, Format.RGBA8888);
 		ByteBuffer pixels = pixmap.getPixels();
 		Gdx.gl.glReadPixels(x, y, w, h, GL20.GL_RGBA, GL20.GL_UNSIGNED_BYTE, pixels);
-
+		
 		return pixmap;
 	}
-
+	
 	/**
 	 * Returns the default framebuffer contents as a byte[] array with a length
 	 * equal to screen width * height * 4. The byte[] will always contain RGBA8888
@@ -105,7 +105,7 @@ public final class ScreenUtils {
 		final int h = Gdx.graphics.getBackBufferHeight();
 		return getFrameBufferPixels(0, 0, w, h, flipY);
 	}
-
+	
 	/**
 	 * Returns a portion of the default framebuffer contents specified by x, y,
 	 * width and height, as a byte[] array with a length equal to the specified
@@ -136,6 +136,6 @@ public final class ScreenUtils {
 			pixels.get(lines);
 		}
 		return lines;
-
+		
 	}
 }

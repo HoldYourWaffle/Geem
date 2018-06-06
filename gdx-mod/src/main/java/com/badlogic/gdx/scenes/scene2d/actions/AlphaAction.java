@@ -29,29 +29,29 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 public class AlphaAction extends TemporalAction {
 	private float start, end;
 	private Color color;
-
+	
 	@Override
 	protected void begin() {
 		if (color == null)
 			color = target.getColor();
 		start = color.a;
 	}
-
+	
 	@Override
 	protected void update(float percent) {
 		color.a = start + (end - start) * percent;
 	}
-
+	
 	@Override
 	public void reset() {
 		super.reset();
 		color = null;
 	}
-
+	
 	public Color getColor() {
 		return color;
 	}
-
+	
 	/**
 	 * Sets the color to modify. If null (the default), the {@link #getActor()
 	 * actor's} {@link Actor#getColor() color} will be used.
@@ -59,11 +59,11 @@ public class AlphaAction extends TemporalAction {
 	public void setColor(Color color) {
 		this.color = color;
 	}
-
+	
 	public float getAlpha() {
 		return end;
 	}
-
+	
 	public void setAlpha(float alpha) {
 		this.end = alpha;
 	}

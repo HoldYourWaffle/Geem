@@ -41,23 +41,23 @@ public class FirstPersonCameraController extends InputAdapter {
 	private float velocity = 5;
 	private float degreesPerPixel = 0.5f;
 	private final Vector3 tmp = new Vector3();
-
+	
 	public FirstPersonCameraController(Camera camera) {
 		this.camera = camera;
 	}
-
+	
 	@Override
 	public boolean keyDown(int keycode) {
 		keys.put(keycode, keycode);
 		return true;
 	}
-
+	
 	@Override
 	public boolean keyUp(int keycode) {
 		keys.remove(keycode, 0);
 		return true;
 	}
-
+	
 	/**
 	 * Sets the velocity in units per second for moving forward, backward and
 	 * strafing left/right.
@@ -67,7 +67,7 @@ public class FirstPersonCameraController extends InputAdapter {
 	public void setVelocity(float velocity) {
 		this.velocity = velocity;
 	}
-
+	
 	/**
 	 * Sets how many degrees to rotate per pixel the mouse moved.
 	 * 
@@ -76,7 +76,7 @@ public class FirstPersonCameraController extends InputAdapter {
 	public void setDegreesPerPixel(float degreesPerPixel) {
 		this.degreesPerPixel = degreesPerPixel;
 	}
-
+	
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		float deltaX = -Gdx.input.getDeltaX() * degreesPerPixel;
@@ -87,11 +87,11 @@ public class FirstPersonCameraController extends InputAdapter {
 // camera.up.rotate(tmp, deltaY);
 		return true;
 	}
-
+	
 	public void update() {
 		update(Gdx.graphics.getDeltaTime());
 	}
-
+	
 	public void update(float deltaTime) {
 		if (keys.containsKey(FORWARD)) {
 			tmp.set(camera.direction).nor().scl(deltaTime * velocity);

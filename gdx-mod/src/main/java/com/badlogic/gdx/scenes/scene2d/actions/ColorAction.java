@@ -30,7 +30,7 @@ public class ColorAction extends TemporalAction {
 	private float startR, startG, startB, startA;
 	private Color color;
 	private final Color end = new Color();
-
+	
 	@Override
 	protected void begin() {
 		if (color == null)
@@ -40,7 +40,7 @@ public class ColorAction extends TemporalAction {
 		startB = color.b;
 		startA = color.a;
 	}
-
+	
 	@Override
 	protected void update(float percent) {
 		float r = startR + (end.r - startR) * percent;
@@ -49,17 +49,17 @@ public class ColorAction extends TemporalAction {
 		float a = startA + (end.a - startA) * percent;
 		color.set(r, g, b, a);
 	}
-
+	
 	@Override
 	public void reset() {
 		super.reset();
 		color = null;
 	}
-
+	
 	public Color getColor() {
 		return color;
 	}
-
+	
 	/**
 	 * Sets the color to modify. If null (the default), the {@link #getActor()
 	 * actor's} {@link Actor#getColor() color} will be used.
@@ -67,11 +67,11 @@ public class ColorAction extends TemporalAction {
 	public void setColor(Color color) {
 		this.color = color;
 	}
-
+	
 	public Color getEndColor() {
 		return end;
 	}
-
+	
 	/** Sets the color to transition to. Required. */
 	public void setEndColor(Color color) {
 		end.set(color);

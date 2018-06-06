@@ -28,11 +28,11 @@ import com.badlogic.gdx.Net.HttpRequest;
  * parameters.
  */
 public class HttpParametersUtils {
-
+	
 	public static String defaultEncoding = "UTF-8";
 	public static String nameValueSeparator = "=";
 	public static String parameterSeparator = "&";
-
+	
 	/**
 	 * Useful method to convert a map of key,value pairs to a String to be used as
 	 * part of a GET or POST content.
@@ -53,7 +53,7 @@ public class HttpParametersUtils {
 			convertedParameters.deleteCharAt(convertedParameters.length() - 1);
 		return convertedParameters.toString();
 	}
-
+	
 	private static String encode(String content, String encoding) {
 		try {
 			return URLEncoder.encode(content, encoding);

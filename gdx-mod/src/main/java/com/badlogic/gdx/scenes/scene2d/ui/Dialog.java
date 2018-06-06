@@ -50,7 +50,7 @@ public class Dialog extends Window {
 	boolean cancelHide;
 	Actor previousKeyboardFocus, previousScrollFocus;
 	FocusListener focusListener;
-
+	
 	protected InputListener ignoreTouchDown = new InputListener() {
 		@Override
 		public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -58,37 +58,37 @@ public class Dialog extends Window {
 			return false;
 		}
 	};
-
+	
 	public Dialog(String title, Skin skin) {
 		super(title, skin.get(WindowStyle.class));
 		setSkin(skin);
 		this.skin = skin;
 		initialize();
 	}
-
+	
 	public Dialog(String title, Skin skin, String windowStyleName) {
 		super(title, skin.get(windowStyleName, WindowStyle.class));
 		setSkin(skin);
 		this.skin = skin;
 		initialize();
 	}
-
+	
 	public Dialog(String title, WindowStyle windowStyle) {
 		super(title, windowStyle);
 		initialize();
 	}
-
+	
 	private void initialize() {
 		setModal(true);
-
+		
 		defaults().space(6);
 		add(contentTable = new Table(skin)).expand().fill();
 		row();
 		add(buttonTable = new Table(skin)).fillX();
-
+		
 		contentTable.defaults().space(6);
 		buttonTable.defaults().space(6);
-
+		
 		buttonTable.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
@@ -102,20 +102,20 @@ public class Dialog extends Window {
 				cancelHide = false;
 			}
 		});
-
+		
 		focusListener = new FocusListener() {
 			@Override
 			public void keyboardFocusChanged(FocusEvent event, Actor actor, boolean focused) {
 				if (!focused)
 					focusChanged(event);
 			}
-
+			
 			@Override
 			public void scrollFocusChanged(FocusEvent event, Actor actor, boolean focused) {
 				if (!focused)
 					focusChanged(event);
 			}
-
+			
 			private void focusChanged(FocusEvent event) {
 				Stage stage = getStage();
 				if (isModal && stage != null && stage.getRoot().getChildren().size > 0
@@ -129,7 +129,7 @@ public class Dialog extends Window {
 			}
 		};
 	}
-
+	
 	@Override
 	protected void setStage(Stage stage) {
 		if (stage == null)
@@ -138,15 +138,15 @@ public class Dialog extends Window {
 			removeListener(focusListener);
 		super.setStage(stage);
 	}
-
+	
 	public Table getContentTable() {
 		return contentTable;
 	}
-
+	
 	public Table getButtonTable() {
 		return buttonTable;
 	}
-
+	
 	/**
 	 * Adds a label to the content table. The dialog must have been constructed with
 	 * a skin to use this method.
@@ -156,18 +156,18 @@ public class Dialog extends Window {
 			throw new IllegalStateException("This method may only be used if the dialog was constructed with a Skin.");
 		return text(text, skin.get(LabelStyle.class));
 	}
-
+	
 	/** Adds a label to the content table. */
 	public Dialog text(String text, LabelStyle labelStyle) {
 		return text(new Label(text, labelStyle));
 	}
-
+	
 	/** Adds the given Label to the content table */
 	public Dialog text(Label label) {
 		contentTable.add(label);
 		return this;
 	}
-
+	
 	/**
 	 * Adds a text button to the button table. Null will be passed to
 	 * {@link #result(Object)} if this button is clicked. The dialog must have been
@@ -176,7 +176,7 @@ public class Dialog extends Window {
 	public Dialog button(String text) {
 		return button(text, null);
 	}
-
+	
 	/**
 	 * Adds a text button to the button table. The dialog must have been constructed
 	 * with a skin to use this method.
@@ -189,7 +189,7 @@ public class Dialog extends Window {
 			throw new IllegalStateException("This method may only be used if the dialog was constructed with a Skin.");
 		return button(text, object, skin.get(TextButtonStyle.class));
 	}
-
+	
 	/**
 	 * Adds a text button to the button table.
 	 * 
@@ -199,12 +199,12 @@ public class Dialog extends Window {
 	public Dialog button(String text, Object object, TextButtonStyle buttonStyle) {
 		return button(new TextButton(text, buttonStyle), object);
 	}
-
+	
 	/** Adds the given button to the button table. */
 	public Dialog button(Button button) {
 		return button(button, null);
 	}
-
+	
 	/**
 	 * Adds the given button to the button table.
 	 * 
@@ -216,7 +216,7 @@ public class Dialog extends Window {
 		setObject(button, object);
 		return this;
 	}
-
+	
 	/**
 	 * {@link #pack() Packs} the dialog and adds it to the stage with custom action
 	 * which can be null for instant show
@@ -224,17 +224,17 @@ public class Dialog extends Window {
 	public Dialog show(Stage stage, Action action) {
 		clearActions();
 		removeCaptureListener(ignoreTouchDown);
-
+		
 		previousKeyboardFocus = null;
 		Actor actor = stage.getKeyboardFocus();
 		if (actor != null && !actor.isDescendantOf(this))
 			previousKeyboardFocus = actor;
-
+		
 		previousScrollFocus = null;
 		actor = stage.getScrollFocus();
 		if (actor != null && !actor.isDescendantOf(this))
 			previousScrollFocus = actor;
-
+		
 		pack();
 		stage.addActor(this);
 		stage.cancelTouchFocus();
@@ -242,10 +242,10 @@ public class Dialog extends Window {
 		stage.setScrollFocus(this);
 		if (action != null)
 			addAction(action);
-
+		
 		return this;
 	}
-
+	
 	/**
 	 * {@link #pack() Packs} the dialog and adds it to the stage, centered with
 	 * default fadeIn action
@@ -255,7 +255,7 @@ public class Dialog extends Window {
 		setPosition(Math.round((stage.getWidth() - getWidth()) / 2), Math.round((stage.getHeight() - getHeight()) / 2));
 		return this;
 	}
-
+	
 	/**
 	 * Hides the dialog with the given action and then removes it from the stage.
 	 */
@@ -268,7 +268,7 @@ public class Dialog extends Window {
 			Actor actor = stage.getKeyboardFocus();
 			if (actor == null || actor.isDescendantOf(this))
 				stage.setKeyboardFocus(previousKeyboardFocus);
-
+			
 			if (previousScrollFocus != null && previousScrollFocus.getStage() == null)
 				previousScrollFocus = null;
 			actor = stage.getScrollFocus();
@@ -281,7 +281,7 @@ public class Dialog extends Window {
 		} else
 			remove();
 	}
-
+	
 	/**
 	 * Hides the dialog. Called automatically when a button is clicked. The default
 	 * implementation fades out the dialog over 400 milliseconds.
@@ -289,11 +289,11 @@ public class Dialog extends Window {
 	public void hide() {
 		hide(fadeOut(0.4f, Interpolation.fade));
 	}
-
+	
 	public void setObject(Actor actor, Object object) {
 		values.put(actor, object);
 	}
-
+	
 	/**
 	 * If this key is pressed, {@link #result(Object)} is called with the specified
 	 * object.
@@ -318,7 +318,7 @@ public class Dialog extends Window {
 		});
 		return this;
 	}
-
+	
 	/**
 	 * Called when a button is clicked. The dialog will be hidden after this method
 	 * returns unless {@link #cancel()} is called.
@@ -327,7 +327,7 @@ public class Dialog extends Window {
 	 */
 	protected void result(Object object) {
 	}
-
+	
 	public void cancel() {
 		cancelHide = true;
 	}

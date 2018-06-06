@@ -24,7 +24,7 @@ package com.badlogic.gdx.utils;
  */
 public class Pools {
 	static private final ObjectMap<Class, Pool> typePools = new ObjectMap();
-
+	
 	/**
 	 * Returns a new or existing pool for the specified type, stored in a Class to
 	 * {@link Pool} map. Note the max size is ignored if this is not the first time
@@ -38,7 +38,7 @@ public class Pools {
 		}
 		return pool;
 	}
-
+	
 	/**
 	 * Returns a new or existing pool for the specified type, stored in a Class to
 	 * {@link Pool} map. The max size of the pool used is 100.
@@ -46,7 +46,7 @@ public class Pools {
 	static public <T> Pool<T> get(Class<T> type) {
 		return get(type, 100);
 	}
-
+	
 	/**
 	 * Sets an existing pool for the specified type, stored in a Class to
 	 * {@link Pool} map.
@@ -54,12 +54,12 @@ public class Pools {
 	static public <T> void set(Class<T> type, Pool<T> pool) {
 		typePools.put(type, pool);
 	}
-
+	
 	/** Obtains an object from the {@link #get(Class) pool}. */
 	static public <T> T obtain(Class<T> type) {
 		return get(type).obtain();
 	}
-
+	
 	/** Frees an object from the {@link #get(Class) pool}. */
 	static public void free(Object object) {
 		if (object == null)
@@ -69,7 +69,7 @@ public class Pools {
 			return; // Ignore freeing an object that was never retained.
 		pool.free(object);
 	}
-
+	
 	/**
 	 * Frees the specified objects from the {@link #get(Class) pool}. Null objects
 	 * within the array are silently ignored. Objects don't need to be from the same
@@ -78,7 +78,7 @@ public class Pools {
 	static public void freeAll(Array objects) {
 		freeAll(objects, false);
 	}
-
+	
 	/**
 	 * Frees the specified objects from the {@link #get(Class) pool}. Null objects
 	 * within the array are silently ignored.
@@ -104,7 +104,7 @@ public class Pools {
 				pool = null;
 		}
 	}
-
+	
 	private Pools() {
 	}
 }

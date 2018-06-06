@@ -28,7 +28,7 @@ public interface Clipboard {
 	 * @return the clipboard content or null
 	 */
 	public String getContents();
-
+	
 	/**
 	 * Sets the content of the system clipboard.
 	 * 

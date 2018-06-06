@@ -42,11 +42,11 @@ import com.badlogic.gdx.utils.async.AsyncExecutor;
  * @author acoppes
  */
 public class NetJavaImpl {
-
+	
 	static class HttpClientResponse implements HttpResponse {
 		private final HttpURLConnection connection;
 		private HttpStatus status;
-
+		
 		public HttpClientResponse(HttpURLConnection connection) throws IOException {
 			this.connection = connection;
 			try {
@@ -55,16 +55,16 @@ public class NetJavaImpl {
 				this.status = new HttpStatus(-1);
 			}
 		}
-
+		
 		@Override
 		public byte[] getResult() {
 			InputStream input = getInputStream();
-
+			
 			// If the response does not contain any content, input will be null.
 			if (input == null) {
 				return StreamUtils.EMPTY_BYTES;
 			}
-
+			
 			try {
 				return StreamUtils.copyStreamToByteArray(input, connection.getContentLength());
 			} catch (IOException e) {
@@ -73,16 +73,16 @@ public class NetJavaImpl {
 				StreamUtils.closeQuietly(input);
 			}
 		}
-
+		
 		@Override
 		public String getResultAsString() {
 			InputStream input = getInputStream();
-
+			
 			// If the response does not contain any content, input will be null.
 			if (input == null) {
 				return "";
 			}
-
+			
 			try {
 				return StreamUtils.copyStreamToString(input, connection.getContentLength());
 			} catch (IOException e) {
@@ -91,27 +91,27 @@ public class NetJavaImpl {
 				StreamUtils.closeQuietly(input);
 			}
 		}
-
+		
 		@Override
 		public InputStream getResultAsStream() {
 			return getInputStream();
 		}
-
+		
 		@Override
 		public HttpStatus getStatus() {
 			return status;
 		}
-
+		
 		@Override
 		public String getHeader(String name) {
 			return connection.getHeaderField(name);
 		}
-
+		
 		@Override
 		public Map<String, List<String>> getHeaders() {
 			return connection.getHeaderFields();
 		}
-
+		
 		private InputStream getInputStream() {
 			try {
 				return connection.getInputStream();
@@ -120,27 +120,27 @@ public class NetJavaImpl {
 			}
 		}
 	}
-
+	
 	private final AsyncExecutor asyncExecutor;
 	final ObjectMap<HttpRequest, HttpURLConnection> connections;
 	final ObjectMap<HttpRequest, HttpResponseListener> listeners;
-
+	
 	public NetJavaImpl() {
 		asyncExecutor = new AsyncExecutor(1);
 		connections = new ObjectMap<>();
 		listeners = new ObjectMap<>();
 	}
-
+	
 	public void sendHttpRequest(final HttpRequest httpRequest, final HttpResponseListener httpResponseListener) {
 		if (httpRequest.getUrl() == null) {
 			httpResponseListener.failed(new GdxRuntimeException("can't process a HTTP request without URL set"));
 			return;
 		}
-
+		
 		try {
 			final String method = httpRequest.getMethod();
 			URL url;
-
+			
 			if (method.equalsIgnoreCase(HttpMethods.GET)) {
 				String queryString = "";
 				String value = httpRequest.getContent();
@@ -150,7 +150,7 @@ public class NetJavaImpl {
 			} else {
 				url = new URL(httpRequest.getUrl());
 			}
-
+			
 			final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			// should be enabled to upload data.
 			final boolean doingOutPut = method.equalsIgnoreCase(HttpMethods.POST)
@@ -159,17 +159,17 @@ public class NetJavaImpl {
 			connection.setDoInput(true);
 			connection.setRequestMethod(method);
 			HttpURLConnection.setFollowRedirects(httpRequest.getFollowRedirects());
-
+			
 			putIntoConnectionsAndListeners(httpRequest, httpResponseListener, connection);
-
+			
 			// Headers get set regardless of the method
 			for (Map.Entry<String, String> header : httpRequest.getHeaders().entrySet())
 				connection.addRequestProperty(header.getKey(), header.getValue());
-
+			
 			// Set Timeouts
 			connection.setConnectTimeout(httpRequest.getTimeOut());
 			connection.setReadTimeout(httpRequest.getTimeOut());
-
+			
 			asyncExecutor.submit(() -> {
 				try {
 					// Set the content for POST and PUT (GET has the information embedded in the
@@ -197,13 +197,13 @@ public class NetJavaImpl {
 							}
 						}
 					}
-
+					
 					connection.connect();
-
+					
 					final HttpClientResponse clientResponse = new HttpClientResponse(connection);
 					try {
 						HttpResponseListener listener = getFromListeners(httpRequest);
-
+						
 						if (listener != null) {
 							listener.handleHttpResponse(clientResponse);
 						}
@@ -219,7 +219,7 @@ public class NetJavaImpl {
 						removeFromConnectionsAndListeners(httpRequest);
 					}
 				}
-
+				
 				return null;
 			});
 		} catch (Exception e) {
@@ -231,27 +231,27 @@ public class NetJavaImpl {
 			return;
 		}
 	}
-
+	
 	public void cancelHttpRequest(HttpRequest httpRequest) {
 		HttpResponseListener httpResponseListener = getFromListeners(httpRequest);
-
+		
 		if (httpResponseListener != null) {
 			httpResponseListener.cancelled();
 			removeFromConnectionsAndListeners(httpRequest);
 		}
 	}
-
+	
 	synchronized void removeFromConnectionsAndListeners(final HttpRequest httpRequest) {
 		connections.remove(httpRequest);
 		listeners.remove(httpRequest);
 	}
-
+	
 	synchronized void putIntoConnectionsAndListeners(final HttpRequest httpRequest,
 			final HttpResponseListener httpResponseListener, final HttpURLConnection connection) {
 		connections.put(httpRequest, connection);
 		listeners.put(httpRequest, httpResponseListener);
 	}
-
+	
 	synchronized HttpResponseListener getFromListeners(HttpRequest httpRequest) {
 		HttpResponseListener httpResponseListener = listeners.get(httpRequest);
 		return httpResponseListener;

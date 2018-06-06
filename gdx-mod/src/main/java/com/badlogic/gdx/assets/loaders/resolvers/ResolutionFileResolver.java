@@ -55,17 +55,17 @@ import com.badlogic.gdx.files.FileHandle;
  * </p>
  */
 public class ResolutionFileResolver implements FileHandleResolver {
-
+	
 	public static class Resolution {
 		public final int portraitWidth;
 		public final int portraitHeight;
-
+		
 		/**
 		 * The name of the folder, where the assets which fit this resolution, are
 		 * located.
 		 */
 		public final String folder;
-
+		
 		/**
 		 * Constructs a {@code Resolution}.
 		 * 
@@ -80,10 +80,10 @@ public class ResolutionFileResolver implements FileHandleResolver {
 			this.folder = folder;
 		}
 	}
-
+	
 	protected final FileHandleResolver baseResolver;
 	protected final Resolution[] descriptors;
-
+	
 	/**
 	 * Creates a {@code ResolutionFileResolver} based on a given
 	 * {@link FileHandleResolver} and a list of {@link Resolution}s.
@@ -99,7 +99,7 @@ public class ResolutionFileResolver implements FileHandleResolver {
 		this.baseResolver = baseResolver;
 		this.descriptors = descriptors;
 	}
-
+	
 	@Override
 	public FileHandle resolve(String fileName) {
 		Resolution bestResolution = choose(descriptors);
@@ -109,7 +109,7 @@ public class ResolutionFileResolver implements FileHandleResolver {
 			handle = baseResolver.resolve(fileName);
 		return handle;
 	}
-
+	
 	protected String resolve(FileHandle originalHandle, String suffix) {
 		String parentString = "";
 		FileHandle parent = originalHandle.parent();
@@ -118,10 +118,10 @@ public class ResolutionFileResolver implements FileHandleResolver {
 		}
 		return parentString + suffix + "/" + originalHandle.name();
 	}
-
+	
 	static public Resolution choose(Resolution... descriptors) {
 		int w = Gdx.graphics.getWidth(), h = Gdx.graphics.getHeight();
-
+		
 		// Prefer the shortest side.
 		Resolution best = descriptors[0];
 		if (w < h) {

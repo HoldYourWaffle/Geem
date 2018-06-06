@@ -34,20 +34,20 @@ public class JsonWriter extends Writer {
 	private boolean named;
 	private OutputType outputType = OutputType.json;
 	private boolean quoteLongValues = false;
-
+	
 	public JsonWriter(Writer writer) {
 		this.writer = writer;
 	}
-
+	
 	public Writer getWriter() {
 		return writer;
 	}
-
+	
 	/** Sets the type of JSON output. Default is {@link OutputType#minimal}. */
 	public void setOutputType(OutputType outputType) {
 		this.outputType = outputType;
 	}
-
+	
 	/**
 	 * When true, quotes long, double, BigInteger, BigDecimal types to prevent
 	 * truncation in languages like JavaScript and PHP. This is not necessary when
@@ -56,7 +56,7 @@ public class JsonWriter extends Writer {
 	public void setQuoteLongValues(boolean quoteLongValues) {
 		this.quoteLongValues = quoteLongValues;
 	}
-
+	
 	public JsonWriter name(String name) throws IOException {
 		if (current == null || current.array)
 			throw new IllegalStateException("Current item must be an object.");
@@ -69,19 +69,19 @@ public class JsonWriter extends Writer {
 		named = true;
 		return this;
 	}
-
+	
 	public JsonWriter object() throws IOException {
 		requireCommaOrName();
 		stack.add(current = new JsonObject(false));
 		return this;
 	}
-
+	
 	public JsonWriter array() throws IOException {
 		requireCommaOrName();
 		stack.add(current = new JsonObject(true));
 		return this;
 	}
-
+	
 	public JsonWriter value(Object value) throws IOException {
 		if (quoteLongValues && (value instanceof Long || value instanceof Double || value instanceof BigDecimal
 				|| value instanceof BigInteger)) {
@@ -96,14 +96,14 @@ public class JsonWriter extends Writer {
 		writer.write(outputType.quoteValue(value));
 		return this;
 	}
-
+	
 	/** Writes the specified JSON value, without quoting or escaping. */
 	public JsonWriter json(String json) throws IOException {
 		requireCommaOrName();
 		writer.write(json);
 		return this;
 	}
-
+	
 	private void requireCommaOrName() throws IOException {
 		if (current == null)
 			return;
@@ -118,24 +118,24 @@ public class JsonWriter extends Writer {
 			named = false;
 		}
 	}
-
+	
 	public JsonWriter object(String name) throws IOException {
 		return name(name).object();
 	}
-
+	
 	public JsonWriter array(String name) throws IOException {
 		return name(name).array();
 	}
-
+	
 	public JsonWriter set(String name, Object value) throws IOException {
 		return name(name).value(value);
 	}
-
+	
 	/** Writes the specified JSON value, without quoting or escaping. */
 	public JsonWriter json(String name, String json) throws IOException {
 		return name(name).json(json);
 	}
-
+	
 	public JsonWriter pop() throws IOException {
 		if (named)
 			throw new IllegalStateException("Expected an object, array, or value since a name was set.");
@@ -143,38 +143,38 @@ public class JsonWriter extends Writer {
 		current = stack.size == 0 ? null : stack.peek();
 		return this;
 	}
-
+	
 	@Override
 	public void write(char[] cbuf, int off, int len) throws IOException {
 		writer.write(cbuf, off, len);
 	}
-
+	
 	@Override
 	public void flush() throws IOException {
 		writer.flush();
 	}
-
+	
 	@Override
 	public void close() throws IOException {
 		while (stack.size > 0)
 			pop();
 		writer.close();
 	}
-
+	
 	private class JsonObject {
 		final boolean array;
 		boolean needsComma;
-
+		
 		JsonObject(boolean array) throws IOException {
 			this.array = array;
 			writer.write(array ? '[' : '{');
 		}
-
+		
 		void close() throws IOException {
 			writer.write(array ? ']' : '}');
 		}
 	}
-
+	
 	static public enum OutputType {
 		/** Normal JSON, with all its double quotes. */
 		json,
@@ -196,11 +196,11 @@ public class JsonWriter extends Writer {
 		 * </ul>
 		 */
 		minimal;
-
+		
 		static private Pattern javascriptPattern = Pattern.compile("^[a-zA-Z_$][a-zA-Z_$0-9]*$");
 		static private Pattern minimalNamePattern = Pattern.compile("^[^\":,}/ ][^:]*$");
 		static private Pattern minimalValuePattern = Pattern.compile("^[^\":,{\\[\\]/ ][^}\\],]*$");
-
+		
 		public String quoteValue(Object value) {
 			if (value == null)
 				return "null";
@@ -217,7 +217,7 @@ public class JsonWriter extends Writer {
 			}
 			return '"' + buffer.replace('"', "\\\"").toString() + '"';
 		}
-
+		
 		public String quoteName(String value) {
 			StringBuilder buffer = new StringBuilder(value);
 			buffer.replace('\\', "\\\\").replace('\r', "\\r").replace('\n', "\\n").replace('\t', "\\t");

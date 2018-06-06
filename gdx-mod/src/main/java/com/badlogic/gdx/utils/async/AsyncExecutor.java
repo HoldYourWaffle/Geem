@@ -33,7 +33,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  */
 public class AsyncExecutor implements Disposable {
 	private final ExecutorService executor;
-
+	
 	/**
 	 * Creates a new AsynchExecutor that allows maxConcurrent {@link Runnable}
 	 * instances to run in parallel.
@@ -47,7 +47,7 @@ public class AsyncExecutor implements Disposable {
 			return thread;
 		});
 	}
-
+	
 	/**
 	 * Submits a {@link Runnable} to be executed asynchronously. If maxConcurrent
 	 * runnables are already running, the runnable will be queued.
@@ -60,7 +60,7 @@ public class AsyncExecutor implements Disposable {
 		}
 		return new AsyncResult(executor.submit(() -> task.call()));
 	}
-
+	
 	/**
 	 * Waits for running {@link AsyncTask} instances to finish, then destroys any
 	 * resources like threads. Can not be used after this method is called.

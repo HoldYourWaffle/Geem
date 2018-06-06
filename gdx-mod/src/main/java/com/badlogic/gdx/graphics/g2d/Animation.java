@@ -36,12 +36,12 @@ import com.badlogic.gdx.utils.reflect.ArrayReflection;
  * @author mzechner
  */
 public class Animation<T> {
-
+	
 	/** Defines possible playback modes for an {@link Animation}. */
 	public enum PlayMode {
 	NORMAL, REVERSED, LOOP, LOOP_REVERSED, LOOP_PINGPONG, LOOP_RANDOM,
 	}
-
+	
 	/**
 	 * Length must not be modified without updating {@link #animationDuration}. See
 	 * {@link #setKeyFrames(T[])}.
@@ -51,9 +51,9 @@ public class Animation<T> {
 	private float animationDuration;
 	private int lastFrameNumber;
 	private float lastStateTime;
-
+	
 	private PlayMode playMode = PlayMode.NORMAL;
-
+	
 	/**
 	 * Constructor, storing the frame duration and key frames.
 	 * 
@@ -72,7 +72,7 @@ public class Animation<T> {
 		}
 		setKeyFrames(frames);
 	}
-
+	
 	/**
 	 * Constructor, storing the frame duration and key frames.
 	 * 
@@ -86,7 +86,7 @@ public class Animation<T> {
 		this(frameDuration, keyFrames);
 		setPlayMode(playMode);
 	}
-
+	
 	/**
 	 * Constructor, storing the frame duration and key frames.
 	 * 
@@ -97,7 +97,7 @@ public class Animation<T> {
 		this.frameDuration = frameDuration;
 		setKeyFrames(keyFrames);
 	}
-
+	
 	/**
 	 * Returns a frame based on the so called state time. This is the amount of
 	 * seconds an object has spent in the state this Animation instance represents,
@@ -123,12 +123,12 @@ public class Animation<T> {
 			else
 				playMode = PlayMode.LOOP;
 		}
-
+		
 		T frame = getKeyFrame(stateTime);
 		playMode = oldPlayMode;
 		return frame;
 	}
-
+	
 	/**
 	 * Returns a frame based on the so called state time. This is the amount of
 	 * seconds an object has spent in the state this Animation instance represents,
@@ -142,7 +142,7 @@ public class Animation<T> {
 		int frameNumber = getKeyFrameIndex(stateTime);
 		return keyFrames[frameNumber];
 	}
-
+	
 	/**
 	 * Returns the current frame number.
 	 * 
@@ -152,7 +152,7 @@ public class Animation<T> {
 	public int getKeyFrameIndex(float stateTime) {
 		if (keyFrames.length == 1)
 			return 0;
-
+		
 		int frameNumber = (int) (stateTime / frameDuration);
 		switch (playMode) {
 		case NORMAL:
@@ -182,13 +182,13 @@ public class Animation<T> {
 			frameNumber = keyFrames.length - frameNumber - 1;
 			break;
 		}
-
+		
 		lastFrameNumber = frameNumber;
 		lastStateTime = stateTime;
-
+		
 		return frameNumber;
 	}
-
+	
 	/**
 	 * Returns the keyframes[] array where all the frames of the animation are
 	 * stored.
@@ -199,17 +199,17 @@ public class Animation<T> {
 	public T[] getKeyFrames() {
 		return keyFrames;
 	}
-
+	
 	protected void setKeyFrames(T... keyFrames) {
 		this.keyFrames = keyFrames;
 		this.animationDuration = keyFrames.length * frameDuration;
 	}
-
+	
 	/** Returns the animation play mode. */
 	public PlayMode getPlayMode() {
 		return playMode;
 	}
-
+	
 	/**
 	 * Sets the animation play mode.
 	 * 
@@ -218,7 +218,7 @@ public class Animation<T> {
 	public void setPlayMode(PlayMode playMode) {
 		this.playMode = playMode;
 	}
-
+	
 	/**
 	 * Whether the animation would be finished if played without looping
 	 * (PlayMode#NORMAL), given the state time.
@@ -230,7 +230,7 @@ public class Animation<T> {
 		int frameNumber = (int) (stateTime / frameDuration);
 		return keyFrames.length - 1 < frameNumber;
 	}
-
+	
 	/**
 	 * Sets duration a frame will be displayed.
 	 * 
@@ -240,12 +240,12 @@ public class Animation<T> {
 		this.frameDuration = frameDuration;
 		this.animationDuration = keyFrames.length * frameDuration;
 	}
-
+	
 	/** @return the duration of a frame in seconds */
 	public float getFrameDuration() {
 		return frameDuration;
 	}
-
+	
 	/**
 	 * @return the duration of the entire animation, number of frames times frame
 	 *         duration, in seconds

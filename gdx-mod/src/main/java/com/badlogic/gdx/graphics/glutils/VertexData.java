@@ -31,13 +31,13 @@ import com.badlogic.gdx.utils.Disposable;
 public interface VertexData extends Disposable {
 	/** @return the number of vertices this VertexData stores */
 	public int getNumVertices();
-
+	
 	/** @return the number of vertices this VertedData can store */
 	public int getNumMaxVertices();
-
+	
 	/** @return the {@link VertexAttributes} as specified during construction. */
 	public VertexAttributes getAttributes();
-
+	
 	/**
 	 * Sets the vertices of this VertexData, discarding the old vertex data. The
 	 * count must equal the number of floats per vertex times the number of vertices
@@ -52,7 +52,7 @@ public interface VertexData extends Disposable {
 	 * @param count    the number of floats to copy
 	 */
 	public void setVertices(float[] vertices, int offset, int count);
-
+	
 	/**
 	 * Update (a portion of) the vertices. Does not resize the backing buffer.
 	 * 
@@ -61,7 +61,7 @@ public interface VertexData extends Disposable {
 	 * @param count        the number of floats to copy
 	 */
 	public void updateVertices(int targetOffset, float[] vertices, int sourceOffset, int count);
-
+	
 	/**
 	 * Returns the underlying FloatBuffer and marks it as dirty, causing the buffer
 	 * contents to be uploaded on the next call to bind. If you need immediate
@@ -71,32 +71,32 @@ public interface VertexData extends Disposable {
 	 * @return the underlying FloatBuffer holding the vertex data.
 	 */
 	public FloatBuffer getBuffer();
-
+	
 	/** Binds this VertexData for rendering via glDrawArrays or glDrawElements. */
 	public void bind(ShaderProgram shader);
-
+	
 	/**
 	 * Binds this VertexData for rendering via glDrawArrays or glDrawElements.
 	 * 
 	 * @param locations array containing the attribute locations.
 	 */
 	public void bind(ShaderProgram shader, int[] locations);
-
+	
 	/** Unbinds this VertexData. */
 	public void unbind(ShaderProgram shader);
-
+	
 	/**
 	 * Unbinds this VertexData.
 	 * 
 	 * @param locations array containing the attribute locations.
 	 */
 	public void unbind(ShaderProgram shader, int[] locations);
-
+	
 	/**
 	 * Invalidates the VertexData if applicable. Use this in case of a context loss.
 	 */
 	public void invalidate();
-
+	
 	/** Disposes this VertexData and all its associated OpenGL resources. */
 	@Override
 	public void dispose();

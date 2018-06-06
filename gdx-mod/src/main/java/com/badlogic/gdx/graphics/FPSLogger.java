@@ -28,11 +28,11 @@ import com.badlogic.gdx.utils.TimeUtils;
  */
 public class FPSLogger {
 	long startTime;
-
+	
 	public FPSLogger() {
 		startTime = TimeUtils.nanoTime();
 	}
-
+	
 	/** Logs the current frames per second to the console. */
 	public void log() {
 		if (TimeUtils.nanoTime() - startTime > 1000000000) /* 1,000,000,000ns == one second */ {

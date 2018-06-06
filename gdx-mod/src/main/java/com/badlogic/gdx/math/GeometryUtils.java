@@ -19,7 +19,7 @@ package com.badlogic.gdx.math;
 /** @author Nathan Sweet */
 public final class GeometryUtils {
 	static private final Vector2 tmp1 = new Vector2(), tmp2 = new Vector2(), tmp3 = new Vector2();
-
+	
 	/**
 	 * Computes the barycentric coordinates v,w for the specified point in the
 	 * triangle.
@@ -53,12 +53,12 @@ public final class GeometryUtils {
 		barycentricOut.y = (d00 * d21 - d01 * d20) / denom;
 		return barycentricOut;
 	}
-
+	
 	/** Returns true if the barycentric coordinates are inside the triangle. */
 	static public boolean barycoordInsideTriangle(Vector2 barycentric) {
 		return barycentric.x >= 0 && barycentric.y >= 0 && barycentric.x + barycentric.y <= 1;
 	}
-
+	
 	/**
 	 * Returns interpolated values given the barycentric coordinates of a point in a
 	 * triangle and the values at each vertex.
@@ -71,7 +71,7 @@ public final class GeometryUtils {
 		interpolatedOut.y = u * a.y + barycentric.x * b.y + barycentric.y * c.y;
 		return interpolatedOut;
 	}
-
+	
 	/**
 	 * Returns an interpolated value given the barycentric coordinates of a point in
 	 * a triangle and the values at each vertex.
@@ -82,7 +82,7 @@ public final class GeometryUtils {
 		float u = 1 - barycentric.x - barycentric.y;
 		return u * a + barycentric.x * b + barycentric.y * c;
 	}
-
+	
 	/**
 	 * Returns the lowest positive root of the quadric equation given by a* x * x +
 	 * b * x + c = 0. If no solution is given Float.Nan is returned.
@@ -96,39 +96,39 @@ public final class GeometryUtils {
 		float det = b * b - 4 * a * c;
 		if (det < 0)
 			return Float.NaN;
-
+		
 		float sqrtD = (float) Math.sqrt(det);
 		float invA = 1 / (2 * a);
 		float r1 = (-b - sqrtD) * invA;
 		float r2 = (-b + sqrtD) * invA;
-
+		
 		if (r1 > r2) {
 			float tmp = r2;
 			r2 = r1;
 			r1 = tmp;
 		}
-
+		
 		if (r1 > 0)
 			return r1;
 		if (r2 > 0)
 			return r2;
 		return Float.NaN;
 	}
-
+	
 	static public boolean colinear(float x1, float y1, float x2, float y2, float x3, float y3) {
 		float dx21 = x2 - x1, dy21 = y2 - y1;
 		float dx32 = x3 - x2, dy32 = y3 - y2;
 		float det = dx32 * dy21 - dx21 * dy32;
 		return Math.abs(det) < MathUtils.FLOAT_ROUNDING_ERROR;
 	}
-
+	
 	static public Vector2 triangleCentroid(float x1, float y1, float x2, float y2, float x3, float y3,
 			Vector2 centroid) {
 		centroid.x = (x1 + x2 + x3) / 3;
 		centroid.y = (y1 + y2 + y3) / 3;
 		return centroid;
 	}
-
+	
 	/**
 	 * Returns the circumcenter of the triangle. The input points must not be
 	 * colinear.
@@ -147,7 +147,7 @@ public final class GeometryUtils {
 				-(sqr1 * dx32 + sqr2 * dx13 + sqr3 * dx21) / det);
 		return circumcenter;
 	}
-
+	
 	static public float triangleCircumradius(float x1, float y1, float x2, float y2, float x3, float y3) {
 		float m1, m2, mx1, mx2, my1, my2, x, y;
 		if (Math.abs(y2 - y1) < MathUtils.FLOAT_ROUNDING_ERROR) {
@@ -175,7 +175,7 @@ public final class GeometryUtils {
 		float dx = x1 - x, dy = y1 - y;
 		return (float) Math.sqrt(dx * dx + dy * dy);
 	}
-
+	
 	/**
 	 * Ratio of circumradius to shortest edge as a measure of triangle quality.
 	 * <p>
@@ -189,11 +189,11 @@ public final class GeometryUtils {
 		float length3 = (float) Math.sqrt(x3 * x3 + y3 * y3);
 		return Math.min(length1, Math.min(length2, length3)) / triangleCircumradius(x1, y1, x2, y2, x3, y3);
 	}
-
+	
 	static public float triangleArea(float x1, float y1, float x2, float y2, float x3, float y3) {
 		return Math.abs((x1 - x3) * (y2 - y1) - (x1 - x2) * (y3 - y1)) * 0.5f;
 	}
-
+	
 	static public Vector2 quadrilateralCentroid(float x1, float y1, float x2, float y2, float x3, float y3, float x4,
 			float y4, Vector2 centroid) {
 		float avgX1 = (x1 + x2 + x3) / 3;
@@ -204,13 +204,13 @@ public final class GeometryUtils {
 		centroid.y = avgY1 - (avgY1 - avgY2) / 2;
 		return centroid;
 	}
-
+	
 	/** Returns the centroid for the specified non-self-intersecting polygon. */
 	static public Vector2 polygonCentroid(float[] polygon, int offset, int count, Vector2 centroid) {
 		if (count < 6)
 			throw new IllegalArgumentException("A polygon must have 3 or more coordinate pairs.");
 		float x = 0, y = 0;
-
+		
 		float signedArea = 0;
 		int i = offset;
 		for (int n = offset + count - 2; i < n; i += 2) {
@@ -223,7 +223,7 @@ public final class GeometryUtils {
 			x += (x0 + x1) * a;
 			y += (y0 + y1) * a;
 		}
-
+		
 		float x0 = polygon[i];
 		float y0 = polygon[i + 1];
 		float x1 = polygon[offset];
@@ -232,7 +232,7 @@ public final class GeometryUtils {
 		signedArea += a;
 		x += (x0 + x1) * a;
 		y += (y0 + y1) * a;
-
+		
 		if (signedArea == 0) {
 			centroid.x = 0;
 			centroid.y = 0;
@@ -243,7 +243,7 @@ public final class GeometryUtils {
 		}
 		return centroid;
 	}
-
+	
 	/** Computes the area for a convex polygon. */
 	static public float polygonArea(float[] polygon, int offset, int count) {
 		float area = 0;
@@ -262,11 +262,11 @@ public final class GeometryUtils {
 		area *= 0.5f;
 		return area;
 	}
-
+	
 	static public void ensureCCW(float[] polygon) {
 		ensureCCW(polygon, 0, polygon.length);
 	}
-
+	
 	static public void ensureCCW(float[] polygon, int offset, int count) {
 		if (!isClockwise(polygon, offset, count))
 			return;
@@ -281,7 +281,7 @@ public final class GeometryUtils {
 			polygon[other + 1] = y;
 		}
 	}
-
+	
 	static public boolean isClockwise(float[] polygon, int offset, int count) {
 		if (count <= 2)
 			return false;

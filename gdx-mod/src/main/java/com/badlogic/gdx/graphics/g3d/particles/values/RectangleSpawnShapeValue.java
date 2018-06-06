@@ -29,10 +29,10 @@ public final class RectangleSpawnShapeValue extends PrimitiveSpawnShapeValue {
 		super(value);
 		load(value);
 	}
-
+	
 	public RectangleSpawnShapeValue() {
 	}
-
+	
 	@Override
 	public void spawnAux(Vector3 vector, float percent) {
 		float width = spawnWidth + (spawnWidthDiff * spawnWidthValue.getScale(percent));
@@ -81,7 +81,7 @@ public final class RectangleSpawnShapeValue extends PrimitiveSpawnShapeValue {
 			vector.z = MathUtils.random(depth) - depth / 2;
 		}
 	}
-
+	
 	@Override
 	public SpawnShapeValue copy() {
 		return new RectangleSpawnShapeValue(this);

@@ -57,22 +57,22 @@ public class List<T> extends Widget implements Cullable {
 	float itemHeight;
 	private int alignment = Align.left;
 	int touchDown;
-
+	
 	public List(Skin skin) {
 		this(skin.get(ListStyle.class));
 	}
-
+	
 	public List(Skin skin, String styleName) {
 		this(skin.get(styleName, ListStyle.class));
 	}
-
+	
 	public List(ListStyle style) {
 		selection.setActor(this);
 		selection.setRequired(true);
-
+		
 		setStyle(style);
 		setSize(getPrefWidth(), getPrefHeight());
-
+		
 		addListener(new InputListener() {
 			@Override
 			public boolean keyDown(InputEvent event, int keycode) {
@@ -83,7 +83,7 @@ public class List<T> extends Widget implements Cullable {
 				}
 				return false;
 			}
-
+			
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer != 0 || button != 0)
@@ -107,14 +107,14 @@ public class List<T> extends Widget implements Cullable {
 				touchDown = index;
 				return true;
 			}
-
+			
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer != 0 || button != 0)
 					return;
 				touchDown = -1;
 			}
-
+			
 			@Override
 			public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
 				if (pointer != 0)
@@ -123,14 +123,14 @@ public class List<T> extends Widget implements Cullable {
 			}
 		});
 	}
-
+	
 	public void setStyle(ListStyle style) {
 		if (style == null)
 			throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
 		invalidateHierarchy();
 	}
-
+	
 	/**
 	 * Returns the list's style. Modifying the returned style may not have an effect
 	 * until {@link #setStyle(ListStyle)} is called.
@@ -138,15 +138,15 @@ public class List<T> extends Widget implements Cullable {
 	public ListStyle getStyle() {
 		return style;
 	}
-
+	
 	@Override
 	public void layout() {
 		BitmapFont font = style.font;
 		Drawable selectedDrawable = style.selection;
-
+		
 		itemHeight = font.getCapHeight() - font.getDescent() * 2;
 		itemHeight += selectedDrawable.getTopHeight() + selectedDrawable.getBottomHeight();
-
+		
 		prefWidth = 0;
 		Pool<GlyphLayout> layoutPool = Pools.get(GlyphLayout.class);
 		GlyphLayout layout = layoutPool.obtain();
@@ -157,29 +157,29 @@ public class List<T> extends Widget implements Cullable {
 		layoutPool.free(layout);
 		prefWidth += selectedDrawable.getLeftWidth() + selectedDrawable.getRightWidth();
 		prefHeight = items.size * itemHeight;
-
+		
 		Drawable background = style.background;
 		if (background != null) {
 			prefWidth += background.getLeftWidth() + background.getRightWidth();
 			prefHeight += background.getTopHeight() + background.getBottomHeight();
 		}
 	}
-
+	
 	@Override
 	public void draw(Batch batch, float a) {
 		validate();
-
+		
 		BitmapFont font = style.font;
 		Drawable selectedDrawable = style.selection;
 		Color fontColorSelected = style.fontColorSelected;
 		Color fontColorUnselected = style.fontColorUnselected;
-
+		
 		Color color = getColor();
 		batch.setColor(color.r, color.g, color.b, color.a * a);
-
+		
 		float x = getX(), y = getY(), width = getWidth(), height = getHeight();
 		float itemY = height;
-
+		
 		Drawable background = style.background;
 		if (background != null) {
 			background.draw(batch, x, y, width, height);
@@ -188,11 +188,11 @@ public class List<T> extends Widget implements Cullable {
 			itemY -= background.getTopHeight();
 			width -= leftWidth + background.getRightWidth();
 		}
-
+		
 		float textOffsetX = selectedDrawable.getLeftWidth(),
 				textWidth = width - textOffsetX - selectedDrawable.getRightWidth();
 		float textOffsetY = selectedDrawable.getTopHeight() - font.getDescent();
-
+		
 		font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b, fontColorUnselected.a * a);
 		for (int i = 0; i < items.size; i++) {
 			if (cullingArea == null
@@ -218,21 +218,21 @@ public class List<T> extends Widget implements Cullable {
 			itemY -= itemHeight;
 		}
 	}
-
+	
 	protected GlyphLayout drawItem(Batch batch, BitmapFont font, int index, T item, float x, float y, float width) {
 		String string = toString(item);
 		return font.draw(batch, string, x, y, 0, string.length(), width, alignment, false, "...");
 	}
-
+	
 	public ArraySelection<T> getSelection() {
 		return selection;
 	}
-
+	
 	/** Returns the first selected item, or null. */
 	public T getSelected() {
 		return selection.first();
 	}
-
+	
 	/**
 	 * Sets the selection to only the passed item, if it is a possible choice.
 	 * 
@@ -246,7 +246,7 @@ public class List<T> extends Widget implements Cullable {
 		else
 			selection.clear();
 	}
-
+	
 	/**
 	 * @return The index of the first selected item. The top item has an index of 0.
 	 *         Nothing selected has an index of -1.
@@ -255,7 +255,7 @@ public class List<T> extends Widget implements Cullable {
 		ObjectSet<T> selected = selection.items();
 		return selected.size == 0 ? -1 : items.indexOf(selected.first(), false);
 	}
-
+	
 	/** Sets the selection to only the selected index. */
 	public void setSelectedIndex(int index) {
 		if (index < -1 || index >= items.size)
@@ -266,21 +266,21 @@ public class List<T> extends Widget implements Cullable {
 			selection.set(items.get(index));
 		}
 	}
-
+	
 	public void setItems(T... newItems) {
 		if (newItems == null)
 			throw new IllegalArgumentException("newItems cannot be null.");
 		float oldPrefWidth = getPrefWidth(), oldPrefHeight = getPrefHeight();
-
+		
 		items.clear();
 		items.addAll(newItems);
 		selection.validate();
-
+		
 		invalidate();
 		if (oldPrefWidth != getPrefWidth() || oldPrefHeight != getPrefHeight())
 			invalidateHierarchy();
 	}
-
+	
 	/**
 	 * Sets the items visible in the list, clearing the selection if it is no longer
 	 * valid. If a selection is {@link ArraySelection#getRequired()}, the first item
@@ -291,18 +291,18 @@ public class List<T> extends Widget implements Cullable {
 		if (newItems == null)
 			throw new IllegalArgumentException("newItems cannot be null.");
 		float oldPrefWidth = getPrefWidth(), oldPrefHeight = getPrefHeight();
-
+		
 		if (newItems != items) {
 			items.clear();
 			items.addAll(newItems);
 		}
 		selection.validate();
-
+		
 		invalidate();
 		if (oldPrefWidth != getPrefWidth() || oldPrefHeight != getPrefHeight())
 			invalidateHierarchy();
 	}
-
+	
 	public void clearItems() {
 		if (items.size == 0)
 			return;
@@ -310,7 +310,7 @@ public class List<T> extends Widget implements Cullable {
 		selection.clear();
 		invalidateHierarchy();
 	}
-
+	
 	/**
 	 * Returns the internal items array. If modified, {@link #setItems(Array)} must
 	 * be called to reflect the changes.
@@ -318,32 +318,32 @@ public class List<T> extends Widget implements Cullable {
 	public Array<T> getItems() {
 		return items;
 	}
-
+	
 	public float getItemHeight() {
 		return itemHeight;
 	}
-
+	
 	@Override
 	public float getPrefWidth() {
 		validate();
 		return prefWidth;
 	}
-
+	
 	@Override
 	public float getPrefHeight() {
 		validate();
 		return prefHeight;
 	}
-
+	
 	protected String toString(T object) {
 		return object.toString();
 	}
-
+	
 	@Override
 	public void setCullingArea(Rectangle cullingArea) {
 		this.cullingArea = cullingArea;
 	}
-
+	
 	/**
 	 * Sets the horizontal alignment of the list items.
 	 * 
@@ -352,7 +352,7 @@ public class List<T> extends Widget implements Cullable {
 	public void setAlignment(int alignment) {
 		this.alignment = alignment;
 	}
-
+	
 	/**
 	 * The style for a list, see {@link List}.
 	 * 
@@ -366,17 +366,17 @@ public class List<T> extends Widget implements Cullable {
 		public Drawable selection;
 		/** Optional. */
 		public Drawable down, background;
-
+		
 		public ListStyle() {
 		}
-
+		
 		public ListStyle(BitmapFont font, Color fontColorSelected, Color fontColorUnselected, Drawable selection) {
 			this.font = font;
 			this.fontColorSelected.set(fontColorSelected);
 			this.fontColorUnselected.set(fontColorUnselected);
 			this.selection = selection;
 		}
-
+		
 		public ListStyle(ListStyle style) {
 			this.font = style.font;
 			this.fontColorSelected.set(style.fontColorSelected);

@@ -41,7 +41,7 @@ import com.badlogic.gdx.utils.Pool;
  * @author Xoppa
  */
 public class AnimationController extends BaseAnimationController {
-
+	
 	/**
 	 * Listener that will be informed when an animation is looped or completed.
 	 * 
@@ -54,7 +54,7 @@ public class AnimationController extends BaseAnimationController {
 		 * @param animation The animation which just completed.
 		 */
 		void onEnd(final AnimationDesc animation);
-
+		
 		/**
 		 * Gets called when an animation is looped. The {@link AnimationDesc#loopCount}
 		 * is updated prior to this call and can be read or written to alter the number
@@ -64,7 +64,7 @@ public class AnimationController extends BaseAnimationController {
 		 */
 		void onLoop(final AnimationDesc animation);
 	}
-
+	
 	/**
 	 * Class describing how to play and {@link Animation}. You can read the values
 	 * within this class to get the progress of the animation. Do not change the
@@ -90,10 +90,10 @@ public class AnimationController extends BaseAnimationController {
 		public float duration;
 		/** The number of remaining loops, negative for continuous, zero if stopped. */
 		public int loopCount;
-
+		
 		protected AnimationDesc() {
 		}
-
+		
 		/** @return the remaining time or 0 if still animating. */
 		protected float update(float delta) {
 			if (loopCount != 0 && animation != null) {
@@ -128,14 +128,14 @@ public class AnimationController extends BaseAnimationController {
 				return delta;
 		}
 	}
-
+	
 	protected final Pool<AnimationDesc> animationPool = new Pool<AnimationDesc>() {
 		@Override
 		protected AnimationDesc newObject() {
 			return new AnimationDesc();
 		}
 	};
-
+	
 	/** The animation currently playing. Do not alter this value. */
 	public AnimationDesc current;
 	/**
@@ -163,9 +163,9 @@ public class AnimationController extends BaseAnimationController {
 	 * animation.
 	 */
 	public boolean allowSameAnimation;
-
+	
 	private boolean justChangedAnimation = false;
-
+	
 	/**
 	 * Construct a new AnimationController.
 	 * 
@@ -175,7 +175,7 @@ public class AnimationController extends BaseAnimationController {
 	public AnimationController(final ModelInstance target) {
 		super(target);
 	}
-
+	
 	private AnimationDesc obtain(final Animation anim, float offset, float duration, int loopCount, float speed,
 			final AnimationListener listener) {
 		if (anim == null)
@@ -190,7 +190,7 @@ public class AnimationController extends BaseAnimationController {
 		result.time = speed < 0 ? result.duration : 0.f;
 		return result;
 	}
-
+	
 	private AnimationDesc obtain(final String id, float offset, float duration, int loopCount, float speed,
 			final AnimationListener listener) {
 		if (id == null)
@@ -200,11 +200,11 @@ public class AnimationController extends BaseAnimationController {
 			throw new GdxRuntimeException("Unknown animation: " + id);
 		return obtain(anim, offset, duration, loopCount, speed, listener);
 	}
-
+	
 	private AnimationDesc obtain(final AnimationDesc anim) {
 		return obtain(anim.animation, anim.offset, anim.duration, anim.loopCount, anim.speed, anim.listener);
 	}
-
+	
 	/**
 	 * Update any animations currently being played.
 	 * 
@@ -240,7 +240,7 @@ public class AnimationController extends BaseAnimationController {
 		else
 			applyAnimation(current.animation, current.offset + current.time);
 	}
-
+	
 	/**
 	 * Set the active animation, replacing any current animation.
 	 * 
@@ -251,7 +251,7 @@ public class AnimationController extends BaseAnimationController {
 	public AnimationDesc setAnimation(final String id) {
 		return setAnimation(id, 1, 1.0f, null);
 	}
-
+	
 	/**
 	 * Set the active animation, replacing any current animation.
 	 * 
@@ -266,7 +266,7 @@ public class AnimationController extends BaseAnimationController {
 	public AnimationDesc setAnimation(final String id, int loopCount) {
 		return setAnimation(id, loopCount, 1.0f, null);
 	}
-
+	
 	/**
 	 * Set the active animation, replacing any current animation.
 	 * 
@@ -280,7 +280,7 @@ public class AnimationController extends BaseAnimationController {
 	public AnimationDesc setAnimation(final String id, final AnimationListener listener) {
 		return setAnimation(id, 1, 1.0f, listener);
 	}
-
+	
 	/**
 	 * Set the active animation, replacing any current animation.
 	 * 
@@ -297,7 +297,7 @@ public class AnimationController extends BaseAnimationController {
 	public AnimationDesc setAnimation(final String id, int loopCount, final AnimationListener listener) {
 		return setAnimation(id, loopCount, 1.0f, listener);
 	}
-
+	
 	/**
 	 * Set the active animation, replacing any current animation.
 	 * 
@@ -320,7 +320,7 @@ public class AnimationController extends BaseAnimationController {
 	public AnimationDesc setAnimation(final String id, int loopCount, float speed, final AnimationListener listener) {
 		return setAnimation(id, 0f, -1f, loopCount, speed, listener);
 	}
-
+	
 	/**
 	 * Set the active animation, replacing any current animation.
 	 * 
@@ -347,13 +347,13 @@ public class AnimationController extends BaseAnimationController {
 			final AnimationListener listener) {
 		return setAnimation(obtain(id, offset, duration, loopCount, speed, listener));
 	}
-
+	
 	/** Set the active animation, replacing any current animation. */
 	protected AnimationDesc setAnimation(final Animation anim, float offset, float duration, int loopCount, float speed,
 			final AnimationListener listener) {
 		return setAnimation(obtain(anim, offset, duration, loopCount, speed, listener));
 	}
-
+	
 	/** Set the active animation, replacing any current animation. */
 	protected AnimationDesc setAnimation(final AnimationDesc anim) {
 		if (current == null)
@@ -369,7 +369,7 @@ public class AnimationController extends BaseAnimationController {
 		justChangedAnimation = true;
 		return anim;
 	}
-
+	
 	/**
 	 * Changes the current animation by blending the new on top of the old during
 	 * the transition time.
@@ -384,7 +384,7 @@ public class AnimationController extends BaseAnimationController {
 	public AnimationDesc animate(final String id, float transitionTime) {
 		return animate(id, 1, 1.0f, null, transitionTime);
 	}
-
+	
 	/**
 	 * Changes the current animation by blending the new on top of the old during
 	 * the transition time.
@@ -401,7 +401,7 @@ public class AnimationController extends BaseAnimationController {
 	public AnimationDesc animate(final String id, final AnimationListener listener, float transitionTime) {
 		return animate(id, 1, 1.0f, listener, transitionTime);
 	}
-
+	
 	/**
 	 * Changes the current animation by blending the new on top of the old during
 	 * the transition time.
@@ -422,7 +422,7 @@ public class AnimationController extends BaseAnimationController {
 			float transitionTime) {
 		return animate(id, loopCount, 1.0f, listener, transitionTime);
 	}
-
+	
 	/**
 	 * Changes the current animation by blending the new on top of the old during
 	 * the transition time.
@@ -449,7 +449,7 @@ public class AnimationController extends BaseAnimationController {
 			float transitionTime) {
 		return animate(id, 0f, -1f, loopCount, speed, listener, transitionTime);
 	}
-
+	
 	/**
 	 * Changes the current animation by blending the new on top of the old during
 	 * the transition time.
@@ -479,7 +479,7 @@ public class AnimationController extends BaseAnimationController {
 			final AnimationListener listener, float transitionTime) {
 		return animate(obtain(id, offset, duration, loopCount, speed, listener), transitionTime);
 	}
-
+	
 	/**
 	 * Changes the current animation by blending the new on top of the old during
 	 * the transition time.
@@ -488,7 +488,7 @@ public class AnimationController extends BaseAnimationController {
 			final AnimationListener listener, float transitionTime) {
 		return animate(obtain(anim, offset, duration, loopCount, speed, listener), transitionTime);
 	}
-
+	
 	/**
 	 * Changes the current animation by blending the new on top of the old during
 	 * the transition time.
@@ -514,7 +514,7 @@ public class AnimationController extends BaseAnimationController {
 		}
 		return anim;
 	}
-
+	
 	/**
 	 * Queue an animation to be applied when the {@link #current} animation is
 	 * finished. If the current animation is continuously looping it will be
@@ -542,7 +542,7 @@ public class AnimationController extends BaseAnimationController {
 			float transitionTime) {
 		return queue(id, 0f, -1f, loopCount, speed, listener, transitionTime);
 	}
-
+	
 	/**
 	 * Queue an animation to be applied when the {@link #current} animation is
 	 * finished. If the current animation is continuously looping it will be
@@ -573,7 +573,7 @@ public class AnimationController extends BaseAnimationController {
 			final AnimationListener listener, float transitionTime) {
 		return queue(obtain(id, offset, duration, loopCount, speed, listener), transitionTime);
 	}
-
+	
 	/**
 	 * Queue an animation to be applied when the current is finished. If current is
 	 * continuous it will be synced on next loop.
@@ -582,7 +582,7 @@ public class AnimationController extends BaseAnimationController {
 			final AnimationListener listener, float transitionTime) {
 		return queue(obtain(anim, offset, duration, loopCount, speed, listener), transitionTime);
 	}
-
+	
 	/**
 	 * Queue an animation to be applied when the current is finished. If current is
 	 * continuous it will be synced on next loop.
@@ -600,7 +600,7 @@ public class AnimationController extends BaseAnimationController {
 		}
 		return anim;
 	}
-
+	
 	/**
 	 * Apply an action animation on top of the current animation.
 	 * 
@@ -626,7 +626,7 @@ public class AnimationController extends BaseAnimationController {
 			float transitionTime) {
 		return action(id, 0, -1f, loopCount, speed, listener, transitionTime);
 	}
-
+	
 	/**
 	 * Apply an action animation on top of the current animation.
 	 * 
@@ -655,13 +655,13 @@ public class AnimationController extends BaseAnimationController {
 			final AnimationListener listener, float transitionTime) {
 		return action(obtain(id, offset, duration, loopCount, speed, listener), transitionTime);
 	}
-
+	
 	/** Apply an action animation on top of the current animation. */
 	protected AnimationDesc action(final Animation anim, float offset, float duration, int loopCount, float speed,
 			final AnimationListener listener, float transitionTime) {
 		return action(obtain(anim, offset, duration, loopCount, speed, listener), transitionTime);
 	}
-
+	
 	/** Apply an action animation on top of the current animation. */
 	protected AnimationDesc action(final AnimationDesc anim, float transitionTime) {
 		if (anim.loopCount < 0)

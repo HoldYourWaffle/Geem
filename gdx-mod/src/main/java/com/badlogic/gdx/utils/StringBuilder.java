@@ -29,12 +29,12 @@ import java.util.Arrays;
  */
 public class StringBuilder implements Appendable, CharSequence {
 	static final int INITIAL_CAPACITY = 16;
-
+	
 	public char[] chars;
 	public int length;
-
+	
 	private static final char[] digits = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-
+	
 	/**
 	 * @return the number of characters required to represent the specified value
 	 *         with the specified radix
@@ -45,7 +45,7 @@ public class StringBuilder implements Appendable, CharSequence {
 			++result;
 		return result;
 	}
-
+	
 	/**
 	 * @return the number of characters required to represent the specified value
 	 *         with the specified radix
@@ -56,14 +56,14 @@ public class StringBuilder implements Appendable, CharSequence {
 			++result;
 		return result;
 	}
-
+	
 	/*
 	 * Returns the character array.
 	 */
 	final char[] getValue() {
 		return chars;
 	}
-
+	
 	/**
 	 * Constructs an instance with an initial capacity of {@code 16}.
 	 * 
@@ -72,7 +72,7 @@ public class StringBuilder implements Appendable, CharSequence {
 	public StringBuilder() {
 		chars = new char[INITIAL_CAPACITY];
 	}
-
+	
 	/**
 	 * Constructs an instance with the specified capacity.
 	 * 
@@ -87,7 +87,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		}
 		chars = new char[capacity];
 	}
-
+	
 	/**
 	 * Constructs an instance that's initialized with the contents of the specified
 	 * {@code CharSequence}. The capacity of the new builder will be the length of
@@ -99,13 +99,13 @@ public class StringBuilder implements Appendable, CharSequence {
 	public StringBuilder(CharSequence seq) {
 		this(seq.toString());
 	}
-
+	
 	public StringBuilder(StringBuilder builder) {
 		length = builder.length;
 		chars = new char[length + INITIAL_CAPACITY];
 		System.arraycopy(builder.chars, 0, chars, 0, length);
 	}
-
+	
 	/**
 	 * Constructs an instance that's initialized with the contents of the specified
 	 * {@code String}. The capacity of the new builder will be the length of the
@@ -119,14 +119,14 @@ public class StringBuilder implements Appendable, CharSequence {
 		chars = new char[length + INITIAL_CAPACITY];
 		string.getChars(0, length, chars, 0);
 	}
-
+	
 	private void enlargeBuffer(int min) {
 		int newSize = (chars.length >> 1) + chars.length + 2;
 		char[] newData = new char[min > newSize ? min : newSize];
 		System.arraycopy(chars, 0, newData, 0, length);
 		chars = newData;
 	}
-
+	
 	final void appendNull() {
 		int newSize = length + 4;
 		if (newSize > chars.length) {
@@ -137,7 +137,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		chars[length++] = 'l';
 		chars[length++] = 'l';
 	}
-
+	
 	final void append0(char[] value) {
 		int newSize = length + value.length;
 		if (newSize > chars.length) {
@@ -146,7 +146,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		System.arraycopy(value, 0, chars, length, value.length);
 		length = newSize;
 	}
-
+	
 	final void append0(char[] value, int offset, int length) {
 		// Force null check of chars first!
 		if (offset > value.length || offset < 0) {
@@ -155,7 +155,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		if (length < 0 || value.length - offset < length) {
 			throw new ArrayIndexOutOfBoundsException("Length out of bounds: " + length);
 		}
-
+		
 		int newSize = this.length + length;
 		if (newSize > chars.length) {
 			enlargeBuffer(newSize);
@@ -163,14 +163,14 @@ public class StringBuilder implements Appendable, CharSequence {
 		System.arraycopy(value, offset, chars, this.length, length);
 		this.length = newSize;
 	}
-
+	
 	final void append0(char ch) {
 		if (length == chars.length) {
 			enlargeBuffer(length + 1);
 		}
 		chars[length++] = ch;
 	}
-
+	
 	final void append0(String string) {
 		if (string == null) {
 			appendNull();
@@ -184,7 +184,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		string.getChars(0, adding, chars, length);
 		length = newSize;
 	}
-
+	
 	final void append0(CharSequence s, int start, int end) {
 		if (s == null) {
 			s = "null";
@@ -192,10 +192,10 @@ public class StringBuilder implements Appendable, CharSequence {
 		if (start < 0 || end < 0 || start > end || end > s.length()) {
 			throw new IndexOutOfBoundsException();
 		}
-
+		
 		append0(s.subSequence(start, end).toString());
 	}
-
+	
 	/**
 	 * Returns the number of characters that can be held without growing.
 	 * 
@@ -206,7 +206,7 @@ public class StringBuilder implements Appendable, CharSequence {
 	public int capacity() {
 		return chars.length;
 	}
-
+	
 	/**
 	 * Retrieves the character at the {@code index}.
 	 * 
@@ -223,7 +223,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		}
 		return chars[index];
 	}
-
+	
 	final void delete0(int start, int end) {
 		if (start >= 0) {
 			if (end > length) {
@@ -242,7 +242,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		}
 		throw new StringIndexOutOfBoundsException();
 	}
-
+	
 	final void deleteCharAt0(int location) {
 		if (0 > location || location >= length) {
 			throw new StringIndexOutOfBoundsException(location);
@@ -253,7 +253,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		}
 		length--;
 	}
-
+	
 	/**
 	 * Ensures that this object has a minimum capacity available before requiring
 	 * the internal buffer to be enlarged. The general policy of this method is that
@@ -271,7 +271,7 @@ public class StringBuilder implements Appendable, CharSequence {
 			enlargeBuffer(twice > min ? twice : min);
 		}
 	}
-
+	
 	/**
 	 * Copies the requested sequence of characters to the {@code char[]} passed
 	 * starting at {@code destStart}.
@@ -295,7 +295,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		}
 		System.arraycopy(chars, start, dest, destStart, end - start);
 	}
-
+	
 	final void insert0(int index, char[] value) {
 		if (0 > index || index > length) {
 			throw new StringIndexOutOfBoundsException(index);
@@ -306,7 +306,7 @@ public class StringBuilder implements Appendable, CharSequence {
 			length += value.length;
 		}
 	}
-
+	
 	final void insert0(int index, char[] value, int start, int length) {
 		if (0 <= index && index <= length) {
 			// start + length could overflow, start/length maybe MaxInt
@@ -323,7 +323,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		}
 		throw new StringIndexOutOfBoundsException(index);
 	}
-
+	
 	final void insert0(int index, char ch) {
 		if (0 > index || index > length) {
 			// RI compatible exception type
@@ -333,7 +333,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		chars[index] = ch;
 		length++;
 	}
-
+	
 	final void insert0(int index, String string) {
 		if (0 <= index && index <= length) {
 			if (string == null) {
@@ -349,7 +349,7 @@ public class StringBuilder implements Appendable, CharSequence {
 			throw new StringIndexOutOfBoundsException(index);
 		}
 	}
-
+	
 	final void insert0(int index, CharSequence s, int start, int end) {
 		if (s == null) {
 			s = "null";
@@ -359,7 +359,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		}
 		insert0(index, s.subSequence(start, end).toString());
 	}
-
+	
 	/**
 	 * The current length.
 	 * 
@@ -369,7 +369,7 @@ public class StringBuilder implements Appendable, CharSequence {
 	public int length() {
 		return length;
 	}
-
+	
 	private void move(int size, int index) {
 		if (chars.length - length >= size) {
 			System.arraycopy(chars, index, chars, index + size, length - index); // index == count case is no-op
@@ -383,7 +383,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		System.arraycopy(chars, index, newData, index + size, length - index);
 		chars = newData;
 	}
-
+	
 	final void replace0(int start, int end, String string) {
 		if (start >= 0) {
 			if (end > length) {
@@ -413,7 +413,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		}
 		throw new StringIndexOutOfBoundsException();
 	}
-
+	
 	final void reverse0() {
 		if (length < 2) {
 			return;
@@ -471,7 +471,7 @@ public class StringBuilder implements Appendable, CharSequence {
 			chars[end] = allowFrontSur ? endLow : frontHigh;
 		}
 	}
-
+	
 	/**
 	 * Sets the character at the {@code index}.
 	 * 
@@ -487,7 +487,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		}
 		chars[index] = ch;
 	}
-
+	
 	/**
 	 * Sets the current length to a new value. If the new length is larger than the
 	 * current length, then the new characters at the end of this object will
@@ -510,7 +510,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		}
 		length = newLength;
 	}
-
+	
 	/**
 	 * Returns the String value of the subsequence from the {@code start} index to
 	 * the current end.
@@ -526,13 +526,13 @@ public class StringBuilder implements Appendable, CharSequence {
 			if (start == length) {
 				return "";
 			}
-
+			
 			// Remove String sharing for more performance
 			return new String(chars, start, length - start);
 		}
 		throw new StringIndexOutOfBoundsException(start);
 	}
-
+	
 	/**
 	 * Returns the String value of the subsequence from the {@code start} index to
 	 * the {@code end} index.
@@ -550,13 +550,13 @@ public class StringBuilder implements Appendable, CharSequence {
 			if (start == end) {
 				return "";
 			}
-
+			
 			// Remove String sharing for more performance
 			return new String(chars, start, end - start);
 		}
 		throw new StringIndexOutOfBoundsException();
 	}
-
+	
 	/**
 	 * Returns the current String representation.
 	 * 
@@ -568,7 +568,7 @@ public class StringBuilder implements Appendable, CharSequence {
 			return "";
 		return new String(chars, 0, length);
 	}
-
+	
 	/**
 	 * Returns a {@code CharSequence} of the subsequence from the {@code start}
 	 * index to the {@code end} index.
@@ -585,7 +585,7 @@ public class StringBuilder implements Appendable, CharSequence {
 	public CharSequence subSequence(int start, int end) {
 		return substring(start, end);
 	}
-
+	
 	/**
 	 * Searches for the first index of the specified character. The search for the
 	 * character starts at the beginning and moves towards the end.
@@ -599,7 +599,7 @@ public class StringBuilder implements Appendable, CharSequence {
 	public int indexOf(String string) {
 		return indexOf(string, 0);
 	}
-
+	
 	/**
 	 * Searches for the index of the specified character. The search for the
 	 * character starts at the specified offset and moves towards the end.
@@ -644,7 +644,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		}
 		return start < length || start == 0 ? start : length;
 	}
-
+	
 	/**
 	 * Searches for the last index of the specified character. The search for the
 	 * character starts at the end and moves towards the beginning.
@@ -659,7 +659,7 @@ public class StringBuilder implements Appendable, CharSequence {
 	public int lastIndexOf(String string) {
 		return lastIndexOf(string, length);
 	}
-
+	
 	/**
 	 * Searches for the index of the specified character. The search for the
 	 * character starts at the specified offset and moves towards the beginning.
@@ -707,7 +707,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		}
 		return -1;
 	}
-
+	
 	/**
 	 * Trims off any extra capacity beyond the current length. Note, this method is
 	 * NOT guaranteed to change the capacity of this object.
@@ -721,7 +721,7 @@ public class StringBuilder implements Appendable, CharSequence {
 			chars = newValue;
 		}
 	}
-
+	
 	/**
 	 * Retrieves the Unicode code point value at the {@code index}.
 	 * 
@@ -739,7 +739,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		}
 		return Character.codePointAt(chars, index, length);
 	}
-
+	
 	/**
 	 * Retrieves the Unicode code point value that precedes the {@code index}.
 	 * 
@@ -757,7 +757,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		}
 		return Character.codePointBefore(chars, index);
 	}
-
+	
 	/**
 	 * Calculates the number of Unicode code points between {@code beginIndex} and
 	 * {@code endIndex}.
@@ -779,7 +779,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		}
 		return Character.codePointCount(chars, beginIndex, endIndex - beginIndex);
 	}
-
+	
 	/**
 	 * Returns the index that is offset {@code codePointOffset} code points from
 	 * {@code index}.
@@ -800,7 +800,7 @@ public class StringBuilder implements Appendable, CharSequence {
 	public int offsetByCodePoints(int index, int codePointOffset) {
 		return Character.offsetByCodePoints(chars, 0, length, index, codePointOffset);
 	}
-
+	
 	/**
 	 * Appends the string representation of the specified {@code boolean} value. The
 	 * {@code boolean} value is converted to a String according to the rule defined
@@ -814,7 +814,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		append0(b ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
 		return this;
 	}
-
+	
 	/**
 	 * Appends the string representation of the specified {@code char} value. The
 	 * {@code char} value is converted to a string according to the rule defined by
@@ -829,7 +829,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		append0(c);
 		return this;
 	}
-
+	
 	/**
 	 * Appends the string representation of the specified {@code int} value. The
 	 * {@code int} value is converted to a string without memory allocation.
@@ -841,7 +841,7 @@ public class StringBuilder implements Appendable, CharSequence {
 	public StringBuilder append(int value) {
 		return append(value, 0);
 	}
-
+	
 	/**
 	 * Appends the string representation of the specified {@code int} value. The
 	 * {@code int} value is converted to a string without memory allocation.
@@ -854,7 +854,7 @@ public class StringBuilder implements Appendable, CharSequence {
 	public StringBuilder append(int value, int minLength) {
 		return append(value, minLength, '0');
 	}
-
+	
 	/**
 	 * Appends the string representation of the specified {@code int} value. The
 	 * {@code int} value is converted to a string without memory allocation.
@@ -900,7 +900,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		append0(digits[value % 10]);
 		return this;
 	}
-
+	
 	/**
 	 * Appends the string representation of the specified {@code long} value. The
 	 * {@code long} value is converted to a string without memory allocation.
@@ -911,7 +911,7 @@ public class StringBuilder implements Appendable, CharSequence {
 	public StringBuilder append(long value) {
 		return append(value, 0);
 	}
-
+	
 	/**
 	 * Appends the string representation of the specified {@code long} value. The
 	 * {@code long} value is converted to a string without memory allocation.
@@ -923,7 +923,7 @@ public class StringBuilder implements Appendable, CharSequence {
 	public StringBuilder append(long value, int minLength) {
 		return append(value, minLength, '0');
 	}
-
+	
 	/**
 	 * Appends the string representation of the specified {@code long} value. The
 	 * {@code long} value is converted to a string without memory allocation.
@@ -986,7 +986,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		append0(digits[(int) (value % 10L)]);
 		return this;
 	}
-
+	
 	/**
 	 * Appends the string representation of the specified {@code float} value. The
 	 * {@code float} value is converted to a string according to the rule defined by
@@ -999,7 +999,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		append0(Float.toString(f));
 		return this;
 	}
-
+	
 	/**
 	 * Appends the string representation of the specified {@code double} value. The
 	 * {@code double} value is converted to a string according to the rule defined
@@ -1013,7 +1013,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		append0(Double.toString(d));
 		return this;
 	}
-
+	
 	/**
 	 * Appends the string representation of the specified {@code Object}. The
 	 * {@code Object} value is converted to a string according to the rule defined
@@ -1031,7 +1031,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		}
 		return this;
 	}
-
+	
 	/**
 	 * Appends the contents of the specified string. If the string is {@code null},
 	 * then the string {@code "null"} is appended.
@@ -1043,7 +1043,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		append0(str);
 		return this;
 	}
-
+	
 	/**
 	 * Appends the contents of the specified string, then create a new line. If the
 	 * string is {@code null}, then the string {@code "null"} is appended.
@@ -1056,7 +1056,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		append0('\n');
 		return this;
 	}
-
+	
 	/**
 	 * Appends the string representation of the specified {@code char[]}. The
 	 * {@code char[]} is converted to a string according to the rule defined by
@@ -1070,7 +1070,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		append0(ch);
 		return this;
 	}
-
+	
 	/**
 	 * Appends the string representation of the specified subset of the
 	 * {@code char[]}. The {@code char[]} value is converted to a String according
@@ -1088,7 +1088,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		append0(str, offset, len);
 		return this;
 	}
-
+	
 	/**
 	 * Appends the string representation of the specified {@code CharSequence}. If
 	 * the {@code CharSequence} is {@code null}, then the string {@code "null"} is
@@ -1109,7 +1109,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		}
 		return this;
 	}
-
+	
 	public StringBuilder append(StringBuilder builder) {
 		if (builder == null)
 			appendNull();
@@ -1117,7 +1117,7 @@ public class StringBuilder implements Appendable, CharSequence {
 			append0(builder.chars, 0, builder.length);
 		return this;
 	}
-
+	
 	/**
 	 * Appends the string representation of the specified subsequence of the
 	 * {@code CharSequence}. If the {@code CharSequence} is {@code null}, then the
@@ -1137,7 +1137,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		append0(csq, start, end);
 		return this;
 	}
-
+	
 	public StringBuilder append(StringBuilder builder, int start, int end) {
 		if (builder == null)
 			appendNull();
@@ -1145,7 +1145,7 @@ public class StringBuilder implements Appendable, CharSequence {
 			append0(builder.chars, start, end);
 		return this;
 	}
-
+	
 	/**
 	 * Appends the encoded Unicode code point. The code point is converted to a
 	 * {@code char[]} as defined by {@link Character#toChars(int)}.
@@ -1158,7 +1158,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		append0(Character.toChars(codePoint));
 		return this;
 	}
-
+	
 	/**
 	 * Deletes a sequence of characters specified by {@code start} and {@code end}.
 	 * Shifts any remaining characters to the left.
@@ -1174,7 +1174,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		delete0(start, end);
 		return this;
 	}
-
+	
 	/**
 	 * Deletes the character at the specified index. shifts any remaining characters
 	 * to the left.
@@ -1189,7 +1189,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		deleteCharAt0(index);
 		return this;
 	}
-
+	
 	/**
 	 * Inserts the string representation of the specified {@code boolean} value at
 	 * the specified {@code offset}. The {@code boolean} value is converted to a
@@ -1207,7 +1207,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		insert0(offset, b ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
 		return this;
 	}
-
+	
 	/**
 	 * Inserts the string representation of the specified {@code char} value at the
 	 * specified {@code offset}. The {@code char} value is converted to a string
@@ -1224,7 +1224,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		insert0(offset, c);
 		return this;
 	}
-
+	
 	/**
 	 * Inserts the string representation of the specified {@code int} value at the
 	 * specified {@code offset}. The {@code int} value is converted to a String
@@ -1242,7 +1242,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		insert0(offset, Integer.toString(i));
 		return this;
 	}
-
+	
 	/**
 	 * Inserts the string representation of the specified {@code long} value at the
 	 * specified {@code offset}. The {@code long} value is converted to a String
@@ -1260,7 +1260,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		insert0(offset, Long.toString(l));
 		return this;
 	}
-
+	
 	/**
 	 * Inserts the string representation of the specified {@code float} value at the
 	 * specified {@code offset}. The {@code float} value is converted to a string
@@ -1278,7 +1278,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		insert0(offset, Float.toString(f));
 		return this;
 	}
-
+	
 	/**
 	 * Inserts the string representation of the specified {@code double} value at
 	 * the specified {@code offset}. The {@code double} value is converted to a
@@ -1296,7 +1296,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		insert0(offset, Double.toString(d));
 		return this;
 	}
-
+	
 	/**
 	 * Inserts the string representation of the specified {@code Object} at the
 	 * specified {@code offset}. The {@code Object} value is converted to a String
@@ -1314,7 +1314,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		insert0(offset, obj == null ? "null" : obj.toString()); //$NON-NLS-1$
 		return this;
 	}
-
+	
 	/**
 	 * Inserts the specified string at the specified {@code offset}. If the
 	 * specified string is null, then the String {@code "null"} is inserted.
@@ -1330,7 +1330,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		insert0(offset, str);
 		return this;
 	}
-
+	
 	/**
 	 * Inserts the string representation of the specified {@code char[]} at the
 	 * specified {@code offset}. The {@code char[]} value is converted to a String
@@ -1348,7 +1348,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		insert0(offset, ch);
 		return this;
 	}
-
+	
 	/**
 	 * Inserts the string representation of the specified subsequence of the
 	 * {@code char[]} at the specified {@code offset}. The {@code char[]} value is
@@ -1371,7 +1371,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		insert0(offset, str, strOffset, strLen);
 		return this;
 	}
-
+	
 	/**
 	 * Inserts the string representation of the specified {@code CharSequence} at
 	 * the specified {@code offset}. The {@code CharSequence} is converted to a
@@ -1389,7 +1389,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		insert0(offset, s == null ? "null" : s.toString()); //$NON-NLS-1$
 		return this;
 	}
-
+	
 	/**
 	 * Inserts the string representation of the specified subsequence of the
 	 * {@code CharSequence} at the specified {@code offset}. The
@@ -1413,7 +1413,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		insert0(offset, s, start, end);
 		return this;
 	}
-
+	
 	/**
 	 * Replaces the specified subsequence in this builder with the specified string.
 	 * 
@@ -1430,7 +1430,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		replace0(start, end, str);
 		return this;
 	}
-
+	
 	/** Replaces all instances of {@code find} with {@code replace}. */
 	public StringBuilder replace(String find, String replace) {
 		int findLength = find.length(), replaceLength = replace.length();
@@ -1444,7 +1444,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		}
 		return this;
 	}
-
+	
 	/** Replaces all instances of {@code find} with {@code replace}. */
 	public StringBuilder replace(char find, String replace) {
 		int replaceLength = replace.length();
@@ -1461,7 +1461,7 @@ public class StringBuilder implements Appendable, CharSequence {
 			index += replaceLength;
 		}
 	}
-
+	
 	/**
 	 * Reverses the order of characters in this builder.
 	 * 
@@ -1471,7 +1471,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		reverse0();
 		return this;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -1480,7 +1480,7 @@ public class StringBuilder implements Appendable, CharSequence {
 		result = prime * result + Arrays.hashCode(chars);
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

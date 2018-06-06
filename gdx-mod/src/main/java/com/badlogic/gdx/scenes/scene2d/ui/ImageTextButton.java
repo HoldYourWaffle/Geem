@@ -37,37 +37,37 @@ public class ImageTextButton extends Button {
 	private final Image image;
 	private final Label label;
 	private ImageTextButtonStyle style;
-
+	
 	public ImageTextButton(String text, Skin skin) {
 		this(text, skin.get(ImageTextButtonStyle.class));
 		setSkin(skin);
 	}
-
+	
 	public ImageTextButton(String text, Skin skin, String styleName) {
 		this(text, skin.get(styleName, ImageTextButtonStyle.class));
 		setSkin(skin);
 	}
-
+	
 	public ImageTextButton(String text, ImageTextButtonStyle style) {
 		super(style);
 		this.style = style;
-
+		
 		defaults().space(3);
-
+		
 		image = new Image();
 		image.setScaling(Scaling.fit);
-
+		
 		label = new Label(text, new LabelStyle(style.font, style.fontColor));
 		label.setAlignment(Align.center);
-
+		
 		add(image);
 		add(label);
-
+		
 		setStyle(style);
-
+		
 		setSize(getPrefWidth(), getPrefHeight());
 	}
-
+	
 	@Override
 	public void setStyle(ButtonStyle style) {
 		if (!(style instanceof ImageTextButtonStyle))
@@ -84,12 +84,12 @@ public class ImageTextButton extends Button {
 			label.setStyle(labelStyle);
 		}
 	}
-
+	
 	@Override
 	public ImageTextButtonStyle getStyle() {
 		return style;
 	}
-
+	
 	/**
 	 * Updates the Image with the appropriate Drawable from the style before it is
 	 * drawn.
@@ -108,7 +108,7 @@ public class ImageTextButton extends Button {
 			drawable = style.imageUp;
 		image.setDrawable(drawable);
 	}
-
+	
 	@Override
 	public void draw(Batch batch, float a) {
 		updateImage();
@@ -128,31 +128,31 @@ public class ImageTextButton extends Button {
 			label.getStyle().fontColor = fontColor;
 		super.draw(batch, a);
 	}
-
+	
 	public Image getImage() {
 		return image;
 	}
-
+	
 	public Cell getImageCell() {
 		return getCell(image);
 	}
-
+	
 	public Label getLabel() {
 		return label;
 	}
-
+	
 	public Cell getLabelCell() {
 		return getCell(label);
 	}
-
+	
 	public void setText(CharSequence text) {
 		label.setText(text);
 	}
-
+	
 	public CharSequence getText() {
 		return label.getText();
 	}
-
+	
 	/**
 	 * The style for an image text button, see {@link ImageTextButton}.
 	 * 
@@ -161,14 +161,14 @@ public class ImageTextButton extends Button {
 	static public class ImageTextButtonStyle extends TextButtonStyle {
 		/** Optional. */
 		public Drawable imageUp, imageDown, imageOver, imageChecked, imageCheckedOver, imageDisabled;
-
+		
 		public ImageTextButtonStyle() {
 		}
-
+		
 		public ImageTextButtonStyle(Drawable up, Drawable down, Drawable checked, BitmapFont font) {
 			super(up, down, checked, font);
 		}
-
+		
 		public ImageTextButtonStyle(ImageTextButtonStyle style) {
 			super(style);
 			if (style.imageUp != null)
@@ -184,7 +184,7 @@ public class ImageTextButton extends Button {
 			if (style.imageDisabled != null)
 				this.imageDisabled = style.imageDisabled;
 		}
-
+		
 		public ImageTextButtonStyle(TextButtonStyle style) {
 			super(style);
 		}

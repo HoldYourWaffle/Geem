@@ -29,7 +29,7 @@ import java.nio.ByteBuffer;
 public final class StreamUtils {
 	public static final int DEFAULT_BUFFER_SIZE = 4096;
 	public static final byte[] EMPTY_BYTES = new byte[0];
-
+	
 	/**
 	 * Allocates a {@value #DEFAULT_BUFFER_SIZE} byte[] for use as a temporary
 	 * buffer and calls {@link #copyStream(InputStream, OutputStream, byte[])}.
@@ -37,7 +37,7 @@ public final class StreamUtils {
 	public static void copyStream(InputStream input, OutputStream output) throws IOException {
 		copyStream(input, output, new byte[DEFAULT_BUFFER_SIZE]);
 	}
-
+	
 	/**
 	 * Allocates a byte[] of the specified size for use as a temporary buffer and
 	 * calls {@link #copyStream(InputStream, OutputStream, byte[])}.
@@ -45,7 +45,7 @@ public final class StreamUtils {
 	public static void copyStream(InputStream input, OutputStream output, int bufferSize) throws IOException {
 		copyStream(input, output, new byte[bufferSize]);
 	}
-
+	
 	/**
 	 * Copy the data from an {@link InputStream} to an {@link OutputStream}, using
 	 * the specified byte[] as a temporary buffer. The stream is not closed.
@@ -56,7 +56,7 @@ public final class StreamUtils {
 			output.write(buffer, 0, bytesRead);
 		}
 	}
-
+	
 	/**
 	 * Allocates a {@value #DEFAULT_BUFFER_SIZE} byte[] for use as a temporary
 	 * buffer and calls {@link #copyStream(InputStream, OutputStream, byte[])}.
@@ -64,7 +64,7 @@ public final class StreamUtils {
 	public static void copyStream(InputStream input, ByteBuffer output) throws IOException {
 		copyStream(input, output, new byte[DEFAULT_BUFFER_SIZE]);
 	}
-
+	
 	/**
 	 * Allocates a byte[] of the specified size for use as a temporary buffer and
 	 * calls {@link #copyStream(InputStream, ByteBuffer, byte[])}.
@@ -72,7 +72,7 @@ public final class StreamUtils {
 	public static void copyStream(InputStream input, ByteBuffer output, int bufferSize) throws IOException {
 		copyStream(input, output, new byte[bufferSize]);
 	}
-
+	
 	/**
 	 * Copy the data from an {@link InputStream} to a {@link ByteBuffer}, using the
 	 * specified byte[] as a temporary buffer. The buffer's limit is increased by
@@ -94,7 +94,7 @@ public final class StreamUtils {
 		output.position(startPosition);
 		return total;
 	}
-
+	
 	/**
 	 * Copy the data from an {@link InputStream} to a byte array. The stream is not
 	 * closed.
@@ -102,7 +102,7 @@ public final class StreamUtils {
 	public static byte[] copyStreamToByteArray(InputStream input) throws IOException {
 		return copyStreamToByteArray(input, input.available());
 	}
-
+	
 	/**
 	 * Copy the data from an {@link InputStream} to a byte array. The stream is not
 	 * closed.
@@ -115,7 +115,7 @@ public final class StreamUtils {
 		copyStream(input, baos);
 		return baos.toByteArray();
 	}
-
+	
 	/**
 	 * Calls {@link #copyStreamToString(InputStream, int, String)} using the input's
 	 * {@link InputStream#available() available} size and the platform's default
@@ -124,7 +124,7 @@ public final class StreamUtils {
 	public static String copyStreamToString(InputStream input) throws IOException {
 		return copyStreamToString(input, input.available(), null);
 	}
-
+	
 	/**
 	 * Calls {@link #copyStreamToString(InputStream, int, String)} using the
 	 * platform's default charset.
@@ -132,7 +132,7 @@ public final class StreamUtils {
 	public static String copyStreamToString(InputStream input, int estimatedSize) throws IOException {
 		return copyStreamToString(input, estimatedSize, null);
 	}
-
+	
 	/**
 	 * Copy the data from an {@link InputStream} to a string using the specified
 	 * charset.
@@ -152,7 +152,7 @@ public final class StreamUtils {
 		}
 		return writer.toString();
 	}
-
+	
 	/** Close and ignore all errors. */
 	public static void closeQuietly(Closeable c) {
 		if (c != null) {
@@ -162,7 +162,7 @@ public final class StreamUtils {
 			}
 		}
 	}
-
+	
 	/**
 	 * A ByteArrayOutputStream which avoids copying of the byte array if possible.
 	 */
@@ -170,14 +170,14 @@ public final class StreamUtils {
 		public OptimizedByteArrayOutputStream(int initialSize) {
 			super(initialSize);
 		}
-
+		
 		@Override
 		public synchronized byte[] toByteArray() {
 			if (count == buf.length)
 				return buf;
 			return super.toByteArray();
 		}
-
+		
 		public byte[] getBuffer() {
 			return buf;
 		}

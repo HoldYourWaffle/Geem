@@ -32,21 +32,21 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
  */
 public class Tooltip<T extends Actor> extends InputListener {
 	static Vector2 tmp = new Vector2();
-
+	
 	private final TooltipManager manager;
 	final Container<T> container;
 	boolean instant, always;
 	Actor targetActor;
-
+	
 	/** @param contents May be null. */
 	public Tooltip(T contents) {
 		this(contents, TooltipManager.getInstance());
 	}
-
+	
 	/** @param contents May be null. */
 	public Tooltip(T contents, TooltipManager manager) {
 		this.manager = manager;
-
+		
 		container = new Container(contents) {
 			@Override
 			public void act(float delta) {
@@ -57,28 +57,28 @@ public class Tooltip<T extends Actor> extends InputListener {
 		};
 		container.setTouchable(Touchable.disabled);
 	}
-
+	
 	public TooltipManager getManager() {
 		return manager;
 	}
-
+	
 	public Container<T> getContainer() {
 		return container;
 	}
-
+	
 	public void setActor(T contents) {
 		container.setActor(contents);
 	}
-
+	
 	public T getActor() {
 		return container.getActor();
 	}
-
+	
 	/** If true, this tooltip is shown without delay when hovered. */
 	public void setInstant(boolean instant) {
 		this.instant = instant;
 	}
-
+	
 	/**
 	 * If true, this tooltip is shown even when tooltips are not
 	 * {@link TooltipManager#enabled}.
@@ -86,7 +86,7 @@ public class Tooltip<T extends Actor> extends InputListener {
 	public void setAlways(boolean always) {
 		this.always = always;
 	}
-
+	
 	@Override
 	public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 		if (instant) {
@@ -96,7 +96,7 @@ public class Tooltip<T extends Actor> extends InputListener {
 		manager.touchDown(this);
 		return false;
 	}
-
+	
 	@Override
 	public boolean mouseMoved(InputEvent event, float x, float y) {
 		if (container.hasParent())
@@ -104,13 +104,13 @@ public class Tooltip<T extends Actor> extends InputListener {
 		setContainerPosition(event.getListenerActor(), x, y);
 		return true;
 	}
-
+	
 	private void setContainerPosition(Actor actor, float x, float y) {
 		this.targetActor = actor;
 		Stage stage = actor.getStage();
 		if (stage == null)
 			return;
-
+		
 		container.pack();
 		float offsetX = manager.offsetX, offsetY = manager.offsetY, dist = manager.edgeDistance;
 		Vector2 point = actor.localToStageCoordinates(tmp.set(x + offsetX, y - offsetY - container.getHeight()));
@@ -123,12 +123,12 @@ public class Tooltip<T extends Actor> extends InputListener {
 		if (point.y + container.getHeight() > stage.getHeight() - dist)
 			point.y = stage.getHeight() - dist - container.getHeight();
 		container.setPosition(point.x, point.y);
-
+		
 		point = actor.localToStageCoordinates(tmp.set(actor.getWidth() / 2, actor.getHeight() / 2));
 		point.sub(container.getX(), container.getY());
 		container.setOrigin(point.x, point.y);
 	}
-
+	
 	@Override
 	public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
 		if (pointer != -1)
@@ -141,14 +141,14 @@ public class Tooltip<T extends Actor> extends InputListener {
 		setContainerPosition(actor, x, y);
 		manager.enter(this);
 	}
-
+	
 	@Override
 	public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
 		if (toActor != null && toActor.isDescendantOf(event.getListenerActor()))
 			return;
 		hide();
 	}
-
+	
 	public void hide() {
 		manager.hide(this);
 	}

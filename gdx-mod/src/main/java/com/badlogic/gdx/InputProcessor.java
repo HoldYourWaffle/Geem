@@ -36,7 +36,7 @@ public interface InputProcessor {
 	 * @return whether the input was processed
 	 */
 	public boolean keyDown(int keycode);
-
+	
 	/**
 	 * Called when a key was released
 	 * 
@@ -44,7 +44,7 @@ public interface InputProcessor {
 	 * @return whether the input was processed
 	 */
 	public boolean keyUp(int keycode);
-
+	
 	/**
 	 * Called when a key was typed
 	 * 
@@ -52,7 +52,7 @@ public interface InputProcessor {
 	 * @return whether the input was processed
 	 */
 	public boolean keyTyped(char character);
-
+	
 	/**
 	 * Called when the screen was touched or a mouse button was pressed. The button
 	 * parameter will be {@link Buttons#LEFT} on iOS.
@@ -64,7 +64,7 @@ public interface InputProcessor {
 	 * @return whether the input was processed
 	 */
 	public boolean touchDown(int screenX, int screenY, int pointer, int button);
-
+	
 	/**
 	 * Called when a finger was lifted or a mouse button was released. The button
 	 * parameter will be {@link Buttons#LEFT} on iOS.
@@ -74,7 +74,7 @@ public interface InputProcessor {
 	 * @return whether the input was processed
 	 */
 	public boolean touchUp(int screenX, int screenY, int pointer, int button);
-
+	
 	/**
 	 * Called when a finger or the mouse was dragged.
 	 * 
@@ -82,7 +82,7 @@ public interface InputProcessor {
 	 * @return whether the input was processed
 	 */
 	public boolean touchDragged(int screenX, int screenY, int pointer);
-
+	
 	/**
 	 * Called when the mouse was moved without any buttons being pressed. Will not
 	 * be called on iOS.
@@ -90,7 +90,7 @@ public interface InputProcessor {
 	 * @return whether the input was processed
 	 */
 	public boolean mouseMoved(int screenX, int screenY);
-
+	
 	/**
 	 * Called when the mouse wheel was scrolled. Will not be called on iOS.
 	 * 

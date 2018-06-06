@@ -24,12 +24,12 @@ package com.badlogic.gdx.utils;
  * @author jshapcott
  */
 public class Bits {
-
+	
 	long[] bits = { 0 };
-
+	
 	public Bits() {
 	}
-
+	
 	/**
 	 * Creates a bit set whose initial size is large enough to explicitly represent
 	 * bits with indices in the range 0 through nbits-1.
@@ -39,7 +39,7 @@ public class Bits {
 	public Bits(int nbits) {
 		checkCapacity(nbits >>> 6);
 	}
-
+	
 	/**
 	 * @param index the index of the bit
 	 * @return whether the bit is set
@@ -51,7 +51,7 @@ public class Bits {
 			return false;
 		return (bits[word] & (1L << (index & 0x3F))) != 0L;
 	}
-
+	
 	/**
 	 * Returns the bit at the given index and clears it in one go.
 	 * 
@@ -67,7 +67,7 @@ public class Bits {
 		bits[word] &= ~(1L << (index & 0x3F));
 		return bits[word] != oldBits;
 	}
-
+	
 	/**
 	 * Returns the bit at the given index and sets it in one go.
 	 * 
@@ -82,7 +82,7 @@ public class Bits {
 		bits[word] |= 1L << (index & 0x3F);
 		return bits[word] == oldBits;
 	}
-
+	
 	/**
 	 * @param index the index of the bit to set
 	 * @throws ArrayIndexOutOfBoundsException if index < 0
@@ -92,14 +92,14 @@ public class Bits {
 		checkCapacity(word);
 		bits[word] |= 1L << (index & 0x3F);
 	}
-
+	
 	/** @param index the index of the bit to flip */
 	public void flip(int index) {
 		final int word = index >>> 6;
 		checkCapacity(word);
 		bits[word] ^= 1L << (index & 0x3F);
 	}
-
+	
 	private void checkCapacity(int len) {
 		if (len >= bits.length) {
 			long[] newBits = new long[len + 1];
@@ -107,7 +107,7 @@ public class Bits {
 			bits = newBits;
 		}
 	}
-
+	
 	/**
 	 * @param index the index of the bit to clear
 	 * @throws ArrayIndexOutOfBoundsException if index < 0
@@ -118,7 +118,7 @@ public class Bits {
 			return;
 		bits[word] &= ~(1L << (index & 0x3F));
 	}
-
+	
 	/** Clears the entire bitset */
 	public void clear() {
 		long[] bits = this.bits;
@@ -127,14 +127,14 @@ public class Bits {
 			bits[i] = 0L;
 		}
 	}
-
+	
 	/**
 	 * @return the number of bits currently stored, <b>not</b> the highset set bit!
 	 */
 	public int numBits() {
 		return bits.length << 6;
 	}
-
+	
 	/**
 	 * Returns the "logical size" of this bitset: the index of the highest set bit
 	 * in the bitset plus one. Returns zero if the bitset contains no set bits.
@@ -155,7 +155,7 @@ public class Bits {
 		}
 		return 0;
 	}
-
+	
 	/** @return true if this bitset contains no bits that are set to true */
 	public boolean isEmpty() {
 		long[] bits = this.bits;
@@ -167,7 +167,7 @@ public class Bits {
 		}
 		return true;
 	}
-
+	
 	/**
 	 * Returns the index of the first bit that is set to true that occurs on or
 	 * after the specified starting index. If no such bit exists then -1 is
@@ -201,7 +201,7 @@ public class Bits {
 		}
 		return -1;
 	}
-
+	
 	/**
 	 * Returns the index of the first bit that is set to false that occurs on or
 	 * after the specified starting index.
@@ -231,7 +231,7 @@ public class Bits {
 		}
 		return bits.length << 6;
 	}
-
+	
 	/**
 	 * Performs a logical <b>AND</b> of this target bit set with the argument bit
 	 * set. This bit set is modified so that each bit in it has the value true if
@@ -245,14 +245,14 @@ public class Bits {
 		for (int i = 0; commonWords > i; i++) {
 			bits[i] &= other.bits[i];
 		}
-
+		
 		if (bits.length > commonWords) {
 			for (int i = commonWords, s = bits.length; s > i; i++) {
 				bits[i] = 0L;
 			}
 		}
 	}
-
+	
 	/**
 	 * Clears all of the bits in this bit set whose corresponding bit is set in the
 	 * specified bit set.
@@ -264,7 +264,7 @@ public class Bits {
 			bits[i] &= ~other.bits[i];
 		}
 	}
-
+	
 	/**
 	 * Performs a logical <b>OR</b> of this bit set with the bit set argument. This
 	 * bit set is modified so that a bit in it has the value true if and only if it
@@ -278,7 +278,7 @@ public class Bits {
 		for (int i = 0; commonWords > i; i++) {
 			bits[i] |= other.bits[i];
 		}
-
+		
 		if (commonWords < other.bits.length) {
 			checkCapacity(other.bits.length);
 			for (int i = commonWords, s = other.bits.length; s > i; i++) {
@@ -286,7 +286,7 @@ public class Bits {
 			}
 		}
 	}
-
+	
 	/**
 	 * Performs a logical <b>XOR</b> of this bit set with the bit set argument. This
 	 * bit set is modified so that a bit in it has the value true if and only if one
@@ -302,11 +302,11 @@ public class Bits {
 	 */
 	public void xor(Bits other) {
 		int commonWords = Math.min(bits.length, other.bits.length);
-
+		
 		for (int i = 0; commonWords > i; i++) {
 			bits[i] ^= other.bits[i];
 		}
-
+		
 		if (commonWords < other.bits.length) {
 			checkCapacity(other.bits.length);
 			for (int i = commonWords, s = other.bits.length; s > i; i++) {
@@ -314,7 +314,7 @@ public class Bits {
 			}
 		}
 	}
-
+	
 	/**
 	 * Returns true if the specified BitSet has any bits set to true that are also
 	 * set to true in this BitSet.
@@ -333,7 +333,7 @@ public class Bits {
 		}
 		return false;
 	}
-
+	
 	/**
 	 * Returns true if this bit set is a super set of the specified set, i.e. it has
 	 * all bits set to true that are also set to true in the specified BitSet.
@@ -347,7 +347,7 @@ public class Bits {
 		long[] otherBits = other.bits;
 		int otherBitsLength = otherBits.length;
 		int bitsLength = bits.length;
-
+		
 		for (int i = bitsLength; i < otherBitsLength; i++) {
 			if (otherBits[i] != 0) {
 				return false;
@@ -360,7 +360,7 @@ public class Bits {
 		}
 		return true;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int word = length() >>> 6;
@@ -370,7 +370,7 @@ public class Bits {
 		}
 		return hash;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -379,19 +379,19 @@ public class Bits {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-
+		
 		Bits other = (Bits) obj;
 		long[] otherBits = other.bits;
-
+		
 		int commonWords = Math.min(bits.length, otherBits.length);
 		for (int i = 0; commonWords > i; i++) {
 			if (bits[i] != otherBits[i])
 				return false;
 		}
-
+		
 		if (bits.length == otherBits.length)
 			return true;
-
+		
 		return length() == other.length();
 	}
 }

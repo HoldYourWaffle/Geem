@@ -30,7 +30,7 @@ import com.badlogic.gdx.math.Vector2;
  * 		Gdx.app.log(&quot;Example&quot;, &quot;touch started at (&quot; + x + &quot;, &quot; + y + &quot;)&quot;);
  * 		return false;
  * 	}
- * 
+ * 	
  * 	public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
  * 		Gdx.app.log(&quot;Example&quot;, &quot;touch done at (&quot; + x + &quot;, &quot; + y + &quot;)&quot;);
  * 	}
@@ -39,13 +39,13 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class InputListener implements EventListener {
 	static private final Vector2 tmpCoords = new Vector2();
-
+	
 	@Override
 	public boolean handle(Event e) {
 		if (!(e instanceof InputEvent))
 			return false;
 		InputEvent event = (InputEvent) e;
-
+		
 		switch (event.getType()) {
 		case keyDown:
 			return keyDown(event, event.getKeyCode());
@@ -54,9 +54,9 @@ public class InputListener implements EventListener {
 		case keyTyped:
 			return keyTyped(event, event.getCharacter());
 		}
-
+		
 		event.toCoordinates(event.getListenerActor(), tmpCoords);
-
+		
 		switch (event.getType()) {
 		case touchDown:
 			return touchDown(event, tmpCoords.x, tmpCoords.y, event.getPointer(), event.getButton());
@@ -79,7 +79,7 @@ public class InputListener implements EventListener {
 		}
 		return false;
 	}
-
+	
 	/**
 	 * Called when a mouse button or a finger touch goes down on the actor. If true
 	 * is returned, this listener will receive all touchDragged and touchUp events,
@@ -91,7 +91,7 @@ public class InputListener implements EventListener {
 	public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 		return false;
 	}
-
+	
 	/**
 	 * Called when a mouse button or a finger touch goes up anywhere, but only if
 	 * touchDown previously returned true for the mouse button or touch. The touchUp
@@ -101,7 +101,7 @@ public class InputListener implements EventListener {
 	 */
 	public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 	}
-
+	
 	/**
 	 * Called when a mouse button or a finger touch is moved anywhere, but only if
 	 * touchDown previously returned true for the mouse button or touch. The
@@ -111,7 +111,7 @@ public class InputListener implements EventListener {
 	 */
 	public void touchDragged(InputEvent event, float x, float y, int pointer) {
 	}
-
+	
 	/**
 	 * Called any time the mouse is moved when a button is not down. This event only
 	 * occurs on the desktop. When true is returned, the event is
@@ -122,7 +122,7 @@ public class InputListener implements EventListener {
 	public boolean mouseMoved(InputEvent event, float x, float y) {
 		return false;
 	}
-
+	
 	/**
 	 * Called any time the mouse cursor or a finger touch is moved over an actor. On
 	 * the desktop, this event occurs even when no mouse buttons are pressed
@@ -133,7 +133,7 @@ public class InputListener implements EventListener {
 	 */
 	public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
 	}
-
+	
 	/**
 	 * Called any time the mouse cursor or a finger touch is moved out of an actor.
 	 * On the desktop, this event occurs even when no mouse buttons are pressed
@@ -144,7 +144,7 @@ public class InputListener implements EventListener {
 	 */
 	public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
 	}
-
+	
 	/**
 	 * Called when the mouse wheel has been scrolled. When true is returned, the
 	 * event is {@link Event#handle() handled}.
@@ -152,7 +152,7 @@ public class InputListener implements EventListener {
 	public boolean scrolled(InputEvent event, float x, float y, int amount) {
 		return false;
 	}
-
+	
 	/**
 	 * Called when a key goes down. When true is returned, the event is
 	 * {@link Event#handle() handled}.
@@ -160,7 +160,7 @@ public class InputListener implements EventListener {
 	public boolean keyDown(InputEvent event, int keycode) {
 		return false;
 	}
-
+	
 	/**
 	 * Called when a key goes up. When true is returned, the event is
 	 * {@link Event#handle() handled}.
@@ -168,7 +168,7 @@ public class InputListener implements EventListener {
 	public boolean keyUp(InputEvent event, int keycode) {
 		return false;
 	}
-
+	
 	/**
 	 * Called when a key is typed. When true is returned, the event is
 	 * {@link Event#handle() handled}.

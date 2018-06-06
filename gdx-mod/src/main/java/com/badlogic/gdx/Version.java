@@ -28,16 +28,16 @@ public class Version {
 	 * the current version of libgdx as a String in the major.minor.revision format
 	 **/
 	public static final String VERSION = "1.9.9";
-
+	
 	/** the current major version of libgdx **/
 	public static final int MAJOR;
-
+	
 	/** the current minor version of libgdx **/
 	public static final int MINOR;
-
+	
 	/** the current revision version of libgdx **/
 	public static final int REVISION;
-
+	
 	static {
 		try {
 			String[] v = VERSION.split("\\.");
@@ -49,11 +49,11 @@ public class Version {
 			throw new GdxRuntimeException("Invalid version " + VERSION, t);
 		}
 	}
-
+	
 	public static boolean isHigher(int major, int minor, int revision) {
 		return isHigherEqual(major, minor, revision + 1);
 	}
-
+	
 	public static boolean isHigherEqual(int major, int minor, int revision) {
 		if (MAJOR != major)
 			return MAJOR > major;
@@ -61,11 +61,11 @@ public class Version {
 			return MINOR > minor;
 		return REVISION >= revision;
 	}
-
+	
 	public static boolean isLower(int major, int minor, int revision) {
 		return isLowerEqual(major, minor, revision - 1);
 	}
-
+	
 	public static boolean isLowerEqual(int major, int minor, int revision) {
 		if (MAJOR != major)
 			return MAJOR < major;
@@ -73,5 +73,5 @@ public class Version {
 			return MINOR < minor;
 		return REVISION <= revision;
 	}
-
+	
 }

@@ -29,7 +29,7 @@ public class PolygonRegion {
 	final float[] vertices; // pixel coordinates relative to source image.
 	final short[] triangles;
 	final TextureRegion region;
-
+	
 	/**
 	 * Creates a PolygonRegion by triangulating the polygon coordinates in vertices
 	 * and calculates uvs based on that. TextureRegion can come from an atlas.
@@ -42,7 +42,7 @@ public class PolygonRegion {
 		this.region = region;
 		this.vertices = vertices;
 		this.triangles = triangles;
-
+		
 		float[] textureCoords = this.textureCoords = new float[vertices.length];
 		float u = region.u, v = region.v;
 		float uvWidth = region.u2 - u;
@@ -54,20 +54,20 @@ public class PolygonRegion {
 			textureCoords[i + 1] = v + uvHeight * (1 - (vertices[i + 1] / height));
 		}
 	}
-
+	
 	/** Returns the vertices in local space. */
 	public float[] getVertices() {
 		return vertices;
 	}
-
+	
 	public short[] getTriangles() {
 		return triangles;
 	}
-
+	
 	public float[] getTextureCoords() {
 		return textureCoords;
 	}
-
+	
 	public TextureRegion getRegion() {
 		return region;
 	}

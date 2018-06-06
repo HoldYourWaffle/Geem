@@ -25,21 +25,21 @@ import com.badlogic.gdx.scenes.scene2d.Action;
  */
 public class RemoveAction extends Action {
 	private Action action;
-
+	
 	@Override
 	public boolean act(float delta) {
 		target.removeAction(action);
 		return true;
 	}
-
+	
 	public Action getAction() {
 		return action;
 	}
-
+	
 	public void setAction(Action action) {
 		this.action = action;
 	}
-
+	
 	@Override
 	public void reset() {
 		super.reset();

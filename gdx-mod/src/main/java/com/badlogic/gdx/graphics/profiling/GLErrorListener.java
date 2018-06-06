@@ -28,16 +28,16 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author Jan Polák
  */
 public interface GLErrorListener {
-
+	
 	/**
 	 * Put your error logging code here.
 	 * 
 	 * @see GLInterceptor#resolveErrorNumber(int)
 	 */
 	public void onError(int error);
-
+	
 	// Basic implementations
-
+	
 	/** Listener that will log using Gdx.app.error GL error name and GL function. */
 	public static final GLErrorListener LOGGING_LISTENER = error -> {
 		String place = null;
@@ -54,7 +54,7 @@ public interface GLErrorListener {
 			}
 		} catch (Exception ignored) {
 		}
-
+		
 		if (place != null) {
 			Gdx.app.error("GLProfiler", "Error " + resolveErrorNumber(error) + " from " + place);
 		} else {
@@ -62,7 +62,7 @@ public interface GLErrorListener {
 			// This will capture current stack trace for logging, if possible
 		}
 	};
-
+	
 	/** Listener that will throw a GdxRuntimeException with error name. */
 	public static final GLErrorListener THROWING_LISTENER = error -> {
 		throw new GdxRuntimeException("GLProfiler: Got GL error " + resolveErrorNumber(error));

@@ -35,10 +35,10 @@ import com.badlogic.gdx.utils.StreamUtils;
  * @author Vincent Bousquet
  */
 public class KTXTextureData implements TextureData, CubemapData {
-
+	
 	// The file we are loading
 	private FileHandle file;
-
+	
 	// KTX header (only available after preparing)
 	private int glType;
 	private int glTypeSize;
@@ -52,28 +52,28 @@ public class KTXTextureData implements TextureData, CubemapData {
 	private int numberOfFaces;
 	private int numberOfMipmapLevels;
 	private int imagePos;
-
+	
 	// KTX image data (only available after preparing and before consuming)
 	private ByteBuffer compressedData;
-
+	
 	// Whether to generate mipmaps if they are not included in the file
 	private boolean useMipMaps;
-
+	
 	public KTXTextureData(FileHandle file, boolean genMipMaps) {
 		this.file = file;
 		this.useMipMaps = genMipMaps;
 	}
-
+	
 	@Override
 	public TextureDataType getType() {
 		return TextureDataType.Custom;
 	}
-
+	
 	@Override
 	public boolean isPrepared() {
 		return compressedData != null;
 	}
-
+	
 	@Override
 	public void prepare() {
 		if (compressedData != null)
@@ -164,23 +164,23 @@ public class KTXTextureData implements TextureData, CubemapData {
 			compressedData = directBuffer;
 		}
 	}
-
+	
 	private static final int GL_TEXTURE_1D = 0x1234;
 	private static final int GL_TEXTURE_3D = 0x1234;
 	private static final int GL_TEXTURE_1D_ARRAY_EXT = 0x1234;
 	private static final int GL_TEXTURE_2D_ARRAY_EXT = 0x1234;
-
+	
 	@Override
 	public void consumeCubemapData() {
 		consumeCustomData(GL20.GL_TEXTURE_CUBE_MAP);
 	}
-
+	
 	@Override
 	public void consumeCustomData(int target) {
 		if (compressedData == null)
 			throw new GdxRuntimeException("Call prepare() before calling consumeCompressedData()");
 		IntBuffer buffer = BufferUtils.newIntBuffer(16);
-
+		
 		// Check OpenGL type and format, detect compressed data format (no type &
 		// format)
 		boolean compressed = false;
@@ -189,7 +189,7 @@ public class KTXTextureData implements TextureData, CubemapData {
 				throw new GdxRuntimeException("either both or none of glType, glFormat must be zero");
 			compressed = true;
 		}
-
+		
 		// find OpenGL texture target and dimensions
 		int textureDimensions = 1;
 		int glTarget = GL_TEXTURE_1D;
@@ -221,7 +221,7 @@ public class KTXTextureData implements TextureData, CubemapData {
 		if (glTarget == 0x1234)
 			throw new GdxRuntimeException(
 					"Unsupported texture format (only 2D texture are supported in LibGdx for the time being)");
-
+		
 		int singleFace = -1;
 		if (numberOfFaces == 6 && target != GL20.GL_TEXTURE_CUBE_MAP) {
 			// Load a single face of the cube (should be avoided since the data is unloaded
@@ -241,7 +241,7 @@ public class KTXTextureData implements TextureData, CubemapData {
 				throw new GdxRuntimeException("Invalid target requested : 0x" + Integer.toHexString(target)
 						+ ", expecting : 0x" + Integer.toHexString(glTarget));
 		}
-
+		
 		// KTX files require an unpack alignment of 4
 		Gdx.gl.glGetIntegerv(GL20.GL_UNPACK_ALIGNMENT, buffer);
 		int previousUnpackAlignment = buffer.get(0);
@@ -315,49 +315,49 @@ public class KTXTextureData implements TextureData, CubemapData {
 			Gdx.gl.glPixelStorei(GL20.GL_UNPACK_ALIGNMENT, previousUnpackAlignment);
 		if (useMipMaps())
 			Gdx.gl.glGenerateMipmap(target);
-
+		
 		// dispose data once transfered to GPU
 		disposePreparedData();
 	}
-
+	
 	public void disposePreparedData() {
 		if (compressedData != null)
 			BufferUtils.disposeUnsafeByteBuffer(compressedData);
 		compressedData = null;
 	}
-
+	
 	@Override
 	public Pixmap consumePixmap() {
 		throw new GdxRuntimeException("This TextureData implementation does not return a Pixmap");
 	}
-
+	
 	@Override
 	public boolean disposePixmap() {
 		throw new GdxRuntimeException("This TextureData implementation does not return a Pixmap");
 	}
-
+	
 	@Override
 	public int getWidth() {
 		return pixelWidth;
 	}
-
+	
 	@Override
 	public int getHeight() {
 		return pixelHeight;
 	}
-
+	
 	public int getNumberOfMipMapLevels() {
 		return numberOfMipmapLevels;
 	}
-
+	
 	public int getNumberOfFaces() {
 		return numberOfFaces;
 	}
-
+	
 	public int getGlInternalFormat() {
 		return glInternalFormat;
 	}
-
+	
 	public ByteBuffer getData(int requestedLevel, int requestedFace) {
 		int pos = imagePos;
 		for (int level = 0; level < numberOfMipmapLevels; level++) {
@@ -380,20 +380,20 @@ public class KTXTextureData implements TextureData, CubemapData {
 		}
 		return null;
 	}
-
+	
 	@Override
 	public Format getFormat() {
 		throw new GdxRuntimeException("This TextureData implementation directly handles texture formats.");
 	}
-
+	
 	@Override
 	public boolean useMipMaps() {
 		return useMipMaps;
 	}
-
+	
 	@Override
 	public boolean isManaged() {
 		return true;
 	}
-
+	
 }

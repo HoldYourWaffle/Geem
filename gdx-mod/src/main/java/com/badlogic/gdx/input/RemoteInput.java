@@ -52,42 +52,42 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class RemoteInput implements Runnable, Input {
 	public interface RemoteInputListener {
 		void onConnected();
-
+		
 		void onDisconnected();
 	}
-
+	
 	class KeyEvent {
 		static final int KEY_DOWN = 0;
 		static final int KEY_UP = 1;
 		static final int KEY_TYPED = 2;
-
+		
 		long timeStamp;
 		int type;
 		int keyCode;
 		char keyChar;
 	}
-
+	
 	class TouchEvent {
 		static final int TOUCH_DOWN = 0;
 		static final int TOUCH_UP = 1;
 		static final int TOUCH_DRAGGED = 2;
-
+		
 		long timeStamp;
 		int type;
 		int x;
 		int y;
 		int pointer;
 	}
-
+	
 	class EventTrigger implements Runnable {
 		TouchEvent touchEvent;
 		KeyEvent keyEvent;
-
+		
 		public EventTrigger(TouchEvent touchEvent, KeyEvent keyEvent) {
 			this.touchEvent = touchEvent;
 			this.keyEvent = keyEvent;
 		}
-
+		
 		@Override
 		public void run() {
 			justTouched = false;
@@ -97,7 +97,7 @@ public class RemoteInput implements Runnable, Input {
 					justPressedKeys[i] = false;
 				}
 			}
-
+			
 			if (processor != null) {
 				if (touchEvent != null) {
 					switch (touchEvent.type) {
@@ -187,7 +187,7 @@ public class RemoteInput implements Runnable, Input {
 			}
 		}
 	}
-
+	
 	public static int DEFAULT_PORT = 8190;
 	private ServerSocket serverSocket;
 	private float[] accel = new float[3];
@@ -211,19 +211,19 @@ public class RemoteInput implements Runnable, Input {
 	InputProcessor processor = null;
 	private final int port;
 	public final String[] ips;
-
+	
 	public RemoteInput() {
 		this(DEFAULT_PORT);
 	}
-
+	
 	public RemoteInput(RemoteInputListener listener) {
 		this(DEFAULT_PORT, listener);
 	}
-
+	
 	public RemoteInput(int port) {
 		this(port, null);
 	}
-
+	
 	public RemoteInput(int port, RemoteInputListener listener) {
 		this.listener = listener;
 		try {
@@ -241,7 +241,7 @@ public class RemoteInput implements Runnable, Input {
 			throw new GdxRuntimeException("Couldn't open listening socket at port '" + port + "'", e);
 		}
 	}
-
+	
 	@Override
 	public void run() {
 		while (true) {
@@ -249,17 +249,17 @@ public class RemoteInput implements Runnable, Input {
 				connected = false;
 				if (listener != null)
 					listener.onDisconnected();
-
+				
 				System.out.println("listening, port " + port);
 				Socket socket = null;
-
+				
 				socket = serverSocket.accept();
 				socket.setTcpNoDelay(true);
 				socket.setSoTimeout(3000);
 				connected = true;
 				if (listener != null)
 					listener.onConnected();
-
+				
 				DataInputStream in = new DataInputStream(socket.getInputStream());
 				multiTouch = in.readBoolean();
 				while (true) {
@@ -323,7 +323,7 @@ public class RemoteInput implements Runnable, Input {
 						touchEvent.type = TouchEvent.TOUCH_DRAGGED;
 						break;
 					}
-
+					
 					Gdx.app.postRunnable(new EventTrigger(touchEvent, keyEvent));
 				}
 			} catch (IOException e) {
@@ -331,76 +331,76 @@ public class RemoteInput implements Runnable, Input {
 			}
 		}
 	}
-
+	
 	public boolean isConnected() {
 		return connected;
 	}
-
+	
 	@Override
 	public float getAccelerometerX() {
 		return accel[0];
 	}
-
+	
 	@Override
 	public float getAccelerometerY() {
 		return accel[1];
 	}
-
+	
 	@Override
 	public float getAccelerometerZ() {
 		return accel[2];
 	}
-
+	
 	@Override
 	public float getGyroscopeX() {
 		return gyrate[0];
 	}
-
+	
 	@Override
 	public float getGyroscopeY() {
 		return gyrate[1];
 	}
-
+	
 	@Override
 	public float getGyroscopeZ() {
 		return gyrate[2];
 	}
-
+	
 	@Override
 	public int getX() {
 		return touchX[0];
 	}
-
+	
 	@Override
 	public int getX(int pointer) {
 		return touchX[pointer];
 	}
-
+	
 	@Override
 	public int getY() {
 		return touchY[0];
 	}
-
+	
 	@Override
 	public int getY(int pointer) {
 		return touchY[pointer];
 	}
-
+	
 	@Override
 	public boolean isTouched() {
 		return isTouched[0];
 	}
-
+	
 	@Override
 	public boolean justTouched() {
 		return justTouched;
 	}
-
+	
 	@Override
 	public boolean isTouched(int pointer) {
 		return isTouched[pointer];
 	}
-
+	
 	@Override
 	public boolean isButtonPressed(int button) {
 		if (button != Buttons.LEFT)
@@ -410,7 +410,7 @@ public class RemoteInput implements Runnable, Input {
 				return true;
 		return false;
 	}
-
+	
 	@Override
 	public boolean isKeyPressed(int key) {
 		if (key == Input.Keys.ANY_KEY) {
@@ -421,7 +421,7 @@ public class RemoteInput implements Runnable, Input {
 		}
 		return keys[key];
 	}
-
+	
 	@Override
 	public boolean isKeyJustPressed(int key) {
 		if (key == Input.Keys.ANY_KEY) {
@@ -432,76 +432,76 @@ public class RemoteInput implements Runnable, Input {
 		}
 		return justPressedKeys[key];
 	}
-
+	
 	@Override
 	public void getTextInput(TextInputListener listener, String title, String text, String hint) {
 		Gdx.app.getInput().getTextInput(listener, title, text, hint);
 	}
-
+	
 	@Override
 	public void setOnscreenKeyboardVisible(boolean visible) {
 	}
-
+	
 	@Override
 	public void vibrate(int milliseconds) {
-
+		
 	}
-
+	
 	@Override
 	public void vibrate(long[] pattern, int repeat) {
-
+		
 	}
-
+	
 	@Override
 	public void cancelVibrate() {
-
+		
 	}
-
+	
 	@Override
 	public float getAzimuth() {
 		return compass[0];
 	}
-
+	
 	@Override
 	public float getPitch() {
 		return compass[1];
 	}
-
+	
 	@Override
 	public float getRoll() {
 		return compass[2];
 	}
-
+	
 	@Override
 	public void setCatchBackKey(boolean catchBack) {
-
+		
 	}
-
+	
 	@Override
 	public boolean isCatchBackKey() {
 		return false;
 	}
-
+	
 	@Override
 	public void setCatchMenuKey(boolean catchMenu) {
-
+		
 	}
-
+	
 	@Override
 	public boolean isCatchMenuKey() {
 		return false;
 	}
-
+	
 	@Override
 	public void setInputProcessor(InputProcessor processor) {
 		this.processor = processor;
 	}
-
+	
 	@Override
 	public InputProcessor getInputProcessor() {
 		return this.processor;
 	}
-
+	
 	/**
 	 * @return the IP addresses {@link RemoteSender} or gdx-remote should connect
 	 *         to. Most likely the LAN addresses if behind a NAT.
@@ -509,7 +509,7 @@ public class RemoteInput implements Runnable, Input {
 	public String[] getIPs() {
 		return ips;
 	}
-
+	
 	@Override
 	public boolean isPeripheralAvailable(Peripheral peripheral) {
 		if (peripheral == Peripheral.Accelerometer)
@@ -520,60 +520,60 @@ public class RemoteInput implements Runnable, Input {
 			return multiTouch;
 		return false;
 	}
-
+	
 	@Override
 	public int getRotation() {
 		return 0;
 	}
-
+	
 	@Override
 	public Orientation getNativeOrientation() {
 		return Orientation.Landscape;
 	}
-
+	
 	@Override
 	public void setCursorCatched(boolean catched) {
-
+		
 	}
-
+	
 	@Override
 	public boolean isCursorCatched() {
 		return false;
 	}
-
+	
 	@Override
 	public int getDeltaX() {
 		return deltaX[0];
 	}
-
+	
 	@Override
 	public int getDeltaX(int pointer) {
 		return deltaX[pointer];
 	}
-
+	
 	@Override
 	public int getDeltaY() {
 		return deltaY[0];
 	}
-
+	
 	@Override
 	public int getDeltaY(int pointer) {
 		return deltaY[pointer];
 	}
-
+	
 	@Override
 	public void setCursorPosition(int x, int y) {
 	}
-
+	
 	@Override
 	public long getCurrentEventTime() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
+	
 	@Override
 	public void getRotationMatrix(float[] matrix) {
 		// TODO Auto-generated method stub
-
+		
 	}
 }

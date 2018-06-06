@@ -80,31 +80,31 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 	 * Consult the documentation for more information.
 	 */
 	public static boolean logWarning = false;
-
+	
 	public static class ObjLoaderParameters extends ModelLoader.ModelParameters {
 		public boolean flipV;
-
+		
 		public ObjLoaderParameters() {
 		}
-
+		
 		public ObjLoaderParameters(boolean flipV) {
 			this.flipV = flipV;
 		}
 	}
-
+	
 	final FloatArray verts = new FloatArray(300);
 	final FloatArray norms = new FloatArray(300);
 	final FloatArray uvs = new FloatArray(200);
 	final Array<Group> groups = new Array<>(10);
-
+	
 	public ObjLoader() {
 		this(null);
 	}
-
+	
 	public ObjLoader(FileHandleResolver resolver) {
 		super(resolver);
 	}
-
+	
 	/**
 	 * Directly load the model on the calling thread. The model with not be managed
 	 * by an {@link AssetManager}.
@@ -112,12 +112,12 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 	public Model loadModel(final FileHandle fileHandle, boolean flipV) {
 		return loadModel(fileHandle, new ObjLoaderParameters(flipV));
 	}
-
+	
 	@Override
 	public ModelData loadModelData(FileHandle file, ObjLoaderParameters parameters) {
 		return loadModelData(file, parameters == null ? false : parameters.flipV);
 	}
-
+	
 	protected ModelData loadModelData(FileHandle file, boolean flipV) {
 		if (logWarning)
 			Gdx.app.error("ObjLoader",
@@ -126,21 +126,21 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 		String[] tokens;
 		char firstChar;
 		MtlLoader mtl = new MtlLoader();
-
+		
 		// Create a "default" Group and set it as the active group, in case
 		// there are no groups or objects defined in the OBJ file.
 		Group activeGroup = new Group("default");
 		groups.add(activeGroup);
-
+		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(file.read()), 4096);
 		int id = 0;
 		try {
 			while ((line = reader.readLine()) != null) {
-
+				
 				tokens = line.split("\\s+");
 				if (tokens.length < 1)
 					break;
-
+				
 				if (tokens[0].length() == 0) {
 					continue;
 				} else if ((firstChar = tokens[0].toLowerCase().charAt(0)) == '#') {
@@ -210,7 +210,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 		} catch (IOException e) {
 			return null;
 		}
-
+		
 		// If the "default" group or any others were not used, get rid of them
 		for (int i = 0; i < groups.size; i++) {
 			if (groups.get(i).numFaces < 1) {
@@ -218,16 +218,16 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 				i--;
 			}
 		}
-
+		
 		// If there are no groups left, there is no valid Model to return
 		if (groups.size < 1)
 			return null;
-
+		
 		// Get number of objects/groups remaining after removing empty ones
 		final int numGroups = groups.size;
-
+		
 		final ModelData data = new ModelData();
-
+		
 		for (int g = 0; g < numGroups; g++) {
 			Group group = groups.get(g);
 			Array<Integer> faces = group.faces;
@@ -235,9 +235,9 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 			final int numFaces = group.numFaces;
 			final boolean hasNorms = group.hasNorms;
 			final boolean hasUVs = group.hasUVs;
-
+			
 			final float[] finalVerts = new float[(numFaces * 3) * (3 + (hasNorms ? 3 : 0) + (hasUVs ? 2 : 0))];
-
+			
 			for (int i = 0, vi = 0; i < numElements;) {
 				int vertIndex = faces.get(i++) * 3;
 				finalVerts[vi++] = verts.get(vertIndex++);
@@ -255,7 +255,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 					finalVerts[vi++] = uvs.get(uvIndex);
 				}
 			}
-
+			
 			final int numIndices = numFaces * 3 >= Short.MAX_VALUE ? 0 : numFaces * 3;
 			final short[] finalIndices = new short[numIndices];
 			// if there are too many vertices in a mesh, we can't use indices
@@ -264,7 +264,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 					finalIndices[i] = (short) i;
 				}
 			}
-
+			
 			Array<VertexAttribute> attributes = new Array<>();
 			attributes.add(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
 			if (hasNorms)
@@ -272,7 +272,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 			if (hasUVs)
 				attributes
 						.add(new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
-
+			
 			String stringId = Integer.toString(++id);
 			String nodeId = "default".equals(group.name) ? "node" + stringId : group.name;
 			String meshId = "default".equals(group.name) ? "mesh" + stringId : group.name;
@@ -301,10 +301,10 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 			ModelMaterial mm = mtl.getMaterial(group.materialName);
 			data.materials.add(mm);
 		}
-
+		
 		// for (ModelMaterial m : mtl.materials)
 		// data.materials.add(m);
-
+		
 		// An instance of ObjLoader can be used to load more than one OBJ.
 		// Clearing the Array cache instead of instantiating new
 		// Arrays should result in slightly faster load times for
@@ -317,10 +317,10 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 			uvs.clear();
 		if (groups.size > 0)
 			groups.clear();
-
+		
 		return data;
 	}
-
+	
 	private Group setActiveGroup(String name) {
 		// TODO: Check if a HashMap.get calls are faster than iterating
 		// through an Array
@@ -332,7 +332,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 		groups.add(group);
 		return group;
 	}
-
+	
 	private int getIndex(String index, int size) {
 		if (index == null || index.length() == 0)
 			return 0;
@@ -342,7 +342,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 		else
 			return idx - 1;
 	}
-
+	
 	private class Group {
 		final String name;
 		String materialName;
@@ -351,7 +351,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 		boolean hasNorms;
 		boolean hasUVs;
 		Material mat;
-
+		
 		Group(String name) {
 			this.name = name;
 			this.faces = new Array<>(200);
@@ -364,7 +364,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 
 class MtlLoader {
 	public Array<ModelMaterial> materials = new Array<>();
-
+	
 	/** loads .mtl file */
 	public void load(FileHandle file) {
 		String line;
@@ -375,19 +375,19 @@ class MtlLoader {
 		float opacity = 1.f;
 		float shininess = 0.f;
 		String texFilename = null;
-
+		
 		if (file == null || file.exists() == false)
 			return;
-
+		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(file.read()), 4096);
 		try {
 			while ((line = reader.readLine()) != null) {
-
+				
 				if (line.length() > 0 && line.charAt(0) == '\t')
 					line = line.substring(1).trim();
-
+				
 				tokens = line.split("\\s+");
-
+				
 				if (tokens[0].length() == 0) {
 					continue;
 				} else if (tokens[0].charAt(0) == '#')
@@ -410,13 +410,13 @@ class MtlLoader {
 							mat.textures.add(tex);
 						}
 						materials.add(mat);
-
+						
 						if (tokens.length > 1) {
 							curMatName = tokens[1];
 							curMatName = curMatName.replace('.', '_');
 						} else
 							curMatName = "default";
-
+						
 						difcolor = Color.WHITE;
 						speccolor = Color.WHITE;
 						opacity = 1.f;
@@ -429,7 +429,7 @@ class MtlLoader {
 						float a = 1;
 						if (tokens.length > 4)
 							a = Float.parseFloat(tokens[4]);
-
+						
 						if (tokens[0].toLowerCase().equals("kd")) {
 							difcolor = new Color();
 							difcolor.set(r, g, b, a);
@@ -450,7 +450,7 @@ class MtlLoader {
 		} catch (IOException e) {
 			return;
 		}
-
+		
 		// last material
 		ModelMaterial mat = new ModelMaterial();
 		mat.id = curMatName;
@@ -467,10 +467,10 @@ class MtlLoader {
 			mat.textures.add(tex);
 		}
 		materials.add(mat);
-
+		
 		return;
 	}
-
+	
 	public ModelMaterial getMaterial(final String name) {
 		for (final ModelMaterial m : materials)
 			if (m.id.equals(name))

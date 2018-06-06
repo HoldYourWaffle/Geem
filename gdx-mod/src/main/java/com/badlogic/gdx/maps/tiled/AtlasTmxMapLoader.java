@@ -51,66 +51,66 @@ import com.badlogic.gdx.utils.XmlReader.Element;
  * @author Manuel Bua
  */
 public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasTiledMapLoaderParameters> {
-
+	
 	public static class AtlasTiledMapLoaderParameters extends BaseTmxMapLoader.Parameters {
 		/** force texture filters? **/
 		public boolean forceTextureFilters = false;
 	}
-
+	
 	protected Array<Texture> trackedTextures = new Array<>();
-
+	
 	private interface AtlasResolver {
-
+		
 		public TextureAtlas getAtlas(String name);
-
+		
 		public static class DirectAtlasResolver implements AtlasResolver {
-
+			
 			private final ObjectMap<String, TextureAtlas> atlases;
-
+			
 			public DirectAtlasResolver(ObjectMap<String, TextureAtlas> atlases) {
 				this.atlases = atlases;
 			}
-
+			
 			@Override
 			public TextureAtlas getAtlas(String name) {
 				return atlases.get(name);
 			}
-
+			
 		}
-
+		
 		public static class AssetManagerAtlasResolver implements AtlasResolver {
 			private final AssetManager assetManager;
-
+			
 			public AssetManagerAtlasResolver(AssetManager assetManager) {
 				this.assetManager = assetManager;
 			}
-
+			
 			@Override
 			public TextureAtlas getAtlas(String name) {
 				return assetManager.get(name, TextureAtlas.class);
 			}
 		}
 	}
-
+	
 	public AtlasTmxMapLoader() {
 		super(new InternalFileHandleResolver());
 	}
-
+	
 	public AtlasTmxMapLoader(FileHandleResolver resolver) {
 		super(resolver);
 	}
-
+	
 	public TiledMap load(String fileName) {
 		return load(fileName, new AtlasTiledMapLoaderParameters());
 	}
-
+	
 	@Override
 	public Array<AssetDescriptor> getDependencies(String fileName, FileHandle tmxFile,
 			AtlasTiledMapLoaderParameters parameter) {
 		Array<AssetDescriptor> dependencies = new Array<>();
 		try {
 			root = xml.parse(tmxFile);
-
+			
 			Element properties = root.getChildByName("properties");
 			if (properties != null) {
 				for (Element property : properties.getChildrenByName("property")) {
@@ -127,7 +127,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 		}
 		return dependencies;
 	}
-
+	
 	public TiledMap load(String fileName, AtlasTiledMapLoaderParameters parameter) {
 		try {
 			if (parameter != null) {
@@ -137,7 +137,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 				convertObjectToTileSpace = false;
 				flipY = true;
 			}
-
+			
 			FileHandle tmxFile = resolve(fileName);
 			root = xml.parse(tmxFile);
 			ObjectMap<String, TextureAtlas> atlases = new ObjectMap<>();
@@ -145,10 +145,10 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 			if (atlasFile == null) {
 				throw new GdxRuntimeException("Couldn't load atlas");
 			}
-
+			
 			TextureAtlas atlas = new TextureAtlas(atlasFile);
 			atlases.put(atlasFile.path(), atlas);
-
+			
 			AtlasResolver.DirectAtlasResolver atlasResolver = new AtlasResolver.DirectAtlasResolver(atlases);
 			TiledMap map = loadMap(root, tmxFile, atlasResolver);
 			map.setOwnedResources(atlases.values().toArray());
@@ -158,11 +158,11 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 			throw new GdxRuntimeException("Couldn't load tilemap '" + fileName + "'", e);
 		}
 	}
-
+	
 	/** May return null. */
 	protected FileHandle loadAtlas(Element root, FileHandle tmxFile) throws IOException {
 		Element e = root.getChildByName("properties");
-
+		
 		if (e != null) {
 			for (Element property : e.getChildrenByName("property")) {
 				String name = property.getAttribute("name", null);
@@ -171,12 +171,12 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 					if (value == null) {
 						value = property.getText();
 					}
-
+					
 					if (value == null || value.length() == 0) {
 						// keep trying until there are no more atlas properties
 						continue;
 					}
-
+					
 					return getRelativeFileHandle(tmxFile, value);
 				}
 			}
@@ -184,19 +184,19 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 		FileHandle atlasFile = tmxFile.sibling(tmxFile.nameWithoutExtension() + ".atlas");
 		return atlasFile.exists() ? atlasFile : null;
 	}
-
+	
 	private void setTextureFilters(TextureFilter min, TextureFilter mag) {
 		for (Texture texture : trackedTextures) {
 			texture.setFilter(min, mag);
 		}
 		trackedTextures.clear();
 	}
-
+	
 	@Override
 	public void loadAsync(AssetManager manager, String fileName, FileHandle tmxFile,
 			AtlasTiledMapLoaderParameters parameter) {
 		map = null;
-
+		
 		if (parameter != null) {
 			convertObjectToTileSpace = parameter.convertObjectToTileSpace;
 			flipY = parameter.flipY;
@@ -204,34 +204,34 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 			convertObjectToTileSpace = false;
 			flipY = true;
 		}
-
+		
 		try {
 			map = loadMap(root, tmxFile, new AtlasResolver.AssetManagerAtlasResolver(manager));
 		} catch (Exception e) {
 			throw new GdxRuntimeException("Couldn't load tilemap '" + fileName + "'", e);
 		}
 	}
-
+	
 	@Override
 	public TiledMap loadSync(AssetManager manager, String fileName, FileHandle file,
 			AtlasTiledMapLoaderParameters parameter) {
 		if (parameter != null) {
 			setTextureFilters(parameter.textureMinFilter, parameter.textureMagFilter);
 		}
-
+		
 		return map;
 	}
-
+	
 	protected TiledMap loadMap(Element root, FileHandle tmxFile, AtlasResolver resolver) {
 		TiledMap map = new TiledMap();
-
+		
 		String mapOrientation = root.getAttribute("orientation", null);
 		int mapWidth = root.getIntAttribute("width", 0);
 		int mapHeight = root.getIntAttribute("height", 0);
 		int tileWidth = root.getIntAttribute("tilewidth", 0);
 		int tileHeight = root.getIntAttribute("tileheight", 0);
 		String mapBackgroundColor = root.getAttribute("backgroundcolor", null);
-
+		
 		MapProperties mapProperties = map.getProperties();
 		if (mapOrientation != null) {
 			mapProperties.put("orientation", mapOrientation);
@@ -243,12 +243,12 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 		if (mapBackgroundColor != null) {
 			mapProperties.put("backgroundcolor", mapBackgroundColor);
 		}
-
+		
 		mapTileWidth = tileWidth;
 		mapTileHeight = tileHeight;
 		mapWidthInPixels = mapWidth * tileWidth;
 		mapHeightInPixels = mapHeight * tileHeight;
-
+		
 		if (mapOrientation != null) {
 			if ("staggered".equals(mapOrientation)) {
 				if (mapHeight > 1) {
@@ -257,7 +257,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 				}
 			}
 		}
-
+		
 		for (int i = 0, j = root.getChildCount(); i < j; i++) {
 			Element element = root.getChild(i);
 			String elementName = element.getName();
@@ -273,7 +273,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 		}
 		return map;
 	}
-
+	
 	protected void loadTileset(TiledMap map, Element element, FileHandle tmxFile, AtlasResolver resolver) {
 		if (element.getName().equals("tileset")) {
 			String name = element.get("name", null);
@@ -283,13 +283,13 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 			int spacing = element.getIntAttribute("spacing", 0);
 			int margin = element.getIntAttribute("margin", 0);
 			String source = element.getAttribute("source", null);
-
+			
 			int offsetX = 0;
 			int offsetY = 0;
-
+			
 			String imageSource = "";
 			int imageWidth = 0, imageHeight = 0;
-
+			
 			FileHandle image = null;
 			if (source != null) {
 				FileHandle tsx = getRelativeFileHandle(tmxFile, source);
@@ -329,7 +329,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 					image = getRelativeFileHandle(tmxFile, imageSource);
 				}
 			}
-
+			
 			String atlasFilePath = map.getProperties().get("atlas", String.class);
 			if (atlasFilePath == null) {
 				FileHandle atlasFile = tmxFile.sibling(tmxFile.nameWithoutExtension() + ".atlas");
@@ -339,17 +339,17 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 			if (atlasFilePath == null) {
 				throw new GdxRuntimeException("The map is missing the 'atlas' property");
 			}
-
+			
 			// get the TextureAtlas for this tileset
 			FileHandle atlasHandle = getRelativeFileHandle(tmxFile, atlasFilePath);
 			atlasHandle = resolve(atlasHandle.path());
 			TextureAtlas atlas = resolver.getAtlas(atlasHandle.path());
 			String regionsName = name;
-
+			
 			for (Texture texture : atlas.getTextures()) {
 				trackedTextures.add(texture);
 			}
-
+			
 			TiledMapTileSet tileset = new TiledMapTileSet();
 			MapProperties props = tileset.getProperties();
 			tileset.setName(name);
@@ -361,7 +361,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 			props.put("tileheight", tileheight);
 			props.put("margin", margin);
 			props.put("spacing", spacing);
-
+			
 			if (imageSource != null && imageSource.length() > 0) {
 				int lastgid = firstgid + ((imageWidth / tilewidth) * (imageHeight / tileheight)) - 1;
 				for (AtlasRegion region : atlas.findRegions(regionsName)) {
@@ -378,7 +378,7 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 					}
 				}
 			}
-
+			
 			for (Element tileElement : element.getChildrenByName("tile")) {
 				int tileid = firstgid + tileElement.getIntAttribute("id", 0);
 				TiledMapTile tile = tileset.getTile(tileid);
@@ -413,18 +413,18 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 					}
 				}
 			}
-
+			
 			Array<Element> tileElements = element.getChildrenByName("tile");
-
+			
 			Array<AnimatedTiledMapTile> animatedTiles = new Array<>();
-
+			
 			for (Element tileElement : tileElements) {
 				int localtid = tileElement.getIntAttribute("id", 0);
 				TiledMapTile tile = tileset.getTile(firstgid + localtid);
 				if (tile != null) {
 					Element animationElement = tileElement.getChildByName("animation");
 					if (animationElement != null) {
-
+						
 						Array<StaticTiledMapTile> staticTiles = new Array<>();
 						IntArray intervals = new IntArray();
 						for (Element frameElement : animationElement.getChildrenByName("frame")) {
@@ -432,21 +432,21 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 									.getTile(firstgid + frameElement.getIntAttribute("tileid")));
 							intervals.add(frameElement.getIntAttribute("duration"));
 						}
-
+						
 						AnimatedTiledMapTile animatedTile = new AnimatedTiledMapTile(intervals, staticTiles);
 						animatedTile.setId(tile.getId());
 						animatedTiles.add(animatedTile);
 						tile = animatedTile;
 					}
-
+					
 					Element objectgroupElement = tileElement.getChildByName("objectgroup");
 					if (objectgroupElement != null) {
-
+						
 						for (Element objectElement : objectgroupElement.getChildrenByName("object")) {
 							loadObject(map, tile, objectElement);
 						}
 					}
-
+					
 					String terrain = tileElement.getAttribute("terrain", null);
 					if (terrain != null) {
 						tile.getProperties().put("terrain", terrain);
@@ -461,11 +461,11 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 					}
 				}
 			}
-
+			
 			for (AnimatedTiledMapTile tile : animatedTiles) {
 				tileset.putTile(tile.getId(), tile);
 			}
-
+			
 			Element properties = element.getChildByName("properties");
 			if (properties != null) {
 				loadProperties(tileset.getProperties(), properties);
@@ -473,5 +473,5 @@ public class AtlasTmxMapLoader extends BaseTmxMapLoader<AtlasTmxMapLoader.AtlasT
 			map.getTileSets().addTileSet(tileset);
 		}
 	}
-
+	
 }

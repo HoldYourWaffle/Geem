@@ -31,7 +31,7 @@ import com.badlogic.gdx.utils.JsonValue;
  * @author Inferno
  */
 public abstract class RegionInfluencer extends Influencer {
-
+	
 	/**
 	 * Assigns the first region of {@link RegionInfluencer#regions} to the
 	 * particles.
@@ -39,19 +39,19 @@ public abstract class RegionInfluencer extends Influencer {
 	public static class Single extends RegionInfluencer {
 		public Single() {
 		}
-
+		
 		public Single(Single regionInfluencer) {
 			super(regionInfluencer);
 		}
-
+		
 		public Single(TextureRegion textureRegion) {
 			super(textureRegion);
 		}
-
+		
 		public Single(Texture texture) {
 			super(texture);
 		}
-
+		
 		@Override
 		public void init() {
 			AspectTextureRegion region = regions.items[0];
@@ -65,32 +65,32 @@ public abstract class RegionInfluencer extends Influencer {
 				regionChannel.data[i + ParticleChannels.HalfHeightOffset] = region.halfInvAspectRatio;
 			}
 		}
-
+		
 		@Override
 		public Single copy() {
 			return new Single(this);
 		}
 	}
-
+	
 	/**
 	 * Assigns a random region of {@link RegionInfluencer#regions} to the particles.
 	 */
 	public static class Random extends RegionInfluencer {
 		public Random() {
 		}
-
+		
 		public Random(Random regionInfluencer) {
 			super(regionInfluencer);
 		}
-
+		
 		public Random(TextureRegion textureRegion) {
 			super(textureRegion);
 		}
-
+		
 		public Random(Texture texture) {
 			super(texture);
 		}
-
+		
 		@Override
 		public void activateParticles(int startIndex, int count) {
 			for (int i = startIndex * regionChannel.strideSize, c = i
@@ -104,41 +104,41 @@ public abstract class RegionInfluencer extends Influencer {
 				regionChannel.data[i + ParticleChannels.HalfHeightOffset] = region.halfInvAspectRatio;
 			}
 		}
-
+		
 		@Override
 		public Random copy() {
 			return new Random(this);
 		}
 	}
-
+	
 	/**
 	 * Assigns a region to the particles using the particle life percent to
 	 * calculate the current index in the {@link RegionInfluencer#regions} array.
 	 */
 	public static class Animated extends RegionInfluencer {
 		FloatChannel lifeChannel;
-
+		
 		public Animated() {
 		}
-
+		
 		public Animated(Animated regionInfluencer) {
 			super(regionInfluencer);
 		}
-
+		
 		public Animated(TextureRegion textureRegion) {
 			super(textureRegion);
 		}
-
+		
 		public Animated(Texture texture) {
 			super(texture);
 		}
-
+		
 		@Override
 		public void allocateChannels() {
 			super.allocateChannels();
 			lifeChannel = controller.particles.addChannel(ParticleChannels.Life);
 		}
-
+		
 		@Override
 		public void update() {
 			for (int i = 0, l = ParticleChannels.LifePercentOffset, c = controller.particles.size
@@ -152,13 +152,13 @@ public abstract class RegionInfluencer extends Influencer {
 				regionChannel.data[i + ParticleChannels.HalfHeightOffset] = region.halfInvAspectRatio;
 			}
 		}
-
+		
 		@Override
 		public Animated copy() {
 			return new Animated(this);
 		}
 	}
-
+	
 	/**
 	 * It's a class used internally by the {@link RegionInfluencer} to represent a
 	 * texture region. It contains the uv coordinates of the region and the region
@@ -167,18 +167,18 @@ public abstract class RegionInfluencer extends Influencer {
 	public static class AspectTextureRegion {
 		public float u, v, u2, v2;
 		public float halfInvAspectRatio;
-
+		
 		public AspectTextureRegion() {
 		}
-
+		
 		public AspectTextureRegion(AspectTextureRegion aspectTextureRegion) {
 			set(aspectTextureRegion);
 		}
-
+		
 		public AspectTextureRegion(TextureRegion region) {
 			set(region);
 		}
-
+		
 		public void set(TextureRegion region) {
 			this.u = region.getU();
 			this.v = region.getV();
@@ -186,7 +186,7 @@ public abstract class RegionInfluencer extends Influencer {
 			this.v2 = region.getV2();
 			this.halfInvAspectRatio = 0.5f * ((float) region.getRegionHeight() / region.getRegionWidth());
 		}
-
+		
 		public void set(AspectTextureRegion aspectTextureRegion) {
 			u = aspectTextureRegion.u;
 			v = aspectTextureRegion.v;
@@ -195,14 +195,14 @@ public abstract class RegionInfluencer extends Influencer {
 			halfInvAspectRatio = aspectTextureRegion.halfInvAspectRatio;
 		}
 	}
-
+	
 	public Array<AspectTextureRegion> regions;
 	FloatChannel regionChannel;
-
+	
 	public RegionInfluencer(int regionsCount) {
 		this.regions = new Array<>(false, regionsCount, AspectTextureRegion.class);
 	}
-
+	
 	public RegionInfluencer() {
 		this(1);
 		AspectTextureRegion aspectRegion = new AspectTextureRegion();
@@ -211,17 +211,17 @@ public abstract class RegionInfluencer extends Influencer {
 		aspectRegion.halfInvAspectRatio = 0.5f;
 		regions.add(aspectRegion);
 	}
-
+	
 	/** All the regions must be defined on the same Texture */
 	public RegionInfluencer(TextureRegion... regions) {
 		this.regions = new Array<>(false, regions.length, AspectTextureRegion.class);
 		add(regions);
 	}
-
+	
 	public RegionInfluencer(Texture texture) {
 		this(new TextureRegion(texture));
 	}
-
+	
 	public RegionInfluencer(RegionInfluencer regionInfluencer) {
 		this(regionInfluencer.regions.size);
 		regions.ensureCapacity(regionInfluencer.regions.size);
@@ -229,28 +229,28 @@ public abstract class RegionInfluencer extends Influencer {
 			regions.add(new AspectTextureRegion(regionInfluencer.regions.get(i)));
 		}
 	}
-
+	
 	public void add(TextureRegion... regions) {
 		this.regions.ensureCapacity(regions.length);
 		for (TextureRegion region : regions) {
 			this.regions.add(new AspectTextureRegion(region));
 		}
 	}
-
+	
 	public void clear() {
 		regions.clear();
 	}
-
+	
 	@Override
 	public void allocateChannels() {
 		regionChannel = controller.particles.addChannel(ParticleChannels.TextureRegion);
 	}
-
+	
 	@Override
 	public void write(Json json) {
 		json.writeValue("regions", regions, Array.class, AspectTextureRegion.class);
 	}
-
+	
 	@Override
 	public void read(Json json, JsonValue jsonData) {
 		regions.clear();

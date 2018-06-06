@@ -31,7 +31,7 @@ public interface MapRenderer {
 	 * @param camera the {@link OrthographicCamera}
 	 */
 	public void setView(OrthographicCamera camera);
-
+	
 	/**
 	 * Sets the projection matrix for rendering, as well as the bounds of the map
 	 * which should be rendered. Make sure that the frustum spanned by the
@@ -45,10 +45,10 @@ public interface MapRenderer {
 	 */
 	public void setView(Matrix4 projectionMatrix, float viewboundsX, float viewboundsY, float viewboundsWidth,
 			float viewboundsHeight);
-
+	
 	/** Renders all the layers of a map. */
 	public void render();
-
+	
 	/**
 	 * Renders the given layers of a map.
 	 * 

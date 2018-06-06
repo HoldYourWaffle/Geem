@@ -31,61 +31,61 @@ public class ScaledNumericValue extends RangedNumericValue {
 	public float[] timeline = { 0 };
 	private float highMin, highMax;
 	private boolean relative = false;
-
+	
 	public float newHighValue() {
 		return highMin + (highMax - highMin) * MathUtils.random();
 	}
-
+	
 	public void setHigh(float value) {
 		highMin = value;
 		highMax = value;
 	}
-
+	
 	public void setHigh(float min, float max) {
 		highMin = min;
 		highMax = max;
 	}
-
+	
 	public float getHighMin() {
 		return highMin;
 	}
-
+	
 	public void setHighMin(float highMin) {
 		this.highMin = highMin;
 	}
-
+	
 	public float getHighMax() {
 		return highMax;
 	}
-
+	
 	public void setHighMax(float highMax) {
 		this.highMax = highMax;
 	}
-
+	
 	public float[] getScaling() {
 		return scaling;
 	}
-
+	
 	public void setScaling(float[] values) {
 		this.scaling = values;
 	}
-
+	
 	public float[] getTimeline() {
 		return timeline;
 	}
-
+	
 	public void setTimeline(float[] timeline) {
 		this.timeline = timeline;
 	}
-
+	
 	public boolean isRelative() {
 		return relative;
 	}
-
+	
 	public void setRelative(boolean relative) {
 		this.relative = relative;
 	}
-
+	
 	public float getScale(float percent) {
 		int endIndex = -1;
 		int n = timeline.length;
@@ -106,7 +106,7 @@ public class ScaledNumericValue extends RangedNumericValue {
 		return startValue
 				+ (scaling[endIndex] - startValue) * ((percent - startTime) / (timeline[endIndex] - startTime));
 	}
-
+	
 	public void load(ScaledNumericValue value) {
 		super.load(value);
 		highMax = value.highMax;
@@ -117,7 +117,7 @@ public class ScaledNumericValue extends RangedNumericValue {
 		System.arraycopy(value.timeline, 0, timeline, 0, timeline.length);
 		relative = value.relative;
 	}
-
+	
 	@Override
 	public void write(Json json) {
 		super.write(json);
@@ -127,7 +127,7 @@ public class ScaledNumericValue extends RangedNumericValue {
 		json.writeValue("scaling", scaling);
 		json.writeValue("timeline", timeline);
 	}
-
+	
 	@Override
 	public void read(Json json, JsonValue jsonData) {
 		super.read(json, jsonData);
@@ -137,5 +137,5 @@ public class ScaledNumericValue extends RangedNumericValue {
 		scaling = json.readValue("scaling", float[].class, jsonData);
 		timeline = json.readValue("timeline", float[].class, jsonData);
 	}
-
+	
 }

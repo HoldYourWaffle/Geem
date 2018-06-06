@@ -34,7 +34,7 @@ public class PerformanceCounter {
 	private final static float nano2seconds = 1f / 1000000000.0f;
 	private long startTime = 0L;
 	private long lastTick = 0L;
-
+	
 	/** The time value of this counter (seconds) */
 	public final FloatCounter time;
 	/** The load value of this counter */
@@ -52,17 +52,17 @@ public class PerformanceCounter {
 	 * true if using your own timing mechanism
 	 */
 	public boolean valid = false;
-
+	
 	public PerformanceCounter(final String name) {
 		this(name, 5);
 	}
-
+	
 	public PerformanceCounter(final String name, final int windowSize) {
 		this.name = name;
 		this.time = new FloatCounter(windowSize);
 		this.load = new FloatCounter(1);
 	}
-
+	
 	/**
 	 * Updates the time and load counters and resets the time. Call {@link #start()}
 	 * to begin a new count. The values are only valid after at least two calls to
@@ -74,7 +74,7 @@ public class PerformanceCounter {
 			tick((t - lastTick) * nano2seconds);
 		lastTick = t;
 	}
-
+	
 	/**
 	 * Updates the time and load counters and resets the time. Call {@link #start()}
 	 * to begin a new count.
@@ -86,16 +86,16 @@ public class PerformanceCounter {
 			Gdx.app.error("PerformanceCounter", "Invalid data, check if you called PerformanceCounter#stop()");
 			return;
 		}
-
+		
 		time.put(current);
-
+		
 		final float currentLoad = delta == 0f ? 0f : current / delta;
 		load.put((delta > 1f) ? currentLoad : delta * currentLoad + (1f - delta) * load.latest);
-
+		
 		current = 0f;
 		valid = false;
 	}
-
+	
 	/**
 	 * Start counting, call this method just before performing the task you want to
 	 * keep track of. Call {@link #stop()} when done.
@@ -104,7 +104,7 @@ public class PerformanceCounter {
 		startTime = TimeUtils.nanoTime();
 		valid = false;
 	}
-
+	
 	/**
 	 * Stop counting, call this method right after you performed the task you want
 	 * to keep track of. Call {@link #start()} again when you perform more of that
@@ -117,7 +117,7 @@ public class PerformanceCounter {
 			valid = true;
 		}
 	}
-
+	
 	/** Resets this performance counter to its defaults values. */
 	public void reset() {
 		time.reset();
@@ -127,14 +127,14 @@ public class PerformanceCounter {
 		current = 0f;
 		valid = false;
 	}
-
+	
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder();
 		return toString(sb).toString();
 	}
-
+	
 	/** Creates a string in the form of "name [time: value, load: value]" */
 	public StringBuilder toString(final StringBuilder sb) {
 		sb.append(name).append(": [time: ").append(time.value).append(", load: ").append(load.value).append("]");

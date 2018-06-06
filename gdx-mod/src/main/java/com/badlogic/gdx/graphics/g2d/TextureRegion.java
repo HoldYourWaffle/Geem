@@ -31,11 +31,11 @@ public class TextureRegion {
 	float u, v;
 	float u2, v2;
 	int regionWidth, regionHeight;
-
+	
 	/** Constructs a region with no texture and no coordinates defined. */
 	public TextureRegion() {
 	}
-
+	
 	/** Constructs a region the size of the specified texture. */
 	public TextureRegion(Texture texture) {
 		if (texture == null)
@@ -43,7 +43,7 @@ public class TextureRegion {
 		this.texture = texture;
 		setRegion(0, 0, texture.getWidth(), texture.getHeight());
 	}
-
+	
 	/**
 	 * @param width  The width of the texture region. May be negative to flip the
 	 *               sprite when drawn.
@@ -54,7 +54,7 @@ public class TextureRegion {
 		this.texture = texture;
 		setRegion(0, 0, width, height);
 	}
-
+	
 	/**
 	 * @param width  The width of the texture region. May be negative to flip the
 	 *               sprite when drawn.
@@ -65,12 +65,12 @@ public class TextureRegion {
 		this.texture = texture;
 		setRegion(x, y, width, height);
 	}
-
+	
 	public TextureRegion(Texture texture, float u, float v, float u2, float v2) {
 		this.texture = texture;
 		setRegion(u, v, u2, v2);
 	}
-
+	
 	/**
 	 * Constructs a region with the same texture and coordinates of the specified
 	 * region.
@@ -78,7 +78,7 @@ public class TextureRegion {
 	public TextureRegion(TextureRegion region) {
 		setRegion(region);
 	}
-
+	
 	/**
 	 * Constructs a region with the same texture as the specified region and sets
 	 * the coordinates relative to the specified region.
@@ -91,7 +91,7 @@ public class TextureRegion {
 	public TextureRegion(TextureRegion region, int x, int y, int width, int height) {
 		setRegion(region, x, y, width, height);
 	}
-
+	
 	/**
 	 * Sets the texture and sets the coordinates to the size of the specified
 	 * texture.
@@ -100,7 +100,7 @@ public class TextureRegion {
 		this.texture = texture;
 		setRegion(0, 0, texture.getWidth(), texture.getHeight());
 	}
-
+	
 	/**
 	 * @param width  The width of the texture region. May be negative to flip the
 	 *               sprite when drawn.
@@ -114,12 +114,12 @@ public class TextureRegion {
 		regionWidth = Math.abs(width);
 		regionHeight = Math.abs(height);
 	}
-
+	
 	public void setRegion(float u, float v, float u2, float v2) {
 		int texWidth = texture.getWidth(), texHeight = texture.getHeight();
 		regionWidth = Math.round(Math.abs(u2 - u) * texWidth);
 		regionHeight = Math.round(Math.abs(v2 - v) * texHeight);
-
+		
 		// For a 1x1 region, adjust UVs toward pixel center to avoid filtering artifacts
 		// on AMD GPUs when drawing very stretched.
 		if (regionWidth == 1 && regionHeight == 1) {
@@ -130,19 +130,19 @@ public class TextureRegion {
 			v += adjustY;
 			v2 -= adjustY;
 		}
-
+		
 		this.u = u;
 		this.v = v;
 		this.u2 = u2;
 		this.v2 = v2;
 	}
-
+	
 	/** Sets the texture and coordinates to the specified region. */
 	public void setRegion(TextureRegion region) {
 		texture = region.texture;
 		setRegion(region.u, region.v, region.u2, region.v2);
 	}
-
+	
 	/**
 	 * Sets the texture to that of the specified region and sets the coordinates
 	 * relative to the specified region.
@@ -151,72 +151,72 @@ public class TextureRegion {
 		texture = region.texture;
 		setRegion(region.getRegionX() + x, region.getRegionY() + y, width, height);
 	}
-
+	
 	public Texture getTexture() {
 		return texture;
 	}
-
+	
 	public void setTexture(Texture texture) {
 		this.texture = texture;
 	}
-
+	
 	public float getU() {
 		return u;
 	}
-
+	
 	public void setU(float u) {
 		this.u = u;
 		regionWidth = Math.round(Math.abs(u2 - u) * texture.getWidth());
 	}
-
+	
 	public float getV() {
 		return v;
 	}
-
+	
 	public void setV(float v) {
 		this.v = v;
 		regionHeight = Math.round(Math.abs(v2 - v) * texture.getHeight());
 	}
-
+	
 	public float getU2() {
 		return u2;
 	}
-
+	
 	public void setU2(float u2) {
 		this.u2 = u2;
 		regionWidth = Math.round(Math.abs(u2 - u) * texture.getWidth());
 	}
-
+	
 	public float getV2() {
 		return v2;
 	}
-
+	
 	public void setV2(float v2) {
 		this.v2 = v2;
 		regionHeight = Math.round(Math.abs(v2 - v) * texture.getHeight());
 	}
-
+	
 	public int getRegionX() {
 		return Math.round(u * texture.getWidth());
 	}
-
+	
 	public void setRegionX(int x) {
 		setU(x / (float) texture.getWidth());
 	}
-
+	
 	public int getRegionY() {
 		return Math.round(v * texture.getHeight());
 	}
-
+	
 	public void setRegionY(int y) {
 		setV(y / (float) texture.getHeight());
 	}
-
+	
 	/** Returns the region's width. */
 	public int getRegionWidth() {
 		return regionWidth;
 	}
-
+	
 	public void setRegionWidth(int width) {
 		if (isFlipX()) {
 			setU(u2 + width / (float) texture.getWidth());
@@ -224,12 +224,12 @@ public class TextureRegion {
 			setU2(u + width / (float) texture.getWidth());
 		}
 	}
-
+	
 	/** Returns the region's height. */
 	public int getRegionHeight() {
 		return regionHeight;
 	}
-
+	
 	public void setRegionHeight(int height) {
 		if (isFlipY()) {
 			setV(v2 + height / (float) texture.getHeight());
@@ -237,7 +237,7 @@ public class TextureRegion {
 			setV2(v + height / (float) texture.getHeight());
 		}
 	}
-
+	
 	public void flip(boolean x, boolean y) {
 		if (x) {
 			float temp = u;
@@ -250,15 +250,15 @@ public class TextureRegion {
 			v2 = temp;
 		}
 	}
-
+	
 	public boolean isFlipX() {
 		return u > u2;
 	}
-
+	
 	public boolean isFlipY() {
 		return v > v2;
 	}
-
+	
 	/**
 	 * Offsets the region relative to the current region. Generally the region's
 	 * size should be the entire size of the texture in the direction(s) it is
@@ -280,7 +280,7 @@ public class TextureRegion {
 			v2 = v + height / texture.getHeight();
 		}
 	}
-
+	
 	/**
 	 * Helper function to create tiles out of this TextureRegion starting from the
 	 * top left corner going to the right and ending at the bottom right corner.
@@ -298,10 +298,10 @@ public class TextureRegion {
 		int y = getRegionY();
 		int width = regionWidth;
 		int height = regionHeight;
-
+		
 		int rows = height / tileHeight;
 		int cols = width / tileWidth;
-
+		
 		int startX = x;
 		TextureRegion[][] tiles = new TextureRegion[rows][cols];
 		for (int row = 0; row < rows; row++, y += tileHeight) {
@@ -310,10 +310,10 @@ public class TextureRegion {
 				tiles[row][col] = new TextureRegion(texture, x, y, tileWidth, tileHeight);
 			}
 		}
-
+		
 		return tiles;
 	}
-
+	
 	/**
 	 * Helper function to create tiles out of the given {@link Texture} starting
 	 * from the top left corner going to the right and ending at the bottom right

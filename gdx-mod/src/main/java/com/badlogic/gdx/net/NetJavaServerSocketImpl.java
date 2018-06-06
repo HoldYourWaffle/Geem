@@ -27,19 +27,19 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author noblemaster
  */
 public class NetJavaServerSocketImpl implements ServerSocket {
-
+	
 	private Protocol protocol;
-
+	
 	/** Our server or null for disposed, aka closed. */
 	private java.net.ServerSocket server;
-
+	
 	public NetJavaServerSocketImpl(Protocol protocol, int port, ServerSocketHints hints) {
 		this(protocol, null, port, hints);
 	}
-
+	
 	public NetJavaServerSocketImpl(Protocol protocol, String hostname, int port, ServerSocketHints hints) {
 		this.protocol = protocol;
-
+		
 		// create the server socket
 		try {
 			// initialize
@@ -51,7 +51,7 @@ public class NetJavaServerSocketImpl implements ServerSocket {
 				server.setSoTimeout(hints.acceptTimeout);
 				server.setReceiveBufferSize(hints.receiveBufferSize);
 			}
-
+			
 			// and bind the server...
 			InetSocketAddress address;
 			if (hostname != null) {
@@ -59,7 +59,7 @@ public class NetJavaServerSocketImpl implements ServerSocket {
 			} else {
 				address = new InetSocketAddress(port);
 			}
-
+			
 			if (hints != null) {
 				server.bind(address, hints.backlog);
 			} else {
@@ -69,12 +69,12 @@ public class NetJavaServerSocketImpl implements ServerSocket {
 			throw new GdxRuntimeException("Cannot create a server socket at port " + port + ".", e);
 		}
 	}
-
+	
 	@Override
 	public Protocol getProtocol() {
 		return protocol;
 	}
-
+	
 	@Override
 	public Socket accept(SocketHints hints) {
 		try {
@@ -83,7 +83,7 @@ public class NetJavaServerSocketImpl implements ServerSocket {
 			throw new GdxRuntimeException("Error accepting socket.", e);
 		}
 	}
-
+	
 	@Override
 	public void dispose() {
 		if (server != null) {

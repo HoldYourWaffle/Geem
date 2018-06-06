@@ -31,9 +31,9 @@ import com.badlogic.gdx.Net.HttpResponse;
  * RFC1945 (HTTP/1.0), RFC2616 (HTTP/1.1), and RFC2518 (WebDAV) are listed.
  */
 public class HttpStatus {
-
+	
 	int statusCode;
-
+	
 	/**
 	 * Returns the status code of the HTTP response, normally 2xx status codes
 	 * indicate success while 4xx and 5xx indicate client and server errors,
@@ -44,27 +44,27 @@ public class HttpStatus {
 	public int getStatusCode() {
 		return statusCode;
 	}
-
+	
 	public HttpStatus(int statusCode) {
 		this.statusCode = statusCode;
 	}
-
+	
 	/*
 	 * Constants enumerating the HTTP status codes. All status codes defined in
 	 * RFC1945 (HTTP/1.0), RFC2616 (HTTP/1.1), and RFC2518 (WebDAV) are listed.
 	 */
-
+	
 	// --- 1xx Informational ---
-
+	
 	/** <tt>100 Continue</tt> (HTTP/1.1 - RFC 2616) */
 	public static final int SC_CONTINUE = 100;
 	/** <tt>101 Switching Protocols</tt> (HTTP/1.1 - RFC 2616) */
 	public static final int SC_SWITCHING_PROTOCOLS = 101;
 	/** <tt>102 Processing</tt> (WebDAV - RFC 2518) */
 	public static final int SC_PROCESSING = 102;
-
+	
 	// --- 2xx Success ---
-
+	
 	/** <tt>200 OK</tt> (HTTP/1.0 - RFC 1945) */
 	public static final int SC_OK = 200;
 	/** <tt>201 Created</tt> (HTTP/1.0 - RFC 1945) */
@@ -84,9 +84,9 @@ public class HttpStatus {
 	 * OK</tt> (HTTP/1.1 - draft-ietf-http-v11-spec-rev-01?)
 	 */
 	public static final int SC_MULTI_STATUS = 207;
-
+	
 	// --- 3xx Redirection ---
-
+	
 	/** <tt>300 Mutliple Choices</tt> (HTTP/1.1 - RFC 2616) */
 	public static final int SC_MULTIPLE_CHOICES = 300;
 	/** <tt>301 Moved Permanently</tt> (HTTP/1.0 - RFC 1945) */
@@ -104,9 +104,9 @@ public class HttpStatus {
 	public static final int SC_USE_PROXY = 305;
 	/** <tt>307 Temporary Redirect</tt> (HTTP/1.1 - RFC 2616) */
 	public static final int SC_TEMPORARY_REDIRECT = 307;
-
+	
 	// --- 4xx Client Error ---
-
+	
 	/** <tt>400 Bad Request</tt> (HTTP/1.1 - RFC 2616) */
 	public static final int SC_BAD_REQUEST = 400;
 	/** <tt>401 Unauthorized</tt> (HTTP/1.0 - RFC 1945) */
@@ -143,14 +143,14 @@ public class HttpStatus {
 	public static final int SC_REQUESTED_RANGE_NOT_SATISFIABLE = 416;
 	/** <tt>417 Expectation Failed</tt> (HTTP/1.1 - RFC 2616) */
 	public static final int SC_EXPECTATION_FAILED = 417;
-
+	
 	/**
 	 * Static constant for a 418 error. <tt>418 Unprocessable Entity</tt> (WebDAV
 	 * drafts?) or <tt>418 Reauthentication Required</tt> (HTTP/1.1 drafts?)
 	 */
 	// not used
 	// public static final int SC_UNPROCESSABLE_ENTITY = 418;
-
+	
 	/**
 	 * Static constant for a 419 error. <tt>419 Insufficient Space on Resource</tt>
 	 * (WebDAV - draft-ietf-webdav-protocol-05?) or
@@ -168,9 +168,9 @@ public class HttpStatus {
 	public static final int SC_LOCKED = 423;
 	/** <tt>424 Failed Dependency</tt> (WebDAV - RFC 2518) */
 	public static final int SC_FAILED_DEPENDENCY = 424;
-
+	
 	// --- 5xx Server Error ---
-
+	
 	/** <tt>500 Server Error</tt> (HTTP/1.0 - RFC 1945) */
 	public static final int SC_INTERNAL_SERVER_ERROR = 500;
 	/** <tt>501 Not Implemented</tt> (HTTP/1.0 - RFC 1945) */
@@ -183,8 +183,8 @@ public class HttpStatus {
 	public static final int SC_GATEWAY_TIMEOUT = 504;
 	/** <tt>505 HTTP Version Not Supported</tt> (HTTP/1.1 - RFC 2616) */
 	public static final int SC_HTTP_VERSION_NOT_SUPPORTED = 505;
-
+	
 	/** <tt>507 Insufficient Storage</tt> (WebDAV - RFC 2518) */
 	public static final int SC_INSUFFICIENT_STORAGE = 507;
-
+	
 }

@@ -38,7 +38,7 @@ import com.badlogic.gdx.math.Matrix4;
 public final class BufferUtils {
 	static Array<ByteBuffer> unsafeBuffers = new Array<>();
 	static int allocatedUnsafe = 0;
-
+	
 	/**
 	 * Copies numFloats floats from src starting at offset to dst. Dst is assumed to
 	 * be a direct {@link Buffer}. The method will crash if that is not the case.
@@ -59,11 +59,11 @@ public final class BufferUtils {
 			dst.limit(numFloats << 2);
 		else if (dst instanceof FloatBuffer)
 			dst.limit(numFloats);
-
+		
 		copyJni(src, dst, numFloats, offset);
 		dst.position(0);
 	}
-
+	
 	/**
 	 * Copies the contents of src to dst, starting from src[srcOffset], copying
 	 * numElements elements. The {@link Buffer} instance's {@link Buffer#position()}
@@ -81,7 +81,7 @@ public final class BufferUtils {
 		dst.limit(dst.position() + bytesToElements(dst, numElements));
 		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements);
 	}
-
+	
 	/**
 	 * Copies the contents of src to dst, starting from src[srcOffset], copying
 	 * numElements elements. The {@link Buffer} instance's {@link Buffer#position()}
@@ -99,7 +99,7 @@ public final class BufferUtils {
 		dst.limit(dst.position() + bytesToElements(dst, numElements << 1));
 		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 1);
 	}
-
+	
 	/**
 	 * Copies the contents of src to dst, starting from src[srcOffset], copying
 	 * numElements elements. The {@link Buffer} instance's {@link Buffer#position()}
@@ -115,7 +115,7 @@ public final class BufferUtils {
 	public static void copy(char[] src, int srcOffset, int numElements, Buffer dst) {
 		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 1);
 	}
-
+	
 	/**
 	 * Copies the contents of src to dst, starting from src[srcOffset], copying
 	 * numElements elements. The {@link Buffer} instance's {@link Buffer#position()}
@@ -131,7 +131,7 @@ public final class BufferUtils {
 	public static void copy(int[] src, int srcOffset, int numElements, Buffer dst) {
 		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 2);
 	}
-
+	
 	/**
 	 * Copies the contents of src to dst, starting from src[srcOffset], copying
 	 * numElements elements. The {@link Buffer} instance's {@link Buffer#position()}
@@ -147,7 +147,7 @@ public final class BufferUtils {
 	public static void copy(long[] src, int srcOffset, int numElements, Buffer dst) {
 		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 3);
 	}
-
+	
 	/**
 	 * Copies the contents of src to dst, starting from src[srcOffset], copying
 	 * numElements elements. The {@link Buffer} instance's {@link Buffer#position()}
@@ -163,7 +163,7 @@ public final class BufferUtils {
 	public static void copy(float[] src, int srcOffset, int numElements, Buffer dst) {
 		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 2);
 	}
-
+	
 	/**
 	 * Copies the contents of src to dst, starting from src[srcOffset], copying
 	 * numElements elements. The {@link Buffer} instance's {@link Buffer#position()}
@@ -179,7 +179,7 @@ public final class BufferUtils {
 	public static void copy(double[] src, int srcOffset, int numElements, Buffer dst) {
 		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 3);
 	}
-
+	
 	/**
 	 * Copies the contents of src to dst, starting from src[srcOffset], copying
 	 * numElements elements. The {@link Buffer} instance's {@link Buffer#position()}
@@ -197,7 +197,7 @@ public final class BufferUtils {
 		dst.limit(dst.position() + bytesToElements(dst, numElements << 1));
 		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 1);
 	}
-
+	
 	/**
 	 * Copies the contents of src to dst, starting from src[srcOffset], copying
 	 * numElements elements. The {@link Buffer} instance's {@link Buffer#position()}
@@ -215,7 +215,7 @@ public final class BufferUtils {
 		dst.limit(dst.position() + bytesToElements(dst, numElements << 2));
 		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 2);
 	}
-
+	
 	/**
 	 * Copies the contents of src to dst, starting from src[srcOffset], copying
 	 * numElements elements. The {@link Buffer} instance's {@link Buffer#position()}
@@ -233,7 +233,7 @@ public final class BufferUtils {
 		dst.limit(dst.position() + bytesToElements(dst, numElements << 3));
 		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 3);
 	}
-
+	
 	/**
 	 * Copies the contents of src to dst, starting from src[srcOffset], copying
 	 * numElements elements. The {@link Buffer} instance's {@link Buffer#position()}
@@ -251,7 +251,7 @@ public final class BufferUtils {
 		dst.limit(dst.position() + bytesToElements(dst, numElements << 2));
 		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 2);
 	}
-
+	
 	/**
 	 * Copies the contents of src to dst, starting from src[srcOffset], copying
 	 * numElements elements. The {@link Buffer} instance's {@link Buffer#position()}
@@ -269,7 +269,7 @@ public final class BufferUtils {
 		dst.limit(dst.position() + bytesToElements(dst, numElements << 3));
 		copyJni(src, srcOffset, dst, positionInBytes(dst), numElements << 3);
 	}
-
+	
 	/**
 	 * Copies the contents of src to dst, starting from the current position of src,
 	 * copying numElements elements (using the data type of src, no matter the
@@ -289,7 +289,7 @@ public final class BufferUtils {
 		dst.limit(dst.position() + bytesToElements(dst, numBytes));
 		copyJni(src, positionInBytes(src), dst, positionInBytes(dst), numBytes);
 	}
-
+	
 	/**
 	 * Multiply float vector components within the buffer with the specified matrix.
 	 * The {@link Buffer#position()} is used as the offset.
@@ -305,7 +305,7 @@ public final class BufferUtils {
 	public static void transform(Buffer data, int dimensions, int strideInBytes, int count, Matrix4 matrix) {
 		transform(data, dimensions, strideInBytes, count, matrix, 0);
 	}
-
+	
 	/**
 	 * Multiply float vector components within the buffer with the specified matrix.
 	 * The {@link Buffer#position()} is used as the offset.
@@ -321,7 +321,7 @@ public final class BufferUtils {
 	public static void transform(float[] data, int dimensions, int strideInBytes, int count, Matrix4 matrix) {
 		transform(data, dimensions, strideInBytes, count, matrix, 0);
 	}
-
+	
 	/**
 	 * Multiply float vector components within the buffer with the specified matrix.
 	 * The specified offset value is added to the {@link Buffer#position()} and used
@@ -353,7 +353,7 @@ public final class BufferUtils {
 			throw new IllegalArgumentException();
 		}
 	}
-
+	
 	/**
 	 * Multiply float vector components within the buffer with the specified matrix.
 	 * The specified offset value is added to the {@link Buffer#position()} and used
@@ -385,7 +385,7 @@ public final class BufferUtils {
 			throw new IllegalArgumentException();
 		}
 	}
-
+	
 	/**
 	 * Multiply float vector components within the buffer with the specified matrix.
 	 * The {@link Buffer#position()} is used as the offset.
@@ -401,7 +401,7 @@ public final class BufferUtils {
 	public static void transform(Buffer data, int dimensions, int strideInBytes, int count, Matrix3 matrix) {
 		transform(data, dimensions, strideInBytes, count, matrix, 0);
 	}
-
+	
 	/**
 	 * Multiply float vector components within the buffer with the specified matrix.
 	 * The {@link Buffer#position()} is used as the offset.
@@ -417,7 +417,7 @@ public final class BufferUtils {
 	public static void transform(float[] data, int dimensions, int strideInBytes, int count, Matrix3 matrix) {
 		transform(data, dimensions, strideInBytes, count, matrix, 0);
 	}
-
+	
 	/**
 	 * Multiply float vector components within the buffer with the specified matrix.
 	 * The specified offset value is added to the {@link Buffer#position()} and used
@@ -446,7 +446,7 @@ public final class BufferUtils {
 			throw new IllegalArgumentException();
 		}
 	}
-
+	
 	/**
 	 * Multiply float vector components within the buffer with the specified matrix.
 	 * The specified offset value is added to the {@link Buffer#position()} and used
@@ -475,40 +475,40 @@ public final class BufferUtils {
 			throw new IllegalArgumentException();
 		}
 	}
-
+	
 	public static long findFloats(Buffer vertex, int strideInBytes, Buffer vertices, int numVertices) {
 		return find(vertex, positionInBytes(vertex), strideInBytes, vertices, positionInBytes(vertices), numVertices);
 	}
-
+	
 	public static long findFloats(float[] vertex, int strideInBytes, Buffer vertices, int numVertices) {
 		return find(vertex, 0, strideInBytes, vertices, positionInBytes(vertices), numVertices);
 	}
-
+	
 	public static long findFloats(Buffer vertex, int strideInBytes, float[] vertices, int numVertices) {
 		return find(vertex, positionInBytes(vertex), strideInBytes, vertices, 0, numVertices);
 	}
-
+	
 	public static long findFloats(float[] vertex, int strideInBytes, float[] vertices, int numVertices) {
 		return find(vertex, 0, strideInBytes, vertices, 0, numVertices);
 	}
-
+	
 	public static long findFloats(Buffer vertex, int strideInBytes, Buffer vertices, int numVertices, float epsilon) {
 		return find(vertex, positionInBytes(vertex), strideInBytes, vertices, positionInBytes(vertices), numVertices,
 				epsilon);
 	}
-
+	
 	public static long findFloats(float[] vertex, int strideInBytes, Buffer vertices, int numVertices, float epsilon) {
 		return find(vertex, 0, strideInBytes, vertices, positionInBytes(vertices), numVertices, epsilon);
 	}
-
+	
 	public static long findFloats(Buffer vertex, int strideInBytes, float[] vertices, int numVertices, float epsilon) {
 		return find(vertex, positionInBytes(vertex), strideInBytes, vertices, 0, numVertices, epsilon);
 	}
-
+	
 	public static long findFloats(float[] vertex, int strideInBytes, float[] vertices, int numVertices, float epsilon) {
 		return find(vertex, 0, strideInBytes, vertices, 0, numVertices, epsilon);
 	}
-
+	
 	private static int positionInBytes(Buffer dst) {
 		if (dst instanceof ByteBuffer)
 			return dst.position();
@@ -527,7 +527,7 @@ public final class BufferUtils {
 		else
 			throw new GdxRuntimeException("Can't copy to a " + dst.getClass().getName() + " instance");
 	}
-
+	
 	private static int bytesToElements(Buffer dst, int bytes) {
 		if (dst instanceof ByteBuffer)
 			return bytes;
@@ -546,7 +546,7 @@ public final class BufferUtils {
 		else
 			throw new GdxRuntimeException("Can't copy to a " + dst.getClass().getName() + " instance");
 	}
-
+	
 	private static int elementsToBytes(Buffer dst, int elements) {
 		if (dst instanceof ByteBuffer)
 			return elements;
@@ -565,54 +565,54 @@ public final class BufferUtils {
 		else
 			throw new GdxRuntimeException("Can't copy to a " + dst.getClass().getName() + " instance");
 	}
-
+	
 	public static FloatBuffer newFloatBuffer(int numFloats) {
 		ByteBuffer buffer = ByteBuffer.allocateDirect(numFloats * 4);
 		buffer.order(ByteOrder.nativeOrder());
 		return buffer.asFloatBuffer();
 	}
-
+	
 	public static DoubleBuffer newDoubleBuffer(int numDoubles) {
 		ByteBuffer buffer = ByteBuffer.allocateDirect(numDoubles * 8);
 		buffer.order(ByteOrder.nativeOrder());
 		return buffer.asDoubleBuffer();
 	}
-
+	
 	public static ByteBuffer newByteBuffer(int numBytes) {
 		ByteBuffer buffer = ByteBuffer.allocateDirect(numBytes);
 		buffer.order(ByteOrder.nativeOrder());
 		return buffer;
 	}
-
+	
 	public static ShortBuffer newShortBuffer(int numShorts) {
 		ByteBuffer buffer = ByteBuffer.allocateDirect(numShorts * 2);
 		buffer.order(ByteOrder.nativeOrder());
 		return buffer.asShortBuffer();
 	}
-
+	
 	public static CharBuffer newCharBuffer(int numChars) {
 		ByteBuffer buffer = ByteBuffer.allocateDirect(numChars * 2);
 		buffer.order(ByteOrder.nativeOrder());
 		return buffer.asCharBuffer();
 	}
-
+	
 	public static IntBuffer newIntBuffer(int numInts) {
 		ByteBuffer buffer = ByteBuffer.allocateDirect(numInts * 4);
 		buffer.order(ByteOrder.nativeOrder());
 		return buffer.asIntBuffer();
 	}
-
+	
 	public static LongBuffer newLongBuffer(int numLongs) {
 		ByteBuffer buffer = ByteBuffer.allocateDirect(numLongs * 8);
 		buffer.order(ByteOrder.nativeOrder());
 		return buffer.asLongBuffer();
 	}
-
+	
 	// @off
 	/*
 	 * JNI #include <stdio.h> #include <stdlib.h> #include <string.h>
 	 */
-
+	
 	public static void disposeUnsafeByteBuffer(ByteBuffer buffer) {
 		int size = buffer.capacity();
 		synchronized (unsafeBuffers) {
@@ -622,7 +622,7 @@ public final class BufferUtils {
 		allocatedUnsafe -= size;
 		freeMemory(buffer);
 	}
-
+	
 	/**
 	 * Allocates a new direct ByteBuffer from native heap memory using the native
 	 * byte order. Needs to be disposed with {@link #freeMemory(ByteBuffer)}.
@@ -638,7 +638,7 @@ public final class BufferUtils {
 		}
 		return buffer;
 	}
-
+	
 	/**
 	 * Returns the address of the Buffer, it assumes it is an unsafe buffer.
 	 * 
@@ -648,7 +648,7 @@ public final class BufferUtils {
 	public static long getUnsafeBufferAddress(Buffer buffer) {
 		return getBufferAddress(buffer) + buffer.position();
 	}
-
+	
 	/**
 	 * Registers the given ByteBuffer as an unsafe ByteBuffer. The ByteBuffer must
 	 * have been allocated in native code, pointing to a memory region allocated via
@@ -664,14 +664,14 @@ public final class BufferUtils {
 		}
 		return buffer;
 	}
-
+	
 	/**
 	 * @return the number of bytes allocated with {@link #newUnsafeByteBuffer(int)}
 	 */
 	public static int getAllocatedBytesUnsafe() {
 		return allocatedUnsafe;
 	}
-
+	
 	/**
 	 * Frees the memory allocated for the ByteBuffer. DO NOT USE THIS ON BYTEBUFFERS
 	 * ALLOCATEd VIA METHODS IN THIS CLASS OR ByteBuffer.allocateDirect()! IT WILL
@@ -680,16 +680,16 @@ public final class BufferUtils {
 	private static native void freeMemory(ByteBuffer buffer); /*
 																 * free(buffer);
 																 */
-
+	
 	private static native ByteBuffer newDisposableByteBuffer(
 			int numBytes); /*
 							 * return env->NewDirectByteBuffer((char*)malloc(numBytes), numBytes);
 							 */
-
+	
 	private static native long getBufferAddress(Buffer buffer); /*
 																 * return (jlong) buffer;
 																 */
-
+	
 	/**
 	 * Writes the specified number of zeros to the buffer. This is generally faster
 	 * than reallocating a new buffer.
@@ -697,52 +697,52 @@ public final class BufferUtils {
 	public static native void clear(ByteBuffer buffer, int numBytes); /*
 																		 * memset(buffer, 0, numBytes);
 																		 */
-
+	
 	private native static void copyJni(float[] src, Buffer dst, int numFloats,
 			int offset); /*
 							 * memcpy(dst, src + offset, numFloats << 2 );
 							 */
-
+	
 	private native static void copyJni(byte[] src, int srcOffset, Buffer dst, int dstOffset,
 			int numBytes); /*
 							 * memcpy(dst + dstOffset, src + srcOffset, numBytes);
 							 */
-
+	
 	private native static void copyJni(char[] src, int srcOffset, Buffer dst, int dstOffset,
 			int numBytes); /*
 							 * memcpy(dst + dstOffset, src + srcOffset, numBytes);
 							 */
-
+	
 	private native static void copyJni(short[] src, int srcOffset, Buffer dst, int dstOffset,
 			int numBytes); /*
 							 * memcpy(dst + dstOffset, src + srcOffset, numBytes);
 							 */
-
+	
 	private native static void copyJni(int[] src, int srcOffset, Buffer dst, int dstOffset,
 			int numBytes); /*
 							 * memcpy(dst + dstOffset, src + srcOffset, numBytes);
 							 */
-
+	
 	private native static void copyJni(long[] src, int srcOffset, Buffer dst, int dstOffset,
 			int numBytes); /*
 							 * memcpy(dst + dstOffset, src + srcOffset, numBytes);
 							 */
-
+	
 	private native static void copyJni(float[] src, int srcOffset, Buffer dst, int dstOffset,
 			int numBytes); /*
 							 * memcpy(dst + dstOffset, src + srcOffset, numBytes);
 							 */
-
+	
 	private native static void copyJni(double[] src, int srcOffset, Buffer dst, int dstOffset,
 			int numBytes); /*
 							 * memcpy(dst + dstOffset, src + srcOffset, numBytes);
 							 */
-
+	
 	private native static void copyJni(Buffer src, int srcOffset, Buffer dst, int dstOffset,
 			int numBytes); /*
 							 * memcpy(dst + dstOffset, src + srcOffset, numBytes);
 							 */
-
+	
 	/*
 	 * JNI template<size_t n1, size_t n2> void transform(float * const &src, float *
 	 * const &m, float * const &dst) {}
@@ -813,67 +813,67 @@ public final class BufferUtils {
 	 * count; i++) if (hashes[i] == hash && compare(&vertices[i*size], vertex,
 	 * size)) return (long)i; return -1; }
 	 */
-
+	
 	private native static void transformV4M4Jni(Buffer data, int strideInBytes, int count, float[] matrix,
 			int offsetInBytes); /*
 								 * transform<4, 4>((float*)data, strideInBytes / 4, count, (float*)matrix,
 								 * offsetInBytes / 4);
 								 */
-
+	
 	private native static void transformV4M4Jni(float[] data, int strideInBytes, int count, float[] matrix,
 			int offsetInBytes); /*
 								 * transform<4, 4>((float*)data, strideInBytes / 4, count, (float*)matrix,
 								 * offsetInBytes / 4);
 								 */
-
+	
 	private native static void transformV3M4Jni(Buffer data, int strideInBytes, int count, float[] matrix,
 			int offsetInBytes); /*
 								 * transform<3, 4>((float*)data, strideInBytes / 4, count, (float*)matrix,
 								 * offsetInBytes / 4);
 								 */
-
+	
 	private native static void transformV3M4Jni(float[] data, int strideInBytes, int count, float[] matrix,
 			int offsetInBytes); /*
 								 * transform<3, 4>((float*)data, strideInBytes / 4, count, (float*)matrix,
 								 * offsetInBytes / 4);
 								 */
-
+	
 	private native static void transformV2M4Jni(Buffer data, int strideInBytes, int count, float[] matrix,
 			int offsetInBytes); /*
 								 * transform<2, 4>((float*)data, strideInBytes / 4, count, (float*)matrix,
 								 * offsetInBytes / 4);
 								 */
-
+	
 	private native static void transformV2M4Jni(float[] data, int strideInBytes, int count, float[] matrix,
 			int offsetInBytes); /*
 								 * transform<2, 4>((float*)data, strideInBytes / 4, count, (float*)matrix,
 								 * offsetInBytes / 4);
 								 */
-
+	
 	private native static void transformV3M3Jni(Buffer data, int strideInBytes, int count, float[] matrix,
 			int offsetInBytes); /*
 								 * transform<3, 3>((float*)data, strideInBytes / 4, count, (float*)matrix,
 								 * offsetInBytes / 4);
 								 */
-
+	
 	private native static void transformV3M3Jni(float[] data, int strideInBytes, int count, float[] matrix,
 			int offsetInBytes); /*
 								 * transform<3, 3>((float*)data, strideInBytes / 4, count, (float*)matrix,
 								 * offsetInBytes / 4);
 								 */
-
+	
 	private native static void transformV2M3Jni(Buffer data, int strideInBytes, int count, float[] matrix,
 			int offsetInBytes); /*
 								 * transform<2, 3>((float*)data, strideInBytes / 4, count, (float*)matrix,
 								 * offsetInBytes / 4);
 								 */
-
+	
 	private native static void transformV2M3Jni(float[] data, int strideInBytes, int count, float[] matrix,
 			int offsetInBytes); /*
 								 * transform<2, 3>((float*)data, strideInBytes / 4, count, (float*)matrix,
 								 * offsetInBytes / 4);
 								 */
-
+	
 	private native static long find(Buffer vertex, int vertexOffsetInBytes, int strideInBytes, Buffer vertices,
 			int verticesOffsetInBytes,
 			int numVertices); /*
@@ -881,7 +881,7 @@ public final class BufferUtils {
 								 * int)(strideInBytes / 4), (float*)&vertices[verticesOffsetInBytes / 4],
 								 * (unsigned int)numVertices);
 								 */
-
+	
 	private native static long find(float[] vertex, int vertexOffsetInBytes, int strideInBytes, Buffer vertices,
 			int verticesOffsetInBytes,
 			int numVertices); /*
@@ -889,7 +889,7 @@ public final class BufferUtils {
 								 * int)(strideInBytes / 4), (float*)&vertices[verticesOffsetInBytes / 4],
 								 * (unsigned int)numVertices);
 								 */
-
+	
 	private native static long find(Buffer vertex, int vertexOffsetInBytes, int strideInBytes, float[] vertices,
 			int verticesOffsetInBytes,
 			int numVertices); /*
@@ -897,7 +897,7 @@ public final class BufferUtils {
 								 * int)(strideInBytes / 4), (float*)&vertices[verticesOffsetInBytes / 4],
 								 * (unsigned int)numVertices);
 								 */
-
+	
 	private native static long find(float[] vertex, int vertexOffsetInBytes, int strideInBytes, float[] vertices,
 			int verticesOffsetInBytes,
 			int numVertices); /*
@@ -905,7 +905,7 @@ public final class BufferUtils {
 								 * int)(strideInBytes / 4), (float*)&vertices[verticesOffsetInBytes / 4],
 								 * (unsigned int)numVertices);
 								 */
-
+	
 	private native static long find(Buffer vertex, int vertexOffsetInBytes, int strideInBytes, Buffer vertices,
 			int verticesOffsetInBytes, int numVertices,
 			float epsilon); /*
@@ -913,7 +913,7 @@ public final class BufferUtils {
 							 * int)(strideInBytes / 4), (float*)&vertices[verticesOffsetInBytes / 4],
 							 * (unsigned int)numVertices, epsilon);
 							 */
-
+	
 	private native static long find(float[] vertex, int vertexOffsetInBytes, int strideInBytes, Buffer vertices,
 			int verticesOffsetInBytes, int numVertices,
 			float epsilon); /*
@@ -921,7 +921,7 @@ public final class BufferUtils {
 							 * int)(strideInBytes / 4), (float*)&vertices[verticesOffsetInBytes / 4],
 							 * (unsigned int)numVertices, epsilon);
 							 */
-
+	
 	private native static long find(Buffer vertex, int vertexOffsetInBytes, int strideInBytes, float[] vertices,
 			int verticesOffsetInBytes, int numVertices,
 			float epsilon); /*
@@ -929,7 +929,7 @@ public final class BufferUtils {
 							 * int)(strideInBytes / 4), (float*)&vertices[verticesOffsetInBytes / 4],
 							 * (unsigned int)numVertices, epsilon);
 							 */
-
+	
 	private native static long find(float[] vertex, int vertexOffsetInBytes, int strideInBytes, float[] vertices,
 			int verticesOffsetInBytes, int numVertices,
 			float epsilon); /*

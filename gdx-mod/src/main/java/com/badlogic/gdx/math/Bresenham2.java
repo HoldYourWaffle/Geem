@@ -39,7 +39,7 @@ public class Bresenham2 {
 			return new GridPoint2();
 		}
 	};
-
+	
 	/**
 	 * Returns a list of {@link GridPoint2} instances along the given line, at
 	 * integer coordinates.
@@ -51,7 +51,7 @@ public class Bresenham2 {
 	public Array<GridPoint2> line(GridPoint2 start, GridPoint2 end) {
 		return line(start.x, start.y, end.x, end.y);
 	}
-
+	
 	/**
 	 * Returns a list of {@link GridPoint2} instances along the given line, at
 	 * integer coordinates.
@@ -67,7 +67,7 @@ public class Bresenham2 {
 		points.clear();
 		return line(startX, startY, endX, endY, pool, points);
 	}
-
+	
 	/**
 	 * Returns a list of {@link GridPoint2} instances along the given line, at
 	 * integer coordinates.
@@ -82,7 +82,7 @@ public class Bresenham2 {
 	 */
 	public Array<GridPoint2> line(int startX, int startY, int endX, int endY, Pool<GridPoint2> pool,
 			Array<GridPoint2> output) {
-
+		
 		int w = endX - startX;
 		int h = endY - startY;
 		int dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;

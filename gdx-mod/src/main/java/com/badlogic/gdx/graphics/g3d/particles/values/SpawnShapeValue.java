@@ -28,21 +28,21 @@ import com.badlogic.gdx.utils.JsonValue;
  * @author Inferno
  */
 public abstract class SpawnShapeValue extends ParticleValue implements ResourceData.Configurable, Json.Serializable {
-
+	
 	public RangedNumericValue xOffsetValue, yOffsetValue, zOffsetValue;
-
+	
 	public SpawnShapeValue() {
 		xOffsetValue = new RangedNumericValue();
 		yOffsetValue = new RangedNumericValue();
 		zOffsetValue = new RangedNumericValue();
 	}
-
+	
 	public SpawnShapeValue(SpawnShapeValue spawnShapeValue) {
 		this();
 	}
-
+	
 	public abstract void spawnAux(Vector3 vector, float percent);
-
+	
 	public final Vector3 spawn(Vector3 vector, float percent) {
 		spawnAux(vector, percent);
 		if (xOffsetValue.active)
@@ -53,13 +53,13 @@ public abstract class SpawnShapeValue extends ParticleValue implements ResourceD
 			vector.z += zOffsetValue.newLowValue();
 		return vector;
 	}
-
+	
 	public void init() {
 	}
-
+	
 	public void start() {
 	}
-
+	
 	@Override
 	public void load(ParticleValue value) {
 		super.load(value);
@@ -68,9 +68,9 @@ public abstract class SpawnShapeValue extends ParticleValue implements ResourceD
 		yOffsetValue.load(shape.yOffsetValue);
 		zOffsetValue.load(shape.zOffsetValue);
 	}
-
+	
 	public abstract SpawnShapeValue copy();
-
+	
 	@Override
 	public void write(Json json) {
 		super.write(json);
@@ -78,7 +78,7 @@ public abstract class SpawnShapeValue extends ParticleValue implements ResourceD
 		json.writeValue("yOffsetValue", yOffsetValue);
 		json.writeValue("zOffsetValue", zOffsetValue);
 	}
-
+	
 	@Override
 	public void read(Json json, JsonValue jsonData) {
 		super.read(json, jsonData);
@@ -86,13 +86,13 @@ public abstract class SpawnShapeValue extends ParticleValue implements ResourceD
 		yOffsetValue = json.readValue("yOffsetValue", RangedNumericValue.class, jsonData);
 		zOffsetValue = json.readValue("zOffsetValue", RangedNumericValue.class, jsonData);
 	}
-
+	
 	@Override
 	public void save(AssetManager manager, ResourceData data) {
 	}
-
+	
 	@Override
 	public void load(AssetManager manager, ResourceData data) {
 	}
-
+	
 }

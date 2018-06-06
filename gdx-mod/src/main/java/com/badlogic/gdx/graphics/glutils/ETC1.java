@@ -42,7 +42,7 @@ public class ETC1 {
 	/** The PKM header size in bytes **/
 	public static int PKM_HEADER_SIZE = 16;
 	public static int ETC1_RGB8_OES = 0x00008d64;
-
+	
 	/**
 	 * Class for storing ETC1 compressed image data.
 	 * 
@@ -60,7 +60,7 @@ public class ETC1 {
 		 * contains a PKM header, 0 otherwise
 		 **/
 		public final int dataOffset;
-
+		
 		public ETC1Data(int width, int height, ByteBuffer compressedData, int dataOffset) {
 			this.width = width;
 			this.height = height;
@@ -68,7 +68,7 @@ public class ETC1 {
 			this.dataOffset = dataOffset;
 			checkNPOT();
 		}
-
+		
 		public ETC1Data(FileHandle pkmFile) {
 			byte[] buffer = new byte[1024 * 10];
 			DataInputStream in = null;
@@ -87,26 +87,26 @@ public class ETC1 {
 			} finally {
 				StreamUtils.closeQuietly(in);
 			}
-
+			
 			width = getWidthPKM(compressedData, 0);
 			height = getHeightPKM(compressedData, 0);
 			dataOffset = PKM_HEADER_SIZE;
 			compressedData.position(dataOffset);
 			checkNPOT();
 		}
-
+		
 		private void checkNPOT() {
 			if (!MathUtils.isPowerOfTwo(width) || !MathUtils.isPowerOfTwo(height)) {
 				System.out.println(
 						"ETC1Data " + "warning: non-power-of-two ETC1 textures may crash the driver of PowerVR GPUs");
 			}
 		}
-
+		
 		/** @return whether this ETC1Data has a PKM header */
 		public boolean hasPKMHeader() {
 			return dataOffset == 16;
 		}
-
+		
 		/**
 		 * Writes the ETC1Data with a PKM header to the given file.
 		 * 
@@ -135,13 +135,13 @@ public class ETC1 {
 			compressedData.position(dataOffset);
 			compressedData.limit(compressedData.capacity());
 		}
-
+		
 		/** Releases the native resources of the ETC1Data instance. */
 		@Override
 		public void dispose() {
 			BufferUtils.disposeUnsafeByteBuffer(compressedData);
 		}
-
+		
 		@Override
 		public String toString() {
 			if (hasPKMHeader()) {
@@ -154,7 +154,7 @@ public class ETC1 {
 			}
 		}
 	}
-
+	
 	private static int getPixelSize(Format format) {
 		if (format == Format.RGB565)
 			return 2;
@@ -162,7 +162,7 @@ public class ETC1 {
 			return 3;
 		throw new GdxRuntimeException("Can only handle RGB565 or RGB888 images");
 	}
-
+	
 	/**
 	 * Encodes the image via the ETC1 compression scheme. Only {@link Format#RGB565}
 	 * and {@link Format#RGB888} are supported.
@@ -177,7 +177,7 @@ public class ETC1 {
 		BufferUtils.newUnsafeByteBuffer(compressedData);
 		return new ETC1Data(pixmap.getWidth(), pixmap.getHeight(), compressedData, 0);
 	}
-
+	
 	/**
 	 * Encodes the image via the ETC1 compression scheme. Only {@link Format#RGB565}
 	 * and {@link Format#RGB888} are supported. Adds a PKM header in front of the
@@ -193,7 +193,7 @@ public class ETC1 {
 		BufferUtils.newUnsafeByteBuffer(compressedData);
 		return new ETC1Data(pixmap.getWidth(), pixmap.getHeight(), compressedData, 16);
 	}
-
+	
 	/**
 	 * Takes ETC1 compressed image data and converts it to a {@link Format#RGB565}
 	 * or {@link Format#RGB888} {@link Pixmap}. Does not modify the ByteBuffer's
@@ -207,7 +207,7 @@ public class ETC1 {
 		int dataOffset = 0;
 		int width = 0;
 		int height = 0;
-
+		
 		if (etc1Data.hasPKMHeader()) {
 			dataOffset = 16;
 			width = ETC1.getWidthPKM(etc1Data.compressedData, 0);
@@ -217,18 +217,18 @@ public class ETC1 {
 			width = etc1Data.width;
 			height = etc1Data.height;
 		}
-
+		
 		int pixelSize = getPixelSize(format);
 		Pixmap pixmap = new Pixmap(width, height, format);
 		decodeImage(etc1Data.compressedData, dataOffset, pixmap.getPixels(), 0, width, height, pixelSize);
 		return pixmap;
 	}
-
+	
 	// @off
 	/*
 	 * JNI #include <etc1/etc1_utils.h> #include <stdlib.h>
 	 */
-
+	
 	/**
 	 * @param width  the width in pixels
 	 * @param height the height in pixels
@@ -238,7 +238,7 @@ public class ETC1 {
 			int height); /*
 							 * return etc1_get_encoded_data_size(width, height);
 							 */
-
+	
 	/**
 	 * Writes a PKM header to the {@link ByteBuffer}. Does not modify the position
 	 * or limit of the ByteBuffer.
@@ -252,7 +252,7 @@ public class ETC1 {
 			int height); /*
 							 * etc1_pkm_format_header((etc1_byte*)header + offset, width, height);
 							 */
-
+	
 	/**
 	 * @param header direct native order {@link ByteBuffer} holding the PKM header
 	 * @param offset the offset in bytes to the PKM header from the ByteBuffer's
@@ -263,7 +263,7 @@ public class ETC1 {
 			int offset); /*
 							 * return etc1_pkm_get_width((etc1_byte*)header + offset);
 							 */
-
+	
 	/**
 	 * @param header direct native order {@link ByteBuffer} holding the PKM header
 	 * @param offset the offset in bytes to the PKM header from the ByteBuffer's
@@ -274,7 +274,7 @@ public class ETC1 {
 			int offset); /*
 							 * return etc1_pkm_get_height((etc1_byte*)header + offset);
 							 */
-
+	
 	/**
 	 * @param header direct native order {@link ByteBuffer} holding the PKM header
 	 * @param offset the offset in bytes to the PKM header from the ByteBuffer's
@@ -285,7 +285,7 @@ public class ETC1 {
 			int offset); /*
 							 * return etc1_pkm_is_valid((etc1_byte*)header + offset) != 0?true:false;
 							 */
-
+	
 	/**
 	 * Decodes the compressed image data to RGB565 or RGB888 pixel data. Does not
 	 * modify the position or limit of the {@link ByteBuffer} instances.
@@ -307,7 +307,7 @@ public class ETC1 {
 													 * (etc1_byte*)decodedData + offsetDec, width, height, pixelSize,
 													 * width * pixelSize);
 													 */
-
+	
 	/**
 	 * Encodes the image data given as RGB565 or RGB888. Does not modify the
 	 * position or limit of the {@link ByteBuffer}.
@@ -329,7 +329,7 @@ public class ETC1 {
 							 * width * pixelSize, compressedData); return
 							 * env->NewDirectByteBuffer(compressedData, compressedSize);
 							 */
-
+	
 	/**
 	 * Encodes the image data given as RGB565 or RGB888. Does not modify the
 	 * position or limit of the {@link ByteBuffer}.

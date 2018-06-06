@@ -33,21 +33,21 @@ import com.badlogic.gdx.graphics.g3d.particles.batches.ParticleBatch;
 public class ModelInstanceRenderer
 		extends ParticleControllerRenderer<ModelInstanceControllerRenderData, ModelInstanceParticleBatch> {
 	private boolean hasColor, hasScale, hasRotation;
-
+	
 	public ModelInstanceRenderer() {
 		super(new ModelInstanceControllerRenderData());
 	}
-
+	
 	public ModelInstanceRenderer(ModelInstanceParticleBatch batch) {
 		this();
 		setBatch(batch);
 	}
-
+	
 	@Override
 	public void allocateChannels() {
 		renderData.positionChannel = controller.particles.addChannel(ParticleChannels.Position);
 	}
-
+	
 	@Override
 	public void init() {
 		renderData.modelInstanceChannel = controller.particles.getChannel(ParticleChannels.ModelInstance);
@@ -58,7 +58,7 @@ public class ModelInstanceRenderer
 		hasScale = renderData.scaleChannel != null;
 		hasRotation = renderData.rotationChannel != null;
 	}
-
+	
 	@Override
 	public void update() {
 		for (int i = 0, positionOffset = 0, c = controller.particles.size; i < c; ++i, positionOffset += renderData.positionChannel.strideSize) {
@@ -72,7 +72,7 @@ public class ModelInstanceRenderer
 				qz = renderData.rotationChannel.data[rotationOffset + ParticleChannels.ZOffset];
 				qw = renderData.rotationChannel.data[rotationOffset + ParticleChannels.WOffset];
 			}
-
+			
 			instance.transform.set(renderData.positionChannel.data[positionOffset + ParticleChannels.XOffset],
 					renderData.positionChannel.data[positionOffset + ParticleChannels.YOffset],
 					renderData.positionChannel.data[positionOffset + ParticleChannels.ZOffset], qx, qy, qz, qw, scale,
@@ -92,15 +92,15 @@ public class ModelInstanceRenderer
 		}
 		super.update();
 	}
-
+	
 	@Override
 	public ParticleControllerComponent copy() {
 		return new ModelInstanceRenderer(batch);
 	}
-
+	
 	@Override
 	public boolean isCompatible(ParticleBatch<?> batch) {
 		return batch instanceof ModelInstanceParticleBatch;
 	}
-
+	
 }

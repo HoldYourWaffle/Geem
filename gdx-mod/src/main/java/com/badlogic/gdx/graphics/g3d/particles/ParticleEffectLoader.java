@@ -48,16 +48,16 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 public class ParticleEffectLoader
 		extends AsynchronousAssetLoader<ParticleEffect, ParticleEffectLoader.ParticleEffectLoadParameter> {
 	protected Array<ObjectMap.Entry<String, ResourceData<ParticleEffect>>> items = new Array<>();
-
+	
 	public ParticleEffectLoader(FileHandleResolver resolver) {
 		super(resolver);
 	}
-
+	
 	@Override
 	public void loadAsync(AssetManager manager, String fileName, FileHandle file,
 			ParticleEffectLoadParameter parameter) {
 	}
-
+	
 	@Override
 	public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file,
 			ParticleEffectLoadParameter parameter) {
@@ -71,32 +71,32 @@ public class ParticleEffectLoader
 			items.add(entry);
 			assets = data.getAssets();
 		}
-
+		
 		Array<AssetDescriptor> descriptors = new Array<>();
 		for (AssetData<?> assetData : assets) {
-
+			
 			// If the asset doesn't exist try to load it from loading effect directory
 			if (!resolve(assetData.filename).exists()) {
 				assetData.filename = file.parent().child(Gdx.files.internal(assetData.filename).name()).path();
 			}
-
+			
 			if (assetData.type == ParticleEffect.class) {
 				descriptors.add(new AssetDescriptor(assetData.filename, assetData.type, parameter));
 			} else
 				descriptors.add(new AssetDescriptor(assetData.filename, assetData.type));
 		}
-
+		
 		return descriptors;
-
+		
 	}
-
+	
 	/** Saves the effect to the given file contained in the passed in parameter. */
 	public void save(ParticleEffect effect, ParticleEffectSaveParameter parameter) throws IOException {
 		ResourceData<ParticleEffect> data = new ResourceData<>(effect);
-
+		
 		// effect assets
 		effect.save(parameter.manager, data);
-
+		
 		// Batches configurations
 		if (parameter.batches != null) {
 			for (ParticleBatch<?> batch : parameter.batches) {
@@ -107,17 +107,17 @@ public class ParticleEffectLoader
 						break;
 					}
 				}
-
+				
 				if (save)
 					batch.save(parameter.manager, data);
 			}
 		}
-
+		
 		// save
 		Json json = new Json();
 		json.toJson(data, parameter.file);
 	}
-
+	
 	@Override
 	public ParticleEffect loadSync(AssetManager manager, String fileName, FileHandle file,
 			ParticleEffectLoadParameter parameter) {
@@ -132,7 +132,7 @@ public class ParticleEffectLoader
 				}
 			}
 		}
-
+		
 		effectData.resource.load(manager, effectData);
 		if (parameter != null) {
 			if (parameter.batches != null) {
@@ -144,7 +144,7 @@ public class ParticleEffectLoader
 		}
 		return effectData.resource;
 	}
-
+	
 	private <T> T find(Array<?> array, Class<T> type) {
 		for (Object object : array) {
 			if (ClassReflection.isAssignableFrom(type, object.getClass()))
@@ -152,28 +152,28 @@ public class ParticleEffectLoader
 		}
 		return null;
 	}
-
+	
 	public static class ParticleEffectLoadParameter extends AssetLoaderParameters<ParticleEffect> {
 		Array<ParticleBatch<?>> batches;
-
+		
 		public ParticleEffectLoadParameter(Array<ParticleBatch<?>> batches) {
 			this.batches = batches;
 		}
 	}
-
+	
 	public static class ParticleEffectSaveParameter extends AssetLoaderParameters<ParticleEffect> {
 		/** Optional parameters, but should be present to correctly load the settings */
 		Array<ParticleBatch<?>> batches;
-
+		
 		/** Required parameters */
 		FileHandle file;
 		AssetManager manager;
-
+		
 		public ParticleEffectSaveParameter(FileHandle file, AssetManager manager, Array<ParticleBatch<?>> batches) {
 			this.batches = batches;
 			this.file = file;
 			this.manager = manager;
 		}
 	}
-
+	
 }

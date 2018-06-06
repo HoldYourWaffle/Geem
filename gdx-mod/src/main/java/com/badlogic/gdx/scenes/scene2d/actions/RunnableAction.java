@@ -28,7 +28,7 @@ import com.badlogic.gdx.utils.Pool;
 public class RunnableAction extends Action {
 	private Runnable runnable;
 	private boolean ran;
-
+	
 	@Override
 	public boolean act(float delta) {
 		if (!ran) {
@@ -37,7 +37,7 @@ public class RunnableAction extends Action {
 		}
 		return true;
 	}
-
+	
 	/** Called to run the runnable. */
 	public void run() {
 		Pool pool = getPool();
@@ -48,22 +48,22 @@ public class RunnableAction extends Action {
 			setPool(pool);
 		}
 	}
-
+	
 	@Override
 	public void restart() {
 		ran = false;
 	}
-
+	
 	@Override
 	public void reset() {
 		super.reset();
 		runnable = null;
 	}
-
+	
 	public Runnable getRunnable() {
 		return runnable;
 	}
-
+	
 	public void setRunnable(Runnable runnable) {
 		this.runnable = runnable;
 	}

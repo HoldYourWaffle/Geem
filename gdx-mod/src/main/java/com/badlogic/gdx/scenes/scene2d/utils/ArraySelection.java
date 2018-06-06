@@ -15,11 +15,11 @@ public class ArraySelection<T> extends Selection<T> {
 	private Array<T> array;
 	private boolean rangeSelect = true;
 	private int rangeStart;
-
+	
 	public ArraySelection(Array<T> array) {
 		this.array = array;
 	}
-
+	
 	@Override
 	public void choose(T item) {
 		if (item == null)
@@ -51,15 +51,15 @@ public class ArraySelection<T> extends Selection<T> {
 			rangeStart = index;
 		super.choose(item);
 	}
-
+	
 	public boolean getRangeSelect() {
 		return rangeSelect;
 	}
-
+	
 	public void setRangeSelect(boolean rangeSelect) {
 		this.rangeSelect = rangeSelect;
 	}
-
+	
 	/**
 	 * Removes objects from the selection that are no longer in the items array. If
 	 * {@link #getRequired()} is true and there is no selected item, the first item

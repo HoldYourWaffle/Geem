@@ -100,7 +100,7 @@ public class Model implements Disposable {
 	 * responsible for disposing
 	 **/
 	protected final Array<Disposable> disposables = new Array();
-
+	
 	/**
 	 * Constructs an empty model. Manual created models do not manage their
 	 * resources by default. Use {@link #manageDisposable(Disposable)} to add
@@ -108,7 +108,7 @@ public class Model implements Disposable {
 	 */
 	public Model() {
 	}
-
+	
 	/**
 	 * Constructs a new Model based on the {@link ModelData}. Texture files will be
 	 * loaded from the internal file storage via an {@link FileTextureProvider}.
@@ -118,7 +118,7 @@ public class Model implements Disposable {
 	public Model(ModelData modelData) {
 		this(modelData, new FileTextureProvider());
 	}
-
+	
 	/**
 	 * Constructs a new Model based on the {@link ModelData}.
 	 * 
@@ -130,7 +130,7 @@ public class Model implements Disposable {
 	public Model(ModelData modelData, TextureProvider textureProvider) {
 		load(modelData, textureProvider);
 	}
-
+	
 	protected void load(ModelData modelData, TextureProvider textureProvider) {
 		loadMeshes(modelData.meshes);
 		loadMaterials(modelData.materials, textureProvider);
@@ -138,7 +138,7 @@ public class Model implements Disposable {
 		loadAnimations(modelData.animations);
 		calculateTransforms();
 	}
-
+	
 	protected void loadAnimations(Iterable<ModelAnimation> modelAnimations) {
 		for (final ModelAnimation anim : modelAnimations) {
 			Animation animation = new Animation();
@@ -149,7 +149,7 @@ public class Model implements Disposable {
 					continue;
 				NodeAnimation nodeAnim = new NodeAnimation();
 				nodeAnim.node = node;
-
+				
 				if (nanim.translation != null) {
 					nodeAnim.translation = new Array<>();
 					nodeAnim.translation.ensureCapacity(nanim.translation.size);
@@ -160,7 +160,7 @@ public class Model implements Disposable {
 								new Vector3(kf.value == null ? node.translation : kf.value)));
 					}
 				}
-
+				
 				if (nanim.rotation != null) {
 					nodeAnim.rotation = new Array<>();
 					nodeAnim.rotation.ensureCapacity(nanim.rotation.size);
@@ -171,18 +171,18 @@ public class Model implements Disposable {
 								new Quaternion(kf.value == null ? node.rotation : kf.value)));
 					}
 				}
-
+				
 				if (nanim.scaling != null) {
 					nodeAnim.scaling = new Array<>();
 					nodeAnim.scaling.ensureCapacity(nanim.scaling.size);
 					for (ModelNodeKeyframe<Vector3> kf : nanim.scaling) {
 						if (kf.keytime > animation.duration)
 							animation.duration = kf.keytime;
-						nodeAnim.scaling.add(new NodeKeyframe<>(kf.keytime,
-								new Vector3(kf.value == null ? node.scale : kf.value)));
+						nodeAnim.scaling.add(
+								new NodeKeyframe<>(kf.keytime, new Vector3(kf.value == null ? node.scale : kf.value)));
 					}
 				}
-
+				
 				if ((nodeAnim.translation != null && nodeAnim.translation.size > 0)
 						|| (nodeAnim.rotation != null && nodeAnim.rotation.size > 0)
 						|| (nodeAnim.scaling != null && nodeAnim.scaling.size > 0))
@@ -192,9 +192,9 @@ public class Model implements Disposable {
 				animations.add(animation);
 		}
 	}
-
+	
 	private ObjectMap<NodePart, ArrayMap<String, Matrix4>> nodePartBones = new ObjectMap<>();
-
+	
 	protected void loadNodes(Iterable<ModelNode> modelNodes) {
 		nodePartBones.clear();
 		for (ModelNode node : modelNodes) {
@@ -208,11 +208,11 @@ public class Model implements Disposable {
 				e.key.invBoneBindTransforms.put(getNode(b.key), new Matrix4(b.value).inv());
 		}
 	}
-
+	
 	protected Node loadNode(ModelNode modelNode) {
 		Node node = new Node();
 		node.id = modelNode.id;
-
+		
 		if (modelNode.translation != null)
 			node.translation.set(modelNode.translation);
 		if (modelNode.rotation != null)
@@ -224,7 +224,7 @@ public class Model implements Disposable {
 			for (ModelNodePart modelNodePart : modelNode.parts) {
 				MeshPart meshPart = null;
 				Material meshMaterial = null;
-
+				
 				if (modelNodePart.meshPartId != null) {
 					for (MeshPart part : meshParts) {
 						if (modelNodePart.meshPartId.equals(part.id)) {
@@ -233,7 +233,7 @@ public class Model implements Disposable {
 						}
 					}
 				}
-
+				
 				if (modelNodePart.materialId != null) {
 					for (Material material : materials) {
 						if (modelNodePart.materialId.equals(material.id)) {
@@ -242,10 +242,10 @@ public class Model implements Disposable {
 						}
 					}
 				}
-
+				
 				if (meshPart == null || meshMaterial == null)
 					throw new GdxRuntimeException("Invalid node: " + node.id);
-
+				
 				if (meshPart != null && meshMaterial != null) {
 					NodePart nodePart = new NodePart();
 					nodePart.meshPart = meshPart;
@@ -256,22 +256,22 @@ public class Model implements Disposable {
 				}
 			}
 		}
-
+		
 		if (modelNode.children != null) {
 			for (ModelNode child : modelNode.children) {
 				node.addChild(loadNode(child));
 			}
 		}
-
+		
 		return node;
 	}
-
+	
 	protected void loadMeshes(Iterable<ModelMesh> meshes) {
 		for (ModelMesh mesh : meshes) {
 			convertMesh(mesh);
 		}
 	}
-
+	
 	protected void convertMesh(ModelMesh modelMesh) {
 		int numIndices = 0;
 		for (ModelMeshPart part : modelMesh.parts) {
@@ -279,11 +279,11 @@ public class Model implements Disposable {
 		}
 		VertexAttributes attributes = new VertexAttributes(modelMesh.attributes);
 		int numVertices = modelMesh.vertices.length / (attributes.vertexSize / 4);
-
+		
 		Mesh mesh = new Mesh(true, numVertices, numIndices, attributes);
 		meshes.add(mesh);
 		disposables.add(mesh);
-
+		
 		BufferUtils.copy(modelMesh.vertices, mesh.getVerticesBuffer(), modelMesh.vertices.length, 0);
 		int offset = 0;
 		mesh.getIndicesBuffer().clear();
@@ -302,13 +302,13 @@ public class Model implements Disposable {
 		for (MeshPart part : meshParts)
 			part.update();
 	}
-
+	
 	protected void loadMaterials(Iterable<ModelMaterial> modelMaterials, TextureProvider textureProvider) {
 		for (ModelMaterial mtl : modelMaterials) {
 			this.materials.add(convertMaterial(mtl, textureProvider));
 		}
 	}
-
+	
 	protected Material convertMaterial(ModelMaterial mtl, TextureProvider textureProvider) {
 		Material result = new Material();
 		result.id = mtl.id;
@@ -326,9 +326,9 @@ public class Model implements Disposable {
 			result.set(new FloatAttribute(FloatAttribute.Shininess, mtl.shininess));
 		if (mtl.opacity != 1.f)
 			result.set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, mtl.opacity));
-
+		
 		ObjectMap<String, Texture> textures = new ObjectMap<>();
-
+		
 		// FIXME uvScaling/uvTranslation totally ignored
 		if (mtl.textures != null) {
 			for (ModelTexture tex : mtl.textures) {
@@ -340,18 +340,18 @@ public class Model implements Disposable {
 					textures.put(tex.fileName, texture);
 					disposables.add(texture);
 				}
-
+				
 				TextureDescriptor descriptor = new TextureDescriptor(texture);
 				descriptor.minFilter = texture.getMinFilter();
 				descriptor.magFilter = texture.getMagFilter();
 				descriptor.uWrap = texture.getUWrap();
 				descriptor.vWrap = texture.getVWrap();
-
+				
 				float offsetU = tex.uvTranslation == null ? 0f : tex.uvTranslation.x;
 				float offsetV = tex.uvTranslation == null ? 0f : tex.uvTranslation.y;
 				float scaleU = tex.uvScaling == null ? 1f : tex.uvScaling.x;
 				float scaleV = tex.uvScaling == null ? 1f : tex.uvScaling.y;
-
+				
 				switch (tex.usage) {
 				case ModelTexture.USAGE_DIFFUSE:
 					result.set(new TextureAttribute(TextureAttribute.Diffuse, descriptor, offsetU, offsetV, scaleU,
@@ -384,10 +384,10 @@ public class Model implements Disposable {
 				}
 			}
 		}
-
+		
 		return result;
 	}
-
+	
 	/**
 	 * Adds a {@link Disposable} to be managed and disposed by this Model. Can be
 	 * used to keep track of manually loaded textures for {@link ModelInstance}.
@@ -398,7 +398,7 @@ public class Model implements Disposable {
 		if (!disposables.contains(disposable, true))
 			disposables.add(disposable);
 	}
-
+	
 	/**
 	 * @return the {@link Disposable} objects that will be disposed when the
 	 *         {@link #dispose()} method is called.
@@ -406,14 +406,14 @@ public class Model implements Disposable {
 	public Iterable<Disposable> getManagedDisposables() {
 		return disposables;
 	}
-
+	
 	@Override
 	public void dispose() {
 		for (Disposable disposable : disposables) {
 			disposable.dispose();
 		}
 	}
-
+	
 	/**
 	 * Calculates the local and world transform of all {@link Node} instances in
 	 * this model, recursively. First each {@link Node#localTransform} transform is
@@ -435,7 +435,7 @@ public class Model implements Disposable {
 			nodes.get(i).calculateBoneTransforms(true);
 		}
 	}
-
+	
 	/**
 	 * Calculate the bounding box of this model instance. This is a potential slow
 	 * operation, it is advised to cache the result.
@@ -447,7 +447,7 @@ public class Model implements Disposable {
 		out.inf();
 		return extendBoundingBox(out);
 	}
-
+	
 	/**
 	 * Extends the bounding box with the bounds of this model instance. This is a
 	 * potential slow operation, it is advised to cache the result.
@@ -461,7 +461,7 @@ public class Model implements Disposable {
 			nodes.get(i).extendBoundingBox(out);
 		return out;
 	}
-
+	
 	/**
 	 * @param id The ID of the animation to fetch (case sensitive).
 	 * @return The {@link Animation} with the specified id, or null if not
@@ -470,7 +470,7 @@ public class Model implements Disposable {
 	public Animation getAnimation(final String id) {
 		return getAnimation(id, true);
 	}
-
+	
 	/**
 	 * @param id         The ID of the animation to fetch.
 	 * @param ignoreCase whether to use case sensitivity when comparing the
@@ -492,7 +492,7 @@ public class Model implements Disposable {
 		}
 		return null;
 	}
-
+	
 	/**
 	 * @param id The ID of the material to fetch.
 	 * @return The {@link Material} with the specified id, or null if not available.
@@ -500,7 +500,7 @@ public class Model implements Disposable {
 	public Material getMaterial(final String id) {
 		return getMaterial(id, true);
 	}
-
+	
 	/**
 	 * @param id         The ID of the material to fetch.
 	 * @param ignoreCase whether to use case sensitivity when comparing the material
@@ -521,7 +521,7 @@ public class Model implements Disposable {
 		}
 		return null;
 	}
-
+	
 	/**
 	 * @param id The ID of the node to fetch.
 	 * @return The {@link Node} with the specified id, or null if not found.
@@ -529,7 +529,7 @@ public class Model implements Disposable {
 	public Node getNode(final String id) {
 		return getNode(id, true);
 	}
-
+	
 	/**
 	 * @param id        The ID of the node to fetch.
 	 * @param recursive false to fetch a root node only, true to search the entire
@@ -539,7 +539,7 @@ public class Model implements Disposable {
 	public Node getNode(final String id, boolean recursive) {
 		return getNode(id, recursive, false);
 	}
-
+	
 	/**
 	 * @param id         The ID of the node to fetch.
 	 * @param recursive  false to fetch a root node only, true to search the entire

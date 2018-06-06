@@ -25,7 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.Action;
  */
 public class RemoveActorAction extends Action {
 	private boolean removed;
-
+	
 	@Override
 	public boolean act(float delta) {
 		if (!removed) {
@@ -34,7 +34,7 @@ public class RemoveActorAction extends Action {
 		}
 		return true;
 	}
-
+	
 	@Override
 	public void restart() {
 		removed = false;

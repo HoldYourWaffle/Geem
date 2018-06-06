@@ -25,27 +25,27 @@ import com.badlogic.gdx.scenes.scene2d.Action;
  */
 public class AddAction extends Action {
 	private Action action;
-
+	
 	@Override
 	public boolean act(float delta) {
 		target.addAction(action);
 		return true;
 	}
-
+	
 	public Action getAction() {
 		return action;
 	}
-
+	
 	public void setAction(Action action) {
 		this.action = action;
 	}
-
+	
 	@Override
 	public void restart() {
 		if (action != null)
 			action.restart();
 	}
-
+	
 	@Override
 	public void reset() {
 		super.reset();

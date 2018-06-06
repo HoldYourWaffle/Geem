@@ -29,13 +29,13 @@ import java.util.Comparator;
 public class QuickSelect<T> {
 	private T[] array;
 	private Comparator<? super T> comp;
-
+	
 	public int select(T[] items, Comparator<T> comp, int n, int size) {
 		this.array = items;
 		this.comp = comp;
 		return recursiveSelect(0, size - 1, n);
 	}
-
+	
 	private int partition(int left, int right, int pivot) {
 		T pivotValue = array[pivot];
 		swap(right, pivot);
@@ -49,7 +49,7 @@ public class QuickSelect<T> {
 		swap(right, storage);
 		return storage;
 	}
-
+	
 	private int recursiveSelect(int left, int right, int k) {
 		if (left == right)
 			return left;
@@ -66,7 +66,7 @@ public class QuickSelect<T> {
 		}
 		return result;
 	}
-
+	
 	/**
 	 * Median of Three has the potential to outperform a random pivot, especially
 	 * for partially sorted arrays
@@ -76,7 +76,7 @@ public class QuickSelect<T> {
 		int midIdx = (leftIdx + rightIdx) / 2;
 		T mid = array[midIdx];
 		T right = array[rightIdx];
-
+		
 		// spaghetti median of three algorithm
 		// does at most 3 comparisons
 		if (comp.compare(left, mid) > 0) {
@@ -97,7 +97,7 @@ public class QuickSelect<T> {
 			}
 		}
 	}
-
+	
 	private void swap(int left, int right) {
 		T tmp = array[left];
 		array[left] = array[right];

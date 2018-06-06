@@ -41,31 +41,31 @@ public abstract class GLTexture implements Disposable {
 	protected TextureFilter magFilter = TextureFilter.Nearest;
 	protected TextureWrap uWrap = TextureWrap.ClampToEdge;
 	protected TextureWrap vWrap = TextureWrap.ClampToEdge;
-
+	
 	/** @return the width of the texture in pixels */
 	public abstract int getWidth();
-
+	
 	/** @return the height of the texture in pixels */
 	public abstract int getHeight();
-
+	
 	/** @return the depth of the texture in pixels */
 	public abstract int getDepth();
-
+	
 	/** Generates a new OpenGL texture with the specified target. */
 	public GLTexture(int glTarget) {
 		this(glTarget, Gdx.gl.glGenTexture());
 	}
-
+	
 	public GLTexture(int glTarget, int glHandle) {
 		this.glTarget = glTarget;
 		this.glHandle = glHandle;
 	}
-
+	
 	/** @return whether this texture is managed or not. */
 	public abstract boolean isManaged();
-
+	
 	protected abstract void reload();
-
+	
 	/**
 	 * Binds this texture. The texture will be bound to the currently active texture
 	 * unit specified via {@link GL20#glActiveTexture(int)}.
@@ -73,7 +73,7 @@ public abstract class GLTexture implements Disposable {
 	public void bind() {
 		Gdx.gl.glBindTexture(glTarget, glHandle);
 	}
-
+	
 	/**
 	 * Binds the texture to the given texture unit. Sets the currently active
 	 * texture unit via {@link GL20#glActiveTexture(int)}.
@@ -84,17 +84,17 @@ public abstract class GLTexture implements Disposable {
 		Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + unit);
 		Gdx.gl.glBindTexture(glTarget, glHandle);
 	}
-
+	
 	/** @return The {@link Texture.TextureFilter} used for minification. */
 	public TextureFilter getMinFilter() {
 		return minFilter;
 	}
-
+	
 	/** @return The {@link Texture.TextureFilter} used for magnification. */
 	public TextureFilter getMagFilter() {
 		return magFilter;
 	}
-
+	
 	/**
 	 * @return The {@link Texture.TextureWrap} used for horizontal (U) texture
 	 *         coordinates.
@@ -102,7 +102,7 @@ public abstract class GLTexture implements Disposable {
 	public TextureWrap getUWrap() {
 		return uWrap;
 	}
-
+	
 	/**
 	 * @return The {@link Texture.TextureWrap} used for vertical (V) texture
 	 *         coordinates.
@@ -110,12 +110,12 @@ public abstract class GLTexture implements Disposable {
 	public TextureWrap getVWrap() {
 		return vWrap;
 	}
-
+	
 	/** @return The OpenGL handle for this texture. */
 	public int getTextureObjectHandle() {
 		return glHandle;
 	}
-
+	
 	/**
 	 * Sets the {@link TextureWrap} for this texture on the u and v axis. Assumes
 	 * the texture is bound and active!
@@ -126,7 +126,7 @@ public abstract class GLTexture implements Disposable {
 	public void unsafeSetWrap(TextureWrap u, TextureWrap v) {
 		unsafeSetWrap(u, v, false);
 	}
-
+	
 	/**
 	 * Sets the {@link TextureWrap} for this texture on the u and v axis. Assumes
 	 * the texture is bound and active!
@@ -146,7 +146,7 @@ public abstract class GLTexture implements Disposable {
 			vWrap = v;
 		}
 	}
-
+	
 	/**
 	 * Sets the {@link TextureWrap} for this texture on the u and v axis. This will
 	 * bind this texture!
@@ -161,7 +161,7 @@ public abstract class GLTexture implements Disposable {
 		Gdx.gl.glTexParameteri(glTarget, GL20.GL_TEXTURE_WRAP_S, u.getGLEnum());
 		Gdx.gl.glTexParameteri(glTarget, GL20.GL_TEXTURE_WRAP_T, v.getGLEnum());
 	}
-
+	
 	/**
 	 * Sets the {@link TextureFilter} for this texture for minification and
 	 * magnification. Assumes the texture is bound and active!
@@ -172,7 +172,7 @@ public abstract class GLTexture implements Disposable {
 	public void unsafeSetFilter(TextureFilter minFilter, TextureFilter magFilter) {
 		unsafeSetFilter(minFilter, magFilter, false);
 	}
-
+	
 	/**
 	 * Sets the {@link TextureFilter} for this texture for minification and
 	 * magnification. Assumes the texture is bound and active!
@@ -192,7 +192,7 @@ public abstract class GLTexture implements Disposable {
 			this.magFilter = magFilter;
 		}
 	}
-
+	
 	/**
 	 * Sets the {@link TextureFilter} for this texture for minification and
 	 * magnification. This will bind this texture!
@@ -207,7 +207,7 @@ public abstract class GLTexture implements Disposable {
 		Gdx.gl.glTexParameteri(glTarget, GL20.GL_TEXTURE_MIN_FILTER, minFilter.getGLEnum());
 		Gdx.gl.glTexParameteri(glTarget, GL20.GL_TEXTURE_MAG_FILTER, magFilter.getGLEnum());
 	}
-
+	
 	/** Destroys the OpenGL Texture as specified by the glHandle. */
 	protected void delete() {
 		if (glHandle != 0) {
@@ -215,31 +215,31 @@ public abstract class GLTexture implements Disposable {
 			glHandle = 0;
 		}
 	}
-
+	
 	@Override
 	public void dispose() {
 		delete();
 	}
-
+	
 	protected static void uploadImageData(int target, TextureData data) {
 		uploadImageData(target, data, 0);
 	}
-
+	
 	public static void uploadImageData(int target, TextureData data, int miplevel) {
 		if (data == null) {
 			// FIXME: remove texture on target?
 			return;
 		}
-
+		
 		if (!data.isPrepared())
 			data.prepare();
-
+		
 		final TextureDataType type = data.getType();
 		if (type == TextureDataType.Custom) {
 			data.consumeCustomData(target);
 			return;
 		}
-
+		
 		Pixmap pixmap = data.consumePixmap();
 		boolean disposePixmap = data.disposePixmap();
 		if (data.getFormat() != pixmap.getFormat()) {
@@ -252,7 +252,7 @@ public abstract class GLTexture implements Disposable {
 			pixmap = tmp;
 			disposePixmap = true;
 		}
-
+		
 		Gdx.gl.glPixelStorei(GL20.GL_UNPACK_ALIGNMENT, 1);
 		if (data.useMipMaps()) {
 			MipMapGenerator.generateMipMap(target, pixmap, pixmap.getWidth(), pixmap.getHeight());

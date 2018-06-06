@@ -60,10 +60,10 @@ public class IndexBufferObject implements IndexData {
 	boolean isDirty = true;
 	boolean isBound = false;
 	final int usage;
-
+	
 	// used to work around bug: https://android-review.googlesource.com/#/c/73175/
 	private final boolean empty;
-
+	
 	/**
 	 * Creates a new static IndexBufferObject to be used with vertex arrays.
 	 * 
@@ -72,7 +72,7 @@ public class IndexBufferObject implements IndexData {
 	public IndexBufferObject(int maxIndices) {
 		this(true, maxIndices);
 	}
-
+	
 	/**
 	 * Creates a new IndexBufferObject.
 	 * 
@@ -80,35 +80,35 @@ public class IndexBufferObject implements IndexData {
 	 * @param maxIndices the maximum number of indices this buffer can hold
 	 */
 	public IndexBufferObject(boolean isStatic, int maxIndices) {
-
+		
 		empty = maxIndices == 0;
 		if (empty) {
 			maxIndices = 1; // avoid allocating a zero-sized buffer because of bug in Android's ART <
 							// Android 5.0
 		}
-
+		
 		byteBuffer = BufferUtils.newUnsafeByteBuffer(maxIndices * 2);
 		isDirect = true;
-
+		
 		buffer = byteBuffer.asShortBuffer();
 		buffer.flip();
 		byteBuffer.flip();
 		bufferHandle = Gdx.gl20.glGenBuffer();
 		usage = isStatic ? GL20.GL_STATIC_DRAW : GL20.GL_DYNAMIC_DRAW;
 	}
-
+	
 	/** @return the number of indices currently stored in this buffer */
 	@Override
 	public int getNumIndices() {
 		return empty ? 0 : buffer.limit();
 	}
-
+	
 	/** @return the maximum number of indices this IndexBufferObject can store. */
 	@Override
 	public int getNumMaxIndices() {
 		return empty ? 0 : buffer.capacity();
 	}
-
+	
 	/**
 	 * <p>
 	 * Sets the indices of this IndexBufferObject, discarding the old indices. The
@@ -133,13 +133,13 @@ public class IndexBufferObject implements IndexData {
 		buffer.flip();
 		byteBuffer.position(0);
 		byteBuffer.limit(count << 1);
-
+		
 		if (isBound) {
 			Gdx.gl20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
 			isDirty = false;
 		}
 	}
-
+	
 	@Override
 	public void setIndices(ShortBuffer indices) {
 		isDirty = true;
@@ -150,13 +150,13 @@ public class IndexBufferObject implements IndexData {
 		indices.position(pos);
 		byteBuffer.position(0);
 		byteBuffer.limit(buffer.limit() << 1);
-
+		
 		if (isBound) {
 			Gdx.gl20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
 			isDirty = false;
 		}
 	}
-
+	
 	@Override
 	public void updateIndices(int targetOffset, short[] indices, int offset, int count) {
 		isDirty = true;
@@ -165,13 +165,13 @@ public class IndexBufferObject implements IndexData {
 		BufferUtils.copy(indices, offset, byteBuffer, count);
 		byteBuffer.position(pos);
 		buffer.position(0);
-
+		
 		if (isBound) {
 			Gdx.gl20.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
 			isDirty = false;
 		}
 	}
-
+	
 	/**
 	 * <p>
 	 * Returns the underlying ShortBuffer. If you modify the buffer contents they
@@ -186,13 +186,13 @@ public class IndexBufferObject implements IndexData {
 		isDirty = true;
 		return buffer;
 	}
-
+	
 	/** Binds this IndexBufferObject for rendering with glDrawElements. */
 	@Override
 	public void bind() {
 		if (bufferHandle == 0)
 			throw new GdxRuntimeException("No buffer allocated!");
-
+		
 		Gdx.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, bufferHandle);
 		if (isDirty) {
 			byteBuffer.limit(buffer.limit() * 2);
@@ -201,14 +201,14 @@ public class IndexBufferObject implements IndexData {
 		}
 		isBound = true;
 	}
-
+	
 	/** Unbinds this IndexBufferObject. */
 	@Override
 	public void unbind() {
 		Gdx.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
 		isBound = false;
 	}
-
+	
 	/**
 	 * Invalidates the IndexBufferObject so a new OpenGL buffer handle is created.
 	 * Use this in case of a context loss.
@@ -218,14 +218,14 @@ public class IndexBufferObject implements IndexData {
 		bufferHandle = Gdx.gl20.glGenBuffer();
 		isDirty = true;
 	}
-
+	
 	/** Disposes this IndexBufferObject and all its associated OpenGL resources. */
 	@Override
 	public void dispose() {
 		Gdx.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
 		Gdx.gl20.glDeleteBuffer(bufferHandle);
 		bufferHandle = 0;
-
+		
 		BufferUtils.disposeUnsafeByteBuffer(byteBuffer);
 	}
 }

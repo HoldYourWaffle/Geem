@@ -29,64 +29,64 @@ import java.util.NoSuchElementException;
  */
 public class OrderedMap<K, V> extends ObjectMap<K, V> {
 	final Array<K> keys;
-
+	
 	private Entries entries1, entries2;
 	private Values values1, values2;
 	private Keys keys1, keys2;
-
+	
 	public OrderedMap() {
 		keys = new Array();
 	}
-
+	
 	public OrderedMap(int initialCapacity) {
 		super(initialCapacity);
 		keys = new Array(capacity);
 	}
-
+	
 	public OrderedMap(int initialCapacity, float loadFactor) {
 		super(initialCapacity, loadFactor);
 		keys = new Array(capacity);
 	}
-
+	
 	public OrderedMap(OrderedMap<? extends K, ? extends V> map) {
 		super(map);
 		keys = new Array(map.keys);
 	}
-
+	
 	@Override
 	public V put(K key, V value) {
 		if (!containsKey(key))
 			keys.add(key);
 		return super.put(key, value);
 	}
-
+	
 	@Override
 	public V remove(K key) {
 		keys.removeValue(key, false);
 		return super.remove(key);
 	}
-
+	
 	@Override
 	public void clear(int maximumCapacity) {
 		keys.clear();
 		super.clear(maximumCapacity);
 	}
-
+	
 	@Override
 	public void clear() {
 		keys.clear();
 		super.clear();
 	}
-
+	
 	public Array<K> orderedKeys() {
 		return keys;
 	}
-
+	
 	@Override
 	public Entries<K, V> iterator() {
 		return entries();
 	}
-
+	
 	/**
 	 * Returns an iterator for the entries in the map. Remove is supported. Note
 	 * that the same iterator instance is returned each time this method is called.
@@ -110,7 +110,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		entries1.valid = false;
 		return entries2;
 	}
-
+	
 	/**
 	 * Returns an iterator for the values in the map. Remove is supported. Note that
 	 * the same iterator instance is returned each time this method is called. Use
@@ -134,7 +134,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		values1.valid = false;
 		return values2;
 	}
-
+	
 	/**
 	 * Returns an iterator for the keys in the map. Remove is supported. Note that
 	 * the same iterator instance is returned each time this method is called. Use
@@ -157,7 +157,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		keys1.valid = false;
 		return keys2;
 	}
-
+	
 	@Override
 	public String toString() {
 		if (size == 0)
@@ -176,21 +176,21 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		buffer.append('}');
 		return buffer.toString();
 	}
-
+	
 	static public class OrderedMapEntries<K, V> extends Entries<K, V> {
 		private Array<K> keys;
-
+		
 		public OrderedMapEntries(OrderedMap<K, V> map) {
 			super(map);
 			keys = map.keys;
 		}
-
+		
 		@Override
 		public void reset() {
 			nextIndex = 0;
 			hasNext = map.size > 0;
 		}
-
+		
 		@Override
 		public Entry next() {
 			if (!hasNext)
@@ -203,7 +203,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 			hasNext = nextIndex < map.size;
 			return entry;
 		}
-
+		
 		@Override
 		public void remove() {
 			if (currentIndex < 0)
@@ -212,21 +212,21 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 			nextIndex--;
 		}
 	}
-
+	
 	static public class OrderedMapKeys<K> extends Keys<K> {
 		private Array<K> keys;
-
+		
 		public OrderedMapKeys(OrderedMap<K, ?> map) {
 			super(map);
 			keys = map.keys;
 		}
-
+		
 		@Override
 		public void reset() {
 			nextIndex = 0;
 			hasNext = map.size > 0;
 		}
-
+		
 		@Override
 		public K next() {
 			if (!hasNext)
@@ -239,7 +239,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 			hasNext = nextIndex < map.size;
 			return key;
 		}
-
+		
 		@Override
 		public void remove() {
 			if (currentIndex < 0)
@@ -249,21 +249,21 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 			currentIndex = -1;
 		}
 	}
-
+	
 	static public class OrderedMapValues<V> extends Values<V> {
 		private Array keys;
-
+		
 		public OrderedMapValues(OrderedMap<?, V> map) {
 			super(map);
 			keys = map.keys;
 		}
-
+		
 		@Override
 		public void reset() {
 			nextIndex = 0;
 			hasNext = map.size > 0;
 		}
-
+		
 		@Override
 		public V next() {
 			if (!hasNext)
@@ -276,7 +276,7 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 			hasNext = nextIndex < map.size;
 			return value;
 		}
-
+		
 		@Override
 		public void remove() {
 			if (currentIndex < 0)

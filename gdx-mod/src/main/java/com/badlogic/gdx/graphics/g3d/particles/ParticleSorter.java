@@ -30,12 +30,12 @@ import com.badlogic.gdx.utils.Array;
  */
 public abstract class ParticleSorter {
 	static final Vector3 TMP_V1 = new Vector3();
-
+	
 	/** Using this class will not apply sorting */
 	public static class None extends ParticleSorter {
 		int currentCapacity = 0;
 		int[] indices;
-
+		
 		@Override
 		public void ensureCapacity(int capacity) {
 			if (currentCapacity < capacity) {
@@ -45,19 +45,19 @@ public abstract class ParticleSorter {
 				currentCapacity = capacity;
 			}
 		}
-
+		
 		@Override
 		public <T extends ParticleControllerRenderData> int[] sort(Array<T> renderData) {
 			return indices;
 		}
 	}
-
+	
 	/** This class will sort all the particles using the distance from camera. */
 	public static class Distance extends ParticleSorter {
 		private float[] distances;
 		private int[] particleIndices, particleOffsets;
 		private int currentSize = 0;
-
+		
 		@Override
 		public void ensureCapacity(int capacity) {
 			if (currentSize < capacity) {
@@ -67,7 +67,7 @@ public abstract class ParticleSorter {
 				currentSize = capacity;
 			}
 		}
-
+		
 		@Override
 		public <T extends ParticleControllerRenderData> int[] sort(Array<T> renderData) {
 			float[] val = camera.view.val;
@@ -83,15 +83,15 @@ public abstract class ParticleSorter {
 				}
 				count += data.controller.particles.size;
 			}
-
+			
 			qsort(0, count - 1);
-
+			
 			for (i = 0; i < count; ++i) {
 				particleOffsets[particleIndices[i]] = i;
 			}
 			return particleOffsets;
 		}
-
+		
 		public void qsort(int si, int ei) {
 			// base case
 			if (si < ei) {
@@ -104,7 +104,7 @@ public abstract class ParticleSorter {
 							tmp = distances[j];
 							distances[j] = distances[j - 1];
 							distances[j - 1] = tmp;
-
+							
 							// Swap indices
 							tmpIndex = particleIndices[j];
 							particleIndices[j] = particleIndices[j - 1];
@@ -112,12 +112,12 @@ public abstract class ParticleSorter {
 						}
 					return;
 				}
-
+				
 				// Quick
 				float pivot = distances[si];
 				int i = si + 1;
 				particlesPivotIndex = particleIndices[si];
-
+				
 				// partition array
 				for (int j = si + 1; j <= ei; j++) {
 					if (pivot > distances[j]) {
@@ -126,7 +126,7 @@ public abstract class ParticleSorter {
 							tmp = distances[j];
 							distances[j] = distances[i];
 							distances[i] = tmp;
-
+							
 							// Swap indices
 							tmpIndex = particleIndices[j];
 							particleIndices[j] = particleIndices[i];
@@ -135,33 +135,33 @@ public abstract class ParticleSorter {
 						i++;
 					}
 				}
-
+				
 				// put pivot in right position
 				distances[si] = distances[i - 1];
 				distances[i - 1] = pivot;
 				particleIndices[si] = particleIndices[i - 1];
 				particleIndices[i - 1] = particlesPivotIndex;
-
+				
 				// call qsort on right and left sides of pivot
 				qsort(si, i - 2);
 				qsort(i, ei);
 			}
 		}
 	}
-
+	
 	protected Camera camera;
-
+	
 	/**
 	 * @return an array of offsets where each particle should be put in the
 	 *         resulting mesh (also if more than one mesh will be generated, this is
 	 *         an absolute offset considering a BIG output array).
 	 */
 	public abstract <T extends ParticleControllerRenderData> int[] sort(Array<T> renderData);
-
+	
 	public void setCamera(Camera camera) {
 		this.camera = camera;
 	}
-
+	
 	/**
 	 * This method is called when the batch has increased the underlying particle
 	 * buffer. In this way the sorter can increase the data structures used to sort

@@ -41,35 +41,35 @@ import com.badlogic.gdx.utils.Scaling;
  */
 public class ScalingViewport extends Viewport {
 	private Scaling scaling;
-
+	
 	/** Creates a new viewport using a new {@link OrthographicCamera}. */
 	public ScalingViewport(Scaling scaling, float worldWidth, float worldHeight) {
 		this(scaling, worldWidth, worldHeight, new OrthographicCamera());
 	}
-
+	
 	public ScalingViewport(Scaling scaling, float worldWidth, float worldHeight, Camera camera) {
 		this.scaling = scaling;
 		setWorldSize(worldWidth, worldHeight);
 		setCamera(camera);
 	}
-
+	
 	@Override
 	public void update(int screenWidth, int screenHeight, boolean centerCamera) {
 		Vector2 scaled = scaling.apply(getWorldWidth(), getWorldHeight(), screenWidth, screenHeight);
 		int viewportWidth = Math.round(scaled.x);
 		int viewportHeight = Math.round(scaled.y);
-
+		
 		// Center.
 		setScreenBounds((screenWidth - viewportWidth) / 2, (screenHeight - viewportHeight) / 2, viewportWidth,
 				viewportHeight);
-
+		
 		apply(centerCamera);
 	}
-
+	
 	public Scaling getScaling() {
 		return scaling;
 	}
-
+	
 	public void setScaling(Scaling scaling) {
 		this.scaling = scaling;
 	}

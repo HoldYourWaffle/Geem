@@ -53,102 +53,102 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class Texture extends GLTexture {
 	private static AssetManager assetManager;
 	final static Map<Application, Array<Texture>> managedTextures = new HashMap<>();
-
+	
 	public enum TextureFilter {
 		Nearest(GL20.GL_NEAREST), Linear(GL20.GL_LINEAR), MipMap(GL20.GL_LINEAR_MIPMAP_LINEAR),
 		MipMapNearestNearest(GL20.GL_NEAREST_MIPMAP_NEAREST), MipMapLinearNearest(GL20.GL_LINEAR_MIPMAP_NEAREST),
 		MipMapNearestLinear(GL20.GL_NEAREST_MIPMAP_LINEAR), MipMapLinearLinear(GL20.GL_LINEAR_MIPMAP_LINEAR);
-
+		
 		final int glEnum;
-
+		
 		TextureFilter(int glEnum) {
 			this.glEnum = glEnum;
 		}
-
+		
 		public boolean isMipMap() {
 			return glEnum != GL20.GL_NEAREST && glEnum != GL20.GL_LINEAR;
 		}
-
+		
 		public int getGLEnum() {
 			return glEnum;
 		}
 	}
-
+	
 	public enum TextureWrap {
 		MirroredRepeat(GL20.GL_MIRRORED_REPEAT), ClampToEdge(GL20.GL_CLAMP_TO_EDGE), Repeat(GL20.GL_REPEAT);
-
+		
 		final int glEnum;
-
+		
 		TextureWrap(int glEnum) {
 			this.glEnum = glEnum;
 		}
-
+		
 		public int getGLEnum() {
 			return glEnum;
 		}
 	}
-
+	
 	TextureData data;
-
+	
 	public Texture(String internalPath) {
 		this(Gdx.files.internal(internalPath));
 	}
-
+	
 	public Texture(FileHandle file) {
 		this(file, null, false);
 	}
-
+	
 	public Texture(FileHandle file, boolean useMipMaps) {
 		this(file, null, useMipMaps);
 	}
-
+	
 	public Texture(FileHandle file, Format format, boolean useMipMaps) {
 		this(TextureData.Factory.loadFromFile(file, format, useMipMaps));
 	}
-
+	
 	public Texture(Pixmap pixmap) {
 		this(new PixmapTextureData(pixmap, null, false, false));
 	}
-
+	
 	public Texture(Pixmap pixmap, boolean useMipMaps) {
 		this(new PixmapTextureData(pixmap, null, useMipMaps, false));
 	}
-
+	
 	public Texture(Pixmap pixmap, Format format, boolean useMipMaps) {
 		this(new PixmapTextureData(pixmap, format, useMipMaps, false));
 	}
-
+	
 	public Texture(int width, int height, Format format) {
 		this(new PixmapTextureData(new Pixmap(width, height, format), null, false, true));
 	}
-
+	
 	public Texture(TextureData data) {
 		this(GL20.GL_TEXTURE_2D, Gdx.gl.glGenTexture(), data);
 	}
-
+	
 	protected Texture(int glTarget, int glHandle, TextureData data) {
 		super(glTarget, glHandle);
 		load(data);
 		if (data.isManaged())
 			addManagedTexture(Gdx.app, this);
 	}
-
+	
 	public void load(TextureData data) {
 		if (this.data != null && data.isManaged() != this.data.isManaged())
 			throw new GdxRuntimeException("New data must have the same managed status as the old data");
 		this.data = data;
-
+		
 		if (!data.isPrepared())
 			data.prepare();
-
+		
 		bind();
 		uploadImageData(GL20.GL_TEXTURE_2D, data);
-
+		
 		unsafeSetFilter(minFilter, magFilter, true);
 		unsafeSetWrap(uWrap, vWrap, true);
 		Gdx.gl.glBindTexture(glTarget, 0);
 	}
-
+	
 	/**
 	 * Used internally to reload after context loss. Creates a new GL handle then
 	 * calls {@link #load(TextureData)}. Use this only if you know what you do!
@@ -160,7 +160,7 @@ public class Texture extends GLTexture {
 		glHandle = Gdx.gl.glGenTexture();
 		load(data);
 	}
-
+	
 	/**
 	 * Draws the given {@link Pixmap} to the texture at position x, y. No clipping
 	 * is performed so you have to make sure that you draw only inside the texture
@@ -173,37 +173,37 @@ public class Texture extends GLTexture {
 	public void draw(Pixmap pixmap, int x, int y) {
 		if (data.isManaged())
 			throw new GdxRuntimeException("can't draw to a managed texture");
-
+		
 		bind();
 		Gdx.gl.glTexSubImage2D(glTarget, 0, x, y, pixmap.getWidth(), pixmap.getHeight(), pixmap.getGLFormat(),
 				pixmap.getGLType(), pixmap.getPixels());
 	}
-
+	
 	@Override
 	public int getWidth() {
 		return data.getWidth();
 	}
-
+	
 	@Override
 	public int getHeight() {
 		return data.getHeight();
 	}
-
+	
 	@Override
 	public int getDepth() {
 		return 0;
 	}
-
+	
 	public TextureData getTextureData() {
 		return data;
 	}
-
+	
 	/** @return whether this texture is managed or not. */
 	@Override
 	public boolean isManaged() {
 		return data.isManaged();
 	}
-
+	
 	/** Disposes all resources associated with the texture */
 	@Override
 	public void dispose() {
@@ -221,7 +221,7 @@ public class Texture extends GLTexture {
 			if (managedTextures.get(Gdx.app) != null)
 				managedTextures.get(Gdx.app).removeValue(this, true);
 	}
-
+	
 	private static void addManagedTexture(Application app, Texture texture) {
 		Array<Texture> managedTextureArray = managedTextures.get(app);
 		if (managedTextureArray == null)
@@ -229,12 +229,12 @@ public class Texture extends GLTexture {
 		managedTextureArray.add(texture);
 		managedTextures.put(app, managedTextureArray);
 	}
-
+	
 	/** Clears all managed textures. This is an internal method. Do not use it! */
 	public static void clearAllTextures(Application app) {
 		managedTextures.remove(app);
 	}
-
+	
 	/**
 	 * Invalidate all managed textures. This is an internal method. Do not use it!
 	 */
@@ -242,7 +242,7 @@ public class Texture extends GLTexture {
 		Array<Texture> managedTextureArray = managedTextures.get(app);
 		if (managedTextureArray == null)
 			return;
-
+		
 		if (assetManager == null) {
 			for (int i = 0; i < managedTextureArray.size; i++) {
 				Texture texture = managedTextureArray.get(i);
@@ -253,7 +253,7 @@ public class Texture extends GLTexture {
 			// otherwise the ref counting trick below wouldn't work (when a texture is
 			// currently on the task stack of the manager.)
 			assetManager.finishLoading();
-
+			
 			// next we go through each texture and reload either directly or via the
 			// asset manager.
 			Array<Texture> textures = new Array<>(managedTextureArray);
@@ -269,7 +269,7 @@ public class Texture extends GLTexture {
 					final int refCount = assetManager.getReferenceCount(fileName);
 					assetManager.setReferenceCount(fileName, 0);
 					texture.glHandle = 0;
-
+					
 					// create the parameters, passing the reference to the texture as
 					// well as a callback that sets the ref count.
 					TextureParameter params = new TextureParameter();
@@ -282,7 +282,7 @@ public class Texture extends GLTexture {
 					params.texture = texture; // special parameter which will ensure that the references stay the same.
 					params.loadedCallback = (assetManager, fileName1, type) -> assetManager.setReferenceCount(fileName1,
 							refCount);
-
+					
 					// unload the texture, create a new gl handle then reload it.
 					assetManager.unload(fileName);
 					texture.glHandle = Gdx.gl.glGenTexture();
@@ -293,7 +293,7 @@ public class Texture extends GLTexture {
 			managedTextureArray.addAll(textures);
 		}
 	}
-
+	
 	/**
 	 * Sets the {@link AssetManager}. When the context is lost, textures managed by
 	 * the asset manager are reloaded by the manager on a separate thread (provided
@@ -306,7 +306,7 @@ public class Texture extends GLTexture {
 	public static void setAssetManager(AssetManager manager) {
 		Texture.assetManager = manager;
 	}
-
+	
 	public static String getManagedStatus() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Managed textures/app: { ");
@@ -317,12 +317,12 @@ public class Texture extends GLTexture {
 		builder.append("}");
 		return builder.toString();
 	}
-
+	
 	/** @return the number of managed textures currently loaded */
 	public static int getNumManagedTextures() {
 		return managedTextures.get(Gdx.app).size;
 	}
-
+	
 	public TextureRegion asRegion() {
 		return new TextureRegion(this);
 	}

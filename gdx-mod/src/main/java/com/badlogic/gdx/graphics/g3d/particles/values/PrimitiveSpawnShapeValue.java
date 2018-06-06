@@ -28,30 +28,30 @@ import com.badlogic.gdx.utils.JsonValue;
  */
 public abstract class PrimitiveSpawnShapeValue extends SpawnShapeValue {
 	protected static final Vector3 TMP_V1 = new Vector3();
-
+	
 	static public enum SpawnSide {
 		both, top, bottom
 	}
-
+	
 	public ScaledNumericValue spawnWidthValue, spawnHeightValue, spawnDepthValue;
 	protected float spawnWidth, spawnWidthDiff;
 	protected float spawnHeight, spawnHeightDiff;
 	protected float spawnDepth, spawnDepthDiff;
 	boolean edges = false;
-
+	
 	public PrimitiveSpawnShapeValue() {
 		spawnWidthValue = new ScaledNumericValue();
 		spawnHeightValue = new ScaledNumericValue();
 		spawnDepthValue = new ScaledNumericValue();
 	}
-
+	
 	public PrimitiveSpawnShapeValue(PrimitiveSpawnShapeValue value) {
 		super(value);
 		spawnWidthValue = new ScaledNumericValue();
 		spawnHeightValue = new ScaledNumericValue();
 		spawnDepthValue = new ScaledNumericValue();
 	}
-
+	
 	@Override
 	public void setActive(boolean active) {
 		super.setActive(active);
@@ -59,51 +59,51 @@ public abstract class PrimitiveSpawnShapeValue extends SpawnShapeValue {
 		spawnHeightValue.setActive(true);
 		spawnDepthValue.setActive(true);
 	}
-
+	
 	public boolean isEdges() {
 		return edges;
 	}
-
+	
 	public void setEdges(boolean edges) {
 		this.edges = edges;
 	}
-
+	
 	public ScaledNumericValue getSpawnWidth() {
 		return spawnWidthValue;
 	}
-
+	
 	public ScaledNumericValue getSpawnHeight() {
 		return spawnHeightValue;
 	}
-
+	
 	public ScaledNumericValue getSpawnDepth() {
 		return spawnDepthValue;
 	}
-
+	
 	public void setDimensions(float width, float height, float depth) {
 		spawnWidthValue.setHigh(width);
 		spawnHeightValue.setHigh(height);
 		spawnDepthValue.setHigh(depth);
 	}
-
+	
 	@Override
 	public void start() {
 		spawnWidth = spawnWidthValue.newLowValue();
 		spawnWidthDiff = spawnWidthValue.newHighValue();
 		if (!spawnWidthValue.isRelative())
 			spawnWidthDiff -= spawnWidth;
-
+		
 		spawnHeight = spawnHeightValue.newLowValue();
 		spawnHeightDiff = spawnHeightValue.newHighValue();
 		if (!spawnHeightValue.isRelative())
 			spawnHeightDiff -= spawnHeight;
-
+		
 		spawnDepth = spawnDepthValue.newLowValue();
 		spawnDepthDiff = spawnDepthValue.newHighValue();
 		if (!spawnDepthValue.isRelative())
 			spawnDepthDiff -= spawnDepth;
 	}
-
+	
 	@Override
 	public void load(ParticleValue value) {
 		super.load(value);
@@ -113,7 +113,7 @@ public abstract class PrimitiveSpawnShapeValue extends SpawnShapeValue {
 		spawnHeightValue.load(shape.spawnHeightValue);
 		spawnDepthValue.load(shape.spawnDepthValue);
 	}
-
+	
 	@Override
 	public void write(Json json) {
 		super.write(json);
@@ -122,7 +122,7 @@ public abstract class PrimitiveSpawnShapeValue extends SpawnShapeValue {
 		json.writeValue("spawnDepthValue", spawnDepthValue);
 		json.writeValue("edges", edges);
 	}
-
+	
 	@Override
 	public void read(Json json, JsonValue jsonData) {
 		super.read(json, jsonData);
@@ -131,5 +131,5 @@ public abstract class PrimitiveSpawnShapeValue extends SpawnShapeValue {
 		spawnDepthValue = json.readValue("spawnDepthValue", ScaledNumericValue.class, jsonData);
 		edges = json.readValue("edges", boolean.class, jsonData);
 	}
-
+	
 }

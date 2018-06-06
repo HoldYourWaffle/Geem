@@ -50,25 +50,25 @@ public final class DefaultTextureBinder implements TextureBinder {
 	private final int method;
 	/** Flag to indicate the current texture is reused */
 	private boolean reused;
-
+	
 	private int reuseCount = 0; // TODO remove debug code
 	private int bindCount = 0; // TODO remove debug code
-
+	
 	/** Uses all available texture units and reuse weight of 3 */
 	public DefaultTextureBinder(final int method) {
 		this(method, 0);
 	}
-
+	
 	/** Uses all remaining texture units and reuse weight of 3 */
 	public DefaultTextureBinder(final int method, final int offset) {
 		this(method, offset, -1);
 	}
-
+	
 	/** Uses reuse weight of 10 */
 	public DefaultTextureBinder(final int method, final int offset, final int count) {
 		this(method, offset, count, 10);
 	}
-
+	
 	public DefaultTextureBinder(final int method, final int offset, int count, final int reuseWeight) {
 		final int max = Math.min(getMaxTextureUnits(), MAX_GLES_UNITS);
 		if (count < 0)
@@ -82,13 +82,13 @@ public final class DefaultTextureBinder implements TextureBinder {
 		this.reuseWeight = reuseWeight;
 		this.weights = (method == WEIGHTED) ? new int[count] : null;
 	}
-
+	
 	private static int getMaxTextureUnits() {
 		IntBuffer buffer = BufferUtils.newIntBuffer(16);
 		Gdx.gl.glGetIntegerv(GL20.GL_MAX_TEXTURE_IMAGE_UNITS, buffer);
 		return buffer.get(0);
 	}
-
+	
 	@Override
 	public void begin() {
 		for (int i = 0; i < count; i++) {
@@ -97,7 +97,7 @@ public final class DefaultTextureBinder implements TextureBinder {
 				weights[i] = 0;
 		}
 	}
-
+	
 	@Override
 	public void end() {
 		/*
@@ -108,25 +108,25 @@ public final class DefaultTextureBinder implements TextureBinder {
 		 */
 		Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
 	}
-
+	
 	@Override
 	public final int bind(final TextureDescriptor textureDesc) {
 		return bindTexture(textureDesc, false);
 	}
-
+	
 	private final TextureDescriptor tempDesc = new TextureDescriptor();
-
+	
 	@Override
 	public final int bind(final GLTexture texture) {
 		tempDesc.set(texture, null, null, null, null);
 		return bindTexture(tempDesc, false);
 	}
-
+	
 	private final int bindTexture(final TextureDescriptor textureDesc, final boolean rebind) {
 		final int idx, result;
 		final GLTexture texture = textureDesc.texture;
 		reused = false;
-
+		
 		switch (method) {
 		case ROUNDROBIN:
 			result = offset + (idx = bindTextureRoundRobin(texture));
@@ -137,7 +137,7 @@ public final class DefaultTextureBinder implements TextureBinder {
 		default:
 			return -1;
 		}
-
+		
 		if (reused) {
 			reuseCount++;
 			if (rebind)
@@ -150,9 +150,9 @@ public final class DefaultTextureBinder implements TextureBinder {
 		texture.unsafeSetFilter(textureDesc.minFilter, textureDesc.magFilter);
 		return result;
 	}
-
+	
 	private int currentTexture = 0;
-
+	
 	private final int bindTextureRoundRobin(final GLTexture texture) {
 		for (int i = 0; i < count; i++) {
 			final int idx = (currentTexture + i) % count;
@@ -166,7 +166,7 @@ public final class DefaultTextureBinder implements TextureBinder {
 		texture.bind(offset + currentTexture);
 		return currentTexture;
 	}
-
+	
 	private final int bindTextureWeighted(final GLTexture texture) {
 		int result = -1;
 		int weight = weights[0];
@@ -188,17 +188,17 @@ public final class DefaultTextureBinder implements TextureBinder {
 			reused = true;
 		return result;
 	}
-
+	
 	@Override
 	public final int getBindCount() {
 		return bindCount;
 	}
-
+	
 	@Override
 	public final int getReuseCount() {
 		return reuseCount;
 	}
-
+	
 	@Override
 	public final void resetCounts() {
 		bindCount = reuseCount = 0;

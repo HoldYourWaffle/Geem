@@ -26,13 +26,13 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** @author Tomski **/
 public class FileTextureArrayData implements TextureArrayData {
-
+	
 	private TextureData[] textureDatas;
 	private boolean prepared;
 	private Pixmap.Format format;
 	private int depth;
 	boolean useMipMaps;
-
+	
 	public FileTextureArrayData(Pixmap.Format format, boolean useMipMaps, FileHandle[] files) {
 		this.format = format;
 		this.useMipMaps = useMipMaps;
@@ -42,12 +42,12 @@ public class FileTextureArrayData implements TextureArrayData {
 			textureDatas[i] = TextureData.Factory.loadFromFile(files[i], format, useMipMaps);
 		}
 	}
-
+	
 	@Override
 	public boolean isPrepared() {
 		return prepared;
 	}
-
+	
 	@Override
 	public void prepare() {
 		int width = -1;
@@ -66,7 +66,7 @@ public class FileTextureArrayData implements TextureArrayData {
 		}
 		prepared = true;
 	}
-
+	
 	@Override
 	public void consumeTextureArrayData() {
 		for (int i = 0; i < textureDatas.length; i++) {
@@ -93,32 +93,32 @@ public class FileTextureArrayData implements TextureArrayData {
 			}
 		}
 	}
-
+	
 	@Override
 	public int getWidth() {
 		return textureDatas[0].getWidth();
 	}
-
+	
 	@Override
 	public int getHeight() {
 		return textureDatas[0].getHeight();
 	}
-
+	
 	@Override
 	public int getDepth() {
 		return depth;
 	}
-
+	
 	@Override
 	public int getInternalFormat() {
 		return Pixmap.Format.toGlFormat(format);
 	}
-
+	
 	@Override
 	public int getGLType() {
 		return Pixmap.Format.toGlType(format);
 	}
-
+	
 	@Override
 	public boolean isManaged() {
 		for (TextureData data : textureDatas) {

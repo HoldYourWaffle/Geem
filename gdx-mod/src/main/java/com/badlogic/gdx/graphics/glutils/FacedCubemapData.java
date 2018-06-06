@@ -20,9 +20,9 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author Vincent Nousquet
  */
 public class FacedCubemapData implements CubemapData {
-
+	
 	protected final TextureData[] data = new TextureData[6];
-
+	
 	/**
 	 * Construct an empty Cubemap. Use the load(...) methods to set the texture of
 	 * each side. Every side of the cubemap must be set before it can be used.
@@ -31,7 +31,7 @@ public class FacedCubemapData implements CubemapData {
 		this((TextureData) null, (TextureData) null, (TextureData) null, (TextureData) null, (TextureData) null,
 				(TextureData) null);
 	}
-
+	
 	/**
 	 * Construct a Cubemap with the specified texture files for the sides,
 	 * optionally generating mipmaps.
@@ -42,7 +42,7 @@ public class FacedCubemapData implements CubemapData {
 				TextureData.Factory.loadFromFile(positiveY, false), TextureData.Factory.loadFromFile(negativeY, false),
 				TextureData.Factory.loadFromFile(positiveZ, false), TextureData.Factory.loadFromFile(negativeZ, false));
 	}
-
+	
 	/**
 	 * Construct a Cubemap with the specified texture files for the sides,
 	 * optionally generating mipmaps.
@@ -56,7 +56,7 @@ public class FacedCubemapData implements CubemapData {
 				TextureData.Factory.loadFromFile(positiveZ, useMipMaps),
 				TextureData.Factory.loadFromFile(negativeZ, useMipMaps));
 	}
-
+	
 	/**
 	 * Construct a Cubemap with the specified {@link Pixmap}s for the sides, does
 	 * not generate mipmaps.
@@ -65,7 +65,7 @@ public class FacedCubemapData implements CubemapData {
 			Pixmap negativeZ) {
 		this(positiveX, negativeX, positiveY, negativeY, positiveZ, negativeZ, false);
 	}
-
+	
 	/**
 	 * Construct a Cubemap with the specified {@link Pixmap}s for the sides,
 	 * optionally generating mipmaps.
@@ -79,7 +79,7 @@ public class FacedCubemapData implements CubemapData {
 				positiveZ == null ? null : new PixmapTextureData(positiveZ, null, useMipMaps, false),
 				negativeZ == null ? null : new PixmapTextureData(negativeZ, null, useMipMaps, false));
 	}
-
+	
 	/**
 	 * Construct a Cubemap with {@link Pixmap}s for each side of the specified size.
 	 */
@@ -91,7 +91,7 @@ public class FacedCubemapData implements CubemapData {
 				new PixmapTextureData(new Pixmap(width, height, format), null, false, true),
 				new PixmapTextureData(new Pixmap(width, height, format), null, false, true));
 	}
-
+	
 	/**
 	 * Construct a Cubemap with the specified {@link TextureData}'s for the sides
 	 */
@@ -104,7 +104,7 @@ public class FacedCubemapData implements CubemapData {
 		data[4] = positiveZ;
 		data[5] = negativeZ;
 	}
-
+	
 	@Override
 	public boolean isManaged() {
 		for (TextureData data : this.data)
@@ -112,7 +112,7 @@ public class FacedCubemapData implements CubemapData {
 				return false;
 		return true;
 	}
-
+	
 	/**
 	 * Loads the texture specified using the {@link FileHandle} and sets it to
 	 * specified side, overwriting any previous data set to that side. Note that you
@@ -125,7 +125,7 @@ public class FacedCubemapData implements CubemapData {
 	public void load(CubemapSide side, FileHandle file) {
 		data[side.index] = TextureData.Factory.loadFromFile(file, false);
 	}
-
+	
 	/**
 	 * Sets the specified side of this cubemap to the specified {@link Pixmap},
 	 * overwriting any previous data set to that side. Note that you need to reload
@@ -138,7 +138,7 @@ public class FacedCubemapData implements CubemapData {
 	public void load(CubemapSide side, Pixmap pixmap) {
 		data[side.index] = pixmap == null ? null : new PixmapTextureData(pixmap, null, false, false);
 	}
-
+	
 	/** @return True if all sides of this cubemap are set, false otherwise. */
 	public boolean isComplete() {
 		for (TextureData element : data)
@@ -146,7 +146,7 @@ public class FacedCubemapData implements CubemapData {
 				return false;
 		return true;
 	}
-
+	
 	/**
 	 * @return The {@link TextureData} for the specified side, can be null if the
 	 *         cubemap is incomplete.
@@ -154,7 +154,7 @@ public class FacedCubemapData implements CubemapData {
 	public TextureData getTextureData(CubemapSide side) {
 		return data[side.index];
 	}
-
+	
 	@Override
 	public int getWidth() {
 		int tmp, width = 0;
@@ -168,7 +168,7 @@ public class FacedCubemapData implements CubemapData {
 			width = tmp;
 		return width;
 	}
-
+	
 	@Override
 	public int getHeight() {
 		int tmp, height = 0;
@@ -182,12 +182,12 @@ public class FacedCubemapData implements CubemapData {
 			height = tmp;
 		return height;
 	}
-
+	
 	@Override
 	public boolean isPrepared() {
 		return false;
 	}
-
+	
 	@Override
 	public void prepare() {
 		if (!isComplete())
@@ -196,7 +196,7 @@ public class FacedCubemapData implements CubemapData {
 			if (!element.isPrepared())
 				element.prepare();
 	}
-
+	
 	@Override
 	public void consumeCubemapData() {
 		for (int i = 0; i < data.length; i++) {
@@ -223,5 +223,5 @@ public class FacedCubemapData implements CubemapData {
 			}
 		}
 	}
-
+	
 }

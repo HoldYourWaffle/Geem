@@ -74,16 +74,16 @@ public class DefaultShader extends BaseShader {
 		 * {@link DefaultShader#defaultDepthFunc}
 		 */
 		public int defaultDepthFunc = -1;
-
+		
 		public Config() {
 		}
-
+		
 		public Config(final String vertexShader, final String fragmentShader) {
 			this.vertexShader = vertexShader;
 			this.fragmentShader = fragmentShader;
 		}
 	}
-
+	
 	public static class Inputs {
 		public final static Uniform projTrans = new Uniform("u_projTrans");
 		public final static Uniform viewTrans = new Uniform("u_viewTrans");
@@ -92,13 +92,13 @@ public class DefaultShader extends BaseShader {
 		public final static Uniform cameraDirection = new Uniform("u_cameraDirection");
 		public final static Uniform cameraUp = new Uniform("u_cameraUp");
 		public final static Uniform cameraNearFar = new Uniform("u_cameraNearFar");
-
+		
 		public final static Uniform worldTrans = new Uniform("u_worldTrans");
 		public final static Uniform viewWorldTrans = new Uniform("u_viewWorldTrans");
 		public final static Uniform projViewWorldTrans = new Uniform("u_projViewWorldTrans");
 		public final static Uniform normalMatrix = new Uniform("u_normalMatrix");
 		public final static Uniform bones = new Uniform("u_bones");
-
+		
 		public final static Uniform shininess = new Uniform("u_shininess", FloatAttribute.Shininess);
 		public final static Uniform opacity = new Uniform("u_opacity", BlendingAttribute.Type);
 		public final static Uniform diffuseColor = new Uniform("u_diffuseColor", ColorAttribute.Diffuse);
@@ -121,14 +121,14 @@ public class DefaultShader extends BaseShader {
 		public final static Uniform ambientTexture = new Uniform("u_ambientTexture", TextureAttribute.Ambient);
 		public final static Uniform ambientUVTransform = new Uniform("u_ambientUVTransform", TextureAttribute.Ambient);
 		public final static Uniform alphaTest = new Uniform("u_alphaTest");
-
+		
 		public final static Uniform ambientCube = new Uniform("u_ambientCubemap");
 		public final static Uniform dirLights = new Uniform("u_dirLights");
 		public final static Uniform pointLights = new Uniform("u_pointLights");
 		public final static Uniform spotLights = new Uniform("u_spotLights");
 		public final static Uniform environmentCubemap = new Uniform("u_environmentCubemap");
 	}
-
+	
 	public static class Setters {
 		public final static Setter projTrans = new GlobalSetter() {
 			@Override
@@ -181,7 +181,7 @@ public class DefaultShader extends BaseShader {
 		};
 		public final static Setter viewWorldTrans = new LocalSetter() {
 			final Matrix4 temp = new Matrix4();
-
+			
 			@Override
 			public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				shader.set(inputID, temp.set(shader.camera.view).mul(renderable.worldTransform));
@@ -189,7 +189,7 @@ public class DefaultShader extends BaseShader {
 		};
 		public final static Setter projViewWorldTrans = new LocalSetter() {
 			final Matrix4 temp = new Matrix4();
-
+			
 			@Override
 			public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				shader.set(inputID, temp.set(shader.camera.combined).mul(renderable.worldTransform));
@@ -197,21 +197,21 @@ public class DefaultShader extends BaseShader {
 		};
 		public final static Setter normalMatrix = new LocalSetter() {
 			private final Matrix3 tmpM = new Matrix3();
-
+			
 			@Override
 			public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				shader.set(inputID, tmpM.set(renderable.worldTransform).inv().transpose());
 			}
 		};
-
+		
 		public static class Bones extends LocalSetter {
 			private final static Matrix4 idtMatrix = new Matrix4();
 			public final float bones[];
-
+			
 			public Bones(final int numBones) {
 				this.bones = new float[numBones * 16];
 			}
-
+			
 			@Override
 			public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				for (int i = 0; i < bones.length; i++) {
@@ -223,7 +223,7 @@ public class DefaultShader extends BaseShader {
 				shader.program.setUniformMatrix4fv(shader.loc(inputID), bones, 0, bones.length);
 			}
 		}
-
+		
 		public final static Setter shininess = new LocalSetter() {
 			@Override
 			public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
@@ -344,19 +344,19 @@ public class DefaultShader extends BaseShader {
 				shader.set(inputID, ta.offsetU, ta.offsetV, ta.scaleU, ta.scaleV);
 			}
 		};
-
+		
 		public static class ACubemap extends LocalSetter {
 			private final static float ones[] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 			private final AmbientCubemap cacheAmbientCubemap = new AmbientCubemap();
 			private final static Vector3 tmpV1 = new Vector3();
 			public final int dirLightsOffset;
 			public final int pointLightsOffset;
-
+			
 			public ACubemap(final int dirLightsOffset, final int pointLightsOffset) {
 				this.dirLightsOffset = dirLightsOffset;
 				this.pointLightsOffset = pointLightsOffset;
 			}
-
+			
 			@Override
 			public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				if (renderable.environment == null)
@@ -366,14 +366,14 @@ public class DefaultShader extends BaseShader {
 					if (combinedAttributes.has(ColorAttribute.AmbientLight))
 						cacheAmbientCubemap
 								.set(((ColorAttribute) combinedAttributes.get(ColorAttribute.AmbientLight)).color);
-
+					
 					if (combinedAttributes.has(DirectionalLightsAttribute.Type)) {
 						Array<DirectionalLight> lights = ((DirectionalLightsAttribute) combinedAttributes
 								.get(DirectionalLightsAttribute.Type)).lights;
 						for (int i = dirLightsOffset; i < lights.size; i++)
 							cacheAmbientCubemap.add(lights.get(i).color, lights.get(i).direction);
 					}
-
+					
 					if (combinedAttributes.has(PointLightsAttribute.Type)) {
 						Array<PointLight> lights = ((PointLightsAttribute) combinedAttributes
 								.get(PointLightsAttribute.Type)).lights;
@@ -381,14 +381,14 @@ public class DefaultShader extends BaseShader {
 							cacheAmbientCubemap.add(lights.get(i).color, lights.get(i).position, tmpV1,
 									lights.get(i).intensity);
 					}
-
+					
 					cacheAmbientCubemap.clamp();
 					shader.program.setUniform3fv(shader.loc(inputID), cacheAmbientCubemap.data, 0,
 							cacheAmbientCubemap.data.length);
 				}
 			}
 		}
-
+		
 		public final static Setter environmentCubemap = new LocalSetter() {
 			@Override
 			public void set(BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
@@ -399,28 +399,28 @@ public class DefaultShader extends BaseShader {
 			}
 		};
 	}
-
+	
 	private static String defaultVertexShader = null;
-
+	
 	public static String getDefaultVertexShader() {
 		if (defaultVertexShader == null)
 			defaultVertexShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl")
 					.readString();
 		return defaultVertexShader;
 	}
-
+	
 	private static String defaultFragmentShader = null;
-
+	
 	public static String getDefaultFragmentShader() {
 		if (defaultFragmentShader == null)
 			defaultFragmentShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl")
 					.readString();
 		return defaultFragmentShader;
 	}
-
+	
 	protected static long implementedFlags = BlendingAttribute.Type | TextureAttribute.Diffuse | ColorAttribute.Diffuse
 			| ColorAttribute.Specular | FloatAttribute.Shininess;
-
+	
 	/**
 	 * @deprecated Replaced by {@link Config#defaultCullFace} Set to 0 to disable
 	 *             culling
@@ -433,7 +433,7 @@ public class DefaultShader extends BaseShader {
 	 */
 	@Deprecated
 	public static int defaultDepthFunc = GL20.GL_LEQUAL;
-
+	
 	// Global uniforms
 	public final int u_projTrans;
 	public final int u_viewTrans;
@@ -491,7 +491,7 @@ public class DefaultShader extends BaseShader {
 	protected final int u_shadowTexture = register(new Uniform("u_shadowTexture"));
 	protected final int u_shadowPCFOffset = register(new Uniform("u_shadowPCFOffset"));
 	// FIXME Cache vertex attribute locations...
-
+	
 	protected int dirLightsLoc;
 	protected int dirLightsColorOffset;
 	protected int dirLightsDirectionOffset;
@@ -509,7 +509,7 @@ public class DefaultShader extends BaseShader {
 	protected int spotLightsCutoffAngleOffset;
 	protected int spotLightsExponentOffset;
 	protected int spotLightsSize;
-
+	
 	protected final boolean lighting;
 	protected final boolean environmentCubemap;
 	protected final boolean shadowMap;
@@ -517,7 +517,7 @@ public class DefaultShader extends BaseShader {
 	protected final DirectionalLight directionalLights[];
 	protected final PointLight pointLights[];
 	protected final SpotLight spotLights[];
-
+	
 	/** The renderable used to create this shader, invalid after the call to init */
 	private Renderable renderable;
 	/** The attributes that this shader supports */
@@ -526,25 +526,25 @@ public class DefaultShader extends BaseShader {
 	protected final Config config;
 	/** Attributes which are not required but always supported. */
 	private final static long optionalAttributes = IntAttribute.CullFace | DepthTestAttribute.Type;
-
+	
 	public DefaultShader(final Renderable renderable) {
 		this(renderable, new Config());
 	}
-
+	
 	public DefaultShader(final Renderable renderable, final Config config) {
 		this(renderable, config, createPrefix(renderable, config));
 	}
-
+	
 	public DefaultShader(final Renderable renderable, final Config config, final String prefix) {
 		this(renderable, config, prefix, config.vertexShader != null ? config.vertexShader : getDefaultVertexShader(),
 				config.fragmentShader != null ? config.fragmentShader : getDefaultFragmentShader());
 	}
-
+	
 	public DefaultShader(final Renderable renderable, final Config config, final String prefix,
 			final String vertexShader, final String fragmentShader) {
 		this(renderable, config, new ShaderProgram(prefix + vertexShader, prefix + fragmentShader));
 	}
-
+	
 	public DefaultShader(final Renderable renderable, final Config config, final ShaderProgram shaderProgram) {
 		final Attributes attributes = combineAttributes(renderable);
 		this.config = config;
@@ -556,7 +556,7 @@ public class DefaultShader extends BaseShader {
 		this.renderable = renderable;
 		attributesMask = attributes.getMask() | optionalAttributes;
 		vertexMask = renderable.meshPart.mesh.getVertexAttributes().getMaskWithSizePacked();
-
+		
 		this.directionalLights = new DirectionalLight[lighting && config.numDirectionalLights > 0
 				? config.numDirectionalLights
 				: 0];
@@ -568,10 +568,10 @@ public class DefaultShader extends BaseShader {
 		this.spotLights = new SpotLight[lighting && config.numSpotLights > 0 ? config.numSpotLights : 0];
 		for (int i = 0; i < spotLights.length; i++)
 			spotLights[i] = new SpotLight();
-
+		
 		if (!config.ignoreUnimplemented && (implementedFlags & attributesMask) != attributesMask)
 			throw new GdxRuntimeException("Some attributes not implemented yet (" + attributesMask + ")");
-
+		
 		// Global uniforms
 		u_projTrans = register(Inputs.projTrans, Setters.projTrans);
 		u_viewTrans = register(Inputs.viewTrans, Setters.viewTrans);
@@ -589,7 +589,7 @@ public class DefaultShader extends BaseShader {
 		u_bones = (renderable.bones != null && config.numBones > 0)
 				? register(Inputs.bones, new Setters.Bones(config.numBones))
 				: -1;
-
+		
 		u_shininess = register(Inputs.shininess, Setters.shininess);
 		u_opacity = register(Inputs.opacity);
 		u_diffuseColor = register(Inputs.diffuseColor, Setters.diffuseColor);
@@ -609,28 +609,28 @@ public class DefaultShader extends BaseShader {
 		u_ambientTexture = register(Inputs.ambientTexture, Setters.ambientTexture);
 		u_ambientUVTransform = register(Inputs.ambientUVTransform, Setters.ambientUVTransform);
 		u_alphaTest = register(Inputs.alphaTest);
-
+		
 		u_ambientCubemap = lighting
 				? register(Inputs.ambientCube, new Setters.ACubemap(config.numDirectionalLights, config.numPointLights))
 				: -1;
 		u_environmentCubemap = environmentCubemap ? register(Inputs.environmentCubemap, Setters.environmentCubemap)
 				: -1;
 	}
-
+	
 	@Override
 	public void init() {
 		final ShaderProgram program = this.program;
 		this.program = null;
 		init(program, renderable);
 		renderable = null;
-
+		
 		dirLightsLoc = loc(u_dirLights0color);
 		dirLightsColorOffset = loc(u_dirLights0color) - dirLightsLoc;
 		dirLightsDirectionOffset = loc(u_dirLights0direction) - dirLightsLoc;
 		dirLightsSize = loc(u_dirLights1color) - dirLightsLoc;
 		if (dirLightsSize < 0)
 			dirLightsSize = 0;
-
+		
 		pointLightsLoc = loc(u_pointLights0color);
 		pointLightsColorOffset = loc(u_pointLights0color) - pointLightsLoc;
 		pointLightsPositionOffset = loc(u_pointLights0position) - pointLightsLoc;
@@ -638,7 +638,7 @@ public class DefaultShader extends BaseShader {
 		pointLightsSize = loc(u_pointLights1color) - pointLightsLoc;
 		if (pointLightsSize < 0)
 			pointLightsSize = 0;
-
+		
 		spotLightsLoc = loc(u_spotLights0color);
 		spotLightsColorOffset = loc(u_spotLights0color) - spotLightsLoc;
 		spotLightsPositionOffset = loc(u_spotLights0position) - spotLightsLoc;
@@ -650,17 +650,17 @@ public class DefaultShader extends BaseShader {
 		if (spotLightsSize < 0)
 			spotLightsSize = 0;
 	}
-
+	
 	private static final boolean and(final long mask, final long flag) {
 		return (mask & flag) == flag;
 	}
-
+	
 	private static final boolean or(final long mask, final long flag) {
 		return (mask & flag) != 0;
 	}
-
+	
 	private final static Attributes tmpAttributes = new Attributes();
-
+	
 	// TODO: Perhaps move responsibility for combining attributes to
 	// RenderableProvider?
 	private static final Attributes combineAttributes(final Renderable renderable) {
@@ -671,7 +671,7 @@ public class DefaultShader extends BaseShader {
 			tmpAttributes.set(renderable.material);
 		return tmpAttributes;
 	}
-
+	
 	private static final long combineAttributeMasks(final Renderable renderable) {
 		long mask = 0;
 		if (renderable.environment != null)
@@ -680,7 +680,7 @@ public class DefaultShader extends BaseShader {
 			mask |= renderable.material.getMask();
 		return mask;
 	}
-
+	
 	public static String createPrefix(final Renderable renderable, final Config config) {
 		final Attributes attributes = combineAttributes(renderable);
 		String prefix = "";
@@ -762,7 +762,7 @@ public class DefaultShader extends BaseShader {
 			prefix += "#define numBones " + config.numBones + "\n";
 		return prefix;
 	}
-
+	
 	@Override
 	public boolean canRender(final Renderable renderable) {
 		final long renderableMask = combineAttributeMasks(renderable);
@@ -770,7 +770,7 @@ public class DefaultShader extends BaseShader {
 				&& (vertexMask == renderable.meshPart.mesh.getVertexAttributes().getMaskWithSizePacked())
 				&& (renderable.environment != null) == lighting;
 	}
-
+	
 	@Override
 	public int compareTo(Shader other) {
 		if (other == null)
@@ -779,24 +779,24 @@ public class DefaultShader extends BaseShader {
 			return 0;
 		return 0; // FIXME compare shaders on their impact on performance
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		return (obj instanceof DefaultShader) ? equals((DefaultShader) obj) : false;
 	}
-
+	
 	public boolean equals(DefaultShader obj) {
 		return (obj == this);
 	}
-
+	
 	private final Matrix3 normalMatrix = new Matrix3();
 	private float time;
 	private boolean lightsSet;
-
+	
 	@Override
 	public void begin(final Camera camera, final RenderContext context) {
 		super.begin(camera, context);
-
+		
 		for (final DirectionalLight dirLight : directionalLights)
 			dirLight.set(0, 0, 0, 0, -1, 0);
 		for (final PointLight pointLight : pointLights)
@@ -804,11 +804,11 @@ public class DefaultShader extends BaseShader {
 		for (final SpotLight spotLight : spotLights)
 			spotLight.set(0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0);
 		lightsSet = false;
-
+		
 		if (has(u_time))
 			set(u_time, time += Gdx.graphics.getDeltaTime());
 	}
-
+	
 	@Override
 	public void render(Renderable renderable, Attributes combinedAttributes) {
 		if (!combinedAttributes.has(BlendingAttribute.Type))
@@ -818,19 +818,19 @@ public class DefaultShader extends BaseShader {
 			bindLights(renderable, combinedAttributes);
 		super.render(renderable, combinedAttributes);
 	}
-
+	
 	@Override
 	public void end() {
 		super.end();
 	}
-
+	
 	protected void bindMaterial(final Attributes attributes) {
 		int cullFace = config.defaultCullFace == -1 ? defaultCullFace : config.defaultCullFace;
 		int depthFunc = config.defaultDepthFunc == -1 ? defaultDepthFunc : config.defaultDepthFunc;
 		float depthRangeNear = 0f;
 		float depthRangeFar = 1f;
 		boolean depthMask = true;
-
+		
 		for (final Attribute attr : attributes) {
 			final long t = attr.type;
 			if (BlendingAttribute.is(t)) {
@@ -850,14 +850,14 @@ public class DefaultShader extends BaseShader {
 			} else if (!config.ignoreUnimplemented)
 				throw new GdxRuntimeException("Unknown material attribute: " + attr.toString());
 		}
-
+		
 		context.setCullFace(cullFace);
 		context.setDepthTest(depthFunc, depthRangeNear, depthRangeFar);
 		context.setDepthMask(depthMask);
 	}
-
+	
 	private final Vector3 tmpV1 = new Vector3();
-
+	
 	protected void bindLights(final Renderable renderable, final Attributes attributes) {
 		final Environment lights = renderable.environment;
 		final DirectionalLightsAttribute dla = attributes.get(DirectionalLightsAttribute.class,
@@ -867,7 +867,7 @@ public class DefaultShader extends BaseShader {
 		final Array<PointLight> points = pla == null ? null : pla.lights;
 		final SpotLightsAttribute sla = attributes.get(SpotLightsAttribute.class, SpotLightsAttribute.Type);
 		final Array<SpotLight> spots = sla == null ? null : sla.lights;
-
+		
 		if (dirLightsLoc >= 0) {
 			for (int i = 0; i < directionalLights.length; i++) {
 				if (dirs == null || i >= dirs.size) {
@@ -879,7 +879,7 @@ public class DefaultShader extends BaseShader {
 					continue;
 				else
 					directionalLights[i].set(dirs.get(i));
-
+				
 				int idx = dirLightsLoc + i * dirLightsSize;
 				program.setUniformf(idx + dirLightsColorOffset, directionalLights[i].color.r,
 						directionalLights[i].color.g, directionalLights[i].color.b);
@@ -889,7 +889,7 @@ public class DefaultShader extends BaseShader {
 					break;
 			}
 		}
-
+		
 		if (pointLightsLoc >= 0) {
 			for (int i = 0; i < pointLights.length; i++) {
 				if (points == null || i >= points.size) {
@@ -900,7 +900,7 @@ public class DefaultShader extends BaseShader {
 					continue;
 				else
 					pointLights[i].set(points.get(i));
-
+				
 				int idx = pointLightsLoc + i * pointLightsSize;
 				program.setUniformf(idx + pointLightsColorOffset, pointLights[i].color.r * pointLights[i].intensity,
 						pointLights[i].color.g * pointLights[i].intensity,
@@ -913,7 +913,7 @@ public class DefaultShader extends BaseShader {
 					break;
 			}
 		}
-
+		
 		if (spotLightsLoc >= 0) {
 			for (int i = 0; i < spotLights.length; i++) {
 				if (spots == null || i >= spots.size) {
@@ -924,7 +924,7 @@ public class DefaultShader extends BaseShader {
 					continue;
 				else
 					spotLights[i].set(spots.get(i));
-
+				
 				int idx = spotLightsLoc + i * spotLightsSize;
 				program.setUniformf(idx + spotLightsColorOffset, spotLights[i].color.r * spotLights[i].intensity,
 						spotLights[i].color.g * spotLights[i].intensity,
@@ -939,38 +939,38 @@ public class DefaultShader extends BaseShader {
 					break;
 			}
 		}
-
+		
 		if (attributes.has(ColorAttribute.Fog)) {
 			set(u_fogColor, ((ColorAttribute) attributes.get(ColorAttribute.Fog)).color);
 		}
-
+		
 		if (lights != null && lights.shadowMap != null) {
 			set(u_shadowMapProjViewTrans, lights.shadowMap.getProjViewTrans());
 			set(u_shadowTexture, lights.shadowMap.getDepthMap());
 			set(u_shadowPCFOffset, 1.f / (2f * lights.shadowMap.getDepthMap().texture.getWidth()));
 		}
-
+		
 		lightsSet = true;
 	}
-
+	
 	@Override
 	public void dispose() {
 		program.dispose();
 		super.dispose();
 	}
-
+	
 	public int getDefaultCullFace() {
 		return config.defaultCullFace == -1 ? defaultCullFace : config.defaultCullFace;
 	}
-
+	
 	public void setDefaultCullFace(int cullFace) {
 		config.defaultCullFace = cullFace;
 	}
-
+	
 	public int getDefaultDepthFunc() {
 		return config.defaultDepthFunc == -1 ? defaultDepthFunc : config.defaultDepthFunc;
 	}
-
+	
 	public void setDefaultDepthFunc(int depthFunc) {
 		config.defaultDepthFunc = depthFunc;
 	}

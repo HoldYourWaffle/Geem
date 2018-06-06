@@ -29,7 +29,7 @@ import com.badlogic.gdx.utils.Array;
 public abstract class Attribute implements Comparable<Attribute> {
 	/** The registered type aliases */
 	private final static Array<String> types = new Array<>();
-
+	
 	/** @return The ID of the specified attribute type, or zero if not available */
 	public final static long getAttributeType(final String alias) {
 		for (int i = 0; i < types.size; i++)
@@ -37,7 +37,7 @@ public abstract class Attribute implements Comparable<Attribute> {
 				return 1L << i;
 		return 0;
 	}
-
+	
 	/**
 	 * @return The alias of the specified attribute type, or null if not available.
 	 */
@@ -47,7 +47,7 @@ public abstract class Attribute implements Comparable<Attribute> {
 			;
 		return (idx >= 0 && idx < types.size) ? types.get(idx) : null;
 	}
-
+	
 	/**
 	 * Call this method to register a custom attribute type, see the wiki for an
 	 * example. If the alias already exists, then that ID will be reused. The alias
@@ -66,24 +66,24 @@ public abstract class Attribute implements Comparable<Attribute> {
 		types.add(alias);
 		return 1L << (types.size - 1);
 	}
-
+	
 	/** The type of this attribute */
 	public final long type;
-
+	
 	private final int typeBit;
-
+	
 	protected Attribute(final long type) {
 		this.type = type;
 		this.typeBit = Long.numberOfTrailingZeros(type);
 	}
-
+	
 	/** @return An exact copy of this attribute */
 	public abstract Attribute copy();
-
+	
 	protected boolean equals(Attribute other) {
 		return other.hashCode() == hashCode();
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null)
@@ -97,12 +97,12 @@ public abstract class Attribute implements Comparable<Attribute> {
 			return false;
 		return equals(other);
 	}
-
+	
 	@Override
 	public String toString() {
 		return getAttributeAlias(type);
 	}
-
+	
 	@Override
 	public int hashCode() {
 		return 7489 * typeBit;

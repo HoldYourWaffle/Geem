@@ -23,7 +23,7 @@ package com.badlogic.gdx.net;
  * @author noblemaster
  */
 public class ServerSocketHints {
-
+	
 	/**
 	 * The listen backlog length. Needs to be greater than 0, otherwise the system
 	 * default is used. backlog is the maximum queue length for incoming connection,
@@ -31,7 +31,7 @@ public class ServerSocketHints {
 	 * indication arrives when the queue is full, the connection is refused.
 	 */
 	public int backlog = 16;
-
+	
 	/**
 	 * Performance preferences are described by three integers whose values indicate
 	 * the relative importance of short connection time, low latency, and high

@@ -32,25 +32,25 @@ import com.badlogic.gdx.utils.ShortArray;
  * @author Avetis Zakharyan
  */
 public class RepeatablePolygonSprite {
-
+	
 	private TextureRegion region;
 	private float density;
-
+	
 	private boolean dirty = true;
-
+	
 	private Array<float[]> parts = new Array<>();
-
+	
 	private Array<float[]> vertices = new Array<>();
 	private Array<short[]> indices = new Array<>();
-
+	
 	private int cols, rows;
 	private float gridWidth, gridHeight;
-
+	
 	public float x = 0;
 	public float y = 0;
 	private Color color = Color.WHITE;
 	private Vector2 offset = new Vector2();
-
+	
 	/**
 	 * Sets polygon with repeating texture region, the size of repeating grid is
 	 * equal to region size
@@ -61,7 +61,7 @@ public class RepeatablePolygonSprite {
 	public void setPolygon(TextureRegion region, float[] vertices) {
 		setPolygon(region, vertices, -1);
 	}
-
+	
 	/**
 	 * Sets polygon with repeating texture region, the size of repeating grid is
 	 * equal to region size
@@ -71,29 +71,29 @@ public class RepeatablePolygonSprite {
 	 * @param density  - number of regions per polygon width bound
 	 */
 	public void setPolygon(TextureRegion region, float[] vertices, float density) {
-
+		
 		this.region = region;
-
+		
 		vertices = offset(vertices);
-
+		
 		Polygon polygon = new Polygon(vertices);
 		Polygon tmpPoly = new Polygon();
 		Polygon intersectionPoly = new Polygon();
 		EarClippingTriangulator triangulator = new EarClippingTriangulator();
-
+		
 		int idx;
-
+		
 		Rectangle boundRect = polygon.getBoundingRectangle();
-
+		
 		if (density == -1)
 			density = boundRect.getWidth() / region.getRegionWidth();
-
+		
 		float regionAspectRatio = (float) region.getRegionHeight() / (float) region.getRegionWidth();
 		cols = (int) (Math.ceil(density));
 		gridWidth = boundRect.getWidth() / density;
 		gridHeight = regionAspectRatio * gridWidth;
 		rows = (int) Math.ceil(boundRect.getHeight() / gridHeight);
-
+		
 		for (int col = 0; col < cols; col++) {
 			for (int row = 0; row < rows; row++) {
 				float[] verts = new float[8];
@@ -107,7 +107,7 @@ public class RepeatablePolygonSprite {
 				verts[idx++] = (col + 1) * gridWidth;
 				verts[idx] = (row) * gridHeight;
 				tmpPoly.setVertices(verts);
-
+				
 				Intersector.intersectPolygons(polygon, tmpPoly, intersectionPoly);
 				verts = intersectionPoly.getVertices();
 				if (verts.length > 0) {
@@ -121,10 +121,10 @@ public class RepeatablePolygonSprite {
 				}
 			}
 		}
-
+		
 		buildVertices();
 	}
-
+	
 	/**
 	 * This is a garbage, due to Intersector returning values slightly different
 	 * then the grid values Snapping exactly to grid is important, so that during
@@ -143,10 +143,10 @@ public class RepeatablePolygonSprite {
 				vertices[i + 1] = gridHeight * Math.round(vertices[i + 1] / gridHeight);
 			}
 		}
-
+		
 		return vertices;
 	}
-
+	
 	/**
 	 * Offsets polygon to 0 coordinate for ease of calculations, later offset is put
 	 * back on final render
@@ -168,10 +168,10 @@ public class RepeatablePolygonSprite {
 			vertices[i] -= offset.x;
 			vertices[i + 1] -= offset.y;
 		}
-
+		
 		return vertices;
 	}
-
+	
 	/**
 	 * Builds final vertices with vertex attributes like coordinates, color and
 	 * region u/v
@@ -182,19 +182,19 @@ public class RepeatablePolygonSprite {
 			float verts[] = parts.get(i);
 			if (verts == null)
 				continue;
-
+			
 			float[] fullVerts = new float[5 * verts.length / 2];
 			int idx = 0;
-
+			
 			int col = i / rows;
 			int row = i % rows;
-
+			
 			for (int j = 0; j < verts.length; j += 2) {
 				fullVerts[idx++] = verts[j] + offset.x + x;
 				fullVerts[idx++] = verts[j + 1] + offset.y + y;
-
+				
 				fullVerts[idx++] = color.toFloatBits();
-
+				
 				float u = (verts[j] % gridWidth) / gridWidth;
 				float v = (verts[j + 1] % gridHeight) / gridHeight;
 				if (verts[j] == col * gridWidth)
@@ -214,7 +214,7 @@ public class RepeatablePolygonSprite {
 		}
 		dirty = false;
 	}
-
+	
 	public void draw(PolygonSpriteBatch batch) {
 		if (dirty) {
 			buildVertices();
@@ -224,7 +224,7 @@ public class RepeatablePolygonSprite {
 					indices.get(i).length);
 		}
 	}
-
+	
 	/**
 	 * @param color - Tint color to be applied to entire polygon
 	 */
@@ -232,11 +232,11 @@ public class RepeatablePolygonSprite {
 		this.color = color;
 		dirty = true;
 	}
-
+	
 	public void setPosition(float x, float y) {
 		this.x = x;
 		this.y = y;
 		dirty = true;
 	}
-
+	
 }

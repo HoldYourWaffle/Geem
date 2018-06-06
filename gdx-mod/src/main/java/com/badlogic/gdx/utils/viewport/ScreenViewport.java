@@ -29,27 +29,27 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
  */
 public class ScreenViewport extends Viewport {
 	private float unitsPerPixel = 1;
-
+	
 	/** Creates a new viewport using a new {@link OrthographicCamera}. */
 	public ScreenViewport() {
 		this(new OrthographicCamera());
 	}
-
+	
 	public ScreenViewport(Camera camera) {
 		setCamera(camera);
 	}
-
+	
 	@Override
 	public void update(int screenWidth, int screenHeight, boolean centerCamera) {
 		setScreenBounds(0, 0, screenWidth, screenHeight);
 		setWorldSize(screenWidth * unitsPerPixel, screenHeight * unitsPerPixel);
 		apply(centerCamera);
 	}
-
+	
 	public float getUnitsPerPixel() {
 		return unitsPerPixel;
 	}
-
+	
 	/**
 	 * Sets the number of pixels for each world unit. Eg, a scale of 2.5 means there
 	 * are 2.5 world units for every 1 screen pixel. Default is 1.

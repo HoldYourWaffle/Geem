@@ -123,10 +123,10 @@ public class Matrix4 implements Serializable {
 	 * WW: Typically the value one. On Vector3 multiplication this value is ignored.
 	 */
 	public static final int M33 = 15;
-
+	
 	private static final float tmp[] = new float[16];
 	public final float val[] = new float[16];
-
+	
 	/** Constructs an identity matrix */
 	public Matrix4() {
 		val[M00] = 1f;
@@ -134,7 +134,7 @@ public class Matrix4 implements Serializable {
 		val[M22] = 1f;
 		val[M33] = 1f;
 	}
-
+	
 	/**
 	 * Constructs a matrix from the given matrix.
 	 * 
@@ -143,7 +143,7 @@ public class Matrix4 implements Serializable {
 	public Matrix4(Matrix4 matrix) {
 		this.set(matrix);
 	}
-
+	
 	/**
 	 * Constructs a matrix from the given float array. The array must have at least
 	 * 16 elements; the first 16 will be copied.
@@ -155,7 +155,7 @@ public class Matrix4 implements Serializable {
 	public Matrix4(float[] values) {
 		this.set(values);
 	}
-
+	
 	/**
 	 * Constructs a rotation matrix from the given {@link Quaternion}.
 	 * 
@@ -165,7 +165,7 @@ public class Matrix4 implements Serializable {
 	public Matrix4(Quaternion quaternion) {
 		this.set(quaternion);
 	}
-
+	
 	/**
 	 * Construct a matrix from the given translation, rotation and scale.
 	 * 
@@ -176,7 +176,7 @@ public class Matrix4 implements Serializable {
 	public Matrix4(Vector3 position, Quaternion rotation, Vector3 scale) {
 		set(position, rotation, scale);
 	}
-
+	
 	/**
 	 * Sets the matrix to the given matrix.
 	 * 
@@ -187,7 +187,7 @@ public class Matrix4 implements Serializable {
 	public Matrix4 set(Matrix4 matrix) {
 		return this.set(matrix.val);
 	}
-
+	
 	/**
 	 * Sets the matrix to the given matrix as a float array. The float array must
 	 * have at least 16 elements; the first 16 will be copied.
@@ -202,7 +202,7 @@ public class Matrix4 implements Serializable {
 		System.arraycopy(values, 0, val, 0, val.length);
 		return this;
 	}
-
+	
 	/**
 	 * Sets the matrix to a rotation matrix representing the quaternion.
 	 * 
@@ -212,7 +212,7 @@ public class Matrix4 implements Serializable {
 	public Matrix4 set(Quaternion quaternion) {
 		return set(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
 	}
-
+	
 	/**
 	 * Sets the matrix to a rotation matrix representing the quaternion.
 	 * 
@@ -229,7 +229,7 @@ public class Matrix4 implements Serializable {
 	public Matrix4 set(float quaternionX, float quaternionY, float quaternionZ, float quaternionW) {
 		return set(0f, 0f, 0f, quaternionX, quaternionY, quaternionZ, quaternionW);
 	}
-
+	
 	/**
 	 * Set this matrix to the specified translation and rotation.
 	 * 
@@ -240,7 +240,7 @@ public class Matrix4 implements Serializable {
 	public Matrix4 set(Vector3 position, Quaternion orientation) {
 		return set(position.x, position.y, position.z, orientation.x, orientation.y, orientation.z, orientation.w);
 	}
-
+	
 	/**
 	 * Sets the matrix to a rotation matrix representing the translation and
 	 * quaternion.
@@ -267,29 +267,29 @@ public class Matrix4 implements Serializable {
 		final float wx = quaternionW * xs, wy = quaternionW * ys, wz = quaternionW * zs;
 		final float xx = quaternionX * xs, xy = quaternionX * ys, xz = quaternionX * zs;
 		final float yy = quaternionY * ys, yz = quaternionY * zs, zz = quaternionZ * zs;
-
+		
 		val[M00] = (1.0f - (yy + zz));
 		val[M01] = (xy - wz);
 		val[M02] = (xz + wy);
 		val[M03] = translationX;
-
+		
 		val[M10] = (xy + wz);
 		val[M11] = (1.0f - (xx + zz));
 		val[M12] = (yz - wx);
 		val[M13] = translationY;
-
+		
 		val[M20] = (xz - wy);
 		val[M21] = (yz + wx);
 		val[M22] = (1.0f - (xx + yy));
 		val[M23] = translationZ;
-
+		
 		val[M30] = 0.f;
 		val[M31] = 0.f;
 		val[M32] = 0.f;
 		val[M33] = 1.0f;
 		return this;
 	}
-
+	
 	/**
 	 * Set this matrix to the specified translation, rotation and scale.
 	 * 
@@ -302,7 +302,7 @@ public class Matrix4 implements Serializable {
 		return set(position.x, position.y, position.z, orientation.x, orientation.y, orientation.z, orientation.w,
 				scale.x, scale.y, scale.z);
 	}
-
+	
 	/**
 	 * Sets the matrix to a rotation matrix representing the translation and
 	 * quaternion.
@@ -335,29 +335,29 @@ public class Matrix4 implements Serializable {
 		final float wx = quaternionW * xs, wy = quaternionW * ys, wz = quaternionW * zs;
 		final float xx = quaternionX * xs, xy = quaternionX * ys, xz = quaternionX * zs;
 		final float yy = quaternionY * ys, yz = quaternionY * zs, zz = quaternionZ * zs;
-
+		
 		val[M00] = scaleX * (1.0f - (yy + zz));
 		val[M01] = scaleY * (xy - wz);
 		val[M02] = scaleZ * (xz + wy);
 		val[M03] = translationX;
-
+		
 		val[M10] = scaleX * (xy + wz);
 		val[M11] = scaleY * (1.0f - (xx + zz));
 		val[M12] = scaleZ * (yz - wx);
 		val[M13] = translationY;
-
+		
 		val[M20] = scaleX * (xz - wy);
 		val[M21] = scaleY * (yz + wx);
 		val[M22] = scaleZ * (1.0f - (xx + yy));
 		val[M23] = translationZ;
-
+		
 		val[M30] = 0.f;
 		val[M31] = 0.f;
 		val[M32] = 0.f;
 		val[M33] = 1.0f;
 		return this;
 	}
-
+	
 	/**
 	 * Sets the four columns of the matrix which correspond to the x-, y- and z-axis
 	 * of the vector space this matrix creates as well as the 4th column
@@ -387,12 +387,12 @@ public class Matrix4 implements Serializable {
 		val[M33] = 1;
 		return this;
 	}
-
+	
 	/** @return a copy of this matrix */
 	public Matrix4 cpy() {
 		return new Matrix4(this);
 	}
-
+	
 	/**
 	 * Adds a translational component to the matrix in the 4th column. The other
 	 * columns are untouched.
@@ -407,7 +407,7 @@ public class Matrix4 implements Serializable {
 		val[M23] += vector.z;
 		return this;
 	}
-
+	
 	/**
 	 * Adds a translational component to the matrix in the 4th column. The other
 	 * columns are untouched.
@@ -423,12 +423,12 @@ public class Matrix4 implements Serializable {
 		val[M23] += z;
 		return this;
 	}
-
+	
 	/** @return the backing float array */
 	public float[] getValues() {
 		return val;
 	}
-
+	
 	/**
 	 * Postmultiplies this matrix with the given matrix, storing the result in this
 	 * matrix. For example:
@@ -444,7 +444,7 @@ public class Matrix4 implements Serializable {
 		mul(val, matrix.val);
 		return this;
 	}
-
+	
 	/**
 	 * Premultiplies this matrix with the given matrix, storing the result in this
 	 * matrix. For example:
@@ -461,7 +461,7 @@ public class Matrix4 implements Serializable {
 		mul(tmpMat.val, this.val);
 		return set(tmpMat);
 	}
-
+	
 	/**
 	 * Transposes the matrix.
 	 * 
@@ -486,7 +486,7 @@ public class Matrix4 implements Serializable {
 		tmp[M33] = val[M33];
 		return set(tmp);
 	}
-
+	
 	/**
 	 * Sets the matrix to an identity matrix.
 	 * 
@@ -511,7 +511,7 @@ public class Matrix4 implements Serializable {
 		val[M33] = 1;
 		return this;
 	}
-
+	
 	/**
 	 * Inverts the matrix. Stores the result in this matrix.
 	 * 
@@ -584,7 +584,7 @@ public class Matrix4 implements Serializable {
 		val[M33] = tmp[M33] * inv_det;
 		return this;
 	}
-
+	
 	/** @return The determinant of this matrix */
 	public float det() {
 		return val[M30] * val[M21] * val[M12] * val[M03] - val[M20] * val[M31] * val[M12] * val[M03]
@@ -600,13 +600,13 @@ public class Matrix4 implements Serializable {
 				+ val[M20] * val[M01] * val[M12] * val[M33] - val[M00] * val[M21] * val[M12] * val[M33]
 				- val[M10] * val[M01] * val[M22] * val[M33] + val[M00] * val[M11] * val[M22] * val[M33];
 	}
-
+	
 	/** @return The determinant of the 3x3 upper left matrix */
 	public float det3x3() {
 		return val[M00] * val[M11] * val[M22] + val[M01] * val[M12] * val[M20] + val[M02] * val[M10] * val[M21]
 				- val[M00] * val[M12] * val[M21] - val[M01] * val[M10] * val[M22] - val[M02] * val[M11] * val[M20];
 	}
-
+	
 	/**
 	 * Sets the matrix to a projection matrix with a near- and far plane, a field of
 	 * view in degrees and an aspect ratio. Note that the field of view specified is
@@ -640,10 +640,10 @@ public class Matrix4 implements Serializable {
 		val[M13] = 0;
 		val[M23] = l_a2;
 		val[M33] = 0;
-
+		
 		return this;
 	}
-
+	
 	/**
 	 * Sets the matrix to a projection matrix with a near/far plane, and left,
 	 * bottom, right and top specifying the points on the near plane that are mapped
@@ -681,10 +681,10 @@ public class Matrix4 implements Serializable {
 		val[M13] = 0;
 		val[M23] = l_a2;
 		val[M33] = 0;
-
+		
 		return this;
 	}
-
+	
 	/**
 	 * Sets this matrix to an orthographic projection matrix with the origin at
 	 * (x,y) extending by width and height. The near plane is set to 0, the far
@@ -700,7 +700,7 @@ public class Matrix4 implements Serializable {
 		setToOrtho(x, x + width, y, y + height, 0, 1);
 		return this;
 	}
-
+	
 	/**
 	 * Sets this matrix to an orthographic projection matrix with the origin at
 	 * (x,y) extending by width and height, having a near and far plane.
@@ -717,7 +717,7 @@ public class Matrix4 implements Serializable {
 		setToOrtho(x, x + width, y, y + height, near, far);
 		return this;
 	}
-
+	
 	/**
 	 * Sets the matrix to an orthographic projection like glOrtho
 	 * (http://www.opengl.org/sdk/docs/man/xhtml/glOrtho.xml) following the OpenGL
@@ -732,16 +732,16 @@ public class Matrix4 implements Serializable {
 	 * @return This matrix for the purpose of chaining methods together.
 	 */
 	public Matrix4 setToOrtho(float left, float right, float bottom, float top, float near, float far) {
-
+		
 		this.idt();
 		float x_orth = 2 / (right - left);
 		float y_orth = 2 / (top - bottom);
 		float z_orth = -2 / (far - near);
-
+		
 		float tx = -(right + left) / (right - left);
 		float ty = -(top + bottom) / (top - bottom);
 		float tz = -(far + near) / (far - near);
-
+		
 		val[M00] = x_orth;
 		val[M10] = 0;
 		val[M20] = 0;
@@ -758,10 +758,10 @@ public class Matrix4 implements Serializable {
 		val[M13] = ty;
 		val[M23] = tz;
 		val[M33] = 1;
-
+		
 		return this;
 	}
-
+	
 	/**
 	 * Sets the 4th column to the translation vector.
 	 * 
@@ -774,7 +774,7 @@ public class Matrix4 implements Serializable {
 		val[M23] = vector.z;
 		return this;
 	}
-
+	
 	/**
 	 * Sets the 4th column to the translation vector.
 	 * 
@@ -789,7 +789,7 @@ public class Matrix4 implements Serializable {
 		val[M23] = z;
 		return this;
 	}
-
+	
 	/**
 	 * Sets this matrix to a translation matrix, overwriting it first by an identity
 	 * matrix and then setting the 4th column to the translation vector.
@@ -804,7 +804,7 @@ public class Matrix4 implements Serializable {
 		val[M23] = vector.z;
 		return this;
 	}
-
+	
 	/**
 	 * Sets this matrix to a translation matrix, overwriting it first by an identity
 	 * matrix and then setting the 4th column to the translation vector.
@@ -821,7 +821,7 @@ public class Matrix4 implements Serializable {
 		val[M23] = z;
 		return this;
 	}
-
+	
 	/**
 	 * Sets this matrix to a translation and scaling matrix by first overwriting it
 	 * with an identity and then setting the translation vector in the 4th column
@@ -841,7 +841,7 @@ public class Matrix4 implements Serializable {
 		val[M22] = scaling.z;
 		return this;
 	}
-
+	
 	/**
 	 * Sets this matrix to a translation and scaling matrix by first overwriting it
 	 * with an identity and then setting the translation vector in the 4th column
@@ -866,10 +866,10 @@ public class Matrix4 implements Serializable {
 		val[M22] = scalingZ;
 		return this;
 	}
-
+	
 	static Quaternion quat = new Quaternion();
 	static Quaternion quat2 = new Quaternion();
-
+	
 	/**
 	 * Sets the matrix to a rotation matrix around the given axis.
 	 * 
@@ -884,7 +884,7 @@ public class Matrix4 implements Serializable {
 		}
 		return set(quat.set(axis, degrees));
 	}
-
+	
 	/**
 	 * Sets the matrix to a rotation matrix around the given axis.
 	 * 
@@ -899,7 +899,7 @@ public class Matrix4 implements Serializable {
 		}
 		return set(quat.setFromAxisRad(axis, radians));
 	}
-
+	
 	/**
 	 * Sets the matrix to a rotation matrix around the given axis.
 	 * 
@@ -916,7 +916,7 @@ public class Matrix4 implements Serializable {
 		}
 		return set(quat.setFromAxis(axisX, axisY, axisZ, degrees));
 	}
-
+	
 	/**
 	 * Sets the matrix to a rotation matrix around the given axis.
 	 * 
@@ -933,7 +933,7 @@ public class Matrix4 implements Serializable {
 		}
 		return set(quat.setFromAxisRad(axisX, axisY, axisZ, radians));
 	}
-
+	
 	/**
 	 * Set the matrix to a rotation matrix between two vectors.
 	 * 
@@ -944,7 +944,7 @@ public class Matrix4 implements Serializable {
 	public Matrix4 setToRotation(final Vector3 v1, final Vector3 v2) {
 		return set(quat.setFromCross(v1, v2));
 	}
-
+	
 	/**
 	 * Set the matrix to a rotation matrix between two vectors.
 	 * 
@@ -960,7 +960,7 @@ public class Matrix4 implements Serializable {
 			final float z2) {
 		return set(quat.setFromCross(x1, y1, z1, x2, y2, z2));
 	}
-
+	
 	/**
 	 * Sets this matrix to a rotation matrix from the given euler angles.
 	 * 
@@ -973,7 +973,7 @@ public class Matrix4 implements Serializable {
 		quat.setEulerAngles(yaw, pitch, roll);
 		return set(quat);
 	}
-
+	
 	/**
 	 * Sets this matrix to a rotation matrix from the given euler angles.
 	 * 
@@ -986,7 +986,7 @@ public class Matrix4 implements Serializable {
 		quat.setEulerAnglesRad(yaw, pitch, roll);
 		return set(quat);
 	}
-
+	
 	/**
 	 * Sets this matrix to a scaling matrix
 	 * 
@@ -1000,7 +1000,7 @@ public class Matrix4 implements Serializable {
 		val[M22] = vector.z;
 		return this;
 	}
-
+	
 	/**
 	 * Sets this matrix to a scaling matrix
 	 * 
@@ -1016,11 +1016,11 @@ public class Matrix4 implements Serializable {
 		val[M22] = z;
 		return this;
 	}
-
+	
 	static final Vector3 l_vez = new Vector3();
 	static final Vector3 l_vex = new Vector3();
 	static final Vector3 l_vey = new Vector3();
-
+	
 	/**
 	 * Sets the matrix to a look at matrix with a direction and an up vector.
 	 * Multiply with a translation matrix to get a camera model view matrix.
@@ -1044,13 +1044,13 @@ public class Matrix4 implements Serializable {
 		val[M20] = -l_vez.x;
 		val[M21] = -l_vez.y;
 		val[M22] = -l_vez.z;
-
+		
 		return this;
 	}
-
+	
 	static final Vector3 tmpVec = new Vector3();
 	static final Matrix4 tmpMat = new Matrix4();
-
+	
 	/**
 	 * Sets this matrix to a look at matrix with the given position, target and up
 	 * vector.
@@ -1064,30 +1064,30 @@ public class Matrix4 implements Serializable {
 		tmpVec.set(target).sub(position);
 		setToLookAt(tmpVec, up);
 		this.mul(tmpMat.setToTranslation(-position.x, -position.y, -position.z));
-
+		
 		return this;
 	}
-
+	
 	static final Vector3 right = new Vector3();
 	static final Vector3 tmpForward = new Vector3();
 	static final Vector3 tmpUp = new Vector3();
-
+	
 	public Matrix4 setToWorld(Vector3 position, Vector3 forward, Vector3 up) {
 		tmpForward.set(forward).nor();
 		right.set(tmpForward).crs(up).nor();
 		tmpUp.set(right).crs(tmpForward).nor();
-
+		
 		this.set(right, tmpUp, tmpForward.scl(-1), position);
 		return this;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "[" + val[M00] + "|" + val[M01] + "|" + val[M02] + "|" + val[M03] + "]\n" + "[" + val[M10] + "|"
 				+ val[M11] + "|" + val[M12] + "|" + val[M13] + "]\n" + "[" + val[M20] + "|" + val[M21] + "|" + val[M22]
 				+ "|" + val[M23] + "]\n" + "[" + val[M30] + "|" + val[M31] + "|" + val[M32] + "|" + val[M33] + "]\n";
 	}
-
+	
 	/**
 	 * Linearly interpolates between this matrix and the given matrix mixing by
 	 * alpha
@@ -1101,7 +1101,7 @@ public class Matrix4 implements Serializable {
 			this.val[i] = this.val[i] * (1 - alpha) + matrix.val[i] * alpha;
 		return this;
 	}
-
+	
 	/**
 	 * Averages the given transform with this one and stores the result in this
 	 * matrix. Translations and scales are lerped while rotations are slerped.
@@ -1114,20 +1114,20 @@ public class Matrix4 implements Serializable {
 	public Matrix4 avg(Matrix4 other, float w) {
 		getScale(tmpVec);
 		other.getScale(tmpForward);
-
+		
 		getRotation(quat);
 		other.getRotation(quat2);
-
+		
 		getTranslation(tmpUp);
 		other.getTranslation(right);
-
+		
 		setToScaling(tmpVec.scl(w).add(tmpForward.scl(1 - w)));
 		rotate(quat.slerp(quat2, 1 - w));
 		setTranslation(tmpUp.scl(w).add(right.scl(1 - w)));
-
+		
 		return this;
 	}
-
+	
 	/**
 	 * Averages the given transforms and stores the result in this matrix.
 	 * Translations and scales are lerped while rotations are slerped. Does not
@@ -1138,25 +1138,25 @@ public class Matrix4 implements Serializable {
 	 */
 	public Matrix4 avg(Matrix4[] t) {
 		final float w = 1.0f / t.length;
-
+		
 		tmpVec.set(t[0].getScale(tmpUp).scl(w));
 		quat.set(t[0].getRotation(quat2).exp(w));
 		tmpForward.set(t[0].getTranslation(tmpUp).scl(w));
-
+		
 		for (int i = 1; i < t.length; i++) {
 			tmpVec.add(t[i].getScale(tmpUp).scl(w));
 			quat.mul(t[i].getRotation(quat2).exp(w));
 			tmpForward.add(t[i].getTranslation(tmpUp).scl(w));
 		}
 		quat.nor();
-
+		
 		setToScaling(tmpVec);
 		rotate(quat);
 		setTranslation(tmpForward);
-
+		
 		return this;
 	}
-
+	
 	/**
 	 * Averages the given transforms with the given weights and stores the result in
 	 * this matrix. Translations and scales are lerped while rotations are slerped.
@@ -1171,21 +1171,21 @@ public class Matrix4 implements Serializable {
 		tmpVec.set(t[0].getScale(tmpUp).scl(w[0]));
 		quat.set(t[0].getRotation(quat2).exp(w[0]));
 		tmpForward.set(t[0].getTranslation(tmpUp).scl(w[0]));
-
+		
 		for (int i = 1; i < t.length; i++) {
 			tmpVec.add(t[i].getScale(tmpUp).scl(w[i]));
 			quat.mul(t[i].getRotation(quat2).exp(w[i]));
 			tmpForward.add(t[i].getTranslation(tmpUp).scl(w[i]));
 		}
 		quat.nor();
-
+		
 		setToScaling(tmpVec);
 		rotate(quat);
 		setTranslation(tmpForward);
-
+		
 		return this;
 	}
-
+	
 	/**
 	 * Sets this matrix to the given 3x3 matrix. The third column of this matrix is
 	 * set to (0,0,1,0).
@@ -1211,7 +1211,7 @@ public class Matrix4 implements Serializable {
 		val[15] = mat.val[8];
 		return this;
 	}
-
+	
 	/**
 	 * Sets this matrix to the given affine matrix. The values are mapped as
 	 * follows:
@@ -1245,7 +1245,7 @@ public class Matrix4 implements Serializable {
 		val[M33] = 1;
 		return this;
 	}
-
+	
 	/**
 	 * Assumes that this matrix is a 2D affine transformation, copying only the
 	 * relevant components. The values are mapped as follows:
@@ -1269,7 +1269,7 @@ public class Matrix4 implements Serializable {
 		val[M13] = affine.m12;
 		return this;
 	}
-
+	
 	/**
 	 * Assumes that both matrices are 2D affine transformations, copying only the
 	 * relevant components. The copied values are:
@@ -1293,35 +1293,35 @@ public class Matrix4 implements Serializable {
 		val[M13] = mat.val[M13];
 		return this;
 	}
-
+	
 	public Matrix4 scl(Vector3 scale) {
 		val[M00] *= scale.x;
 		val[M11] *= scale.y;
 		val[M22] *= scale.z;
 		return this;
 	}
-
+	
 	public Matrix4 scl(float x, float y, float z) {
 		val[M00] *= x;
 		val[M11] *= y;
 		val[M22] *= z;
 		return this;
 	}
-
+	
 	public Matrix4 scl(float scale) {
 		val[M00] *= scale;
 		val[M11] *= scale;
 		val[M22] *= scale;
 		return this;
 	}
-
+	
 	public Vector3 getTranslation(Vector3 position) {
 		position.x = val[M03];
 		position.y = val[M13];
 		position.z = val[M23];
 		return position;
 	}
-
+	
 	/**
 	 * Gets the rotation of this matrix.
 	 * 
@@ -1333,7 +1333,7 @@ public class Matrix4 implements Serializable {
 	public Quaternion getRotation(Quaternion rotation, boolean normalizeAxes) {
 		return rotation.setFromMatrix(normalizeAxes, this);
 	}
-
+	
 	/**
 	 * Gets the rotation of this matrix.
 	 * 
@@ -1343,43 +1343,43 @@ public class Matrix4 implements Serializable {
 	public Quaternion getRotation(Quaternion rotation) {
 		return rotation.setFromMatrix(this);
 	}
-
+	
 	/** @return the squared scale factor on the X axis */
 	public float getScaleXSquared() {
 		return val[Matrix4.M00] * val[Matrix4.M00] + val[Matrix4.M01] * val[Matrix4.M01]
 				+ val[Matrix4.M02] * val[Matrix4.M02];
 	}
-
+	
 	/** @return the squared scale factor on the Y axis */
 	public float getScaleYSquared() {
 		return val[Matrix4.M10] * val[Matrix4.M10] + val[Matrix4.M11] * val[Matrix4.M11]
 				+ val[Matrix4.M12] * val[Matrix4.M12];
 	}
-
+	
 	/** @return the squared scale factor on the Z axis */
 	public float getScaleZSquared() {
 		return val[Matrix4.M20] * val[Matrix4.M20] + val[Matrix4.M21] * val[Matrix4.M21]
 				+ val[Matrix4.M22] * val[Matrix4.M22];
 	}
-
+	
 	/** @return the scale factor on the X axis (non-negative) */
 	public float getScaleX() {
 		return (MathUtils.isZero(val[Matrix4.M01]) && MathUtils.isZero(val[Matrix4.M02])) ? Math.abs(val[Matrix4.M00])
 				: (float) Math.sqrt(getScaleXSquared());
 	}
-
+	
 	/** @return the scale factor on the Y axis (non-negative) */
 	public float getScaleY() {
 		return (MathUtils.isZero(val[Matrix4.M10]) && MathUtils.isZero(val[Matrix4.M12])) ? Math.abs(val[Matrix4.M11])
 				: (float) Math.sqrt(getScaleYSquared());
 	}
-
+	
 	/** @return the scale factor on the X axis (non-negative) */
 	public float getScaleZ() {
 		return (MathUtils.isZero(val[Matrix4.M20]) && MathUtils.isZero(val[Matrix4.M21])) ? Math.abs(val[Matrix4.M22])
 				: (float) Math.sqrt(getScaleZSquared());
 	}
-
+	
 	/**
 	 * @param scale The vector which will receive the (non-negative) scale
 	 *              components on each axis.
@@ -1388,7 +1388,7 @@ public class Matrix4 implements Serializable {
 	public Vector3 getScale(Vector3 scale) {
 		return scale.set(getScaleX(), getScaleY(), getScaleZ());
 	}
-
+	
 	/** removes the translational part and transposes the matrix. */
 	public Matrix4 toNormalMatrix() {
 		val[M03] = 0;
@@ -1396,7 +1396,7 @@ public class Matrix4 implements Serializable {
 		val[M23] = 0;
 		return inv().tra();
 	}
-
+	
 	// @off
 	/*
 	 * JNI #include <memory.h> #include <stdio.h> #include <string.h>
@@ -1524,7 +1524,7 @@ public class Matrix4 implements Serializable {
 	 * + vec[1] * mat[M11] + vec[2] * mat[M12]; float z = vec[0] * mat[M20] + vec[1]
 	 * * mat[M21] + vec[2] * mat[M22]; vec[0] = x; vec[1] = y; vec[2] = z; }
 	 */
-
+	
 	/**
 	 * Multiplies the matrix mata with matrix matb, storing the result in mata. The
 	 * arrays are assumed to hold 4x4 column major matrices as you can get from
@@ -1536,7 +1536,7 @@ public class Matrix4 implements Serializable {
 	public static native void mul(float[] mata, float[] matb) /*-{ }-*/; /*
 																			 * matrix4_mul(mata, matb);
 																			 */
-
+	
 	/**
 	 * Multiplies the vector with the given matrix. The matrix array is assumed to
 	 * hold a 4x4 column major matrix as you can get from {@link Matrix4#val}. The
@@ -1550,7 +1550,7 @@ public class Matrix4 implements Serializable {
 	public static native void mulVec(float[] mat, float[] vec) /*-{ }-*/; /*
 																			 * matrix4_mulVec(mat, vec);
 																			 */
-
+	
 	/**
 	 * Multiplies the vectors with the given matrix. The matrix array is assumed to
 	 * hold a 4x4 column major matrix as you can get from {@link Matrix4#val}. The
@@ -1572,7 +1572,7 @@ public class Matrix4 implements Serializable {
 									 * float* vecPtr = vecs + offset; for(int i = 0; i < numVecs; i++) {
 									 * matrix4_mulVec(mat, vecPtr); vecPtr += stride; }
 									 */
-
+	
 	/**
 	 * Multiplies the vector with the given matrix, performing a division by w. The
 	 * matrix array is assumed to hold a 4x4 column major matrix as you can get from
@@ -1587,7 +1587,7 @@ public class Matrix4 implements Serializable {
 	public static native void prj(float[] mat, float[] vec) /*-{ }-*/; /*
 																		 * matrix4_proj(mat, vec);
 																		 */
-
+	
 	/**
 	 * Multiplies the vectors with the given matrix, , performing a division by w.
 	 * The matrix array is assumed to hold a 4x4 column major matrix as you can get
@@ -1609,7 +1609,7 @@ public class Matrix4 implements Serializable {
 									 * float* vecPtr = vecs + offset; for(int i = 0; i < numVecs; i++) {
 									 * matrix4_proj(mat, vecPtr); vecPtr += stride; }
 									 */
-
+	
 	/**
 	 * Multiplies the vector with the top most 3x3 sub-matrix of the given matrix.
 	 * The matrix array is assumed to hold a 4x4 column major matrix as you can get
@@ -1624,7 +1624,7 @@ public class Matrix4 implements Serializable {
 	public static native void rot(float[] mat, float[] vec) /*-{ }-*/; /*
 																		 * matrix4_rot(mat, vec);
 																		 */
-
+	
 	/**
 	 * Multiplies the vectors with the top most 3x3 sub-matrix of the given matrix.
 	 * The matrix array is assumed to hold a 4x4 column major matrix as you can get
@@ -1646,7 +1646,7 @@ public class Matrix4 implements Serializable {
 									 * float* vecPtr = vecs + offset; for(int i = 0; i < numVecs; i++) {
 									 * matrix4_rot(mat, vecPtr); vecPtr += stride; }
 									 */
-
+	
 	/**
 	 * Computes the inverse of the given matrix. The matrix array is assumed to hold
 	 * a 4x4 column major matrix as you can get from {@link Matrix4#val}.
@@ -1657,7 +1657,7 @@ public class Matrix4 implements Serializable {
 	public static native boolean inv(float[] values) /*-{ }-*/; /*
 																 * return matrix4_inv(values);
 																 */
-
+	
 	/**
 	 * Computes the determinante of the given matrix. The matrix array is assumed to
 	 * hold a 4x4 column major matrix as you can get from {@link Matrix4#val}.
@@ -1668,7 +1668,7 @@ public class Matrix4 implements Serializable {
 	public static native float det(float[] values) /*-{ }-*/; /*
 																 * return matrix4_det(values);
 																 */
-
+	
 	// @on
 	/**
 	 * Postmultiplies this matrix by a translation matrix. Postmultiplication is
@@ -1680,7 +1680,7 @@ public class Matrix4 implements Serializable {
 	public Matrix4 translate(Vector3 translation) {
 		return translate(translation.x, translation.y, translation.z);
 	}
-
+	
 	/**
 	 * Postmultiplies this matrix by a translation matrix. Postmultiplication is
 	 * also used by OpenGL ES' 1.x glTranslate/glRotate/glScale.
@@ -1707,11 +1707,11 @@ public class Matrix4 implements Serializable {
 		tmp[M31] = 0;
 		tmp[M32] = 0;
 		tmp[M33] = 1;
-
+		
 		mul(val, tmp);
 		return this;
 	}
-
+	
 	/**
 	 * Postmultiplies this matrix with a (counter-clockwise) rotation matrix.
 	 * Postmultiplication is also used by OpenGL ES' 1.x
@@ -1727,7 +1727,7 @@ public class Matrix4 implements Serializable {
 		quat.set(axis, degrees);
 		return rotate(quat);
 	}
-
+	
 	/**
 	 * Postmultiplies this matrix with a (counter-clockwise) rotation matrix.
 	 * Postmultiplication is also used by OpenGL ES' 1.x
@@ -1743,7 +1743,7 @@ public class Matrix4 implements Serializable {
 		quat.setFromAxisRad(axis, radians);
 		return rotate(quat);
 	}
-
+	
 	/**
 	 * Postmultiplies this matrix with a (counter-clockwise) rotation matrix.
 	 * Postmultiplication is also used by OpenGL ES' 1.x
@@ -1761,7 +1761,7 @@ public class Matrix4 implements Serializable {
 		quat.setFromAxis(axisX, axisY, axisZ, degrees);
 		return rotate(quat);
 	}
-
+	
 	/**
 	 * Postmultiplies this matrix with a (counter-clockwise) rotation matrix.
 	 * Postmultiplication is also used by OpenGL ES' 1.x
@@ -1779,7 +1779,7 @@ public class Matrix4 implements Serializable {
 		quat.setFromAxisRad(axisX, axisY, axisZ, radians);
 		return rotate(quat);
 	}
-
+	
 	/**
 	 * Postmultiplies this matrix with a (counter-clockwise) rotation matrix.
 	 * Postmultiplication is also used by OpenGL ES' 1.x
@@ -1793,7 +1793,7 @@ public class Matrix4 implements Serializable {
 		mul(val, tmp);
 		return this;
 	}
-
+	
 	/**
 	 * Postmultiplies this matrix by the rotation between two vectors.
 	 * 
@@ -1804,7 +1804,7 @@ public class Matrix4 implements Serializable {
 	public Matrix4 rotate(final Vector3 v1, final Vector3 v2) {
 		return rotate(quat.setFromCross(v1, v2));
 	}
-
+	
 	/**
 	 * Postmultiplies this matrix with a scale matrix. Postmultiplication is also
 	 * used by OpenGL ES' 1.x glTranslate/glRotate/glScale.
@@ -1831,11 +1831,11 @@ public class Matrix4 implements Serializable {
 		tmp[M31] = 0;
 		tmp[M32] = 0;
 		tmp[M33] = 1;
-
+		
 		mul(val, tmp);
 		return this;
 	}
-
+	
 	/**
 	 * Copies the 4x3 upper-left sub-matrix into float array. The destination array
 	 * is supposed to be a column major matrix.
@@ -1856,7 +1856,7 @@ public class Matrix4 implements Serializable {
 		dst[10] = val[M13];
 		dst[11] = val[M23];
 	}
-
+	
 	/** @return True if this matrix has any rotation or scaling, false otherwise */
 	public boolean hasRotationOrScaling() {
 		return !(MathUtils.isEqual(val[M00], 1) && MathUtils.isEqual(val[M11], 1) && MathUtils.isEqual(val[M22], 1)

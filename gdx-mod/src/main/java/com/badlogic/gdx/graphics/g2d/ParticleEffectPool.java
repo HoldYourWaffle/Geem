@@ -22,21 +22,21 @@ import com.badlogic.gdx.utils.Pool;
 
 public class ParticleEffectPool extends Pool<PooledEffect> {
 	private final ParticleEffect effect;
-
+	
 	public ParticleEffectPool(ParticleEffect effect, int initialCapacity, int max) {
 		super(initialCapacity, max);
 		this.effect = effect;
 	}
-
+	
 	@Override
 	protected PooledEffect newObject() {
 		return new PooledEffect(effect);
 	}
-
+	
 	@Override
 	public void free(PooledEffect effect) {
 		super.free(effect);
-
+		
 		effect.reset(false); // copy parameters exactly to avoid introducing error
 		if (effect.xSizeScale != this.effect.xSizeScale || effect.ySizeScale != this.effect.ySizeScale
 				|| effect.motionScale != this.effect.motionScale) {
@@ -53,12 +53,12 @@ public class ParticleEffectPool extends Pool<PooledEffect> {
 			effect.motionScale = this.effect.motionScale;
 		}
 	}
-
+	
 	public class PooledEffect extends ParticleEffect {
 		PooledEffect(ParticleEffect effect) {
 			super(effect);
 		}
-
+		
 		public void free() {
 			ParticleEffectPool.this.free(this);
 		}

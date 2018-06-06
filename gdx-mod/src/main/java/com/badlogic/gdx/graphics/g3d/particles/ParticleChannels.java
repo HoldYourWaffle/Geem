@@ -32,21 +32,21 @@ import com.badlogic.gdx.graphics.g3d.particles.ParallelArray.FloatChannel;
  */
 public class ParticleChannels {
 	private static int currentGlobalId;
-
+	
 	public static int newGlobalId() {
 		return currentGlobalId++;
 	}
-
+	
 	// Initializers
 	public static class TextureRegionInitializer implements ChannelInitializer<FloatChannel> {
 		private static TextureRegionInitializer instance;
-
+		
 		public static TextureRegionInitializer get() {
 			if (instance == null)
 				instance = new TextureRegionInitializer();
 			return instance;
 		}
-
+		
 		@Override
 		public void init(FloatChannel channel) {
 			for (int i = 0, c = channel.data.length; i < c; i += channel.strideSize) {
@@ -59,46 +59,46 @@ public class ParticleChannels {
 			}
 		}
 	}
-
+	
 	public static class ColorInitializer implements ChannelInitializer<FloatChannel> {
 		private static ColorInitializer instance;
-
+		
 		public static ColorInitializer get() {
 			if (instance == null)
 				instance = new ColorInitializer();
 			return instance;
 		}
-
+		
 		@Override
 		public void init(FloatChannel channel) {
 			Arrays.fill(channel.data, 0, channel.data.length, 1);
 		}
 	}
-
+	
 	public static class ScaleInitializer implements ChannelInitializer<FloatChannel> {
 		private static ScaleInitializer instance;
-
+		
 		public static ScaleInitializer get() {
 			if (instance == null)
 				instance = new ScaleInitializer();
 			return instance;
 		}
-
+		
 		@Override
 		public void init(FloatChannel channel) {
 			Arrays.fill(channel.data, 0, channel.data.length, 1);
 		}
 	}
-
+	
 	public static class Rotation2dInitializer implements ChannelInitializer<FloatChannel> {
 		private static Rotation2dInitializer instance;
-
+		
 		public static Rotation2dInitializer get() {
 			if (instance == null)
 				instance = new Rotation2dInitializer();
 			return instance;
 		}
-
+		
 		@Override
 		public void init(FloatChannel channel) {
 			for (int i = 0, c = channel.data.length; i < c; i += channel.strideSize) {
@@ -107,16 +107,16 @@ public class ParticleChannels {
 			}
 		}
 	}
-
+	
 	public static class Rotation3dInitializer implements ChannelInitializer<FloatChannel> {
 		private static Rotation3dInitializer instance;
-
+		
 		public static Rotation3dInitializer get() {
 			if (instance == null)
 				instance = new Rotation3dInitializer();
 			return instance;
 		}
-
+		
 		@Override
 		public void init(FloatChannel channel) {
 			for (int i = 0, c = channel.data.length; i < c; i += channel.strideSize) {
@@ -126,7 +126,7 @@ public class ParticleChannels {
 			}
 		}
 	}
-
+	
 	// Channels
 	/** Channels of common use like position, life, color, etc... */
 	public static final ChannelDescriptor Life = new ChannelDescriptor(newGlobalId(), float.class, 3);
@@ -147,7 +147,7 @@ public class ParticleChannels {
 	public static final ChannelDescriptor Interpolation = new ChannelDescriptor(-1, float.class, 2);
 	public static final ChannelDescriptor Interpolation4 = new ChannelDescriptor(-1, float.class, 4);
 	public static final ChannelDescriptor Interpolation6 = new ChannelDescriptor(-1, float.class, 6);
-
+	
 	// Offsets
 	/** Offsets to acess a particular value inside a stride of a given channel */
 	public static final int CurrentLifeOffset = 0, TotalLifeOffset = 1, LifePercentOffset = 2;
@@ -160,19 +160,19 @@ public class ParticleChannels {
 	public static final int UOffset = 0, VOffset = 1, U2Offset = 2, V2Offset = 3, HalfWidthOffset = 4,
 			HalfHeightOffset = 5;
 	public static final int CosineOffset = 0, SineOffset = 1;
-
+	
 	private int currentId;
-
+	
 	public ParticleChannels() {
 		resetIds();
 	}
-
+	
 	public int newId() {
 		return currentId++;
 	}
-
+	
 	protected void resetIds() {
 		currentId = currentGlobalId;
 	}
-
+	
 }

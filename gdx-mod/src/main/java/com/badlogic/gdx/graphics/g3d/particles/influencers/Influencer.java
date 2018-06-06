@@ -26,5 +26,5 @@ import com.badlogic.gdx.graphics.g3d.particles.ParticleControllerComponent;
  * @author Inferno
  */
 public abstract class Influencer extends ParticleControllerComponent {
-
+	
 }

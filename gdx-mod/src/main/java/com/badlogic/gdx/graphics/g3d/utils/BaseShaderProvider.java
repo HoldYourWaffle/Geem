@@ -22,7 +22,7 @@ import com.badlogic.gdx.utils.Array;
 
 public abstract class BaseShaderProvider implements ShaderProvider {
 	protected Array<Shader> shaders = new Array<>();
-
+	
 	@Override
 	public Shader getShader(Renderable renderable) {
 		Shader suggestedShader = renderable.shader;
@@ -37,9 +37,9 @@ public abstract class BaseShaderProvider implements ShaderProvider {
 		shaders.add(shader);
 		return shader;
 	}
-
+	
 	protected abstract Shader createShader(final Renderable renderable);
-
+	
 	@Override
 	public void dispose() {
 		for (Shader shader : shaders) {

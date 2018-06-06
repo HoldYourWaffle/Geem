@@ -42,19 +42,19 @@ import com.badlogic.gdx.utils.Disposable;
 public interface Socket extends Disposable {
 	/** @return whether the socket is connected */
 	public boolean isConnected();
-
+	
 	/**
 	 * @return the {@link InputStream} used to read data from the other end of the
 	 *         connection.
 	 */
 	public InputStream getInputStream();
-
+	
 	/**
 	 * @return the {@link OutputStream} used to write data to the other end of the
 	 *         connection.
 	 */
 	public OutputStream getOutputStream();
-
+	
 	/** @return the RemoteAddress of the Socket as String */
 	public String getRemoteAddress();
 }

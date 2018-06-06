@@ -29,25 +29,25 @@ import com.badlogic.gdx.math.Vector3;
  * @author Inferno
  */
 public final class WeightMeshSpawnShapeValue extends MeshSpawnShapeValue {
-
+	
 	private CumulativeDistribution<Triangle> distribution;
-
+	
 	public WeightMeshSpawnShapeValue(WeightMeshSpawnShapeValue value) {
 		super(value);
 		distribution = new CumulativeDistribution<>();
 		load(value);
 	}
-
+	
 	public WeightMeshSpawnShapeValue() {
 		super();
 		distribution = new CumulativeDistribution<>();
 	}
-
+	
 	@Override
 	public void init() {
 		calculateWeights();
 	}
-
+	
 	/**
 	 * Calculate the weights of each triangle of the wrapped mesh. If the mesh has
 	 * indices: the function will calculate the weight of those triangles. If the
@@ -66,7 +66,7 @@ public final class WeightMeshSpawnShapeValue extends MeshSpawnShapeValue {
 		if (indicesCount > 0) {
 			short[] indices = new short[indicesCount];
 			mesh.getIndices(indices);
-
+			
 			// Calculate the Area
 			for (int i = 0; i < indicesCount; i += 3) {
 				int p1Offset = indices[i] * vertexSize + positionOffset,
@@ -89,11 +89,11 @@ public final class WeightMeshSpawnShapeValue extends MeshSpawnShapeValue {
 				distribution.add(new Triangle(x1, y1, z1, x2, y2, z2, x3, y3, z3), area);
 			}
 		}
-
+		
 		// Generate cumulative distribution
 		distribution.generateNormalized();
 	}
-
+	
 	@Override
 	public void spawnAux(Vector3 vector, float percent) {
 		Triangle t = distribution.value();
@@ -101,10 +101,10 @@ public final class WeightMeshSpawnShapeValue extends MeshSpawnShapeValue {
 		vector.set(t.x1 + a * (t.x2 - t.x1) + b * (t.x3 - t.x1), t.y1 + a * (t.y2 - t.y1) + b * (t.y3 - t.y1),
 				t.z1 + a * (t.z2 - t.z1) + b * (t.z3 - t.z1));
 	}
-
+	
 	@Override
 	public SpawnShapeValue copy() {
 		return new WeightMeshSpawnShapeValue(this);
 	}
-
+	
 }

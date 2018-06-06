@@ -52,7 +52,7 @@ public class ModelBatch implements Disposable {
 		protected Renderable newObject() {
 			return new Renderable();
 		}
-
+		
 		@Override
 		public Renderable obtain() {
 			Renderable renderable = super.obtain();
@@ -64,7 +64,7 @@ public class ModelBatch implements Disposable {
 			return renderable;
 		}
 	}
-
+	
 	protected Camera camera;
 	protected final RenderablePool renderablesPool = new RenderablePool();
 	/** list of Renderables to be rendered in the current batch **/
@@ -78,7 +78,7 @@ public class ModelBatch implements Disposable {
 	protected final ShaderProvider shaderProvider;
 	/** the {@link RenderableSorter} **/
 	protected final RenderableSorter sorter;
-
+	
 	/**
 	 * Construct a ModelBatch, using this constructor makes you responsible for
 	 * calling context.begin() and context.end() yourself.
@@ -95,7 +95,7 @@ public class ModelBatch implements Disposable {
 				: context;
 		this.shaderProvider = (shaderProvider == null) ? new DefaultShaderProvider() : shaderProvider;
 	}
-
+	
 	/**
 	 * Construct a ModelBatch, using this constructor makes you responsible for
 	 * calling context.begin() and context.end() yourself.
@@ -107,7 +107,7 @@ public class ModelBatch implements Disposable {
 	public ModelBatch(final RenderContext context, final ShaderProvider shaderProvider) {
 		this(context, shaderProvider, null);
 	}
-
+	
 	/**
 	 * Construct a ModelBatch, using this constructor makes you responsible for
 	 * calling context.begin() and context.end() yourself.
@@ -118,7 +118,7 @@ public class ModelBatch implements Disposable {
 	public ModelBatch(final RenderContext context, final RenderableSorter sorter) {
 		this(context, null, sorter);
 	}
-
+	
 	/**
 	 * Construct a ModelBatch, using this constructor makes you responsible for
 	 * calling context.begin() and context.end() yourself.
@@ -128,7 +128,7 @@ public class ModelBatch implements Disposable {
 	public ModelBatch(final RenderContext context) {
 		this(context, null, null);
 	}
-
+	
 	/**
 	 * Construct a ModelBatch
 	 * 
@@ -139,7 +139,7 @@ public class ModelBatch implements Disposable {
 	public ModelBatch(final ShaderProvider shaderProvider, final RenderableSorter sorter) {
 		this(null, shaderProvider, sorter);
 	}
-
+	
 	/**
 	 * Construct a ModelBatch
 	 * 
@@ -148,7 +148,7 @@ public class ModelBatch implements Disposable {
 	public ModelBatch(final RenderableSorter sorter) {
 		this(null, null, sorter);
 	}
-
+	
 	/**
 	 * Construct a ModelBatch
 	 * 
@@ -158,7 +158,7 @@ public class ModelBatch implements Disposable {
 	public ModelBatch(final ShaderProvider shaderProvider) {
 		this(null, shaderProvider, null);
 	}
-
+	
 	/**
 	 * Construct a ModelBatch with the default implementation and the specified
 	 * ubershader. See {@link DefaultShader} for more information about using a
@@ -170,7 +170,7 @@ public class ModelBatch implements Disposable {
 	public ModelBatch(final FileHandle vertexShader, final FileHandle fragmentShader) {
 		this(null, new DefaultShaderProvider(vertexShader, fragmentShader), null);
 	}
-
+	
 	/**
 	 * Construct a ModelBatch with the default implementation and the specified
 	 * ubershader. See {@link DefaultShader} for more information about using a
@@ -182,12 +182,12 @@ public class ModelBatch implements Disposable {
 	public ModelBatch(final String vertexShader, final String fragmentShader) {
 		this(null, new DefaultShaderProvider(vertexShader, fragmentShader), null);
 	}
-
+	
 	/** Construct a ModelBatch with the default implementation */
 	public ModelBatch() {
 		this(null, null, null);
 	}
-
+	
 	/**
 	 * Start rendering one or more {@link Renderable}s. Use one of the render()
 	 * methods to provide the renderables. Must be followed by a call to
@@ -203,7 +203,7 @@ public class ModelBatch implements Disposable {
 		if (ownContext)
 			context.begin();
 	}
-
+	
 	/**
 	 * Change the camera in between {@link #begin(Camera)} and {@link #end()}. This
 	 * causes the batch to be flushed. Can only be called after the call to
@@ -218,7 +218,7 @@ public class ModelBatch implements Disposable {
 			flush();
 		camera = cam;
 	}
-
+	
 	/**
 	 * Provides access to the current camera in between {@link #begin(Camera)} and
 	 * {@link #end()}. Do not change the camera's values. Use
@@ -230,7 +230,7 @@ public class ModelBatch implements Disposable {
 	public Camera getCamera() {
 		return camera;
 	}
-
+	
 	/**
 	 * Checks whether the {@link RenderContext} returned by
 	 * {@link #getRenderContext()} is owned and managed by this ModelBatch. When the
@@ -243,22 +243,22 @@ public class ModelBatch implements Disposable {
 	public boolean ownsRenderContext() {
 		return ownContext;
 	}
-
+	
 	/** @return the {@link RenderContext} used by this ModelBatch. */
 	public RenderContext getRenderContext() {
 		return context;
 	}
-
+	
 	/** @return the {@link ShaderProvider} used by this ModelBatch. */
 	public ShaderProvider getShaderProvider() {
 		return shaderProvider;
 	}
-
+	
 	/** @return the {@link RenderableSorter} used by this ModelBatch. */
 	public RenderableSorter getRenderableSorter() {
 		return sorter;
 	}
-
+	
 	/**
 	 * Flushes the batch, causing all {@link Renderable}s in the batch to be
 	 * rendered. Can only be called after the call to {@link #begin(Camera)} and
@@ -282,7 +282,7 @@ public class ModelBatch implements Disposable {
 		renderablesPool.flush();
 		renderables.clear();
 	}
-
+	
 	/**
 	 * End rendering one or more {@link Renderable}s. Must be called after a call to
 	 * {@link #begin(Camera)}. This will flush the batch, causing any renderables
@@ -295,7 +295,7 @@ public class ModelBatch implements Disposable {
 			context.end();
 		camera = null;
 	}
-
+	
 	/**
 	 * Add a single {@link Renderable} to the batch. The {@link ShaderProvider} will
 	 * be used to fetch a suitable {@link Shader}. Can only be called after a call
@@ -308,7 +308,7 @@ public class ModelBatch implements Disposable {
 		renderable.meshPart.mesh.setAutoBind(false);
 		renderables.add(renderable);
 	}
-
+	
 	/**
 	 * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all
 	 * returned {@link Renderable} instances to the current batch to be rendered.
@@ -325,7 +325,7 @@ public class ModelBatch implements Disposable {
 			renderable.shader = shaderProvider.getShader(renderable);
 		}
 	}
-
+	
 	/**
 	 * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all
 	 * returned {@link Renderable} instances to the current batch to be rendered.
@@ -338,7 +338,7 @@ public class ModelBatch implements Disposable {
 		for (final RenderableProvider renderableProvider : renderableProviders)
 			render(renderableProvider);
 	}
-
+	
 	/**
 	 * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all
 	 * returned {@link Renderable} instances to the current batch to be rendered.
@@ -358,7 +358,7 @@ public class ModelBatch implements Disposable {
 			renderable.shader = shaderProvider.getShader(renderable);
 		}
 	}
-
+	
 	/**
 	 * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all
 	 * returned {@link Renderable} instances to the current batch to be rendered.
@@ -374,7 +374,7 @@ public class ModelBatch implements Disposable {
 		for (final RenderableProvider renderableProvider : renderableProviders)
 			render(renderableProvider, environment);
 	}
-
+	
 	/**
 	 * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all
 	 * returned {@link Renderable} instances to the current batch to be rendered.
@@ -394,7 +394,7 @@ public class ModelBatch implements Disposable {
 			renderable.shader = shaderProvider.getShader(renderable);
 		}
 	}
-
+	
 	/**
 	 * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all
 	 * returned {@link Renderable} instances to the current batch to be rendered.
@@ -409,7 +409,7 @@ public class ModelBatch implements Disposable {
 		for (final RenderableProvider renderableProvider : renderableProviders)
 			render(renderableProvider, shader);
 	}
-
+	
 	/**
 	 * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all
 	 * returned {@link Renderable} instances to the current batch to be rendered.
@@ -433,7 +433,7 @@ public class ModelBatch implements Disposable {
 			renderable.shader = shaderProvider.getShader(renderable);
 		}
 	}
-
+	
 	/**
 	 * Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all
 	 * returned {@link Renderable} instances to the current batch to be rendered.
@@ -451,7 +451,7 @@ public class ModelBatch implements Disposable {
 		for (final RenderableProvider renderableProvider : renderableProviders)
 			render(renderableProvider, environment, shader);
 	}
-
+	
 	@Override
 	public void dispose() {
 		shaderProvider.dispose();

@@ -27,10 +27,10 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** This is a {@link FrameBuffer} variant backed by a float texture. */
 public class FloatFrameBuffer extends FrameBuffer {
-
+	
 	FloatFrameBuffer() {
 	}
-
+	
 	/**
 	 * Creates a GLFrameBuffer from the specifications provided by bufferBuilder
 	 *
@@ -39,7 +39,7 @@ public class FloatFrameBuffer extends FrameBuffer {
 	protected FloatFrameBuffer(GLFrameBufferBuilder<? extends GLFrameBuffer<Texture>> bufferBuilder) {
 		super(bufferBuilder);
 	}
-
+	
 	/**
 	 * Creates a new FrameBuffer with a float backing texture, having the given
 	 * dimensions and potentially a depth buffer attached.
@@ -55,10 +55,10 @@ public class FloatFrameBuffer extends FrameBuffer {
 		if (hasDepth)
 			bufferBuilder.addBasicDepthRenderBuffer();
 		this.bufferBuilder = bufferBuilder;
-
+		
 		build();
 	}
-
+	
 	@Override
 	protected Texture createTexture(FrameBufferTextureAttachmentSpec attachmentSpec) {
 		FloatTextureData data = new FloatTextureData(bufferBuilder.width, bufferBuilder.height,
@@ -72,5 +72,5 @@ public class FloatFrameBuffer extends FrameBuffer {
 		result.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
 		return result;
 	}
-
+	
 }

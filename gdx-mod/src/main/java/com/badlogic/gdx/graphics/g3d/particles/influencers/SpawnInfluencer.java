@@ -32,37 +32,37 @@ import com.badlogic.gdx.utils.JsonValue;
  * @author Inferno
  */
 public class SpawnInfluencer extends Influencer {
-
+	
 	public SpawnShapeValue spawnShapeValue;
 	FloatChannel positionChannel;
-
+	
 	public SpawnInfluencer() {
 		spawnShapeValue = new PointSpawnShapeValue();
 	}
-
+	
 	public SpawnInfluencer(SpawnShapeValue spawnShapeValue) {
 		this.spawnShapeValue = spawnShapeValue;
 	}
-
+	
 	public SpawnInfluencer(SpawnInfluencer source) {
 		spawnShapeValue = source.spawnShapeValue.copy();
 	}
-
+	
 	@Override
 	public void init() {
 		spawnShapeValue.init();
 	}
-
+	
 	@Override
 	public void allocateChannels() {
 		positionChannel = controller.particles.addChannel(ParticleChannels.Position);
 	}
-
+	
 	@Override
 	public void start() {
 		spawnShapeValue.start();
 	}
-
+	
 	@Override
 	public void activateParticles(int startIndex, int count) {
 		for (int i = startIndex * positionChannel.strideSize, c = i
@@ -74,27 +74,27 @@ public class SpawnInfluencer extends Influencer {
 			positionChannel.data[i + ParticleChannels.ZOffset] = TMP_V1.z;
 		}
 	}
-
+	
 	@Override
 	public SpawnInfluencer copy() {
 		return new SpawnInfluencer(this);
 	}
-
+	
 	@Override
 	public void write(Json json) {
 		json.writeValue("spawnShape", spawnShapeValue, SpawnShapeValue.class);
 	}
-
+	
 	@Override
 	public void read(Json json, JsonValue jsonData) {
 		spawnShapeValue = json.readValue("spawnShape", SpawnShapeValue.class, jsonData);
 	}
-
+	
 	@Override
 	public void save(AssetManager manager, ResourceData data) {
 		spawnShapeValue.save(manager, data);
 	}
-
+	
 	@Override
 	public void load(AssetManager manager, ResourceData data) {
 		spawnShapeValue.load(manager, data);

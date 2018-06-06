@@ -64,7 +64,7 @@ import com.badlogic.gdx.utils.Pool.Poolable;
  * @author arielsan
  */
 public interface Net {
-
+	
 	/**
 	 * HTTP response interface with methods to get the response data as a byte[], a
 	 * {@link String} or an {@link InputStream}.
@@ -82,7 +82,7 @@ public interface Net {
 		 *         {@link HttpRequest#setTimeOut(int)}
 		 */
 		byte[] getResult();
-
+		
 		/**
 		 * Returns the data of the HTTP response as a {@link String}.
 		 * <p>
@@ -95,7 +95,7 @@ public interface Net {
 		 *         {@link HttpRequest#setTimeOut(int)}
 		 */
 		String getResultAsString();
-
+		
 		/**
 		 * Returns the data of the HTTP response as an {@link InputStream}. <b><br>
 		 * Warning:</b> Do not store a reference to this InputStream outside of
@@ -107,19 +107,19 @@ public interface Net {
 		 * @return An {@link InputStream} with the {@link HttpResponse} data.
 		 */
 		InputStream getResultAsStream();
-
+		
 		/**
 		 * Returns the {@link HttpStatus} containing the statusCode of the HTTP
 		 * response.
 		 */
 		HttpStatus getStatus();
-
+		
 		/**
 		 * Returns the value of the header with the given name as a {@link String}, or
 		 * null if the header is not set. See {@link HttpResponseHeader}.
 		 */
 		String getHeader(String name);
-
+		
 		/**
 		 * Returns a Map of the headers. The keys are Strings that represent the header
 		 * name. Each values is a List of Strings that represent the corresponding
@@ -127,7 +127,7 @@ public interface Net {
 		 */
 		Map<String, List<String>> getHeaders();
 	}
-
+	
 	/**
 	 * Provides common HTTP methods to use when creating a {@link HttpRequest}.
 	 * <ul>
@@ -138,14 +138,14 @@ public interface Net {
 	 * </ul>
 	 */
 	public static interface HttpMethods {
-
+		
 		public static final String GET = "GET";
 		public static final String POST = "POST";
 		public static final String PUT = "PUT";
 		public static final String DELETE = "DELETE";
-
+		
 	}
-
+	
 	/**
 	 * Contains getters and setters for the following parameters:
 	 * <ul>
@@ -184,24 +184,24 @@ public interface Net {
 	 * </pre>
 	 */
 	public static class HttpRequest implements Poolable {
-
+		
 		private String httpMethod;
 		private String url;
 		private Map<String, String> headers;
 		private int timeOut = 0;
-
+		
 		private String content;
 		private InputStream contentStream;
 		private long contentLength;
-
+		
 		private boolean followRedirects = true;
-
+		
 		private boolean includeCredentials = false;
-
+		
 		public HttpRequest() {
 			this.headers = new HashMap<>();
 		}
-
+		
 		/**
 		 * Creates a new HTTP request with the specified HTTP method, see
 		 * {@link HttpMethods}.
@@ -213,7 +213,7 @@ public interface Net {
 			this();
 			this.httpMethod = httpMethod;
 		}
-
+		
 		/**
 		 * Sets the URL of the HTTP request.
 		 * 
@@ -222,7 +222,7 @@ public interface Net {
 		public void setUrl(String url) {
 			this.url = url;
 		}
-
+		
 		/**
 		 * Sets a header to this HTTP request, see {@link HttpRequestHeader}.
 		 * 
@@ -232,7 +232,7 @@ public interface Net {
 		public void setHeader(String name, String value) {
 			headers.put(name, value);
 		}
-
+		
 		/**
 		 * Sets the content to be used in the HTTP request.
 		 * 
@@ -245,7 +245,7 @@ public interface Net {
 		public void setContent(String content) {
 			this.content = content;
 		}
-
+		
 		/**
 		 * Sets the content as a stream to be used for a POST for example, to transmit
 		 * custom data.
@@ -256,7 +256,7 @@ public interface Net {
 			this.contentStream = contentStream;
 			this.contentLength = contentLength;
 		}
-
+		
 		/**
 		 * Sets the time to wait for the HTTP request to be processed, use 0 block until
 		 * it is done. The timeout is used for both the timeout when establishing TCP
@@ -268,7 +268,7 @@ public interface Net {
 		public void setTimeOut(int timeOut) {
 			this.timeOut = timeOut;
 		}
-
+		
 		/**
 		 * Sets whether 301 and 302 redirects are followed. By default true. Can't be
 		 * changed in the GWT backend because this uses XmlHttpRequests which always
@@ -286,7 +286,7 @@ public interface Net {
 						"Following redirects can't be disabled using the GWT/WebGL backend!");
 			}
 		}
-
+		
 		/**
 		 * Sets whether a cross-origin request will include credentials. Only used on
 		 * GWT backend to allow cross-origin requests to include credentials such as
@@ -295,12 +295,12 @@ public interface Net {
 		public void setIncludeCredentials(boolean includeCredentials) {
 			this.includeCredentials = includeCredentials;
 		}
-
+		
 		/** Sets the HTTP method of the HttpRequest. */
 		public void setMethod(String httpMethod) {
 			this.httpMethod = httpMethod;
 		}
-
+		
 		/**
 		 * Returns the timeOut of the HTTP request.
 		 * 
@@ -309,37 +309,37 @@ public interface Net {
 		public int getTimeOut() {
 			return timeOut;
 		}
-
+		
 		/** Returns the HTTP method of the HttpRequest. */
 		public String getMethod() {
 			return httpMethod;
 		}
-
+		
 		/** Returns the URL of the HTTP request. */
 		public String getUrl() {
 			return url;
 		}
-
+		
 		/** Returns the content string to be used for the HTTP request. */
 		public String getContent() {
 			return content;
 		}
-
+		
 		/** Returns the content stream. */
 		public InputStream getContentStream() {
 			return contentStream;
 		}
-
+		
 		/** Returns the content length in case content is a stream. */
 		public long getContentLength() {
 			return contentLength;
 		}
-
+		
 		/** Returns a Map<String, String> with the headers of the HTTP request. */
 		public Map<String, String> getHeaders() {
 			return headers;
 		}
-
+		
 		/**
 		 * Returns whether 301 and 302 redirects are followed. By default true. Whether
 		 * to follow redirects.
@@ -347,7 +347,7 @@ public interface Net {
 		public boolean getFollowRedirects() {
 			return followRedirects;
 		}
-
+		
 		/**
 		 * Returns whether a cross-origin request will include credentials. By default
 		 * false.
@@ -355,30 +355,30 @@ public interface Net {
 		public boolean getIncludeCredentials() {
 			return includeCredentials;
 		}
-
+		
 		@Override
 		public void reset() {
 			httpMethod = null;
 			url = null;
 			headers.clear();
 			timeOut = 0;
-
+			
 			content = null;
 			contentStream = null;
 			contentLength = 0;
-
+			
 			followRedirects = true;
 		}
-
+		
 	}
-
+	
 	/**
 	 * Listener to be able to do custom logic once the {@link HttpResponse} is ready
 	 * to be processed, register it with
 	 * {@link Net#sendHttpRequest(HttpRequest, HttpResponseListener)}.
 	 */
 	public static interface HttpResponseListener {
-
+		
 		/**
 		 * Called when the {@link HttpRequest} has been processed and there is a
 		 * {@link HttpResponse} ready. Passing data to the rendering thread should be
@@ -403,7 +403,7 @@ public interface Net {
 		 * @param httpResponse The {@link HttpResponse} with the HTTP response values.
 		 */
 		void handleHttpResponse(HttpResponse httpResponse);
-
+		
 		/**
 		 * Called if the {@link HttpRequest} failed because an exception when processing
 		 * the HTTP request, could be a timeout any other reason (not an HTTP error).
@@ -412,10 +412,10 @@ public interface Net {
 		 *          to give more information.
 		 */
 		void failed(Throwable t);
-
+		
 		void cancelled();
 	}
-
+	
 	/**
 	 * Process the specified {@link HttpRequest} and reports the
 	 * {@link HttpResponse} to the specified {@link HttpResponseListener} .
@@ -426,9 +426,9 @@ public interface Net {
 	 *                             null, in that case no listener is called.
 	 */
 	public void sendHttpRequest(HttpRequest httpRequest, HttpResponseListener httpResponseListener);
-
+	
 	public void cancelHttpRequest(HttpRequest httpRequest);
-
+	
 	/**
 	 * Protocol used by
 	 * {@link Net#newServerSocket(Protocol, int, ServerSocketHints)} and
@@ -439,7 +439,7 @@ public interface Net {
 	public enum Protocol {
 		TCP
 	}
-
+	
 	/**
 	 * Creates a new server socket on the given address and port, using the given
 	 * {@link Protocol}, waiting for incoming connections.
@@ -453,7 +453,7 @@ public interface Net {
 	 * @throws GdxRuntimeException in case the socket couldn't be opened
 	 */
 	public ServerSocket newServerSocket(Protocol protocol, String hostname, int port, ServerSocketHints hints);
-
+	
 	/**
 	 * Creates a new server socket on the given port, using the given
 	 * {@link Protocol}, waiting for incoming connections.
@@ -465,7 +465,7 @@ public interface Net {
 	 * @throws GdxRuntimeException in case the socket couldn't be opened
 	 */
 	public ServerSocket newServerSocket(Protocol protocol, int port, ServerSocketHints hints);
-
+	
 	/**
 	 * Creates a new TCP client socket that connects to the given host and port.
 	 * 
@@ -476,7 +476,7 @@ public interface Net {
 	 * @return GdxRuntimeException in case the socket couldn't be opened
 	 */
 	public Socket newClientSocket(Protocol protocol, String host, int port, SocketHints hints);
-
+	
 	/**
 	 * Launches the default browser to display a URI. If the default browser is not
 	 * able to handle the specified URI, the application registered for handling

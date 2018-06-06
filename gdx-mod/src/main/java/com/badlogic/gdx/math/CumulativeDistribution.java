@@ -22,30 +22,30 @@ public class CumulativeDistribution<T> {
 		public T value;
 		public float frequency;
 		public float interval;
-
+		
 		public CumulativeValue(T value, float frequency, float interval) {
 			this.value = value;
 			this.frequency = frequency;
 			this.interval = interval;
 		}
 	}
-
+	
 	private Array<CumulativeValue> values;
-
+	
 	public CumulativeDistribution() {
 		values = new Array<>(false, 10, CumulativeValue.class);
 	}
-
+	
 	/** Adds a value with a given interval size to the distribution */
 	public void add(T value, float intervalSize) {
 		values.add(new CumulativeValue(value, 0, intervalSize));
 	}
-
+	
 	/** Adds a value with interval size equal to zero to the distribution */
 	public void add(T value) {
 		values.add(new CumulativeValue(value, 0, 0));
 	}
-
+	
 	/** Generate the cumulative distribution */
 	public void generate() {
 		float sum = 0;
@@ -54,7 +54,7 @@ public class CumulativeDistribution<T> {
 			values.items[i].frequency = sum;
 		}
 	}
-
+	
 	/**
 	 * Generate the cumulative distribution in [0,1] where each interval will get a
 	 * frequency between [0,1]
@@ -70,7 +70,7 @@ public class CumulativeDistribution<T> {
 			values.items[i].frequency = intervalSum;
 		}
 	}
-
+	
 	/**
 	 * Generate the cumulative distribution in [0,1] where each value will have the
 	 * same frequency and interval size
@@ -83,7 +83,7 @@ public class CumulativeDistribution<T> {
 			values.items[i].frequency = (i + 1) * freq;
 		}
 	}
-
+	
 	/**
 	 * Finds the value whose interval contains the given probability Binary search
 	 * algorithm is used to find the value.
@@ -104,30 +104,30 @@ public class CumulativeDistribution<T> {
 			else
 				break;
 		}
-
+		
 		return values.items[imin].value;
 	}
-
+	
 	/** @return the value whose interval contains a random probability in [0,1] */
 	public T value() {
 		return value(MathUtils.random());
 	}
-
+	
 	/** @return the amount of values */
 	public int size() {
 		return values.size;
 	}
-
+	
 	/** @return the interval size for the value at the given position */
 	public float getInterval(int index) {
 		return values.items[index].interval;
 	}
-
+	
 	/** @return the value at the given position */
 	public T getValue(int index) {
 		return values.items[index].value;
 	}
-
+	
 	/**
 	 * Set the interval size on the passed in object. The object must be present in
 	 * the distribution.
@@ -139,12 +139,12 @@ public class CumulativeDistribution<T> {
 				return;
 			}
 	}
-
+	
 	/** Sets the interval size for the value at the given index */
 	public void setInterval(int index, float intervalSize) {
 		values.items[index].interval = intervalSize;
 	}
-
+	
 	/** Removes all the values from the distribution */
 	public void clear() {
 		values.clear();

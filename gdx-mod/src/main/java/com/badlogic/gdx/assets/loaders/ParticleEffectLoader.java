@@ -37,7 +37,7 @@ public class ParticleEffectLoader
 	public ParticleEffectLoader(FileHandleResolver resolver) {
 		super(resolver);
 	}
-
+	
 	@Override
 	public ParticleEffect load(AssetManager am, String fileName, FileHandle file, ParticleEffectParameter param) {
 		ParticleEffect effect = new ParticleEffect();
@@ -49,7 +49,7 @@ public class ParticleEffectLoader
 			effect.load(file, file.parent());
 		return effect;
 	}
-
+	
 	@Override
 	public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, ParticleEffectParameter param) {
 		Array<AssetDescriptor> deps = null;
@@ -59,7 +59,7 @@ public class ParticleEffectLoader
 		}
 		return deps;
 	}
-
+	
 	/**
 	 * Parameter to be passed to
 	 * {@link AssetManager#load(String, Class, AssetLoaderParameters)} if additional

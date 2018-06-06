@@ -54,16 +54,16 @@ public class SplitPane extends WidgetGroup {
 	private Actor firstWidget, secondWidget;
 	boolean vertical;
 	float splitAmount = 0.5f, minAmount, maxAmount = 1;
-
+	
 	private Rectangle firstWidgetBounds = new Rectangle();
 	private Rectangle secondWidgetBounds = new Rectangle();
 	Rectangle handleBounds = new Rectangle();
 	boolean cursorOverHandle;
 	private Rectangle tempScissors = new Rectangle();
-
+	
 	Vector2 lastPoint = new Vector2();
 	Vector2 handlePosition = new Vector2();
-
+	
 	/**
 	 * @param firstWidget  May be null.
 	 * @param secondWidget May be null.
@@ -71,7 +71,7 @@ public class SplitPane extends WidgetGroup {
 	public SplitPane(Actor firstWidget, Actor secondWidget, boolean vertical, Skin skin) {
 		this(firstWidget, secondWidget, vertical, skin, "default-" + (vertical ? "vertical" : "horizontal"));
 	}
-
+	
 	/**
 	 * @param firstWidget  May be null.
 	 * @param secondWidget May be null.
@@ -79,7 +79,7 @@ public class SplitPane extends WidgetGroup {
 	public SplitPane(Actor firstWidget, Actor secondWidget, boolean vertical, Skin skin, String styleName) {
 		this(firstWidget, secondWidget, vertical, skin.get(styleName, SplitPaneStyle.class));
 	}
-
+	
 	/**
 	 * @param firstWidget  May be null.
 	 * @param secondWidget May be null.
@@ -92,11 +92,11 @@ public class SplitPane extends WidgetGroup {
 		setSize(getPrefWidth(), getPrefHeight());
 		initialize();
 	}
-
+	
 	private void initialize() {
 		addListener(new InputListener() {
 			int draggingPointer = -1;
-
+			
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				if (draggingPointer != -1)
@@ -111,18 +111,18 @@ public class SplitPane extends WidgetGroup {
 				}
 				return false;
 			}
-
+			
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer == draggingPointer)
 					draggingPointer = -1;
 			}
-
+			
 			@Override
 			public void touchDragged(InputEvent event, float x, float y, int pointer) {
 				if (pointer != draggingPointer)
 					return;
-
+				
 				Drawable handle = style.handle;
 				if (!vertical) {
 					float delta = x - lastPoint.x;
@@ -145,7 +145,7 @@ public class SplitPane extends WidgetGroup {
 				}
 				invalidate();
 			}
-
+			
 			@Override
 			public boolean mouseMoved(InputEvent event, float x, float y) {
 				cursorOverHandle = handleBounds.contains(x, y);
@@ -153,12 +153,12 @@ public class SplitPane extends WidgetGroup {
 			}
 		});
 	}
-
+	
 	public void setStyle(SplitPaneStyle style) {
 		this.style = style;
 		invalidateHierarchy();
 	}
-
+	
 	/**
 	 * Returns the split pane's style. Modifying the returned style may not have an
 	 * effect until {@link #setStyle(SplitPaneStyle)} is called.
@@ -166,7 +166,7 @@ public class SplitPane extends WidgetGroup {
 	public SplitPaneStyle getStyle() {
 		return style;
 	}
-
+	
 	@Override
 	public void layout() {
 		clampSplitAmount();
@@ -174,7 +174,7 @@ public class SplitPane extends WidgetGroup {
 			calculateHorizBoundsAndPositions();
 		else
 			calculateVertBoundsAndPositions();
-
+		
 		Actor firstWidget = this.firstWidget;
 		if (firstWidget != null) {
 			Rectangle firstWidgetBounds = this.firstWidgetBounds;
@@ -192,7 +192,7 @@ public class SplitPane extends WidgetGroup {
 				((Layout) secondWidget).validate();
 		}
 	}
-
+	
 	@Override
 	public float getPrefWidth() {
 		float first = firstWidget == null ? 0
@@ -203,7 +203,7 @@ public class SplitPane extends WidgetGroup {
 			return Math.max(first, second);
 		return first + style.handle.getMinWidth() + second;
 	}
-
+	
 	@Override
 	public float getPrefHeight() {
 		float first = firstWidget == null ? 0
@@ -214,7 +214,7 @@ public class SplitPane extends WidgetGroup {
 			return Math.max(first, second);
 		return first + style.handle.getMinHeight() + second;
 	}
-
+	
 	@Override
 	public float getMinWidth() {
 		float first = firstWidget instanceof Layout ? ((Layout) firstWidget).getMinWidth() : 0;
@@ -223,7 +223,7 @@ public class SplitPane extends WidgetGroup {
 			return Math.max(first, second);
 		return first + style.handle.getMinWidth() + second;
 	}
-
+	
 	@Override
 	public float getMinHeight() {
 		float first = firstWidget instanceof Layout ? ((Layout) firstWidget).getMinHeight() : 0;
@@ -232,56 +232,56 @@ public class SplitPane extends WidgetGroup {
 			return Math.max(first, second);
 		return first + style.handle.getMinHeight() + second;
 	}
-
+	
 	public void setVertical(boolean vertical) {
 		if (this.vertical == vertical)
 			return;
 		this.vertical = vertical;
 		invalidateHierarchy();
 	}
-
+	
 	public boolean isVertical() {
 		return vertical;
 	}
-
+	
 	private void calculateHorizBoundsAndPositions() {
 		Drawable handle = style.handle;
-
+		
 		float height = getHeight();
-
+		
 		float availWidth = getWidth() - handle.getMinWidth();
 		float leftAreaWidth = (int) (availWidth * splitAmount);
 		float rightAreaWidth = availWidth - leftAreaWidth;
 		float handleWidth = handle.getMinWidth();
-
+		
 		firstWidgetBounds.set(0, 0, leftAreaWidth, height);
 		secondWidgetBounds.set(leftAreaWidth + handleWidth, 0, rightAreaWidth, height);
 		handleBounds.set(leftAreaWidth, 0, handleWidth, height);
 	}
-
+	
 	private void calculateVertBoundsAndPositions() {
 		Drawable handle = style.handle;
-
+		
 		float width = getWidth();
 		float height = getHeight();
-
+		
 		float availHeight = height - handle.getMinHeight();
 		float topAreaHeight = (int) (availHeight * splitAmount);
 		float bottomAreaHeight = availHeight - topAreaHeight;
 		float handleHeight = handle.getMinHeight();
-
+		
 		firstWidgetBounds.set(0, height - topAreaHeight, width, topAreaHeight);
 		secondWidgetBounds.set(0, 0, width, bottomAreaHeight);
 		handleBounds.set(0, bottomAreaHeight, width, handleHeight);
 	}
-
+	
 	@Override
 	public void draw(Batch batch, float a) {
 		validate();
-
+		
 		Color color = getColor();
 		float alpha = color.a * a;
-
+		
 		applyTransform(batch, computeTransform());
 		if (firstWidget != null && firstWidget.isVisible()) {
 			batch.flush();
@@ -305,7 +305,7 @@ public class SplitPane extends WidgetGroup {
 		style.handle.draw(batch, handleBounds.x, handleBounds.y, handleBounds.width, handleBounds.height);
 		resetTransform(batch);
 	}
-
+	
 	/**
 	 * @param splitAmount The split amount between the min and max amount. This
 	 *                    parameter is clamped during layout. See
@@ -315,11 +315,11 @@ public class SplitPane extends WidgetGroup {
 		this.splitAmount = splitAmount; // will be clamped during layout
 		invalidate();
 	}
-
+	
 	public float getSplitAmount() {
 		return splitAmount;
 	}
-
+	
 	/**
 	 * Called during layout to clamp the {@link #splitAmount} within the set limits.
 	 * By default it imposes the limits of the {@linkplain #getMinSplitAmount() min
@@ -329,7 +329,7 @@ public class SplitPane extends WidgetGroup {
 	 */
 	protected void clampSplitAmount() {
 		float effectiveMinAmount = minAmount, effectiveMaxAmount = maxAmount;
-
+		
 		if (vertical) {
 			float availableHeight = getHeight() - style.handle.getMinHeight();
 			if (firstWidget instanceof Layout)
@@ -347,33 +347,33 @@ public class SplitPane extends WidgetGroup {
 				effectiveMaxAmount = Math.min(effectiveMaxAmount,
 						1 - Math.min(((Layout) secondWidget).getMinWidth() / availableWidth, 1));
 		}
-
+		
 		if (effectiveMinAmount > effectiveMaxAmount) // Locked handle. Average the position.
 			splitAmount = 0.5f * (effectiveMinAmount + effectiveMaxAmount);
 		else
 			splitAmount = Math.max(Math.min(splitAmount, effectiveMaxAmount), effectiveMinAmount);
 	}
-
+	
 	public float getMinSplitAmount() {
 		return minAmount;
 	}
-
+	
 	public void setMinSplitAmount(float minAmount) {
 		if (minAmount < 0 || minAmount > 1)
 			throw new GdxRuntimeException("minAmount has to be >= 0 and <= 1");
 		this.minAmount = minAmount;
 	}
-
+	
 	public float getMaxSplitAmount() {
 		return maxAmount;
 	}
-
+	
 	public void setMaxSplitAmount(float maxAmount) {
 		if (maxAmount < 0 || maxAmount > 1)
 			throw new GdxRuntimeException("maxAmount has to be >= 0 and <= 1");
 		this.maxAmount = maxAmount;
 	}
-
+	
 	/** @param widget May be null. */
 	public void setFirstWidget(Actor widget) {
 		if (firstWidget != null)
@@ -383,7 +383,7 @@ public class SplitPane extends WidgetGroup {
 			super.addActor(widget);
 		invalidate();
 	}
-
+	
 	/** @param widget May be null. */
 	public void setSecondWidget(Actor widget) {
 		if (secondWidget != null)
@@ -393,22 +393,22 @@ public class SplitPane extends WidgetGroup {
 			super.addActor(widget);
 		invalidate();
 	}
-
+	
 	@Override
 	public void addActor(Actor actor) {
 		throw new UnsupportedOperationException("Use SplitPane#setWidget.");
 	}
-
+	
 	@Override
 	public void addActorAt(int index, Actor actor) {
 		throw new UnsupportedOperationException("Use SplitPane#setWidget.");
 	}
-
+	
 	@Override
 	public void addActorBefore(Actor actorBefore, Actor actor) {
 		throw new UnsupportedOperationException("Use SplitPane#setWidget.");
 	}
-
+	
 	@Override
 	public boolean removeActor(Actor actor) {
 		if (actor == null)
@@ -423,7 +423,7 @@ public class SplitPane extends WidgetGroup {
 		}
 		return true;
 	}
-
+	
 	@Override
 	public boolean removeActor(Actor actor, boolean unfocus) {
 		if (actor == null)
@@ -442,11 +442,11 @@ public class SplitPane extends WidgetGroup {
 		}
 		return false;
 	}
-
+	
 	public boolean isCursorOverHandle() {
 		return cursorOverHandle;
 	}
-
+	
 	/**
 	 * The style for a splitpane, see {@link SplitPane}.
 	 * 
@@ -455,14 +455,14 @@ public class SplitPane extends WidgetGroup {
 	 */
 	static public class SplitPaneStyle {
 		public Drawable handle;
-
+		
 		public SplitPaneStyle() {
 		}
-
+		
 		public SplitPaneStyle(Drawable handle) {
 			this.handle = handle;
 		}
-
+		
 		public SplitPaneStyle(SplitPaneStyle style) {
 			this.handle = style.handle;
 		}

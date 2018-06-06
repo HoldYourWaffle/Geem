@@ -31,38 +31,38 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 public class TextureRegionDrawable extends BaseDrawable implements TransformDrawable {
 	private TextureRegion region;
-
+	
 	/**
 	 * Creates an uninitialized TextureRegionDrawable. The texture region must be
 	 * set before use.
 	 */
 	public TextureRegionDrawable() {
 	}
-
+	
 	public TextureRegionDrawable(Texture texture) {
 		setRegion(new TextureRegion(texture));
 	}
-
+	
 	public TextureRegionDrawable(TextureRegion region) {
 		setRegion(region);
 	}
-
+	
 	public TextureRegionDrawable(TextureRegionDrawable drawable) {
 		super(drawable);
 		setRegion(drawable.region);
 	}
-
+	
 	@Override
 	public void draw(Batch batch, float x, float y, float width, float height) {
 		batch.draw(region, x, y, width, height);
 	}
-
+	
 	@Override
 	public void draw(Batch batch, float x, float y, float originX, float originY, float width, float height,
 			float scaleX, float scaleY, float rotation) {
 		batch.draw(region, x, y, originX, originY, width, height, scaleX, scaleY, rotation);
 	}
-
+	
 	public void setRegion(TextureRegion region) {
 		this.region = region;
 		if (region != null) {
@@ -70,11 +70,11 @@ public class TextureRegionDrawable extends BaseDrawable implements TransformDraw
 			setMinHeight(region.getRegionHeight());
 		}
 	}
-
+	
 	public TextureRegion getRegion() {
 		return region;
 	}
-
+	
 	/**
 	 * Creates a new drawable that renders the same as this drawable tinted the
 	 * specified color.

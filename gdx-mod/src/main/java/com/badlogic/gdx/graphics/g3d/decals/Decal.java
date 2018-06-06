@@ -39,41 +39,41 @@ public class Decal {
 	private static final int VERTEX_SIZE = 3 + 1 + 2;
 	/** Size of the decal in floats. It takes a float[SIZE] to hold the decal. */
 	public static final int SIZE = 4 * VERTEX_SIZE;
-
+	
 	/** Temporary vector for various calculations. */
 	private static Vector3 tmp = new Vector3();
 	private static Vector3 tmp2 = new Vector3();
-
+	
 	/**
 	 * Set a multipurpose value which can be queried and used for things like group
 	 * identification.
 	 */
 	public int value;
-
+	
 	protected float[] vertices = new float[SIZE];
 	protected Vector3 position = new Vector3();
 	protected Quaternion rotation = new Quaternion();
 	protected Vector2 scale = new Vector2(1, 1);
 	protected Color color = new Color();
-
+	
 	/**
 	 * The transformation offset can be used to change the pivot point for rotation
 	 * and scaling. By default the pivot is the middle of the decal.
 	 */
 	public Vector2 transformationOffset = null;
 	protected Vector2 dimensions = new Vector2();
-
+	
 	protected DecalMaterial material;
 	protected boolean updated = false;
-
+	
 	public Decal() {
 		this.material = new DecalMaterial();
 	}
-
+	
 	public Decal(DecalMaterial material) {
 		this.material = material;
 	}
-
+	
 	/**
 	 * Sets the color of all four vertices to the specified color
 	 * 
@@ -91,7 +91,7 @@ public class Decal {
 		vertices[C3] = color;
 		vertices[C4] = color;
 	}
-
+	
 	/** Sets the color used to tint this decal. Default is {@link Color#WHITE}. */
 	public void setColor(Color tint) {
 		color.set(tint);
@@ -101,7 +101,7 @@ public class Decal {
 		vertices[C3] = color;
 		vertices[C4] = color;
 	}
-
+	
 	/** @see #setColor(Color) */
 	public void setColor(float color) {
 		this.color.set(NumberUtils.floatToIntColor(color));
@@ -110,7 +110,7 @@ public class Decal {
 		vertices[C3] = color;
 		vertices[C4] = color;
 	}
-
+	
 	/**
 	 * Sets the rotation on the local X axis to the specified angle
 	 * 
@@ -120,7 +120,7 @@ public class Decal {
 		rotation.set(Vector3.X, angle);
 		updated = false;
 	}
-
+	
 	/**
 	 * Sets the rotation on the local Y axis to the specified angle
 	 * 
@@ -130,7 +130,7 @@ public class Decal {
 		rotation.set(Vector3.Y, angle);
 		updated = false;
 	}
-
+	
 	/**
 	 * Sets the rotation on the local Z axis to the specified angle
 	 * 
@@ -140,7 +140,7 @@ public class Decal {
 		rotation.set(Vector3.Z, angle);
 		updated = false;
 	}
-
+	
 	/**
 	 * Rotates along local X axis by the specified angle
 	 * 
@@ -151,7 +151,7 @@ public class Decal {
 		rotation.mul(rotator);
 		updated = false;
 	}
-
+	
 	/**
 	 * Rotates along local Y axis by the specified angle
 	 * 
@@ -162,7 +162,7 @@ public class Decal {
 		rotation.mul(rotator);
 		updated = false;
 	}
-
+	
 	/**
 	 * Rotates along local Z axis by the specified angle
 	 * 
@@ -173,7 +173,7 @@ public class Decal {
 		rotation.mul(rotator);
 		updated = false;
 	}
-
+	
 	/**
 	 * Sets the rotation of this decal to the given angles on all axes.
 	 * 
@@ -185,7 +185,7 @@ public class Decal {
 		rotation.setEulerAngles(yaw, pitch, roll);
 		updated = false;
 	}
-
+	
 	/**
 	 * Sets the rotation of this decal based on the (normalized) direction and up
 	 * vector.
@@ -199,7 +199,7 @@ public class Decal {
 		rotation.setFromAxes(tmp.x, tmp2.x, dir.x, tmp.y, tmp2.y, dir.y, tmp.z, tmp2.z, dir.z);
 		updated = false;
 	}
-
+	
 	/**
 	 * Sets the rotation of this decal based on the provided Quaternion
 	 * 
@@ -209,7 +209,7 @@ public class Decal {
 		rotation.set(q);
 		updated = false;
 	}
-
+	
 	/**
 	 * Returns the rotation. The returned quaternion should under no circumstances
 	 * be modified.
@@ -219,7 +219,7 @@ public class Decal {
 	public Quaternion getRotation() {
 		return rotation;
 	}
-
+	
 	/**
 	 * Moves by the specified amount of units along the x axis
 	 * 
@@ -229,7 +229,7 @@ public class Decal {
 		this.position.x += units;
 		updated = false;
 	}
-
+	
 	/**
 	 * Sets the position on the x axis
 	 * 
@@ -239,12 +239,12 @@ public class Decal {
 		this.position.x = x;
 		updated = false;
 	}
-
+	
 	/** @return position on the x axis */
 	public float getX() {
 		return this.position.x;
 	}
-
+	
 	/**
 	 * Moves by the specified amount of units along the y axis
 	 * 
@@ -254,7 +254,7 @@ public class Decal {
 		this.position.y += units;
 		updated = false;
 	}
-
+	
 	/**
 	 * Sets the position on the y axis
 	 * 
@@ -264,12 +264,12 @@ public class Decal {
 		this.position.y = y;
 		updated = false;
 	}
-
+	
 	/** @return position on the y axis */
 	public float getY() {
 		return this.position.y;
 	}
-
+	
 	/**
 	 * Moves by the specified amount of units along the z axis
 	 * 
@@ -279,7 +279,7 @@ public class Decal {
 		this.position.z += units;
 		updated = false;
 	}
-
+	
 	/**
 	 * Sets the position on the z axis
 	 * 
@@ -289,12 +289,12 @@ public class Decal {
 		this.position.z = z;
 		updated = false;
 	}
-
+	
 	/** @return position on the z axis */
 	public float getZ() {
 		return this.position.z;
 	}
-
+	
 	/**
 	 * Translates by the specified amount of units
 	 * 
@@ -306,13 +306,13 @@ public class Decal {
 		this.position.add(x, y, z);
 		updated = false;
 	}
-
+	
 	/** @see Decal#translate(float, float, float) */
 	public void translate(Vector3 trans) {
 		this.position.add(trans);
 		updated = false;
 	}
-
+	
 	/**
 	 * Sets the position to the given world coordinates
 	 * 
@@ -324,13 +324,13 @@ public class Decal {
 		this.position.set(x, y, z);
 		updated = false;
 	}
-
+	
 	/** @see Decal#setPosition(float, float, float) */
 	public void setPosition(Vector3 pos) {
 		this.position.set(pos);
 		updated = false;
 	}
-
+	
 	/**
 	 * Returns the color of this decal. The returned color should under no
 	 * circumstances be modified.
@@ -340,7 +340,7 @@ public class Decal {
 	public Color getColor() {
 		return color;
 	}
-
+	
 	/**
 	 * Returns the position of this decal. The returned vector should under no
 	 * circumstances be modified.
@@ -350,7 +350,7 @@ public class Decal {
 	public Vector3 getPosition() {
 		return position;
 	}
-
+	
 	/**
 	 * Sets scale along the x axis
 	 * 
@@ -360,12 +360,12 @@ public class Decal {
 		this.scale.x = scale;
 		updated = false;
 	}
-
+	
 	/** @return Scale on the x axis */
 	public float getScaleX() {
 		return this.scale.x;
 	}
-
+	
 	/**
 	 * Sets scale along the y axis
 	 * 
@@ -375,12 +375,12 @@ public class Decal {
 		this.scale.y = scale;
 		updated = false;
 	}
-
+	
 	/** @return Scale on the y axis */
 	public float getScaleY() {
 		return this.scale.y;
 	}
-
+	
 	/**
 	 * Sets scale along both the x and y axis
 	 * 
@@ -391,7 +391,7 @@ public class Decal {
 		this.scale.set(scaleX, scaleY);
 		updated = false;
 	}
-
+	
 	/**
 	 * Sets scale along both the x and y axis
 	 * 
@@ -401,7 +401,7 @@ public class Decal {
 		this.scale.set(scale, scale);
 		updated = false;
 	}
-
+	
 	/**
 	 * Sets the width in world units
 	 * 
@@ -411,12 +411,12 @@ public class Decal {
 		this.dimensions.x = width;
 		updated = false;
 	}
-
+	
 	/** @return width in world units */
 	public float getWidth() {
 		return this.dimensions.x;
 	}
-
+	
 	/**
 	 * Sets the height in world units
 	 * 
@@ -426,12 +426,12 @@ public class Decal {
 		this.dimensions.y = height;
 		updated = false;
 	}
-
+	
 	/** @return height in world units */
 	public float getHeight() {
 		return dimensions.y;
 	}
-
+	
 	/**
 	 * Sets the width and height in world units
 	 * 
@@ -442,7 +442,7 @@ public class Decal {
 		dimensions.set(width, height);
 		updated = false;
 	}
-
+	
 	/**
 	 * Returns the vertices backing this sprite.<br/>
 	 * The returned value should under no circumstances be modified.
@@ -452,7 +452,7 @@ public class Decal {
 	public float[] getVertices() {
 		return vertices;
 	}
-
+	
 	/**
 	 * Recalculates vertices array if it grew out of sync with the properties
 	 * (position, ..)
@@ -463,7 +463,7 @@ public class Decal {
 			transformVertices();
 		}
 	}
-
+	
 	/**
 	 * Transforms the position component of the vertices using properties such as
 	 * position, scale, etc.
@@ -582,7 +582,7 @@ public class Decal {
 		vertices[Z4] += position.z;
 		updated = true;
 	}
-
+	
 	/**
 	 * Resets the position components of the vertices array based ont he dimensions
 	 * (preparation for transformation)
@@ -592,7 +592,7 @@ public class Decal {
 		float right = left + dimensions.x;
 		float top = dimensions.y / 2f;
 		float bottom = top - dimensions.y;
-
+		
 		// left top
 		vertices[X1] = left;
 		vertices[Y1] = top;
@@ -609,10 +609,10 @@ public class Decal {
 		vertices[X4] = right;
 		vertices[Y4] = bottom;
 		vertices[Z4] = 0;
-
+		
 		updated = false;
 	}
-
+	
 	/**
 	 * Re-applies the uv coordinates from the material's texture region to the uv
 	 * components of the vertices array
@@ -632,7 +632,7 @@ public class Decal {
 		vertices[U4] = tr.getU2();
 		vertices[V4] = tr.getV2();
 	}
-
+	
 	/**
 	 * Sets the texture region
 	 * 
@@ -642,12 +642,12 @@ public class Decal {
 		this.material.textureRegion = textureRegion;
 		updateUVs();
 	}
-
+	
 	/** @return the texture region this Decal uses. Do not modify it! */
 	public TextureRegion getTextureRegion() {
 		return this.material.textureRegion;
 	}
-
+	
 	/**
 	 * Sets the blending parameters for this decal
 	 * 
@@ -658,11 +658,11 @@ public class Decal {
 		material.srcBlendFactor = srcBlendFactor;
 		material.dstBlendFactor = dstBlendFactor;
 	}
-
+	
 	public DecalMaterial getMaterial() {
 		return material;
 	}
-
+	
 	/**
 	 * Set material
 	 * 
@@ -671,9 +671,9 @@ public class Decal {
 	public void setMaterial(DecalMaterial material) {
 		this.material = material;
 	}
-
+	
 	final static Vector3 dir = new Vector3();
-
+	
 	/**
 	 * Sets the rotation of the Decal to face the given point. Useful for
 	 * billboarding.
@@ -685,7 +685,7 @@ public class Decal {
 		dir.set(position).sub(this.position).nor();
 		setRotation(dir, up);
 	}
-
+	
 	// meaning of the floats in the vertices array
 	public static final int X1 = 0;
 	public static final int Y1 = 1;
@@ -711,9 +711,9 @@ public class Decal {
 	public static final int C4 = 21;
 	public static final int U4 = 22;
 	public static final int V4 = 23;
-
+	
 	protected static Quaternion rotator = new Quaternion(0, 0, 0, 0);
-
+	
 	/**
 	 * Creates a decal assuming the dimensions of the texture region
 	 * 
@@ -724,7 +724,7 @@ public class Decal {
 		return newDecal(textureRegion.getRegionWidth(), textureRegion.getRegionHeight(), textureRegion,
 				DecalMaterial.NO_BLEND, DecalMaterial.NO_BLEND);
 	}
-
+	
 	/**
 	 * Creates a decal assuming the dimensions of the texture region and adding
 	 * transparency
@@ -739,7 +739,7 @@ public class Decal {
 				hasTransparency ? GL20.GL_SRC_ALPHA : DecalMaterial.NO_BLEND,
 				hasTransparency ? GL20.GL_ONE_MINUS_SRC_ALPHA : DecalMaterial.NO_BLEND);
 	}
-
+	
 	/**
 	 * Creates a decal using the region for texturing
 	 * 
@@ -754,7 +754,7 @@ public class Decal {
 	public static Decal newDecal(float width, float height, TextureRegion textureRegion) {
 		return newDecal(width, height, textureRegion, DecalMaterial.NO_BLEND, DecalMaterial.NO_BLEND);
 	}
-
+	
 	/**
 	 * Creates a decal using the region for texturing
 	 * 
@@ -769,7 +769,7 @@ public class Decal {
 		return newDecal(width, height, textureRegion, hasTransparency ? GL20.GL_SRC_ALPHA : DecalMaterial.NO_BLEND,
 				hasTransparency ? GL20.GL_ONE_MINUS_SRC_ALPHA : DecalMaterial.NO_BLEND);
 	}
-
+	
 	/**
 	 * Creates a decal using the region for texturing and the specified blending
 	 * parameters for blending
@@ -791,7 +791,7 @@ public class Decal {
 		decal.setColor(1, 1, 1, 1);
 		return decal;
 	}
-
+	
 	/**
 	 * Creates a decal using the region for texturing and the specified blending
 	 * parameters for blending
@@ -814,5 +814,5 @@ public class Decal {
 		decal.setColor(1, 1, 1, 1);
 		return decal;
 	}
-
+	
 }

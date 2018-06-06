@@ -32,49 +32,49 @@ public class Logger {
 	static public final int ERROR = 1;
 	static public final int INFO = 2;
 	static public final int DEBUG = 3;
-
+	
 	private final String tag;
 	private int level;
-
+	
 	public Logger(String tag) {
 		this(tag, ERROR);
 	}
-
+	
 	public Logger(String tag, int level) {
 		this.tag = tag;
 		this.level = level;
 	}
-
+	
 	public void debug(String message) {
 		if (level >= DEBUG)
 			Gdx.app.debug(tag, message);
 	}
-
+	
 	public void debug(String message, Exception exception) {
 		if (level >= DEBUG)
 			Gdx.app.debug(tag, message, exception);
 	}
-
+	
 	public void info(String message) {
 		if (level >= INFO)
 			Gdx.app.log(tag, message);
 	}
-
+	
 	public void info(String message, Exception exception) {
 		if (level >= INFO)
 			Gdx.app.log(tag, message, exception);
 	}
-
+	
 	public void error(String message) {
 		if (level >= ERROR)
 			Gdx.app.error(tag, message);
 	}
-
+	
 	public void error(String message, Throwable exception) {
 		if (level >= ERROR)
 			Gdx.app.error(tag, message, exception);
 	}
-
+	
 	/**
 	 * Sets the log level. {@link #NONE} will mute all log output. {@link #ERROR}
 	 * will only let error messages through. {@link #INFO} will let all non-debug
@@ -85,7 +85,7 @@ public class Logger {
 	public void setLevel(int level) {
 		this.level = level;
 	}
-
+	
 	public int getLevel() {
 		return level;
 	}

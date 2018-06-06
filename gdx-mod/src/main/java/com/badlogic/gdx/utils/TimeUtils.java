@@ -27,7 +27,7 @@ public final class TimeUtils {
 	public static long nanoTime() {
 		return System.nanoTime();
 	}
-
+	
 	/**
 	 * @return the difference, measured in milliseconds, between the current time
 	 *         and midnight, January 1, 1970 UTC.
@@ -35,9 +35,9 @@ public final class TimeUtils {
 	public static long millis() {
 		return System.currentTimeMillis();
 	}
-
+	
 	private static final long nanosPerMilli = 1000000;
-
+	
 	/**
 	 * Convert nanoseconds time to milliseconds
 	 * 
@@ -47,7 +47,7 @@ public final class TimeUtils {
 	public static long nanosToMillis(long nanos) {
 		return nanos / nanosPerMilli;
 	}
-
+	
 	/**
 	 * Convert milliseconds time to nanoseconds
 	 * 
@@ -57,7 +57,7 @@ public final class TimeUtils {
 	public static long millisToNanos(long millis) {
 		return millis * nanosPerMilli;
 	}
-
+	
 	/**
 	 * Get the time in nanos passed since a previous time
 	 * 
@@ -67,7 +67,7 @@ public final class TimeUtils {
 	public static long timeSinceNanos(long prevTime) {
 		return nanoTime() - prevTime;
 	}
-
+	
 	/**
 	 * Get the time in millis passed since a previous time
 	 * 

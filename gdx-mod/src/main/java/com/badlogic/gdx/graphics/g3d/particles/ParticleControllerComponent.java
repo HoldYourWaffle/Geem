@@ -40,59 +40,59 @@ public abstract class ParticleControllerComponent implements Disposable, Json.Se
 	protected static final Matrix3 TMP_M3 = new Matrix3();
 	protected static final Matrix4 TMP_M4 = new Matrix4();
 	protected ParticleController controller;
-
+	
 	/** Called to initialize new emitted particles. */
 	public void activateParticles(int startIndex, int count) {
 	};
-
+	
 	/** Called to notify which particles have been killed. */
 	public void killParticles(int startIndex, int count) {
 	};
-
+	
 	/** Called to execute the component behavior. */
 	public void update() {
 	};
-
+	
 	/** Called once during intialization */
 	public void init() {
 	};
-
+	
 	/** Called at the start of the simulation. */
 	public void start() {
 	};
-
+	
 	/** Called at the end of the simulation. */
 	public void end() {
 	};
-
+	
 	@Override
 	public void dispose() {
 	}
-
+	
 	public abstract ParticleControllerComponent copy();
-
+	
 	/** Called during initialization to allocate additional particles channels */
 	public void allocateChannels() {
 	}
-
+	
 	public void set(ParticleController particleController) {
 		controller = particleController;
 	}
-
+	
 	@Override
 	public void save(AssetManager manager, ResourceData data) {
 	}
-
+	
 	@Override
 	public void load(AssetManager manager, ResourceData data) {
 	}
-
+	
 	@Override
 	public void write(Json json) {
 	}
-
+	
 	@Override
 	public void read(Json json, JsonValue jsonData) {
 	}
-
+	
 }

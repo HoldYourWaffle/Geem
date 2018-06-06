@@ -25,13 +25,13 @@ public class SortedIntList<E> implements Iterable<SortedIntList.Node<E>> {
 	private NodePool<E> nodePool = new NodePool<>(); // avoid allocating nodes
 	private Iterator iterator;
 	int size = 0;
-
+	
 	Node<E> first;
-
+	
 	/** Creates an ascending list */
 	public SortedIntList() {
 	}
-
+	
 	/**
 	 * Inserts an element into the list at the given index
 	 * 
@@ -73,7 +73,7 @@ public class SortedIntList<E> implements Iterable<SortedIntList.Node<E>> {
 		}
 		return null;
 	}
-
+	
 	/**
 	 * Retrieves an element at a given index
 	 * 
@@ -93,7 +93,7 @@ public class SortedIntList<E> implements Iterable<SortedIntList.Node<E>> {
 		}
 		return match;
 	}
-
+	
 	/** Clears list */
 	public void clear() {
 		for (; first != null; first = first.n) {
@@ -101,17 +101,17 @@ public class SortedIntList<E> implements Iterable<SortedIntList.Node<E>> {
 		}
 		size = 0;
 	}
-
+	
 	/** @return size of list equal to elements contained in it */
 	public int size() {
 		return size;
 	}
-
+	
 	/** Returns true if the list is empty. */
 	public boolean isEmpty() {
 		return size == 0;
 	}
-
+	
 	/**
 	 * Returns an iterator to traverse the list.<br/>
 	 * Only one iterator can be active per list at any given time.
@@ -125,23 +125,23 @@ public class SortedIntList<E> implements Iterable<SortedIntList.Node<E>> {
 		}
 		return iterator.reset();
 	}
-
+	
 	class Iterator implements java.util.Iterator<Node<E>> {
 		private Node<E> position;
 		private Node<E> previousPosition;
-
+		
 		@Override
 		public boolean hasNext() {
 			return position != null;
 		}
-
+		
 		@Override
 		public Node<E> next() {
 			previousPosition = position;
 			position = position.n;
 			return previousPosition;
 		}
-
+		
 		@Override
 		public void remove() {
 			// the contract specifies to remove the last returned element, if nothing was
@@ -161,14 +161,14 @@ public class SortedIntList<E> implements Iterable<SortedIntList.Node<E>> {
 				size--;
 			}
 		}
-
+		
 		public Iterator reset() {
 			position = first;
 			previousPosition = null;
 			return this;
 		}
 	}
-
+	
 	public static class Node<E> {
 		/** Node previous to this */
 		protected Node<E> p;
@@ -179,13 +179,13 @@ public class SortedIntList<E> implements Iterable<SortedIntList.Node<E>> {
 		/** Index value in list */
 		public int index;
 	}
-
+	
 	static class NodePool<E> extends Pool<Node<E>> {
 		@Override
 		protected Node<E> newObject() {
 			return new Node<>();
 		}
-
+		
 		public Node<E> obtain(Node<E> p, Node<E> n, E value, int index) {
 			Node<E> newNode = super.obtain();
 			newNode.p = p;

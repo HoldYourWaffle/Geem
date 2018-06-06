@@ -29,12 +29,12 @@ public class Polygon implements Shape2D {
 	private float scaleX = 1, scaleY = 1;
 	private boolean dirty = true;
 	private Rectangle bounds;
-
+	
 	/** Constructs a new polygon with no vertices. */
 	public Polygon() {
 		this.localVertices = new float[0];
 	}
-
+	
 	/**
 	 * Constructs a new polygon from a float array of parts of vertex points.
 	 * 
@@ -50,7 +50,7 @@ public class Polygon implements Shape2D {
 			throw new IllegalArgumentException("polygons must contain at least 3 points.");
 		this.localVertices = vertices;
 	}
-
+	
 	/**
 	 * Returns the polygon's local vertices without scaling or rotation and without
 	 * being offset by the polygon position.
@@ -58,7 +58,7 @@ public class Polygon implements Shape2D {
 	public float[] getVertices() {
 		return localVertices;
 	}
-
+	
 	/**
 	 * Calculates and returns the vertices of the polygon after scaling, rotation,
 	 * and positional translations have been applied, as they are position within
@@ -70,11 +70,11 @@ public class Polygon implements Shape2D {
 		if (!dirty)
 			return worldVertices;
 		dirty = false;
-
+		
 		final float[] localVertices = this.localVertices;
 		if (worldVertices == null || worldVertices.length != localVertices.length)
 			worldVertices = new float[localVertices.length];
-
+		
 		final float[] worldVertices = this.worldVertices;
 		final float positionX = x;
 		final float positionY = y;
@@ -86,30 +86,30 @@ public class Polygon implements Shape2D {
 		final float rotation = this.rotation;
 		final float cos = MathUtils.cosDeg(rotation);
 		final float sin = MathUtils.sinDeg(rotation);
-
+		
 		for (int i = 0, n = localVertices.length; i < n; i += 2) {
 			float x = localVertices[i] - originX;
 			float y = localVertices[i + 1] - originY;
-
+			
 			// scale if needed
 			if (scale) {
 				x *= scaleX;
 				y *= scaleY;
 			}
-
+			
 			// rotate if needed
 			if (rotation != 0) {
 				float oldX = x;
 				x = cos * x - sin * y;
 				y = sin * oldX + cos * y;
 			}
-
+			
 			worldVertices[i] = positionX + x + originX;
 			worldVertices[i + 1] = positionY + y + originY;
 		}
 		return worldVertices;
 	}
-
+	
 	/**
 	 * Sets the origin point to which all of the polygon's local vertices are
 	 * relative to.
@@ -119,14 +119,14 @@ public class Polygon implements Shape2D {
 		this.originY = originY;
 		dirty = true;
 	}
-
+	
 	/** Sets the polygon's position within the world. */
 	public void setPosition(float x, float y) {
 		this.x = x;
 		this.y = y;
 		dirty = true;
 	}
-
+	
 	/**
 	 * Sets the polygon's local vertices relative to the origin point, without any
 	 * scaling, rotating or translations being applied.
@@ -143,7 +143,7 @@ public class Polygon implements Shape2D {
 		localVertices = vertices;
 		dirty = true;
 	}
-
+	
 	/**
 	 * Translates the polygon's position by the specified horizontal and vertical
 	 * amounts.
@@ -153,33 +153,33 @@ public class Polygon implements Shape2D {
 		this.y += y;
 		dirty = true;
 	}
-
+	
 	/** Sets the polygon to be rotated by the supplied degrees. */
 	public void setRotation(float degrees) {
 		this.rotation = degrees;
 		dirty = true;
 	}
-
+	
 	/** Applies additional rotation to the polygon by the supplied degrees. */
 	public void rotate(float degrees) {
 		rotation += degrees;
 		dirty = true;
 	}
-
+	
 	/** Sets the amount of scaling to be applied to the polygon. */
 	public void setScale(float scaleX, float scaleY) {
 		this.scaleX = scaleX;
 		this.scaleY = scaleY;
 		dirty = true;
 	}
-
+	
 	/** Applies additional scaling to the polygon by the supplied amount. */
 	public void scale(float amount) {
 		this.scaleX += amount;
 		this.scaleY += amount;
 		dirty = true;
 	}
-
+	
 	/**
 	 * Sets the polygon's world vertices to be recalculated when calling
 	 * {@link #getTransformedVertices() getTransformedVertices}.
@@ -187,13 +187,13 @@ public class Polygon implements Shape2D {
 	public void dirty() {
 		dirty = true;
 	}
-
+	
 	/** Returns the area contained within the polygon. */
 	public float area() {
 		float[] vertices = getTransformedVertices();
 		return GeometryUtils.polygonArea(vertices, 0, vertices.length);
 	}
-
+	
 	/**
 	 * Returns an axis-aligned bounding box of this polygon.
 	 * 
@@ -204,12 +204,12 @@ public class Polygon implements Shape2D {
 	 */
 	public Rectangle getBoundingRectangle() {
 		float[] vertices = getTransformedVertices();
-
+		
 		float minX = vertices[0];
 		float minY = vertices[1];
 		float maxX = vertices[0];
 		float maxY = vertices[1];
-
+		
 		final int numFloats = vertices.length;
 		for (int i = 2; i < numFloats; i += 2) {
 			minX = minX > vertices[i] ? vertices[i] : minX;
@@ -217,24 +217,24 @@ public class Polygon implements Shape2D {
 			maxX = maxX < vertices[i] ? vertices[i] : maxX;
 			maxY = maxY < vertices[i + 1] ? vertices[i + 1] : maxY;
 		}
-
+		
 		if (bounds == null)
 			bounds = new Rectangle();
 		bounds.x = minX;
 		bounds.y = minY;
 		bounds.width = maxX - minX;
 		bounds.height = maxY - minY;
-
+		
 		return bounds;
 	}
-
+	
 	/** Returns whether an x, y pair is contained within the polygon. */
 	@Override
 	public boolean contains(float x, float y) {
 		final float[] vertices = getTransformedVertices();
 		final int numFloats = vertices.length;
 		int intersects = 0;
-
+		
 		for (int i = 0; i < numFloats; i += 2) {
 			float x1 = vertices[i];
 			float y1 = vertices[i + 1];
@@ -245,42 +245,42 @@ public class Polygon implements Shape2D {
 		}
 		return (intersects & 1) == 1;
 	}
-
+	
 	@Override
 	public boolean contains(Vector2 point) {
 		return contains(point.x, point.y);
 	}
-
+	
 	/** Returns the x-coordinate of the polygon's position within the world. */
 	public float getX() {
 		return x;
 	}
-
+	
 	/** Returns the y-coordinate of the polygon's position within the world. */
 	public float getY() {
 		return y;
 	}
-
+	
 	/** Returns the x-coordinate of the polygon's origin point. */
 	public float getOriginX() {
 		return originX;
 	}
-
+	
 	/** Returns the y-coordinate of the polygon's origin point. */
 	public float getOriginY() {
 		return originY;
 	}
-
+	
 	/** Returns the total rotation applied to the polygon. */
 	public float getRotation() {
 		return rotation;
 	}
-
+	
 	/** Returns the total horizontal scaling applied to the polygon. */
 	public float getScaleX() {
 		return scaleX;
 	}
-
+	
 	/** Returns the total vertical scaling applied to the polygon. */
 	public float getScaleY() {
 		return scaleY;

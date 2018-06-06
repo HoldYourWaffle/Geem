@@ -109,7 +109,7 @@ public class PixmapPacker implements Disposable {
 	Color transparentColor = new Color(0f, 0f, 0f, 0f);
 	final Array<Page> pages = new Array();
 	PackStrategy packStrategy;
-
+	
 	/**
 	 * Uses {@link GuillotineStrategy}.
 	 * 
@@ -118,7 +118,7 @@ public class PixmapPacker implements Disposable {
 	public PixmapPacker(int pageWidth, int pageHeight, Format pageFormat, int padding, boolean duplicateBorder) {
 		this(pageWidth, pageHeight, pageFormat, padding, duplicateBorder, new GuillotineStrategy());
 	}
-
+	
 	/**
 	 * Creates a new ImagePacker which will insert all supplied pixmaps into one or
 	 * more <code>pageWidth</code> by <code>pageHeight</code> pixmaps using the
@@ -138,7 +138,7 @@ public class PixmapPacker implements Disposable {
 		this.duplicateBorder = duplicateBorder;
 		this.packStrategy = packStrategy;
 	}
-
+	
 	/**
 	 * Sorts the images to the optimzal order they should be packed. Some packing
 	 * strategies rely heavily on the images being sorted.
@@ -146,7 +146,7 @@ public class PixmapPacker implements Disposable {
 	public void sort(Array<Pixmap> images) {
 		packStrategy.sort(images);
 	}
-
+	
 	/**
 	 * Inserts the pixmap without a name. It cannot be looked up by name.
 	 * 
@@ -155,7 +155,7 @@ public class PixmapPacker implements Disposable {
 	public synchronized Rectangle pack(Pixmap image) {
 		return pack(null, image);
 	}
-
+	
 	/**
 	 * Inserts the pixmap. If name was not null, you can later retrieve the image's
 	 * position in the output image via {@link #getRect(String)}.
@@ -171,33 +171,33 @@ public class PixmapPacker implements Disposable {
 			return null;
 		if (name != null && getRect(name) != null)
 			throw new GdxRuntimeException("Pixmap has already been packed with name: " + name);
-
+		
 		Rectangle rect = new Rectangle(0, 0, image.getWidth(), image.getHeight());
 		if (rect.getWidth() > pageWidth || rect.getHeight() > pageHeight) {
 			if (name == null)
 				throw new GdxRuntimeException("Page size too small for pixmap.");
 			throw new GdxRuntimeException("Page size too small for pixmap: " + name);
 		}
-
+		
 		Page page = packStrategy.pack(this, name, rect);
 		if (name != null) {
 			page.rects.put(name, rect);
 			page.addedRects.add(name);
 		}
-
+		
 		int rectX = (int) rect.x, rectY = (int) rect.y, rectWidth = (int) rect.width, rectHeight = (int) rect.height;
-
+		
 		if (packToTexture && !duplicateBorder && page.texture != null && !page.dirty) {
 			page.texture.bind();
 			Gdx.gl.glTexSubImage2D(page.texture.glTarget, 0, rectX, rectY, rectWidth, rectHeight, image.getGLFormat(),
 					image.getGLType(), image.getPixels());
 		} else
 			page.dirty = true;
-
+		
 		page.image.setBlending(Blending.None);
-
+		
 		page.image.drawPixmap(image, rectX, rectY);
-
+		
 		if (duplicateBorder) {
 			int imageWidth = image.getWidth(), imageHeight = image.getHeight();
 			// Copy corner pixels to fill corners of the padding.
@@ -212,10 +212,10 @@ public class PixmapPacker implements Disposable {
 			page.image.drawPixmap(image, 0, 0, 1, imageHeight, rectX - 1, rectY, 1, rectHeight);
 			page.image.drawPixmap(image, imageWidth - 1, 0, 1, imageHeight, rectX + rectWidth, rectY, 1, rectHeight);
 		}
-
+		
 		return rect;
 	}
-
+	
 	/**
 	 * @return the {@link Page} instances created so far. If multiple threads are
 	 *         accessing the packer, iterating over the pages must be done only
@@ -224,7 +224,7 @@ public class PixmapPacker implements Disposable {
 	public Array<Page> getPages() {
 		return pages;
 	}
-
+	
 	/**
 	 * @param name the name of the image
 	 * @return the rectangle for the image in the page it's stored in or null
@@ -237,7 +237,7 @@ public class PixmapPacker implements Disposable {
 		}
 		return null;
 	}
-
+	
 	/**
 	 * @param name the name of the image
 	 * @return the page the image is stored in or null
@@ -250,7 +250,7 @@ public class PixmapPacker implements Disposable {
 		}
 		return null;
 	}
-
+	
 	/**
 	 * Returns the index of the page containing the given packed rectangle.
 	 * 
@@ -265,7 +265,7 @@ public class PixmapPacker implements Disposable {
 		}
 		return -1;
 	}
-
+	
 	/**
 	 * Disposes any pixmap pages which don't have a texture. Page pixmaps that have
 	 * a texture will not be disposed until their texture is disposed.
@@ -279,7 +279,7 @@ public class PixmapPacker implements Disposable {
 		}
 		disposed = true;
 	}
-
+	
 	/**
 	 * Generates a new {@link TextureAtlas} from the pixmaps inserted so far. After
 	 * calling this method, disposing the packer will no longer dispose the page
@@ -291,7 +291,7 @@ public class PixmapPacker implements Disposable {
 		updateTextureAtlas(atlas, minFilter, magFilter, useMipMaps);
 		return atlas;
 	}
-
+	
 	/**
 	 * Updates the {@link TextureAtlas}, adding any new {@link Pixmap} instances
 	 * packed since the last call to this method. This can be used to insert Pixmap
@@ -316,7 +316,7 @@ public class PixmapPacker implements Disposable {
 			}
 		}
 	}
-
+	
 	/**
 	 * Calls {@link Page#updateTexture(TextureFilter, TextureFilter, boolean)
 	 * updateTexture} for each page and adds a region to the specified array for
@@ -328,7 +328,7 @@ public class PixmapPacker implements Disposable {
 		while (regions.size < pages.size)
 			regions.add(new TextureRegion(pages.get(regions.size).texture));
 	}
-
+	
 	/**
 	 * Calls {@link Page#updateTexture(TextureFilter, TextureFilter, boolean)
 	 * updateTexture} for each page.
@@ -337,51 +337,51 @@ public class PixmapPacker implements Disposable {
 		for (Page page : pages)
 			page.updateTexture(minFilter, magFilter, useMipMaps);
 	}
-
+	
 	public int getPageWidth() {
 		return pageWidth;
 	}
-
+	
 	public void setPageWidth(int pageWidth) {
 		this.pageWidth = pageWidth;
 	}
-
+	
 	public int getPageHeight() {
 		return pageHeight;
 	}
-
+	
 	public void setPageHeight(int pageHeight) {
 		this.pageHeight = pageHeight;
 	}
-
+	
 	public Format getPageFormat() {
 		return pageFormat;
 	}
-
+	
 	public void setPageFormat(Format pageFormat) {
 		this.pageFormat = pageFormat;
 	}
-
+	
 	public int getPadding() {
 		return padding;
 	}
-
+	
 	public void setPadding(int padding) {
 		this.padding = padding;
 	}
-
+	
 	public boolean getDuplicateBorder() {
 		return duplicateBorder;
 	}
-
+	
 	public void setDuplicateBorder(boolean duplicateBorder) {
 		this.duplicateBorder = duplicateBorder;
 	}
-
+	
 	public boolean getPackToTexture() {
 		return packToTexture;
 	}
-
+	
 	/**
 	 * If true, when a pixmap is packed to a page that has a texture, the portion of
 	 * the texture where the pixmap was packed is updated using glTexSubImage2D.
@@ -391,7 +391,7 @@ public class PixmapPacker implements Disposable {
 	public void setPackToTexture(boolean packToTexture) {
 		this.packToTexture = packToTexture;
 	}
-
+	
 	/**
 	 * @author mzechner
 	 * @author Nathan Sweet
@@ -403,7 +403,7 @@ public class PixmapPacker implements Disposable {
 		Texture texture;
 		final Array<String> addedRects = new Array();
 		boolean dirty;
-
+		
 		/**
 		 * Creates a new page filled with the color provided by the
 		 * {@link PixmapPacker#getTransparentColor()}
@@ -414,15 +414,15 @@ public class PixmapPacker implements Disposable {
 			this.image.setColor(transparentColor);
 			this.image.fill();
 		}
-
+		
 		public Pixmap getPixmap() {
 			return image;
 		}
-
+		
 		public OrderedMap<String, Rectangle> getRects() {
 			return rects;
 		}
-
+		
 		/**
 		 * Returns the texture for this page, or null if the texture has not been
 		 * created.
@@ -432,7 +432,7 @@ public class PixmapPacker implements Disposable {
 		public Texture getTexture() {
 			return texture;
 		}
-
+		
 		/**
 		 * Creates the texture if it has not been created, else reuploads the entire
 		 * page pixmap to the texture if the pixmap has changed since this method was
@@ -459,7 +459,7 @@ public class PixmapPacker implements Disposable {
 			return true;
 		}
 	}
-
+	
 	/**
 	 * Choose the page and location for each rectangle.
 	 * 
@@ -467,14 +467,14 @@ public class PixmapPacker implements Disposable {
 	 */
 	static public interface PackStrategy {
 		public void sort(Array<Pixmap> images);
-
+		
 		/**
 		 * Returns the page the rectangle should be placed in and modifies the specified
 		 * rectangle position.
 		 */
 		public Page pack(PixmapPacker packer, String name, Rectangle rect);
 	}
-
+	
 	/**
 	 * Does bin packing by inserting to the right or below previously packed
 	 * rectangles. This is good at packing arbitrarily sized images.
@@ -485,7 +485,7 @@ public class PixmapPacker implements Disposable {
 	 */
 	static public class GuillotineStrategy implements PackStrategy {
 		Comparator<Pixmap> comparator;
-
+		
 		@Override
 		public void sort(Array<Pixmap> pixmaps) {
 			if (comparator == null) {
@@ -494,7 +494,7 @@ public class PixmapPacker implements Disposable {
 			}
 			pixmaps.sort(comparator);
 		}
-
+		
 		@Override
 		public Page pack(PixmapPacker packer, String name, Rectangle rect) {
 			GuillotinePage page;
@@ -506,7 +506,7 @@ public class PixmapPacker implements Disposable {
 				// Always try to pack into the last page.
 				page = (GuillotinePage) packer.pages.peek();
 			}
-
+			
 			int padding = packer.padding;
 			rect.width += padding;
 			rect.height += padding;
@@ -521,7 +521,7 @@ public class PixmapPacker implements Disposable {
 			rect.set(node.rect.x, node.rect.y, node.rect.width - padding, node.rect.height - padding);
 			return page;
 		}
-
+		
 		private Node insert(Node node, Rectangle rect) {
 			if (!node.full && node.leftChild != null && node.rightChild != null) {
 				Node newNode = insert(node.leftChild, rect);
@@ -535,10 +535,10 @@ public class PixmapPacker implements Disposable {
 					return node;
 				if (node.rect.width < rect.width || node.rect.height < rect.height)
 					return null;
-
+				
 				node.leftChild = new Node();
 				node.rightChild = new Node();
-
+				
 				int deltaWidth = (int) node.rect.width - (int) rect.width;
 				int deltaHeight = (int) node.rect.height - (int) rect.height;
 				if (deltaWidth > deltaHeight) {
@@ -546,7 +546,7 @@ public class PixmapPacker implements Disposable {
 					node.leftChild.rect.y = node.rect.y;
 					node.leftChild.rect.width = rect.width;
 					node.leftChild.rect.height = node.rect.height;
-
+					
 					node.rightChild.rect.x = node.rect.x + rect.width;
 					node.rightChild.rect.y = node.rect.y;
 					node.rightChild.rect.width = node.rect.width - rect.width;
@@ -556,27 +556,27 @@ public class PixmapPacker implements Disposable {
 					node.leftChild.rect.y = node.rect.y;
 					node.leftChild.rect.width = node.rect.width;
 					node.leftChild.rect.height = rect.height;
-
+					
 					node.rightChild.rect.x = node.rect.x;
 					node.rightChild.rect.y = node.rect.y + rect.height;
 					node.rightChild.rect.width = node.rect.width;
 					node.rightChild.rect.height = node.rect.height - rect.height;
 				}
-
+				
 				return insert(node.leftChild, rect);
 			}
 		}
-
+		
 		static final class Node {
 			public Node leftChild;
 			public Node rightChild;
 			public final Rectangle rect = new Rectangle();
 			public boolean full;
 		}
-
+		
 		static class GuillotinePage extends Page {
 			Node root;
-
+			
 			public GuillotinePage(PixmapPacker packer) {
 				super(packer);
 				root = new Node();
@@ -587,7 +587,7 @@ public class PixmapPacker implements Disposable {
 			}
 		}
 	}
-
+	
 	/**
 	 * Does bin packing by inserting in rows. This is good at packing images that
 	 * have similar heights.
@@ -596,7 +596,7 @@ public class PixmapPacker implements Disposable {
 	 */
 	static public class SkylineStrategy implements PackStrategy {
 		Comparator<Pixmap> comparator;
-
+		
 		@Override
 		public void sort(Array<Pixmap> images) {
 			if (comparator == null) {
@@ -604,7 +604,7 @@ public class PixmapPacker implements Disposable {
 			}
 			images.sort(comparator);
 		}
-
+		
 		@Override
 		public Page pack(PixmapPacker packer, String name, Rectangle rect) {
 			int padding = packer.padding;
@@ -660,26 +660,26 @@ public class PixmapPacker implements Disposable {
 			rect.y = padding;
 			return page;
 		}
-
+		
 		static class SkylinePage extends Page {
 			Array<Row> rows = new Array();
-
+			
 			public SkylinePage(PixmapPacker packer) {
 				super(packer);
-
+				
 			}
-
+			
 			static class Row {
 				int x, y, height;
 			}
 		}
 	}
-
+	
 	/** @see PixmapPacker#setTransparentColor(Color color) */
 	public Color getTransparentColor() {
 		return this.transparentColor;
 	}
-
+	
 	/**
 	 * Sets the default <code>color</code> of the whole {@link PixmapPacker.Page}
 	 * when a new one created. Helps to avoid texture bleeding or to highlight the
@@ -690,5 +690,5 @@ public class PixmapPacker implements Disposable {
 	public void setTransparentColor(Color color) {
 		this.transparentColor.set(color);
 	}
-
+	
 }

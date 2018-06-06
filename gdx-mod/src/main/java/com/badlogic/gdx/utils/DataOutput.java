@@ -29,7 +29,7 @@ public class DataOutput extends DataOutputStream {
 	public DataOutput(OutputStream out) {
 		super(out);
 	}
-
+	
 	/**
 	 * Writes a 1-5 byte int.
 	 * 
@@ -63,7 +63,7 @@ public class DataOutput extends DataOutputStream {
 		write((byte) (value >>> 28));
 		return 5;
 	}
-
+	
 	/**
 	 * Writes a length and then the string as UTF8.
 	 * 
@@ -91,7 +91,7 @@ public class DataOutput extends DataOutputStream {
 		if (charIndex < charCount)
 			writeString_slow(value, charCount, charIndex);
 	}
-
+	
 	private void writeString_slow(String value, int charCount, int charIndex) throws IOException {
 		for (; charIndex < charCount; charIndex++) {
 			int c = value.charAt(charIndex);

@@ -27,7 +27,7 @@ public class PauseableThread extends Thread {
 	final Runnable runnable;
 	boolean paused = false;
 	boolean exit = false;
-
+	
 	/**
 	 * Constructs a new thread setting the runnable which will be called repeatedly
 	 * in a loop.
@@ -37,7 +37,7 @@ public class PauseableThread extends Thread {
 	public PauseableThread(Runnable runnable) {
 		this.runnable = runnable;
 	}
-
+	
 	@Override
 	public void run() {
 		while (true) {
@@ -49,19 +49,19 @@ public class PauseableThread extends Thread {
 					e.printStackTrace();
 				}
 			}
-
+			
 			if (exit)
 				return;
-
+			
 			runnable.run();
 		}
 	}
-
+	
 	/** Pauses the thread. This call is non-blocking */
 	public void onPause() {
 		paused = true;
 	}
-
+	
 	/** Resumes the thread. This call is non-blocking */
 	public void onResume() {
 		synchronized (this) {
@@ -69,12 +69,12 @@ public class PauseableThread extends Thread {
 			this.notifyAll();
 		}
 	}
-
+	
 	/** @return whether this thread is paused or not */
 	public boolean isPaused() {
 		return paused;
 	}
-
+	
 	/** Stops this thread */
 	public void stopThread() {
 		exit = true;

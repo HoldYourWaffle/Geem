@@ -32,7 +32,7 @@ public class DelaunayTriangulator {
 	static private final int INSIDE = 0;
 	static private final int COMPLETE = 1;
 	static private final int INCOMPLETE = 2;
-
+	
 	private final IntArray quicksortStack = new IntArray();
 	private float[] sortedPoints;
 	private final ShortArray triangles = new ShortArray(false, 16);
@@ -41,17 +41,17 @@ public class DelaunayTriangulator {
 	private final BooleanArray complete = new BooleanArray(false, 16);
 	private final float[] superTriangle = new float[6];
 	private final Vector2 centroid = new Vector2();
-
+	
 	/** @see #computeTriangles(float[], int, int, boolean) */
 	public ShortArray computeTriangles(FloatArray points, boolean sorted) {
 		return computeTriangles(points.items, 0, points.size, sorted);
 	}
-
+	
 	/** @see #computeTriangles(float[], int, int, boolean) */
 	public ShortArray computeTriangles(float[] polygon, boolean sorted) {
 		return computeTriangles(polygon, 0, polygon.length, sorted);
 	}
-
+	
 	/**
 	 * Triangulates the given point cloud to a list of triangle indices that make up
 	 * the Delaunay triangulation.
@@ -73,7 +73,7 @@ public class DelaunayTriangulator {
 		if (count < 6)
 			return triangles;
 		triangles.ensureCapacity(count);
-
+		
 		if (!sorted) {
 			if (sortedPoints == null || sortedPoints.length < count)
 				sortedPoints = new float[count];
@@ -82,9 +82,9 @@ public class DelaunayTriangulator {
 			offset = 0;
 			sort(points, count);
 		}
-
+		
 		int end = offset + count;
-
+		
 		// Determine bounds for super triangle.
 		float xmin = points[0], ymin = points[1];
 		float xmax = xmin, ymax = ymin;
@@ -104,7 +104,7 @@ public class DelaunayTriangulator {
 		float dx = xmax - xmin, dy = ymax - ymin;
 		float dmax = (dx > dy ? dx : dy) * 20f;
 		float xmid = (xmax + xmin) / 2f, ymid = (ymax + ymin) / 2f;
-
+		
 		// Setup the super triangle, which contains all points.
 		float[] superTriangle = this.superTriangle;
 		superTriangle[0] = xmid - dmax;
@@ -113,24 +113,24 @@ public class DelaunayTriangulator {
 		superTriangle[3] = ymid + dmax;
 		superTriangle[4] = xmid + dmax;
 		superTriangle[5] = ymid - dmax;
-
+		
 		IntArray edges = this.edges;
 		edges.ensureCapacity(count / 2);
-
+		
 		BooleanArray complete = this.complete;
 		complete.clear();
 		complete.ensureCapacity(count);
-
+		
 		// Add super triangle.
 		triangles.add(end);
 		triangles.add(end + 2);
 		triangles.add(end + 4);
 		complete.add(false);
-
+		
 		// Include each point one at a time into the existing mesh.
 		for (int pointIndex = offset; pointIndex < end; pointIndex += 2) {
 			float x = points[pointIndex], y = points[pointIndex + 1];
-
+			
 			// If x,y lies inside the circumcircle of a triangle, the edges are stored and
 			// the triangle removed.
 			short[] trianglesArray = triangles.items;
@@ -178,7 +178,7 @@ public class DelaunayTriangulator {
 					edges.add(p3);
 					edges.add(p3);
 					edges.add(p1);
-
+					
 					triangles.removeIndex(triangleIndex);
 					triangles.removeIndex(triangleIndex - 1);
 					triangles.removeIndex(triangleIndex - 2);
@@ -186,7 +186,7 @@ public class DelaunayTriangulator {
 					break;
 				}
 			}
-
+			
 			int[] edgesArray = edges.items;
 			for (int i = 0, n = edges.size; i < n; i += 2) {
 				// Skip multiple edges. If all triangles are anticlockwise then all interior
@@ -204,7 +204,7 @@ public class DelaunayTriangulator {
 				}
 				if (skip)
 					continue;
-
+					
 				// Form new triangles for the current point. Edges are arranged in clockwise
 				// order.
 				triangles.add(p1);
@@ -214,7 +214,7 @@ public class DelaunayTriangulator {
 			}
 			edges.clear();
 		}
-
+		
 		// Remove triangles with super triangle vertices.
 		short[] trianglesArray = triangles.items;
 		for (int i = triangles.size - 1; i >= 0; i -= 3) {
@@ -224,14 +224,14 @@ public class DelaunayTriangulator {
 				triangles.removeIndex(i - 2);
 			}
 		}
-
+		
 		// Convert sorted to unsorted indices.
 		if (!sorted) {
 			short[] originalIndicesArray = originalIndices.items;
 			for (int i = 0, n = triangles.size; i < n; i++)
 				trianglesArray[i] = (short) (originalIndicesArray[trianglesArray[i] / 2] * 2);
 		}
-
+		
 		// Adjust triangles to start from zero and count by 1, not by vertex x,y
 		// coordinate pairs.
 		if (offset == 0) {
@@ -241,10 +241,10 @@ public class DelaunayTriangulator {
 			for (int i = 0, n = triangles.size; i < n; i++)
 				trianglesArray[i] = (short) ((trianglesArray[i] - offset) / 2);
 		}
-
+		
 		return triangles;
 	}
-
+	
 	/**
 	 * Returns INSIDE if point xp,yp is inside the circumcircle made up of the
 	 * points x1,y1, x2,y2, x3,y3. Returns COMPLETE if xp is to the right of the
@@ -278,11 +278,11 @@ public class DelaunayTriangulator {
 				yc = m1 * (xc - mx1) + my1;
 			}
 		}
-
+		
 		float dx = x2 - xc;
 		float dy = y2 - yc;
 		float rsqr = dx * dx + dy * dy;
-
+		
 		dx = xp - xc;
 		dx *= dx;
 		dy = yp - yc;
@@ -290,7 +290,7 @@ public class DelaunayTriangulator {
 			return INSIDE;
 		return xp > xc && dx > rsqr ? COMPLETE : INCOMPLETE;
 	}
-
+	
 	/**
 	 * Sorts x,y pairs of values by the x value.
 	 * 
@@ -303,7 +303,7 @@ public class DelaunayTriangulator {
 		short[] originalIndicesArray = originalIndices.items;
 		for (short i = 0; i < pointCount; i++)
 			originalIndicesArray[i] = i;
-
+		
 		int lower = 0;
 		int upper = count - 1;
 		IntArray stack = quicksortStack;
@@ -327,7 +327,7 @@ public class DelaunayTriangulator {
 			}
 		}
 	}
-
+	
 	private int quicksortPartition(final float[] values, int lower, int upper, short[] originalIndices) {
 		float value = values[lower];
 		int up = upper;
@@ -343,11 +343,11 @@ public class DelaunayTriangulator {
 				tempValue = values[down];
 				values[down] = values[up];
 				values[up] = tempValue;
-
+				
 				tempValue = values[down + 1];
 				values[down + 1] = values[up + 1];
 				values[up + 1] = tempValue;
-
+				
 				tempIndex = originalIndices[down / 2];
 				originalIndices[down / 2] = originalIndices[up / 2];
 				originalIndices[up / 2] = tempIndex;
@@ -355,17 +355,17 @@ public class DelaunayTriangulator {
 		}
 		values[lower] = values[up];
 		values[up] = value;
-
+		
 		tempValue = values[lower + 1];
 		values[lower + 1] = values[up + 1];
 		values[up + 1] = tempValue;
-
+		
 		tempIndex = originalIndices[lower / 2];
 		originalIndices[lower / 2] = originalIndices[up / 2];
 		originalIndices[up / 2] = tempIndex;
 		return up;
 	}
-
+	
 	/**
 	 * Removes all triangles with a centroid outside the specified hull, which may
 	 * be concave. Note some triangulations may have triangles whose centroid is

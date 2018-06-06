@@ -54,7 +54,7 @@ public final class VertexAttribute {
 	 **/
 	public int unit;
 	private final int usageIndex;
-
+	
 	/**
 	 * Constructs a new VertexAttribute. The GL data type is automatically selected
 	 * based on the usage.
@@ -69,7 +69,7 @@ public final class VertexAttribute {
 	public VertexAttribute(int usage, int numComponents, String alias) {
 		this(usage, numComponents, alias, 0);
 	}
-
+	
 	/**
 	 * Constructs a new VertexAttribute. The GL data type is automatically selected
 	 * based on the usage.
@@ -87,7 +87,7 @@ public final class VertexAttribute {
 		this(usage, numComponents, usage == Usage.ColorPacked ? GL20.GL_UNSIGNED_BYTE : GL20.GL_FLOAT,
 				usage == Usage.ColorPacked, alias, unit);
 	}
-
+	
 	/**
 	 * Constructs a new VertexAttribute.
 	 * 
@@ -107,7 +107,7 @@ public final class VertexAttribute {
 	public VertexAttribute(int usage, int numComponents, int type, boolean normalized, String alias) {
 		this(usage, numComponents, type, normalized, alias, 0);
 	}
-
+	
 	/**
 	 * Constructs a new VertexAttribute.
 	 * 
@@ -135,7 +135,7 @@ public final class VertexAttribute {
 		this.unit = unit;
 		this.usageIndex = Integer.numberOfTrailingZeros(usage);
 	}
-
+	
 	/**
 	 * @return A copy of this VertexAttribute with the same parameters. The
 	 *         {@link #offset} is not copied and must be recalculated, as is
@@ -145,39 +145,39 @@ public final class VertexAttribute {
 	public VertexAttribute copy() {
 		return new VertexAttribute(usage, numComponents, type, normalized, alias, unit);
 	}
-
+	
 	public static VertexAttribute Position() {
 		return new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE);
 	}
-
+	
 	public static VertexAttribute TexCoords(int unit) {
 		return new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + unit, unit);
 	}
-
+	
 	public static VertexAttribute Normal() {
 		return new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE);
 	}
-
+	
 	public static VertexAttribute ColorPacked() {
 		return new VertexAttribute(Usage.ColorPacked, 4, GL20.GL_UNSIGNED_BYTE, true, ShaderProgram.COLOR_ATTRIBUTE);
 	}
-
+	
 	public static VertexAttribute ColorUnpacked() {
 		return new VertexAttribute(Usage.ColorUnpacked, 4, GL20.GL_FLOAT, false, ShaderProgram.COLOR_ATTRIBUTE);
 	}
-
+	
 	public static VertexAttribute Tangent() {
 		return new VertexAttribute(Usage.Tangent, 3, ShaderProgram.TANGENT_ATTRIBUTE);
 	}
-
+	
 	public static VertexAttribute Binormal() {
 		return new VertexAttribute(Usage.BiNormal, 3, ShaderProgram.BINORMAL_ATTRIBUTE);
 	}
-
+	
 	public static VertexAttribute BoneWeight(int unit) {
 		return new VertexAttribute(Usage.BoneWeight, 2, ShaderProgram.BONEWEIGHT_ATTRIBUTE + unit, unit);
 	}
-
+	
 	/**
 	 * Tests to determine if the passed object was created with the same parameters
 	 */
@@ -188,19 +188,19 @@ public final class VertexAttribute {
 		}
 		return equals((VertexAttribute) obj);
 	}
-
+	
 	public boolean equals(final VertexAttribute other) {
 		return other != null && usage == other.usage && numComponents == other.numComponents && type == other.type
 				&& normalized == other.normalized && alias.equals(other.alias) && unit == other.unit;
 	}
-
+	
 	/**
 	 * @return A unique number specifying the usage index (3 MSB) and unit (1 LSB).
 	 */
 	public int getKey() {
 		return (usageIndex << 8) + (unit & 0xFF);
 	}
-
+	
 	/** @return How many bytes this attribute uses. */
 	public int getSizeInBytes() {
 		switch (type) {
@@ -216,7 +216,7 @@ public final class VertexAttribute {
 		}
 		return 0;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		int result = getKey();

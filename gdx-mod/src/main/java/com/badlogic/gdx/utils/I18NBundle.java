@@ -75,30 +75,30 @@ import com.badlogic.gdx.files.FileHandle;
  * @author davebaol
  */
 public class I18NBundle {
-
+	
 	private static final String DEFAULT_ENCODING = "UTF-8";
-
+	
 	// Locale.ROOT does not exist in Android API level 8
 	private static final Locale ROOT_LOCALE = new Locale("", "", "");
-
+	
 	private static boolean simpleFormatter = false;
 	private static boolean exceptionOnMissingKey = true;
-
+	
 	/**
 	 * The parent of this {@code I18NBundle} that is used if this bundle doesn't
 	 * include the requested resource.
 	 */
 	private I18NBundle parent;
-
+	
 	/** The locale for this bundle. */
 	private Locale locale;
-
+	
 	/** The properties for this bundle. */
 	private ObjectMap<String, String> properties;
-
+	
 	/** The formatter used for argument replacement. */
 	private TextFormatter formatter;
-
+	
 	/**
 	 * Returns the flag indicating whether to use the simplified message pattern
 	 * syntax (default is false). This flag is always assumed to be true on GWT
@@ -107,7 +107,7 @@ public class I18NBundle {
 	public static boolean getSimpleFormatter() {
 		return simpleFormatter;
 	}
-
+	
 	/**
 	 * Sets the flag indicating whether to use the simplified message pattern. The
 	 * flag must be set before calling the factory methods {@code createBundle}.
@@ -117,7 +117,7 @@ public class I18NBundle {
 	public static void setSimpleFormatter(boolean enabled) {
 		simpleFormatter = enabled;
 	}
-
+	
 	/**
 	 * Returns the flag indicating whether to throw a
 	 * {@link MissingResourceException} from the {@link #get(String) get(key)}
@@ -127,7 +127,7 @@ public class I18NBundle {
 	public static boolean getExceptionOnMissingKey() {
 		return exceptionOnMissingKey;
 	}
-
+	
 	/**
 	 * Sets the flag indicating whether to throw a {@link MissingResourceException}
 	 * from the {@link #get(String) get(key)} method if no string for the given key
@@ -137,7 +137,7 @@ public class I18NBundle {
 	public static void setExceptionOnMissingKey(boolean enabled) {
 		exceptionOnMissingKey = enabled;
 	}
-
+	
 	/**
 	 * Creates a new bundle using the specified <code>baseFileHandle</code>, the
 	 * default locale and the default encoding "UTF-8".
@@ -152,7 +152,7 @@ public class I18NBundle {
 	public static I18NBundle createBundle(FileHandle baseFileHandle) {
 		return createBundleImpl(baseFileHandle, Locale.getDefault(), DEFAULT_ENCODING);
 	}
-
+	
 	/**
 	 * Creates a new bundle using the specified <code>baseFileHandle</code> and
 	 * <code>locale</code>; the default encoding "UTF-8" is used.
@@ -168,7 +168,7 @@ public class I18NBundle {
 	public static I18NBundle createBundle(FileHandle baseFileHandle, Locale locale) {
 		return createBundleImpl(baseFileHandle, locale, DEFAULT_ENCODING);
 	}
-
+	
 	/**
 	 * Creates a new bundle using the specified <code>baseFileHandle</code> and
 	 * <code>encoding</code>; the default locale is used.
@@ -185,7 +185,7 @@ public class I18NBundle {
 	public static I18NBundle createBundle(FileHandle baseFileHandle, String encoding) {
 		return createBundleImpl(baseFileHandle, Locale.getDefault(), encoding);
 	}
-
+	
 	/**
 	 * Creates a new bundle using the specified <code>baseFileHandle</code>,
 	 * <code>locale</code> and <code>encoding</code>.
@@ -204,26 +204,26 @@ public class I18NBundle {
 	public static I18NBundle createBundle(FileHandle baseFileHandle, Locale locale, String encoding) {
 		return createBundleImpl(baseFileHandle, locale, encoding);
 	}
-
+	
 	private static I18NBundle createBundleImpl(FileHandle baseFileHandle, Locale locale, String encoding) {
 		if (baseFileHandle == null || locale == null || encoding == null)
 			throw new NullPointerException();
-
+		
 		I18NBundle bundle = null;
 		I18NBundle baseBundle = null;
 		Locale targetLocale = locale;
 		do {
 			// Create the candidate locales
 			List<Locale> candidateLocales = getCandidateLocales(targetLocale);
-
+			
 			// Load the bundle and its parents recursively
 			bundle = loadBundleChain(baseFileHandle, encoding, candidateLocales, 0, baseBundle);
-
+			
 			// Check the loaded bundle (if any)
 			if (bundle != null) {
 				Locale bundleLocale = bundle.getLocale(); // WTH? GWT can't access bundle.locale directly
 				boolean isBaseBundle = bundleLocale.equals(ROOT_LOCALE);
-
+				
 				if (!isBaseBundle || bundleLocale.equals(locale)) {
 					// Found the bundle for the requested locale
 					break;
@@ -237,12 +237,12 @@ public class I18NBundle {
 					baseBundle = bundle;
 				}
 			}
-
+			
 			// Set next fallback locale
 			targetLocale = getFallbackLocale(targetLocale);
-
+			
 		} while (targetLocale != null);
-
+		
 		if (bundle == null) {
 			if (baseBundle == null) {
 				// No bundle found
@@ -253,10 +253,10 @@ public class I18NBundle {
 			// Set the base bundle to be returned
 			bundle = baseBundle;
 		}
-
+		
 		return bundle;
 	}
-
+	
 	/**
 	 * Returns a <code>List</code> of <code>Locale</code>s as candidate locales for
 	 * the given <code>locale</code>. This method is called by the
@@ -321,7 +321,7 @@ public class I18NBundle {
 		String language = locale.getLanguage();
 		String country = locale.getCountry();
 		String variant = locale.getVariant();
-
+		
 		List<Locale> locales = new ArrayList<>(4);
 		if (variant.length() > 0) {
 			locales.add(locale);
@@ -335,7 +335,7 @@ public class I18NBundle {
 		locales.add(ROOT_LOCALE);
 		return locales;
 	}
-
+	
 	/**
 	 * Returns a <code>Locale</code> to be used as a fallback locale for further
 	 * bundle searches by the <code>createBundle</code> factory method. This method
@@ -360,7 +360,7 @@ public class I18NBundle {
 		Locale defaultLocale = Locale.getDefault();
 		return locale.equals(defaultLocale) ? null : defaultLocale;
 	}
-
+	
 	private static I18NBundle loadBundleChain(FileHandle baseFileHandle, String encoding, List<Locale> candidateLocales,
 			int candidateIndex, I18NBundle baseBundle) {
 		Locale targetLocale = candidateLocales.get(candidateIndex);
@@ -371,17 +371,17 @@ public class I18NBundle {
 		} else if (baseBundle != null && targetLocale.equals(ROOT_LOCALE)) {
 			return baseBundle;
 		}
-
+		
 		// Load the bundle
 		I18NBundle bundle = loadBundle(baseFileHandle, encoding, targetLocale);
 		if (bundle != null) {
 			bundle.parent = parent;
 			return bundle;
 		}
-
+		
 		return parent;
 	}
-
+	
 	// Tries to load the bundle for the given locale.
 	private static I18NBundle loadBundle(FileHandle baseFileHandle, String encoding, Locale targetLocale) {
 		I18NBundle bundle = null;
@@ -391,7 +391,7 @@ public class I18NBundle {
 			if (checkFileExistence(fileHandle)) {
 				// Instantiate the bundle
 				bundle = new I18NBundle();
-
+				
 				// Load bundle properties from the stream with the specified encoding
 				reader = fileHandle.reader(encoding);
 				bundle.load(reader);
@@ -404,10 +404,10 @@ public class I18NBundle {
 		if (bundle != null) {
 			bundle.setLocale(targetLocale);
 		}
-
+		
 		return bundle;
 	}
-
+	
 	// On Android this is much faster than fh.exists(), see
 	// https://github.com/libgdx/libgdx/issues/2342
 	// Also this should fix a weird problem on iOS, see
@@ -420,7 +420,7 @@ public class I18NBundle {
 			return false;
 		}
 	}
-
+	
 	/**
 	 * Load the properties from the specified reader.
 	 * 
@@ -433,7 +433,7 @@ public class I18NBundle {
 		properties = new ObjectMap<>();
 		PropertiesUtils.load(properties, reader);
 	}
-
+	
 	/**
 	 * Converts the given <code>baseFileHandle</code> and <code>locale</code> to the
 	 * corresponding file handle.
@@ -467,7 +467,7 @@ public class I18NBundle {
 			boolean emptyLanguage = "".equals(language);
 			boolean emptyCountry = "".equals(country);
 			boolean emptyVariant = "".equals(variant);
-
+			
 			if (!(emptyLanguage && emptyCountry && emptyVariant)) {
 				sb.append('_');
 				if (!emptyVariant) {
@@ -481,7 +481,7 @@ public class I18NBundle {
 		}
 		return baseFileHandle.sibling(sb.append(".properties").toString());
 	}
-
+	
 	/**
 	 * Returns the locale of this bundle. This method can be used after a call to
 	 * <code>createBundle()</code> to determine whether the resource bundle returned
@@ -492,7 +492,7 @@ public class I18NBundle {
 	public Locale getLocale() {
 		return locale;
 	}
-
+	
 	/**
 	 * Sets the bundle locale. This method is private because a bundle can't change
 	 * the locale during its life.
@@ -503,7 +503,7 @@ public class I18NBundle {
 		this.locale = locale;
 		this.formatter = new TextFormatter(locale, !simpleFormatter);
 	}
-
+	
 	/**
 	 * Gets a string for the given key from this bundle or one of its parents.
 	 * 
@@ -531,7 +531,7 @@ public class I18NBundle {
 		}
 		return result;
 	}
-
+	
 	/**
 	 * Gets the string with the specified key from this bundle or one of its parent
 	 * after replacing the given arguments if they occur.
@@ -547,5 +547,5 @@ public class I18NBundle {
 	public String format(String key, Object... args) {
 		return formatter.format(get(key), args);
 	}
-
+	
 }

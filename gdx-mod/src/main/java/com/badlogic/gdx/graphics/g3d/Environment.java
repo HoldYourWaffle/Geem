@@ -31,22 +31,22 @@ public class Environment extends Attributes {
 	/** @deprecated Experimental, likely to change, do not use! */
 	@Deprecated
 	public ShadowMap shadowMap;
-
+	
 	public Environment() {
 	}
-
+	
 	public Environment add(final BaseLight... lights) {
 		for (final BaseLight light : lights)
 			add(light);
 		return this;
 	}
-
+	
 	public Environment add(final Array<BaseLight> lights) {
 		for (final BaseLight light : lights)
 			add(light);
 		return this;
 	}
-
+	
 	public Environment add(BaseLight light) {
 		if (light instanceof DirectionalLight)
 			add((DirectionalLight) light);
@@ -58,7 +58,7 @@ public class Environment extends Attributes {
 			throw new GdxRuntimeException("Unknown light type");
 		return this;
 	}
-
+	
 	public Environment add(DirectionalLight light) {
 		DirectionalLightsAttribute dirLights = ((DirectionalLightsAttribute) get(DirectionalLightsAttribute.Type));
 		if (dirLights == null)
@@ -66,7 +66,7 @@ public class Environment extends Attributes {
 		dirLights.lights.add(light);
 		return this;
 	}
-
+	
 	public Environment add(PointLight light) {
 		PointLightsAttribute pointLights = ((PointLightsAttribute) get(PointLightsAttribute.Type));
 		if (pointLights == null)
@@ -74,7 +74,7 @@ public class Environment extends Attributes {
 		pointLights.lights.add(light);
 		return this;
 	}
-
+	
 	public Environment add(SpotLight light) {
 		SpotLightsAttribute spotLights = ((SpotLightsAttribute) get(SpotLightsAttribute.Type));
 		if (spotLights == null)
@@ -82,19 +82,19 @@ public class Environment extends Attributes {
 		spotLights.lights.add(light);
 		return this;
 	}
-
+	
 	public Environment remove(final BaseLight... lights) {
 		for (final BaseLight light : lights)
 			remove(light);
 		return this;
 	}
-
+	
 	public Environment remove(final Array<BaseLight> lights) {
 		for (final BaseLight light : lights)
 			remove(light);
 		return this;
 	}
-
+	
 	public Environment remove(BaseLight light) {
 		if (light instanceof DirectionalLight)
 			remove((DirectionalLight) light);
@@ -106,7 +106,7 @@ public class Environment extends Attributes {
 			throw new GdxRuntimeException("Unknown light type");
 		return this;
 	}
-
+	
 	public Environment remove(DirectionalLight light) {
 		if (has(DirectionalLightsAttribute.Type)) {
 			DirectionalLightsAttribute dirLights = ((DirectionalLightsAttribute) get(DirectionalLightsAttribute.Type));
@@ -116,7 +116,7 @@ public class Environment extends Attributes {
 		}
 		return this;
 	}
-
+	
 	public Environment remove(PointLight light) {
 		if (has(PointLightsAttribute.Type)) {
 			PointLightsAttribute pointLights = ((PointLightsAttribute) get(PointLightsAttribute.Type));
@@ -126,7 +126,7 @@ public class Environment extends Attributes {
 		}
 		return this;
 	}
-
+	
 	public Environment remove(SpotLight light) {
 		if (has(SpotLightsAttribute.Type)) {
 			SpotLightsAttribute spotLights = ((SpotLightsAttribute) get(SpotLightsAttribute.Type));

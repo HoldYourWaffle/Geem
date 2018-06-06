@@ -50,10 +50,10 @@ import com.badlogic.gdx.utils.StreamUtils;
  */
 public class TextureAtlas implements Disposable {
 	static final String[] tuple = new String[4];
-
+	
 	private final ObjectSet<Texture> textures = new ObjectSet(4);
 	private final Array<AtlasRegion> regions = new Array();
-
+	
 	public static class TextureAtlasData {
 		public static class Page {
 			public final FileHandle textureFile;
@@ -65,7 +65,7 @@ public class TextureAtlas implements Disposable {
 			public final TextureFilter magFilter;
 			public final TextureWrap uWrap;
 			public final TextureWrap vWrap;
-
+			
 			public Page(FileHandle handle, float width, float height, boolean useMipMaps, Format format,
 					TextureFilter minFilter, TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
 				this.width = width;
@@ -79,7 +79,7 @@ public class TextureAtlas implements Disposable {
 				this.vWrap = vWrap;
 			}
 		}
-
+		
 		public static class Region {
 			public Page page;
 			public int index;
@@ -97,10 +97,10 @@ public class TextureAtlas implements Disposable {
 			public int[] splits;
 			public int[] pads;
 		}
-
+		
 		final Array<Page> pages = new Array();
 		final Array<Region> regions = new Array();
-
+		
 		public TextureAtlasData(FileHandle packFile, FileHandle imagesDir, boolean flip) {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(packFile.read()), 64);
 			try {
@@ -113,7 +113,7 @@ public class TextureAtlas implements Disposable {
 						pageImage = null;
 					else if (pageImage == null) {
 						FileHandle file = imagesDir.child(line);
-
+						
 						float width = 0, height = 0;
 						if (readTuple(reader) == 2) { // size is only optional for an atlas packed with an old
 														// TexturePacker.
@@ -122,11 +122,11 @@ public class TextureAtlas implements Disposable {
 							readTuple(reader);
 						}
 						Format format = Format.valueOf(tuple[0]);
-
+						
 						readTuple(reader);
 						TextureFilter min = TextureFilter.valueOf(tuple[0]);
 						TextureFilter max = TextureFilter.valueOf(tuple[1]);
-
+						
 						String direction = readValue(reader);
 						TextureWrap repeatX = ClampToEdge;
 						TextureWrap repeatY = ClampToEdge;
@@ -138,20 +138,20 @@ public class TextureAtlas implements Disposable {
 							repeatX = Repeat;
 							repeatY = Repeat;
 						}
-
+						
 						pageImage = new Page(file, width, height, min.isMipMap(), format, min, max, repeatX, repeatY);
 						pages.add(pageImage);
 					} else {
 						boolean rotate = Boolean.valueOf(readValue(reader));
-
+						
 						readTuple(reader);
 						int left = Integer.parseInt(tuple[0]);
 						int top = Integer.parseInt(tuple[1]);
-
+						
 						readTuple(reader);
 						int width = Integer.parseInt(tuple[0]);
 						int height = Integer.parseInt(tuple[1]);
-
+						
 						Region region = new Region();
 						region.page = pageImage;
 						region.left = left;
@@ -160,31 +160,31 @@ public class TextureAtlas implements Disposable {
 						region.height = height;
 						region.name = line;
 						region.rotate = rotate;
-
+						
 						if (readTuple(reader) == 4) { // split is optional
 							region.splits = new int[] { Integer.parseInt(tuple[0]), Integer.parseInt(tuple[1]),
 									Integer.parseInt(tuple[2]), Integer.parseInt(tuple[3]) };
-
+							
 							if (readTuple(reader) == 4) { // pad is optional, but only present with splits
 								region.pads = new int[] { Integer.parseInt(tuple[0]), Integer.parseInt(tuple[1]),
 										Integer.parseInt(tuple[2]), Integer.parseInt(tuple[3]) };
-
+								
 								readTuple(reader);
 							}
 						}
-
+						
 						region.originalWidth = Integer.parseInt(tuple[0]);
 						region.originalHeight = Integer.parseInt(tuple[1]);
-
+						
 						readTuple(reader);
 						region.offsetX = Integer.parseInt(tuple[0]);
 						region.offsetY = Integer.parseInt(tuple[1]);
-
+						
 						region.index = Integer.parseInt(readValue(reader));
-
+						
 						if (flip)
 							region.flip = true;
-
+						
 						regions.add(region);
 					}
 				}
@@ -193,23 +193,23 @@ public class TextureAtlas implements Disposable {
 			} finally {
 				StreamUtils.closeQuietly(reader);
 			}
-
+			
 			regions.sort(indexComparator);
 		}
-
+		
 		public Array<Page> getPages() {
 			return pages;
 		}
-
+		
 		public Array<Region> getRegions() {
 			return regions;
 		}
 	}
-
+	
 	/** Creates an empty atlas to which regions can be added. */
 	public TextureAtlas() {
 	}
-
+	
 	/**
 	 * Loads the specified pack file using {@link FileType#Internal}, using the
 	 * parent directory of the pack file to find the page images.
@@ -217,7 +217,7 @@ public class TextureAtlas implements Disposable {
 	public TextureAtlas(String internalPackFile) {
 		this(Gdx.files.internal(internalPackFile));
 	}
-
+	
 	/**
 	 * Loads the specified pack file, using the parent directory of the pack file to
 	 * find the page images.
@@ -225,7 +225,7 @@ public class TextureAtlas implements Disposable {
 	public TextureAtlas(FileHandle packFile) {
 		this(packFile, packFile.parent());
 	}
-
+	
 	/**
 	 * @param flip If true, all regions loaded will be flipped for use with a
 	 *             perspective where 0,0 is the upper left corner.
@@ -234,11 +234,11 @@ public class TextureAtlas implements Disposable {
 	public TextureAtlas(FileHandle packFile, boolean flip) {
 		this(packFile, packFile.parent(), flip);
 	}
-
+	
 	public TextureAtlas(FileHandle packFile, FileHandle imagesDir) {
 		this(packFile, imagesDir, false);
 	}
-
+	
 	/**
 	 * @param flip If true, all regions loaded will be flipped for use with a
 	 *             perspective where 0,0 is the upper left corner.
@@ -246,13 +246,13 @@ public class TextureAtlas implements Disposable {
 	public TextureAtlas(FileHandle packFile, FileHandle imagesDir, boolean flip) {
 		this(new TextureAtlasData(packFile, imagesDir, flip));
 	}
-
+	
 	/** @param data May be null. */
 	public TextureAtlas(TextureAtlasData data) {
 		if (data != null)
 			load(data);
 	}
-
+	
 	private void load(TextureAtlasData data) {
 		ObjectMap<Page, Texture> pageToTexture = new ObjectMap<>();
 		for (Page page : data.pages) {
@@ -269,7 +269,7 @@ public class TextureAtlas implements Disposable {
 			textures.add(texture);
 			pageToTexture.put(page, texture);
 		}
-
+		
 		for (Region region : data.regions) {
 			int width = region.width;
 			int height = region.height;
@@ -289,7 +289,7 @@ public class TextureAtlas implements Disposable {
 			regions.add(atlasRegion);
 		}
 	}
-
+	
 	/**
 	 * Adds a region to the atlas. The specified texture will be disposed when the
 	 * atlas is disposed.
@@ -304,7 +304,7 @@ public class TextureAtlas implements Disposable {
 		regions.add(region);
 		return region;
 	}
-
+	
 	/**
 	 * Adds a region to the atlas. The texture for the specified region will be
 	 * disposed when the atlas is disposed.
@@ -313,12 +313,12 @@ public class TextureAtlas implements Disposable {
 		return addRegion(name, textureRegion.texture, textureRegion.getRegionX(), textureRegion.getRegionY(),
 				textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
 	}
-
+	
 	/** Returns all regions in the atlas. */
 	public Array<AtlasRegion> getRegions() {
 		return regions;
 	}
-
+	
 	/**
 	 * Returns the first region found with the specified name. This method uses
 	 * string comparison to find the region, so the result should be cached rather
@@ -332,7 +332,7 @@ public class TextureAtlas implements Disposable {
 				return regions.get(i);
 		return null;
 	}
-
+	
 	/**
 	 * Returns the first region found with the specified name and index. This method
 	 * uses string comparison to find the region, so the result should be cached
@@ -351,7 +351,7 @@ public class TextureAtlas implements Disposable {
 		}
 		return null;
 	}
-
+	
 	/**
 	 * Returns all regions with the specified name, ordered by smallest to largest
 	 * {@link AtlasRegion#index index}. This method uses string comparison to find
@@ -367,7 +367,7 @@ public class TextureAtlas implements Disposable {
 		}
 		return matched;
 	}
-
+	
 	/**
 	 * Returns all regions in the atlas as sprites. This method creates a new sprite
 	 * for each region, so the result should be stored rather than calling this
@@ -381,7 +381,7 @@ public class TextureAtlas implements Disposable {
 			sprites.add(newSprite(regions.get(i)));
 		return sprites;
 	}
-
+	
 	/**
 	 * Returns the first region found with the specified name as a sprite. If
 	 * whitespace was stripped from the region when it was packed, the sprite is
@@ -397,7 +397,7 @@ public class TextureAtlas implements Disposable {
 				return newSprite(regions.get(i));
 		return null;
 	}
-
+	
 	/**
 	 * Returns the first region found with the specified name and index as a sprite.
 	 * This method uses string comparison to find the region and constructs a new
@@ -418,7 +418,7 @@ public class TextureAtlas implements Disposable {
 		}
 		return null;
 	}
-
+	
 	/**
 	 * Returns all regions with the specified name as sprites, ordered by smallest
 	 * to largest {@link AtlasRegion#index index}. This method uses string
@@ -436,7 +436,7 @@ public class TextureAtlas implements Disposable {
 		}
 		return matched;
 	}
-
+	
 	private Sprite newSprite(AtlasRegion region) {
 		if (region.packedWidth == region.originalWidth && region.packedHeight == region.originalHeight) {
 			if (region.rotate) {
@@ -449,7 +449,7 @@ public class TextureAtlas implements Disposable {
 		}
 		return new AtlasSprite(region);
 	}
-
+	
 	/**
 	 * Returns the first region found with the specified name as a
 	 * {@link NinePatch}. The region must have been packed with ninepatch splits.
@@ -474,12 +474,12 @@ public class TextureAtlas implements Disposable {
 		}
 		return null;
 	}
-
+	
 	/** @return the textures of the pages, unordered */
 	public ObjectSet<Texture> getTextures() {
 		return textures;
 	}
-
+	
 	/**
 	 * Releases all resources associated with this TextureAtlas instance. This
 	 * releases all the textures backing all TextureRegions and Sprites, which
@@ -491,7 +491,7 @@ public class TextureAtlas implements Disposable {
 			texture.dispose();
 		textures.clear();
 	}
-
+	
 	static final Comparator<Region> indexComparator = (region1, region2) -> {
 		int i1 = region1.index;
 		if (i1 == -1)
@@ -501,7 +501,7 @@ public class TextureAtlas implements Disposable {
 			i2 = Integer.MAX_VALUE;
 		return i1 - i2;
 	};
-
+	
 	static String readValue(BufferedReader reader) throws IOException {
 		String line = reader.readLine();
 		int colon = line.indexOf(':');
@@ -509,7 +509,7 @@ public class TextureAtlas implements Disposable {
 			throw new GdxRuntimeException("Invalid line: " + line);
 		return line.substring(colon + 1).trim();
 	}
-
+	
 	/** Returns the number of tuple values read (1, 2 or 4). */
 	static int readTuple(BufferedReader reader) throws IOException {
 		String line = reader.readLine();
@@ -527,7 +527,7 @@ public class TextureAtlas implements Disposable {
 		tuple[i] = line.substring(lastMatch).trim();
 		return i + 1;
 	}
-
+	
 	/**
 	 * Describes the region of a packed image and provides information about the
 	 * original image before it was packed.
@@ -543,55 +543,55 @@ public class TextureAtlas implements Disposable {
 		 * @see TextureAtlas#findRegions(String)
 		 */
 		public int index;
-
+		
 		/**
 		 * The name of the original image file, up to the first underscore. Underscores
 		 * denote special instructions to the texture packer.
 		 */
 		public String name;
-
+		
 		/**
 		 * The offset from the left of the original image to the left of the packed
 		 * image, after whitespace was removed for packing.
 		 */
 		public float offsetX;
-
+		
 		/**
 		 * The offset from the bottom of the original image to the bottom of the packed
 		 * image, after whitespace was removed for packing.
 		 */
 		public float offsetY;
-
+		
 		/** The width of the image, after whitespace was removed for packing. */
 		public int packedWidth;
-
+		
 		/** The height of the image, after whitespace was removed for packing. */
 		public int packedHeight;
-
+		
 		/**
 		 * The width of the image, before whitespace was removed and rotation was
 		 * applied for packing.
 		 */
 		public int originalWidth;
-
+		
 		/** The height of the image, before whitespace was removed for packing. */
 		public int originalHeight;
-
+		
 		/** If true, the region has been rotated 90 degrees counter clockwise. */
 		public boolean rotate;
-
+		
 		/**
 		 * The ninepatch splits, or null if not a ninepatch. Has 4 elements: left,
 		 * right, top, bottom.
 		 */
 		public int[] splits;
-
+		
 		/**
 		 * The ninepatch pads, or null if not a ninepatch or the has no padding. Has 4
 		 * elements: left, right, top, bottom.
 		 */
 		public int[] pads;
-
+		
 		public AtlasRegion(Texture texture, int x, int y, int width, int height) {
 			super(texture, x, y, width, height);
 			originalWidth = width;
@@ -599,7 +599,7 @@ public class TextureAtlas implements Disposable {
 			packedWidth = width;
 			packedHeight = height;
 		}
-
+		
 		public AtlasRegion(AtlasRegion region) {
 			setRegion(region);
 			index = region.index;
@@ -613,7 +613,7 @@ public class TextureAtlas implements Disposable {
 			rotate = region.rotate;
 			splits = region.splits;
 		}
-
+		
 		@Override
 		/**
 		 * Flips the region, adjusting the offset so the image appears to be flip as if
@@ -626,7 +626,7 @@ public class TextureAtlas implements Disposable {
 			if (y)
 				offsetY = originalHeight - offsetY - getRotatedPackedHeight();
 		}
-
+		
 		/**
 		 * Returns the packed width considering the rotate value, if it is true then it
 		 * returns the packedHeight, otherwise it returns the packedWidth.
@@ -634,7 +634,7 @@ public class TextureAtlas implements Disposable {
 		public float getRotatedPackedWidth() {
 			return rotate ? packedHeight : packedWidth;
 		}
-
+		
 		/**
 		 * Returns the packed height considering the rotate value, if it is true then it
 		 * returns the packedWidth, otherwise it returns the packedHeight.
@@ -642,13 +642,13 @@ public class TextureAtlas implements Disposable {
 		public float getRotatedPackedHeight() {
 			return rotate ? packedWidth : packedHeight;
 		}
-
+		
 		@Override
 		public String toString() {
 			return name;
 		}
 	}
-
+	
 	/**
 	 * A sprite that, if whitespace was stripped from the region when it was packed,
 	 * is automatically positioned as if whitespace had not been stripped.
@@ -656,7 +656,7 @@ public class TextureAtlas implements Disposable {
 	static public class AtlasSprite extends Sprite {
 		final AtlasRegion region;
 		float originalOffsetX, originalOffsetY;
-
+		
 		public AtlasSprite(AtlasRegion region) {
 			this.region = new AtlasRegion(region);
 			originalOffsetX = region.offsetX;
@@ -672,29 +672,29 @@ public class TextureAtlas implements Disposable {
 				super.setBounds(region.offsetX, region.offsetY, width, height);
 			setColor(1, 1, 1, 1);
 		}
-
+		
 		public AtlasSprite(AtlasSprite sprite) {
 			region = sprite.region;
 			this.originalOffsetX = sprite.originalOffsetX;
 			this.originalOffsetY = sprite.originalOffsetY;
 			set(sprite);
 		}
-
+		
 		@Override
 		public void setPosition(float x, float y) {
 			super.setPosition(x + region.offsetX, y + region.offsetY);
 		}
-
+		
 		@Override
 		public void setX(float x) {
 			super.setX(x + region.offsetX);
 		}
-
+		
 		@Override
 		public void setY(float y) {
 			super.setY(y + region.offsetY);
 		}
-
+		
 		@Override
 		public void setBounds(float x, float y, float width, float height) {
 			float widthRatio = width / region.originalWidth;
@@ -706,22 +706,22 @@ public class TextureAtlas implements Disposable {
 			super.setBounds(x + region.offsetX, y + region.offsetY, packedWidth * widthRatio,
 					packedHeight * heightRatio);
 		}
-
+		
 		@Override
 		public void setSize(float width, float height) {
 			setBounds(getX(), getY(), width, height);
 		}
-
+		
 		@Override
 		public void setOrigin(float originX, float originY) {
 			super.setOrigin(originX - region.offsetX, originY - region.offsetY);
 		}
-
+		
 		@Override
 		public void setOriginCenter() {
 			super.setOrigin(width / 2 - region.offsetX, height / 2 - region.offsetY);
 		}
-
+		
 		@Override
 		public void flip(boolean x, boolean y) {
 			// Flip texture.
@@ -729,15 +729,15 @@ public class TextureAtlas implements Disposable {
 				super.flip(y, x);
 			else
 				super.flip(x, y);
-
+			
 			float oldOriginX = getOriginX();
 			float oldOriginY = getOriginY();
 			float oldOffsetX = region.offsetX;
 			float oldOffsetY = region.offsetY;
-
+			
 			float widthRatio = getWidthRatio();
 			float heightRatio = getHeightRatio();
-
+			
 			region.offsetX = originalOffsetX;
 			region.offsetY = originalOffsetY;
 			region.flip(x, y); // Updates x and y offsets.
@@ -745,25 +745,25 @@ public class TextureAtlas implements Disposable {
 			originalOffsetY = region.offsetY;
 			region.offsetX *= widthRatio;
 			region.offsetY *= heightRatio;
-
+			
 			// Update position and origin with new offsets.
 			translate(region.offsetX - oldOffsetX, region.offsetY - oldOffsetY);
 			setOrigin(oldOriginX, oldOriginY);
 		}
-
+		
 		@Override
 		public void rotate90(boolean clockwise) {
 			// Rotate texture.
 			super.rotate90(clockwise);
-
+			
 			float oldOriginX = getOriginX();
 			float oldOriginY = getOriginY();
 			float oldOffsetX = region.offsetX;
 			float oldOffsetY = region.offsetY;
-
+			
 			float widthRatio = getWidthRatio();
 			float heightRatio = getHeightRatio();
-
+			
 			if (clockwise) {
 				region.offsetX = oldOffsetY;
 				region.offsetY = region.originalHeight * heightRatio - oldOffsetX - region.packedWidth * widthRatio;
@@ -771,54 +771,54 @@ public class TextureAtlas implements Disposable {
 				region.offsetX = region.originalWidth * widthRatio - oldOffsetY - region.packedHeight * heightRatio;
 				region.offsetY = oldOffsetX;
 			}
-
+			
 			// Update position and origin with new offsets.
 			translate(region.offsetX - oldOffsetX, region.offsetY - oldOffsetY);
 			setOrigin(oldOriginX, oldOriginY);
 		}
-
+		
 		@Override
 		public float getX() {
 			return super.getX() - region.offsetX;
 		}
-
+		
 		@Override
 		public float getY() {
 			return super.getY() - region.offsetY;
 		}
-
+		
 		@Override
 		public float getOriginX() {
 			return super.getOriginX() + region.offsetX;
 		}
-
+		
 		@Override
 		public float getOriginY() {
 			return super.getOriginY() + region.offsetY;
 		}
-
+		
 		@Override
 		public float getWidth() {
 			return super.getWidth() / region.getRotatedPackedWidth() * region.originalWidth;
 		}
-
+		
 		@Override
 		public float getHeight() {
 			return super.getHeight() / region.getRotatedPackedHeight() * region.originalHeight;
 		}
-
+		
 		public float getWidthRatio() {
 			return super.getWidth() / region.getRotatedPackedWidth();
 		}
-
+		
 		public float getHeightRatio() {
 			return super.getHeight() / region.getRotatedPackedHeight();
 		}
-
+		
 		public AtlasRegion getAtlasRegion() {
 			return region;
 		}
-
+		
 		@Override
 		public String toString() {
 			return region.toString();

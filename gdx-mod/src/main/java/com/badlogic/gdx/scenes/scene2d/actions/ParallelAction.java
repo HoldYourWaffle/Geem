@@ -29,32 +29,32 @@ import com.badlogic.gdx.utils.Pool;
 public class ParallelAction extends Action {
 	Array<Action> actions = new Array(4);
 	private boolean complete;
-
+	
 	public ParallelAction() {
 	}
-
+	
 	public ParallelAction(Action action1) {
 		addAction(action1);
 	}
-
+	
 	public ParallelAction(Action action1, Action action2) {
 		addAction(action1);
 		addAction(action2);
 	}
-
+	
 	public ParallelAction(Action action1, Action action2, Action action3) {
 		addAction(action1);
 		addAction(action2);
 		addAction(action3);
 	}
-
+	
 	public ParallelAction(Action action1, Action action2, Action action3, Action action4) {
 		addAction(action1);
 		addAction(action2);
 		addAction(action3);
 		addAction(action4);
 	}
-
+	
 	public ParallelAction(Action action1, Action action2, Action action3, Action action4, Action action5) {
 		addAction(action1);
 		addAction(action2);
@@ -62,7 +62,7 @@ public class ParallelAction extends Action {
 		addAction(action4);
 		addAction(action5);
 	}
-
+	
 	@Override
 	public boolean act(float delta) {
 		if (complete)
@@ -84,7 +84,7 @@ public class ParallelAction extends Action {
 			setPool(pool);
 		}
 	}
-
+	
 	@Override
 	public void restart() {
 		complete = false;
@@ -92,19 +92,19 @@ public class ParallelAction extends Action {
 		for (int i = 0, n = actions.size; i < n; i++)
 			actions.get(i).restart();
 	}
-
+	
 	@Override
 	public void reset() {
 		super.reset();
 		actions.clear();
 	}
-
+	
 	public void addAction(Action action) {
 		actions.add(action);
 		if (actor != null)
 			action.setActor(actor);
 	}
-
+	
 	@Override
 	public void setActor(Actor actor) {
 		Array<Action> actions = this.actions;
@@ -112,11 +112,11 @@ public class ParallelAction extends Action {
 			actions.get(i).setActor(actor);
 		super.setActor(actor);
 	}
-
+	
 	public Array<Action> getActions() {
 		return actions;
 	}
-
+	
 	@Override
 	public String toString() {
 		StringBuilder buffer = new StringBuilder(64);

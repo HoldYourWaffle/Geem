@@ -27,13 +27,13 @@ import com.badlogic.gdx.math.Vector3;
  */
 public class Segment implements Serializable {
 	private static final long serialVersionUID = 2739667069736519602L;
-
+	
 	/** the starting position **/
 	public final Vector3 a = new Vector3();
-
+	
 	/** the ending position **/
 	public final Vector3 b = new Vector3();
-
+	
 	/**
 	 * Constructs a new Segment from the two points given.
 	 * 
@@ -44,7 +44,7 @@ public class Segment implements Serializable {
 		this.a.set(a);
 		this.b.set(b);
 	}
-
+	
 	/**
 	 * Constructs a new Segment from the two points given.
 	 * 
@@ -59,15 +59,15 @@ public class Segment implements Serializable {
 		this.a.set(aX, aY, aZ);
 		this.b.set(bX, bY, bZ);
 	}
-
+	
 	public float len() {
 		return a.dst(b);
 	}
-
+	
 	public float len2() {
 		return a.dst2(b);
 	}
-
+	
 	@Override
 	public boolean equals(Object o) {
 		if (o == this)
@@ -77,7 +77,7 @@ public class Segment implements Serializable {
 		Segment s = (Segment) o;
 		return this.a.equals(s.a) && this.b.equals(s.b);
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 71;

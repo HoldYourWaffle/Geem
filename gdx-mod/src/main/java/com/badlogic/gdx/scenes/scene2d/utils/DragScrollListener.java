@@ -43,16 +43,16 @@ import com.badlogic.gdx.utils.Timer.Task;
  */
 public class DragScrollListener extends DragListener {
 	static final Vector2 tmpCoords = new Vector2();
-
+	
 	private ScrollPane scroll;
 	private Task scrollUp, scrollDown;
 	Interpolation interpolation = Interpolation.exp5In;
 	float minSpeed = 15, maxSpeed = 75, tickSecs = 0.05f;
 	long startTime, rampTime = 1750;
-
+	
 	public DragScrollListener(final ScrollPane scroll) {
 		this.scroll = scroll;
-
+		
 		scrollUp = new Task() {
 			@Override
 			public void run() {
@@ -66,19 +66,19 @@ public class DragScrollListener extends DragListener {
 			}
 		};
 	}
-
+	
 	public void setup(float minSpeedPixels, float maxSpeedPixels, float tickSecs, float rampSecs) {
 		this.minSpeed = minSpeedPixels;
 		this.maxSpeed = maxSpeedPixels;
 		this.tickSecs = tickSecs;
 		rampTime = (long) (rampSecs * 1000);
 	}
-
+	
 	float getScrollPixels() {
 		return interpolation.apply(minSpeed, maxSpeed,
 				Math.min(1, (System.currentTimeMillis() - startTime) / (float) rampTime));
 	}
-
+	
 	@Override
 	public void drag(InputEvent event, float x, float y, int pointer) {
 		event.getListenerActor().localToActorCoordinates(scroll, tmpCoords.set(x, y));
@@ -102,13 +102,13 @@ public class DragScrollListener extends DragListener {
 		scrollUp.cancel();
 		scrollDown.cancel();
 	}
-
+	
 	@Override
 	public void dragStop(InputEvent event, float x, float y, int pointer) {
 		scrollUp.cancel();
 		scrollDown.cancel();
 	}
-
+	
 	protected void scroll(float y) {
 		scroll.setScrollY(y);
 	}

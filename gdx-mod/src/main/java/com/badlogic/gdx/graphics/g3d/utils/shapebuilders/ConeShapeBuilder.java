@@ -30,19 +30,19 @@ public class ConeShapeBuilder extends BaseShapeBuilder {
 	public static void build(MeshPartBuilder builder, float width, float height, float depth, int divisions) {
 		build(builder, width, height, depth, divisions, 0, 360);
 	}
-
+	
 	public static void build(MeshPartBuilder builder, float width, float height, float depth, int divisions,
 			float angleFrom, float angleTo) {
 		build(builder, width, height, depth, divisions, angleFrom, angleTo, true);
 	}
-
+	
 	public static void build(MeshPartBuilder builder, float width, float height, float depth, int divisions,
 			float angleFrom, float angleTo, boolean close) {
 		// FIXME create better cylinder method (- axis on which to create the cone
 		// (matrix?))
 		builder.ensureVertices(divisions + 2);
 		builder.ensureTriangleIndices(divisions);
-
+		
 		final float hw = width * 0.5f;
 		final float hh = height * 0.5f;
 		final float hd = depth * 0.5f;

@@ -65,12 +65,12 @@ public class Node {
 	 * node, calculated via {@link #calculateWorldTransform()}
 	 **/
 	public final Matrix4 globalTransform = new Matrix4();
-
+	
 	public Array<NodePart> parts = new Array<>(2);
-
+	
 	protected Node parent;
 	private final Array<Node> children = new Array<>(2);
-
+	
 	/**
 	 * Calculates the local transform based on the translation, scale and rotation
 	 * 
@@ -81,7 +81,7 @@ public class Node {
 			localTransform.set(translation, rotation, scale);
 		return localTransform;
 	}
-
+	
 	/**
 	 * Calculates the world transform; the product of local transform and the
 	 * parent's world transform.
@@ -95,7 +95,7 @@ public class Node {
 			globalTransform.set(localTransform);
 		return globalTransform;
 	}
-
+	
 	/**
 	 * Calculates the local and world transform of this node and optionally all its
 	 * children.
@@ -106,14 +106,14 @@ public class Node {
 	public void calculateTransforms(boolean recursive) {
 		calculateLocalTransform();
 		calculateWorldTransform();
-
+		
 		if (recursive) {
 			for (Node child : children) {
 				child.calculateTransforms(true);
 			}
 		}
 	}
-
+	
 	public void calculateBoneTransforms(boolean recursive) {
 		for (final NodePart part : parts) {
 			if (part.invBoneBindTransforms == null || part.bones == null
@@ -130,7 +130,7 @@ public class Node {
 			}
 		}
 	}
-
+	
 	/**
 	 * Calculate the bounding box of this Node. This is a potential slow operation,
 	 * it is advised to cache the result.
@@ -139,7 +139,7 @@ public class Node {
 		out.inf();
 		return extendBoundingBox(out);
 	}
-
+	
 	/**
 	 * Calculate the bounding box of this Node. This is a potential slow operation,
 	 * it is advised to cache the result.
@@ -148,7 +148,7 @@ public class Node {
 		out.inf();
 		return extendBoundingBox(out, transform);
 	}
-
+	
 	/**
 	 * Extends the bounding box with the bounds of this Node. This is a potential
 	 * slow operation, it is advised to cache the result.
@@ -156,7 +156,7 @@ public class Node {
 	public BoundingBox extendBoundingBox(final BoundingBox out) {
 		return extendBoundingBox(out, true);
 	}
-
+	
 	/**
 	 * Extends the bounding box with the bounds of this Node. This is a potential
 	 * slow operation, it is advised to cache the result.
@@ -178,7 +178,7 @@ public class Node {
 			children.get(i).extendBoundingBox(out);
 		return out;
 	}
-
+	
 	/**
 	 * Adds this node as child to specified parent Node, synonym for:
 	 * <code>parent.addChild(this)</code>
@@ -188,7 +188,7 @@ public class Node {
 	public <T extends Node> void attachTo(T parent) {
 		parent.addChild(this);
 	}
-
+	
 	/**
 	 * Removes this node from its current parent, if any. Short for:
 	 * <code>this.getParent().removeChild(this)</code>
@@ -199,12 +199,12 @@ public class Node {
 			parent = null;
 		}
 	}
-
+	
 	/** @return whether this Node has one or more children (true) or not (false) */
 	public boolean hasChildren() {
 		return children != null && children.size > 0;
 	}
-
+	
 	/**
 	 * @return The number of child nodes that this Node current contains.
 	 * @see #getChild(int)
@@ -212,7 +212,7 @@ public class Node {
 	public int getChildCount() {
 		return children.size;
 	}
-
+	
 	/**
 	 * @param index The zero-based index of the child node to get, must be: 0 <=
 	 *              index < {@link #getChildCount()}.
@@ -221,7 +221,7 @@ public class Node {
 	public Node getChild(final int index) {
 		return children.get(index);
 	}
-
+	
 	/**
 	 * @param recursive false to fetch a root child only, true to search the entire
 	 *                  node tree for the specified node.
@@ -230,7 +230,7 @@ public class Node {
 	public Node getChild(final String id, boolean recursive, boolean ignoreCase) {
 		return getNode(children, id, recursive, ignoreCase);
 	}
-
+	
 	/**
 	 * Adds the specified node as the currently last child of this node. If the node
 	 * is already a child of another node, then it is removed from its current
@@ -242,7 +242,7 @@ public class Node {
 	public <T extends Node> int addChild(final T child) {
 		return insertChild(-1, child);
 	}
-
+	
 	/**
 	 * Adds the specified nodes as the currently last child of this node. If the
 	 * node is already a child of another node, then it is removed from its current
@@ -254,7 +254,7 @@ public class Node {
 	public <T extends Node> int addChildren(final Iterable<T> nodes) {
 		return insertChildren(-1, nodes);
 	}
-
+	
 	/**
 	 * Insert the specified node as child of this node at the specified index. If
 	 * the node is already a child of another node, then it is removed from its
@@ -282,7 +282,7 @@ public class Node {
 		child.parent = this;
 		return index;
 	}
-
+	
 	/**
 	 * Insert the specified nodes as children of this node at the specified index.
 	 * If the node is already a child of another node, then it is removed from its
@@ -302,7 +302,7 @@ public class Node {
 			insertChild(i++, child);
 		return index;
 	}
-
+	
 	/**
 	 * Removes the specified node as child of this node. On success, the child node
 	 * will be not attached to any parent node (its {@link #getParent()} method will
@@ -319,17 +319,17 @@ public class Node {
 		child.parent = null;
 		return true;
 	}
-
+	
 	/** @return An {@link Iterable} to all child nodes that this node contains. */
 	public Iterable<Node> getChildren() {
 		return children;
 	}
-
+	
 	/** @return The parent node that holds this node as child node, may be null. */
 	public Node getParent() {
 		return parent;
 	}
-
+	
 	/**
 	 * @return Whether (true) is this Node is a child node of another node or not
 	 *         (false).
@@ -337,7 +337,7 @@ public class Node {
 	public boolean hasParent() {
 		return parent != null;
 	}
-
+	
 	/**
 	 * Creates a nested copy of this Node, any child nodes are copied using this
 	 * method as well. The {@link #parts} are copied using the
@@ -352,7 +352,7 @@ public class Node {
 	public Node copy() {
 		return new Node().set(this);
 	}
-
+	
 	/**
 	 * Creates a nested copy of this Node, any child nodes are copied using the
 	 * {@link #copy()} method. This will detach this node from its parent, but does
@@ -387,7 +387,7 @@ public class Node {
 		}
 		return this;
 	}
-
+	
 	/**
 	 * Helper method to recursive fetch a node from an array
 	 * 

@@ -55,10 +55,10 @@ public interface Input {
 	 */
 	static public interface TextInputListener {
 		public void input(String text);
-
+		
 		public void canceled();
 	}
-
+	
 	/**
 	 * Mouse buttons.
 	 * 
@@ -71,7 +71,7 @@ public interface Input {
 		public static final int BACK = 3;
 		public static final int FORWARD = 4;
 	}
-
+	
 	/**
 	 * Keys.
 	 * 
@@ -210,7 +210,7 @@ public interface Input {
 		public static final int BUTTON_START = 108;
 		public static final int BUTTON_SELECT = 109;
 		public static final int BUTTON_MODE = 110;
-
+		
 		public static final int NUMPAD_0 = 144;
 		public static final int NUMPAD_1 = 145;
 		public static final int NUMPAD_2 = 146;
@@ -221,7 +221,7 @@ public interface Input {
 		public static final int NUMPAD_7 = 151;
 		public static final int NUMPAD_8 = 152;
 		public static final int NUMPAD_9 = 153;
-
+		
 // public static final int BACKTICK = 0;
 // public static final int TILDE = 0;
 // public static final int UNDERSCORE = 0;
@@ -230,7 +230,7 @@ public interface Input {
 // public static final int PIPE = 0;
 // public static final int EXCLAMATION = 0;
 // public static final int QUESTIONMARK = 0;
-
+		
 // ` | VK_BACKTICK
 // ~ | VK_TILDE
 // : | VK_COLON
@@ -253,7 +253,7 @@ public interface Input {
 		public static final int F10 = 253;
 		public static final int F11 = 254;
 		public static final int F12 = 255;
-
+		
 		/**
 		 * @return a human readable representation of the keycode. The returned value
 		 *         can be used in {@link Input.Keys#valueOf(String)}
@@ -552,9 +552,9 @@ public interface Input {
 				return null;
 			}
 		}
-
+		
 		private static ObjectIntMap<String> keyNames;
-
+		
 		/**
 		 * @param keyname the keyname returned by the {@link Keys#toString(int)} method
 		 * @return the int keycode
@@ -564,7 +564,7 @@ public interface Input {
 				initializeKeyNames();
 			return keyNames.get(keyname, -1);
 		}
-
+		
 		/** lazily intialized in {@link Keys#valueOf(String)} */
 		private static void initializeKeyNames() {
 			keyNames = new ObjectIntMap<>();
@@ -575,7 +575,7 @@ public interface Input {
 			}
 		}
 	}
-
+	
 	/**
 	 * Enumeration of potentially available peripherals. Use with
 	 * {@link Input#isPeripheralAvailable(Peripheral)}.
@@ -586,41 +586,41 @@ public interface Input {
 		HardwareKeyboard, OnscreenKeyboard, MultitouchScreen, Accelerometer, Compass, Vibrator, Gyroscope,
 		RotationVector
 	}
-
+	
 	/**
 	 * @return The acceleration force in m/s^2 applied to the device in the X axis,
 	 *         including the force of gravity
 	 */
 	public float getAccelerometerX();
-
+	
 	/**
 	 * @return The acceleration force in m/s^2 applied to the device in the Y axis,
 	 *         including the force of gravity
 	 */
 	public float getAccelerometerY();
-
+	
 	/**
 	 * @return The acceleration force in m/s^2 applied to the device in the Z axis,
 	 *         including the force of gravity
 	 */
 	public float getAccelerometerZ();
-
+	
 	/** @return The rate of rotation in rad/s around the X axis */
 	public float getGyroscopeX();
-
+	
 	/** @return The rate of rotation in rad/s around the Y axis */
 	public float getGyroscopeY();
-
+	
 	/** @return The rate of rotation in rad/s around the Z axis */
 	public float getGyroscopeZ();
-
+	
 	/**
 	 * @return The x coordinate of the last touch on touch screen devices and the
 	 *         current mouse position on desktop for the first pointer in screen
 	 *         coordinates. The screen origin is the top left corner.
 	 */
 	public int getX();
-
+	
 	/**
 	 * Returns the x coordinate in screen coordinates of the given pointer. Pointers
 	 * are indexed from 0 to n. The pointer id identifies the order in which the
@@ -633,26 +633,26 @@ public interface Input {
 	 * @return the x coordinate
 	 */
 	public int getX(int pointer);
-
+	
 	/**
 	 * @return the different between the current pointer location and the last
 	 *         pointer location on the x-axis.
 	 */
 	public int getDeltaX();
-
+	
 	/**
 	 * @return the different between the current pointer location and the last
 	 *         pointer location on the x-axis.
 	 */
 	public int getDeltaX(int pointer);
-
+	
 	/**
 	 * @return The y coordinate of the last touch on touch screen devices and the
 	 *         current mouse position on desktop for the first pointer in screen
 	 *         coordinates. The screen origin is the top left corner.
 	 */
 	public int getY();
-
+	
 	/**
 	 * Returns the y coordinate in screen coordinates of the given pointer. Pointers
 	 * are indexed from 0 to n. The pointer id identifies the order in which the
@@ -665,25 +665,25 @@ public interface Input {
 	 * @return the y coordinate
 	 */
 	public int getY(int pointer);
-
+	
 	/**
 	 * @return the different between the current pointer location and the last
 	 *         pointer location on the y-axis.
 	 */
 	public int getDeltaY();
-
+	
 	/**
 	 * @return the different between the current pointer location and the last
 	 *         pointer location on the y-axis.
 	 */
 	public int getDeltaY(int pointer);
-
+	
 	/** @return whether the screen is currently touched. */
 	public boolean isTouched();
-
+	
 	/** @return whether a new touch down event just occurred. */
 	public boolean justTouched();
-
+	
 	/**
 	 * Whether the screen is currently touched by the pointer with the given index.
 	 * Pointers are indexed from 0 to n. The pointer id identifies the order in
@@ -696,7 +696,7 @@ public interface Input {
 	 * @return whether the screen is touched by the pointer
 	 */
 	public boolean isTouched(int pointer);
-
+	
 	/**
 	 * Whether a given button is pressed or not. Button constants can be found in
 	 * {@link Buttons}. On Android only the Buttons#LEFT constant is meaningful
@@ -706,7 +706,7 @@ public interface Input {
 	 * @return whether the button is down or not.
 	 */
 	public boolean isButtonPressed(int button);
-
+	
 	/**
 	 * Returns whether the key is pressed.
 	 * 
@@ -714,7 +714,7 @@ public interface Input {
 	 * @return true or false.
 	 */
 	public boolean isKeyPressed(int key);
-
+	
 	/**
 	 * Returns whether the key has just been pressed.
 	 * 
@@ -722,7 +722,7 @@ public interface Input {
 	 * @return true or false.
 	 */
 	public boolean isKeyJustPressed(int key);
-
+	
 	/**
 	 * System dependent method to input a string of text. A dialog box will be
 	 * created with the given title and the given text as a message for the user.
@@ -734,14 +734,14 @@ public interface Input {
 	 * @param text     The message presented to the user.
 	 */
 	public void getTextInput(TextInputListener listener, String title, String text, String hint);
-
+	
 	/**
 	 * Sets the on-screen keyboard visible if available.
 	 * 
 	 * @param visible visible or not
 	 */
 	public void setOnscreenKeyboardVisible(boolean visible);
-
+	
 	/**
 	 * Vibrates for the given amount of time. Note that you'll need the permission
 	 * <code> <uses-permission android:name="android.permission.VIBRATE" /></code>
@@ -750,7 +750,7 @@ public interface Input {
 	 * @param milliseconds the number of milliseconds to vibrate.
 	 */
 	public void vibrate(int milliseconds);
-
+	
 	/**
 	 * Vibrate with a given pattern. Pass in an array of ints that are the times at
 	 * which to turn on or off the vibrator. The first one is how long to wait
@@ -762,10 +762,10 @@ public interface Input {
 	 *                want to repeat.
 	 */
 	public void vibrate(long[] pattern, int repeat);
-
+	
 	/** Stops the vibrator */
 	public void cancelVibrate();
-
+	
 	/**
 	 * The azimuth is the angle of the device's orientation around the z-axis. The
 	 * positive z-axis points towards the earths center.
@@ -776,7 +776,7 @@ public interface Input {
 	 * @return the azimuth in degrees
 	 */
 	public float getAzimuth();
-
+	
 	/**
 	 * The pitch is the angle of the device's orientation around the x-axis. The
 	 * positive x-axis roughly points to the west and is orthogonal to the z- and
@@ -788,7 +788,7 @@ public interface Input {
 	 * @return the pitch in degrees
 	 */
 	public float getPitch();
-
+	
 	/**
 	 * The roll is the angle of the device's orientation around the y-axis. The
 	 * positive y-axis points to the magnetic north pole of the earth.
@@ -799,7 +799,7 @@ public interface Input {
 	 * @return the roll in degrees
 	 */
 	public float getRoll();
-
+	
 	/**
 	 * Returns the rotation matrix describing the devices rotation as per <a href=
 	 * "http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[],
@@ -810,13 +810,13 @@ public interface Input {
 	 * @param matrix
 	 */
 	public void getRotationMatrix(float[] matrix);
-
+	
 	/**
 	 * @return the time of the event currently reported to the
 	 *         {@link InputProcessor}.
 	 */
 	public long getCurrentEventTime();
-
+	
 	/**
 	 * Sets whether the BACK button on Android should be caught. This will prevent
 	 * the app from being paused. Will have no effect on the desktop.
@@ -824,10 +824,10 @@ public interface Input {
 	 * @param catchBack whether to catch the back button
 	 */
 	public void setCatchBackKey(boolean catchBack);
-
+	
 	/** @return whether the back button is currently being caught */
 	public boolean isCatchBackKey();
-
+	
 	/**
 	 * Sets whether the MENU button on Android should be caught. This will prevent
 	 * the onscreen keyboard to show up. Will have no effect on the desktop.
@@ -835,10 +835,10 @@ public interface Input {
 	 * @param catchMenu whether to catch the menu button
 	 */
 	public void setCatchMenuKey(boolean catchMenu);
-
+	
 	/** @return whether the menu button is currently being caught */
 	public boolean isCatchMenuKey();
-
+	
 	/**
 	 * Sets the {@link InputProcessor} that will receive all touch and key input
 	 * events. It will be called before the {@link ApplicationListener#render()}
@@ -847,10 +847,10 @@ public interface Input {
 	 * @param processor the InputProcessor
 	 */
 	public void setInputProcessor(InputProcessor processor);
-
+	
 	/** @return the currently set {@link InputProcessor} or null. */
 	public InputProcessor getInputProcessor();
-
+	
 	/**
 	 * Queries whether a {@link Peripheral} is currently available. In case of
 	 * Android and the {@link Peripheral#HardwareKeyboard} this returns the whether
@@ -860,19 +860,19 @@ public interface Input {
 	 * @return whether the peripheral is available or not.
 	 */
 	public boolean isPeripheralAvailable(Peripheral peripheral);
-
+	
 	/**
 	 * @return the rotation of the device with respect to its native orientation.
 	 */
 	public int getRotation();
-
+	
 	/** @return the native orientation of the device. */
 	public Orientation getNativeOrientation();
-
+	
 	public enum Orientation {
 		Landscape, Portrait
 	}
-
+	
 	/**
 	 * Only viable on the desktop. Will confine the mouse cursor location to the
 	 * window and hide the mouse cursor. X and y coordinates are still reported as
@@ -881,10 +881,10 @@ public interface Input {
 	 * @param catched whether to catch or not to catch the mouse cursor
 	 */
 	public void setCursorCatched(boolean catched);
-
+	
 	/** @return whether the mouse cursor is catched. */
 	public boolean isCursorCatched();
-
+	
 	/**
 	 * Only viable on the desktop. Will set the mouse cursor location to the given
 	 * window coordinates (origin top-left corner).

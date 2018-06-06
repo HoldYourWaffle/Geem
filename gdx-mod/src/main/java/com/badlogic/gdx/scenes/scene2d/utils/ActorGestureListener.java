@@ -33,18 +33,18 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
  */
 public class ActorGestureListener implements EventListener {
 	static final Vector2 tmpCoords = new Vector2(), tmpCoords2 = new Vector2();
-
+	
 	private final GestureDetector detector;
 	InputEvent event;
 	Actor actor, touchDownTarget;
-
+	
 	/**
 	 * @see GestureDetector#GestureDetector(com.badlogic.gdx.input.GestureDetector.GestureListener)
 	 */
 	public ActorGestureListener() {
 		this(20, 0.4f, 1.1f, 0.15f);
 	}
-
+	
 	/**
 	 * @see GestureDetector#GestureDetector(float, float, float, float,
 	 *      com.badlogic.gdx.input.GestureDetector.GestureListener)
@@ -55,27 +55,27 @@ public class ActorGestureListener implements EventListener {
 				new GestureAdapter() {
 					private final Vector2 initialPointer1 = new Vector2(), initialPointer2 = new Vector2();
 					private final Vector2 pointer1 = new Vector2(), pointer2 = new Vector2();
-
+					
 					@Override
 					public boolean tap(float stageX, float stageY, int count, int button) {
 						actor.stageToLocalCoordinates(tmpCoords.set(stageX, stageY));
 						ActorGestureListener.this.tap(event, tmpCoords.x, tmpCoords.y, count, button);
 						return true;
 					}
-
+					
 					@Override
 					public boolean longPress(float stageX, float stageY) {
 						actor.stageToLocalCoordinates(tmpCoords.set(stageX, stageY));
 						return ActorGestureListener.this.longPress(actor, tmpCoords.x, tmpCoords.y);
 					}
-
+					
 					@Override
 					public boolean fling(float velocityX, float velocityY, int button) {
 						stageToLocalAmount(tmpCoords.set(velocityX, velocityY));
 						ActorGestureListener.this.fling(event, tmpCoords.x, tmpCoords.y, button);
 						return true;
 					}
-
+					
 					@Override
 					public boolean pan(float stageX, float stageY, float deltaX, float deltaY) {
 						stageToLocalAmount(tmpCoords.set(deltaX, deltaY));
@@ -85,13 +85,13 @@ public class ActorGestureListener implements EventListener {
 						ActorGestureListener.this.pan(event, tmpCoords.x, tmpCoords.y, deltaX, deltaY);
 						return true;
 					}
-
+					
 					@Override
 					public boolean zoom(float initialDistance, float distance) {
 						ActorGestureListener.this.zoom(event, initialDistance, distance);
 						return true;
 					}
-
+					
 					@Override
 					public boolean pinch(Vector2 stageInitialPointer1, Vector2 stageInitialPointer2,
 							Vector2 stagePointer1, Vector2 stagePointer2) {
@@ -102,20 +102,20 @@ public class ActorGestureListener implements EventListener {
 						ActorGestureListener.this.pinch(event, initialPointer1, initialPointer2, pointer1, pointer2);
 						return true;
 					}
-
+					
 					private void stageToLocalAmount(Vector2 amount) {
 						actor.stageToLocalCoordinates(amount);
 						amount.sub(actor.stageToLocalCoordinates(tmpCoords2.set(0, 0)));
 					}
 				});
 	}
-
+	
 	@Override
 	public boolean handle(Event e) {
 		if (!(e instanceof InputEvent))
 			return false;
 		InputEvent event = (InputEvent) e;
-
+		
 		switch (event.getType()) {
 		case touchDown:
 			actor = event.getListenerActor();
@@ -143,16 +143,16 @@ public class ActorGestureListener implements EventListener {
 		}
 		return false;
 	}
-
+	
 	public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
 	}
-
+	
 	public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 	}
-
+	
 	public void tap(InputEvent event, float x, float y, int count, int button) {
 	}
-
+	
 	/**
 	 * If true is returned, additional gestures will not be triggered. No event is
 	 * provided because this event is triggered by time passing, not by an
@@ -161,25 +161,25 @@ public class ActorGestureListener implements EventListener {
 	public boolean longPress(Actor actor, float x, float y) {
 		return false;
 	}
-
+	
 	public void fling(InputEvent event, float velocityX, float velocityY, int button) {
 	}
-
+	
 	/** The delta is the difference in stage coordinates since the last pan. */
 	public void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
 	}
-
+	
 	public void zoom(InputEvent event, float initialDistance, float distance) {
 	}
-
+	
 	public void pinch(InputEvent event, Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1,
 			Vector2 pointer2) {
 	}
-
+	
 	public GestureDetector getGestureDetector() {
 		return detector;
 	}
-
+	
 	public Actor getTouchDownTarget() {
 		return touchDownTarget;
 	}

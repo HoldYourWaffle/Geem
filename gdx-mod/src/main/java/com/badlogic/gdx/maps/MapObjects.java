@@ -23,14 +23,14 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 
 /** @brief Collection of MapObject instances */
 public class MapObjects implements Iterable<MapObject> {
-
+	
 	private Array<MapObject> objects;
-
+	
 	/** Creates an empty set of MapObject instances */
 	public MapObjects() {
 		objects = new Array<>();
 	}
-
+	
 	/**
 	 * @param index
 	 * @return the MapObject at the specified index
@@ -38,7 +38,7 @@ public class MapObjects implements Iterable<MapObject> {
 	public MapObject get(int index) {
 		return objects.get(index);
 	}
-
+	
 	/**
 	 * @param name
 	 * @return the first object having the specified name, if one exists, otherwise
@@ -53,7 +53,7 @@ public class MapObjects implements Iterable<MapObject> {
 		}
 		return null;
 	}
-
+	
 	/**
 	 * Get the index of the object having the specified name, or -1 if no such
 	 * object exists.
@@ -61,7 +61,7 @@ public class MapObjects implements Iterable<MapObject> {
 	public int getIndex(String name) {
 		return getIndex(get(name));
 	}
-
+	
 	/**
 	 * Get the index of the object in the collection, or -1 if no such object
 	 * exists.
@@ -69,27 +69,27 @@ public class MapObjects implements Iterable<MapObject> {
 	public int getIndex(MapObject object) {
 		return objects.indexOf(object, true);
 	}
-
+	
 	/** @return number of objects in the collection */
 	public int getCount() {
 		return objects.size;
 	}
-
+	
 	/** @param object instance to be added to the collection */
 	public void add(MapObject object) {
 		this.objects.add(object);
 	}
-
+	
 	/** @param index removes MapObject instance at index */
 	public void remove(int index) {
 		objects.removeIndex(index);
 	}
-
+	
 	/** @param object instance to be removed */
 	public void remove(MapObject object) {
 		objects.removeValue(object, true);
 	}
-
+	
 	/**
 	 * @param type class of the objects we want to retrieve
 	 * @return array filled with all the objects in the collection matching type
@@ -97,7 +97,7 @@ public class MapObjects implements Iterable<MapObject> {
 	public <T extends MapObject> Array<T> getByType(Class<T> type) {
 		return getByType(type, new Array<T>());
 	}
-
+	
 	/**
 	 * @param type class of the objects we want to retrieve
 	 * @param fill collection to put the returned objects in
@@ -113,11 +113,11 @@ public class MapObjects implements Iterable<MapObject> {
 		}
 		return fill;
 	}
-
+	
 	/** @return iterator for the objects within the collection */
 	@Override
 	public Iterator<MapObject> iterator() {
 		return objects.iterator();
 	}
-
+	
 }

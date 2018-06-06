@@ -42,22 +42,22 @@ import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 
 public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoader.Parameters> {
-
+	
 	public static class Parameters extends AssetLoaderParameters<TiledMap> {
-
+		
 	}
-
+	
 	private XmlReader xml = new XmlReader();
 	private Element root;
-
+	
 	public TideMapLoader() {
 		super(new InternalFileHandleResolver());
 	}
-
+	
 	public TideMapLoader(FileHandleResolver resolver) {
 		super(resolver);
 	}
-
+	
 	public TiledMap load(String fileName) {
 		try {
 			FileHandle tideFile = resolve(fileName);
@@ -73,9 +73,9 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 		} catch (IOException e) {
 			throw new GdxRuntimeException("Couldn't load tilemap '" + fileName + "'", e);
 		}
-
+		
 	}
-
+	
 	@Override
 	public TiledMap load(AssetManager assetManager, String fileName, FileHandle tideFile, Parameters parameter) {
 		try {
@@ -84,7 +84,7 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 			throw new GdxRuntimeException("Couldn't load tilemap '" + fileName + "'", e);
 		}
 	}
-
+	
 	@Override
 	public Array<AssetDescriptor> getDependencies(String fileName, FileHandle tmxFile, Parameters parameter) {
 		Array<AssetDescriptor> dependencies = new Array<>();
@@ -98,7 +98,7 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 			throw new GdxRuntimeException("Couldn't load tilemap '" + fileName + "'", e);
 		}
 	}
-
+	
 	/**
 	 * Loads the map data, given the XML root element and an {@link ImageResolver}
 	 * used to return the tileset Textures
@@ -124,7 +124,7 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 		}
 		return map;
 	}
-
+	
 	/**
 	 * Loads the tilesets
 	 * 
@@ -142,52 +142,52 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 		}
 		return images;
 	}
-
+	
 	private void loadTileSheet(TiledMap map, Element element, FileHandle tideFile, ImageResolver imageResolver) {
 		if (element.getName().equals("TileSheet")) {
 			String id = element.getAttribute("Id");
 			String description = element.getChildByName("Description").getText();
 			String imageSource = element.getChildByName("ImageSource").getText();
-
+			
 			Element alignment = element.getChildByName("Alignment");
 			String sheetSize = alignment.getAttribute("SheetSize");
 			String tileSize = alignment.getAttribute("TileSize");
 			String margin = alignment.getAttribute("Margin");
 			String spacing = alignment.getAttribute("Spacing");
-
+			
 			String[] sheetSizeParts = sheetSize.split(" x ");
 			int sheetSizeX = Integer.parseInt(sheetSizeParts[0]);
 			int sheetSizeY = Integer.parseInt(sheetSizeParts[1]);
-
+			
 			String[] tileSizeParts = tileSize.split(" x ");
 			int tileSizeX = Integer.parseInt(tileSizeParts[0]);
 			int tileSizeY = Integer.parseInt(tileSizeParts[1]);
-
+			
 			String[] marginParts = margin.split(" x ");
 			int marginX = Integer.parseInt(marginParts[0]);
 			int marginY = Integer.parseInt(marginParts[1]);
-
+			
 			String[] spacingParts = margin.split(" x ");
 			int spacingX = Integer.parseInt(spacingParts[0]);
 			int spacingY = Integer.parseInt(spacingParts[1]);
-
+			
 			FileHandle image = getRelativeFileHandle(tideFile, imageSource);
 			TextureRegion texture = imageResolver.getImage(image.path());
-
+			
 			TiledMapTileSets tilesets = map.getTileSets();
 			int firstgid = 1;
 			for (TiledMapTileSet tileset : tilesets) {
 				firstgid += tileset.size();
 			}
-
+			
 			TiledMapTileSet tileset = new TiledMapTileSet();
 			tileset.setName(id);
 			tileset.getProperties().put("firstgid", firstgid);
 			int gid = firstgid;
-
+			
 			int stopWidth = texture.getRegionWidth() - tileSizeX;
 			int stopHeight = texture.getRegionHeight() - tileSizeY;
-
+			
 			for (int y = marginY; y <= stopHeight; y += tileSizeY + spacingY) {
 				for (int x = marginX; x <= stopWidth; x += tileSizeX + spacingX) {
 					TiledMapTile tile = new StaticTiledMapTile(new TextureRegion(texture, x, y, tileSizeX, tileSizeY));
@@ -195,33 +195,33 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 					tileset.putTile(gid++, tile);
 				}
 			}
-
+			
 			Element properties = element.getChildByName("Properties");
 			if (properties != null) {
 				loadProperties(tileset.getProperties(), properties);
 			}
-
+			
 			tilesets.addTileSet(tileset);
 		}
 	}
-
+	
 	private void loadLayer(TiledMap map, Element element) {
 		if (element.getName().equals("Layer")) {
 			String id = element.getAttribute("Id");
 			String visible = element.getAttribute("Visible");
-
+			
 			Element dimensions = element.getChildByName("Dimensions");
 			String layerSize = dimensions.getAttribute("LayerSize");
 			String tileSize = dimensions.getAttribute("TileSize");
-
+			
 			String[] layerSizeParts = layerSize.split(" x ");
 			int layerSizeX = Integer.parseInt(layerSizeParts[0]);
 			int layerSizeY = Integer.parseInt(layerSizeParts[1]);
-
+			
 			String[] tileSizeParts = tileSize.split(" x ");
 			int tileSizeX = Integer.parseInt(tileSizeParts[0]);
 			int tileSizeY = Integer.parseInt(tileSizeParts[1]);
-
+			
 			TiledMapTileLayer layer = new TiledMapTileLayer(layerSizeX, layerSizeY, tileSizeX, tileSizeY);
 			layer.setName(id);
 			layer.setVisible(visible.equalsIgnoreCase("True"));
@@ -270,23 +270,23 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 					}
 				}
 			}
-
+			
 			Element properties = element.getChildByName("Properties");
 			if (properties != null) {
 				loadProperties(layer.getProperties(), properties);
 			}
-
+			
 			map.getLayers().add(layer);
 		}
 	}
-
+	
 	private void loadProperties(MapProperties properties, Element element) {
 		if (element.getName().equals("Properties")) {
 			for (Element property : element.getChildrenByName("Property")) {
 				String key = property.getAttribute("Key", null);
 				String type = property.getAttribute("Type", null);
 				String value = property.getText();
-
+				
 				if (type.equals("Int32")) {
 					properties.put(key, Integer.parseInt(value));
 				} else if (type.equals("String")) {
@@ -299,7 +299,7 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 			}
 		}
 	}
-
+	
 	private static FileHandle getRelativeFileHandle(FileHandle file, String path) {
 		StringTokenizer tokenizer = new StringTokenizer(path, "\\/");
 		FileHandle result = file.parent();
@@ -313,5 +313,5 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 		}
 		return result;
 	}
-
+	
 }

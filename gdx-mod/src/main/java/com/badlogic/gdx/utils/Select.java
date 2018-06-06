@@ -40,19 +40,19 @@ import java.util.Comparator;
 public class Select {
 	private static Select instance;
 	private QuickSelect quickSelect;
-
+	
 	/** Provided for convenience */
 	public static Select instance() {
 		if (instance == null)
 			instance = new Select();
 		return instance;
 	}
-
+	
 	public <T> T select(T[] items, Comparator<T> comp, int kthLowest, int size) {
 		int idx = selectIndex(items, comp, kthLowest, size);
 		return items[idx];
 	}
-
+	
 	public <T> int selectIndex(T[] items, Comparator<T> comp, int kthLowest, int size) {
 		if (size < 1) {
 			throw new GdxRuntimeException("cannot select from empty array (size < 1)");
@@ -76,7 +76,7 @@ public class Select {
 		}
 		return idx;
 	}
-
+	
 	/** Faster than quickselect for n = min */
 	private <T> int fastMin(T[] items, Comparator<T> comp, int size) {
 		int lowestIdx = 0;
@@ -88,7 +88,7 @@ public class Select {
 		}
 		return lowestIdx;
 	}
-
+	
 	/** Faster than quickselect for n = max */
 	private <T> int fastMax(T[] items, Comparator<T> comp, int size) {
 		int highestIdx = 0;

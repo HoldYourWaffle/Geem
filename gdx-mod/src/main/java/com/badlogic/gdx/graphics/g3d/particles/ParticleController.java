@@ -38,48 +38,48 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
  * @author Inferno
  */
 public class ParticleController implements Json.Serializable, ResourceData.Configurable {
-
+	
 	/** the default time step used to update the simulation */
 	protected static final float DEFAULT_TIME_STEP = 1f / 60;
-
+	
 	/** Name of the controller */
 	public String name;
-
+	
 	/** Controls the emission of the particles */
 	public Emitter emitter;
-
+	
 	/** Update the properties of the particles */
 	public Array<Influencer> influencers;
-
+	
 	/** Controls the graphical representation of the particles */
 	public ParticleControllerRenderer<?, ?> renderer;
-
+	
 	/** Particles components */
 	public ParallelArray particles;
 	public ParticleChannels particleChannels;
-
+	
 	/** Current transform of the controller DO NOT CHANGE MANUALLY */
 	public Matrix4 transform;
-
+	
 	/** Transform flags */
 	public Vector3 scale;
-
+	
 	/**
 	 * Not used by the simulation, it should represent the bounding box containing
 	 * all the particles
 	 */
 	protected BoundingBox boundingBox;
-
+	
 	/** Time step, DO NOT CHANGE MANUALLY */
 	public float deltaTime, deltaTimeSqr;
-
+	
 	public ParticleController() {
 		transform = new Matrix4();
 		scale = new Vector3(1, 1, 1);
 		influencers = new Array<>(true, 3, Influencer.class);
 		setTimeStep(DEFAULT_TIME_STEP);
 	}
-
+	
 	public ParticleController(String name, Emitter emitter, ParticleControllerRenderer<?, ?> renderer,
 			Influencer... influencers) {
 		this();
@@ -89,13 +89,13 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 		this.particleChannels = new ParticleChannels();
 		this.influencers = new Array<>(influencers);
 	}
-
+	
 	/** Sets the delta used to step the simulation */
 	private void setTimeStep(float timeStep) {
 		deltaTime = timeStep;
 		deltaTimeSqr = deltaTime * deltaTime;
 	}
-
+	
 	/**
 	 * Sets the current transformation to the given one.
 	 * 
@@ -105,13 +105,13 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 		this.transform.set(transform);
 		transform.getScale(scale);
 	}
-
+	
 	/** Sets the current transformation. */
 	public void setTransform(float x, float y, float z, float qx, float qy, float qz, float qw, float scale) {
 		transform.set(x, y, z, qx, qy, qz, qw, scale, scale, scale);
 		this.scale.set(scale, scale, scale);
 	}
-
+	
 	/**
 	 * Post-multiplies the current transformation with a rotation matrix represented
 	 * by the given quaternion.
@@ -119,7 +119,7 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 	public void rotate(Quaternion rotation) {
 		this.transform.rotate(rotation);
 	}
-
+	
 	/**
 	 * Post-multiplies the current transformation with a rotation matrix by the
 	 * given angle around the given axis.
@@ -130,7 +130,7 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 	public void rotate(Vector3 axis, float angle) {
 		this.transform.rotate(axis, angle);
 	}
-
+	
 	/**
 	 * Postmultiplies the current transformation with a translation matrix
 	 * represented by the given translation.
@@ -138,11 +138,11 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 	public void translate(Vector3 translation) {
 		this.transform.translate(translation);
 	}
-
+	
 	public void setTranslation(Vector3 translation) {
 		this.transform.setTranslation(translation);
 	}
-
+	
 	/**
 	 * Postmultiplies the current transformation with a scale matrix represented by
 	 * the given scale on x,y,z.
@@ -151,7 +151,7 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 		this.transform.scale(scaleX, scaleY, scaleZ);
 		this.transform.getScale(scale);
 	}
-
+	
 	/**
 	 * Postmultiplies the current transformation with a scale matrix represented by
 	 * the given scale vector.
@@ -159,22 +159,22 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 	public void scale(Vector3 scale) {
 		scale(scale.x, scale.y, scale.z);
 	}
-
+	
 	/** Postmultiplies the current transformation with the given matrix. */
 	public void mul(Matrix4 transform) {
 		this.transform.mul(transform);
 		this.transform.getScale(scale);
 	}
-
+	
 	/** Set the given matrix to the current transformation matrix. */
 	public void getTransform(Matrix4 transform) {
 		transform.set(this.transform);
 	}
-
+	
 	public boolean isComplete() {
 		return emitter.isComplete();
 	}
-
+	
 	/**
 	 * Initialize the controller. All the sub systems will be initialized and binded
 	 * to the controller. Must be called before any other method.
@@ -186,13 +186,13 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 			particleChannels.resetIds();
 		}
 		allocateChannels(emitter.maxParticleCount);
-
+		
 		emitter.init();
 		for (Influencer influencer : influencers)
 			influencer.init();
 		renderer.init();
 	}
-
+	
 	protected void allocateChannels(int maxParticleCount) {
 		particles = new ParallelArray(maxParticleCount);
 		// Alloc additional channels
@@ -201,7 +201,7 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 			influencer.allocateChannels();
 		renderer.allocateChannels();
 	}
-
+	
 	/** Bind the sub systems to the controller Called once during the init phase. */
 	protected void bind() {
 		emitter.set(this);
@@ -209,27 +209,27 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 			influencer.set(this);
 		renderer.set(this);
 	}
-
+	
 	/** Start the simulation. */
 	public void start() {
 		emitter.start();
 		for (Influencer influencer : influencers)
 			influencer.start();
 	}
-
+	
 	/** Reset the simulation. */
 	public void reset() {
 		end();
 		start();
 	}
-
+	
 	/** End the simulation. */
 	public void end() {
 		for (Influencer influencer : influencers)
 			influencer.end();
 		emitter.end();
 	}
-
+	
 	/**
 	 * Generally called by the Emitter. This method will notify all the sub systems
 	 * that a given amount of particles has been activated.
@@ -239,7 +239,7 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 		for (Influencer influencer : influencers)
 			influencer.activateParticles(startIndex, count);
 	}
-
+	
 	/**
 	 * Generally called by the Emitter. This method will notify all the sub systems
 	 * that a given amount of particles has been killed.
@@ -249,12 +249,12 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 		for (Influencer influencer : influencers)
 			influencer.killParticles(startIndex, count);
 	}
-
+	
 	/** Updates the particles data */
 	public void update() {
 		update(Gdx.graphics.getDeltaTime());
 	}
-
+	
 	/** Updates the particles data */
 	public void update(float deltaTime) {
 		setTimeStep(deltaTime);
@@ -262,7 +262,7 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 		for (Influencer influencer : influencers)
 			influencer.update();
 	}
-
+	
 	/**
 	 * Updates the renderer used by this controller, usually this means the
 	 * particles will be draw inside a batch.
@@ -272,7 +272,7 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 			renderer.update();
 		}
 	}
-
+	
 	/** @return a copy of this controller */
 	public ParticleController copy() {
 		Emitter emitter = (Emitter) this.emitter.copy();
@@ -284,13 +284,13 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 		return new ParticleController(new String(this.name), emitter,
 				(ParticleControllerRenderer<?, ?>) renderer.copy(), influencers);
 	}
-
+	
 	public void dispose() {
 		emitter.dispose();
 		for (Influencer influencer : influencers)
 			influencer.dispose();
 	}
-
+	
 	/**
 	 * @return a copy of this controller, should be used after the particle effect
 	 *         has been loaded.
@@ -301,7 +301,7 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 		calculateBoundingBox();
 		return boundingBox;
 	}
-
+	
 	/** Updates the bounding box using the position channel. */
 	protected void calculateBoundingBox() {
 		boundingBox.clr();
@@ -312,7 +312,7 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 					positionChannel.data[pos + ParticleChannels.ZOffset]);
 		}
 	}
-
+	
 	/** @return the index of the Influencer of the given type. */
 	private <K extends Influencer> int findIndex(Class<K> type) {
 		for (int i = 0; i < influencers.size; ++i) {
@@ -323,20 +323,20 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 		}
 		return -1;
 	}
-
+	
 	/** @return the influencer having the given type. */
 	public <K extends Influencer> K findInfluencer(Class<K> influencerClass) {
 		int index = findIndex(influencerClass);
 		return index > -1 ? (K) influencers.get(index) : null;
 	}
-
+	
 	/** Removes the Influencer of the given type. */
 	public <K extends Influencer> void removeInfluencer(Class<K> type) {
 		int index = findIndex(type);
 		if (index > -1)
 			influencers.removeIndex(index);
 	}
-
+	
 	/**
 	 * Replaces the Influencer of the given type with the one passed as parameter.
 	 */
@@ -349,7 +349,7 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 		}
 		return false;
 	}
-
+	
 	@Override
 	public void write(Json json) {
 		json.writeValue("name", name);
@@ -357,7 +357,7 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 		json.writeValue("influencers", influencers, Array.class, Influencer.class);
 		json.writeValue("renderer", renderer, ParticleControllerRenderer.class);
 	}
-
+	
 	@Override
 	public void read(Json json, JsonValue jsonMap) {
 		name = json.readValue("name", String.class, jsonMap);
@@ -365,7 +365,7 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 		influencers.addAll(json.readValue("influencers", Array.class, Influencer.class, jsonMap));
 		renderer = json.readValue("renderer", ParticleControllerRenderer.class, jsonMap);
 	}
-
+	
 	@Override
 	public void save(AssetManager manager, ResourceData data) {
 		emitter.save(manager, data);
@@ -373,7 +373,7 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 			influencer.save(manager, data);
 		renderer.save(manager, data);
 	}
-
+	
 	@Override
 	public void load(AssetManager manager, ResourceData data) {
 		emitter.load(manager, data);

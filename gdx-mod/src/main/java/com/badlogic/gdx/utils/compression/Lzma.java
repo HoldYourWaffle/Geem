@@ -34,29 +34,29 @@ public class Lzma {
 		public static final int kEncode = 0;
 		public static final int kDecode = 1;
 		public static final int kBenchmak = 2;
-
+		
 		public int Command = -1;
 		public int NumBenchmarkPasses = 10;
-
+		
 		public int DictionarySize = 1 << 23;
 		public boolean DictionarySizeIsDefined = false;
-
+		
 		public int Lc = 3;
 		public int Lp = 0;
 		public int Pb = 2;
-
+		
 		public int Fb = 128;
 		public boolean FbIsDefined = false;
-
+		
 		public boolean Eos = false;
-
+		
 		public int Algorithm = 2;
 		public int MatchFinder = 1;
-
+		
 		public String InFile;
 		public String OutFile;
 	}
-
+	
 	/**
 	 * Compresses the given {@link InputStream} into the given {@link OutputStream}.
 	 * 
@@ -95,7 +95,7 @@ public class Lzma {
 		}
 		encoder.Code(in, out, -1, -1, null);
 	}
-
+	
 	/**
 	 * Decompresses the given {@link InputStream} into the given
 	 * {@link OutputStream}.

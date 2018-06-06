@@ -24,39 +24,39 @@ import java.util.Iterator;
  * @author Xoppa
  */
 public interface Predicate<T> {
-
+	
 	/**
 	 * @return true if the item matches the criteria and should be included in the
 	 *         iterator's items
 	 */
 	boolean evaluate(T arg0);
-
+	
 	public class PredicateIterator<T> implements Iterator<T> {
 		public Iterator<T> iterator;
 		public Predicate<T> predicate;
 		public boolean end = false;
 		public boolean peeked = false;
 		public T next = null;
-
+		
 		public PredicateIterator(final Iterable<T> iterable, final Predicate<T> predicate) {
 			this(iterable.iterator(), predicate);
 		}
-
+		
 		public PredicateIterator(final Iterator<T> iterator, final Predicate<T> predicate) {
 			set(iterator, predicate);
 		}
-
+		
 		public void set(final Iterable<T> iterable, final Predicate<T> predicate) {
 			set(iterable.iterator(), predicate);
 		}
-
+		
 		public void set(final Iterator<T> iterator, final Predicate<T> predicate) {
 			this.iterator = iterator;
 			this.predicate = predicate;
 			end = peeked = false;
 			next = null;
 		}
-
+		
 		@Override
 		public boolean hasNext() {
 			if (end)
@@ -74,7 +74,7 @@ public interface Predicate<T> {
 			end = true;
 			return false;
 		}
-
+		
 		@Override
 		public T next() {
 			if (next == null && !hasNext())
@@ -84,7 +84,7 @@ public interface Predicate<T> {
 			peeked = false;
 			return result;
 		}
-
+		
 		@Override
 		public void remove() {
 			if (peeked)
@@ -92,21 +92,21 @@ public interface Predicate<T> {
 			iterator.remove();
 		}
 	}
-
+	
 	public static class PredicateIterable<T> implements Iterable<T> {
 		public Iterable<T> iterable;
 		public Predicate<T> predicate;
 		public PredicateIterator<T> iterator = null;
-
+		
 		public PredicateIterable(Iterable<T> iterable, Predicate<T> predicate) {
 			set(iterable, predicate);
 		}
-
+		
 		public void set(Iterable<T> iterable, Predicate<T> predicate) {
 			this.iterable = iterable;
 			this.predicate = predicate;
 		}
-
+		
 		/**
 		 * Returns an iterator. Note that the same iterator instance is returned each
 		 * time this method is called. Use the {@link Predicate.PredicateIterator}

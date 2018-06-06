@@ -34,7 +34,7 @@ import com.badlogic.gdx.files.FileHandle;
  */
 public class UBJsonReader implements BaseJsonReader {
 	public boolean oldFormat = true;
-
+	
 	/**
 	 * Parses the UBJSON from the given stream. <br>
 	 * For best performance you should provide buffered streams to this method!
@@ -51,7 +51,7 @@ public class UBJsonReader implements BaseJsonReader {
 			StreamUtils.closeQuietly(din);
 		}
 	}
-
+	
 	@Override
 	public JsonValue parse(FileHandle file) {
 		try {
@@ -60,7 +60,7 @@ public class UBJsonReader implements BaseJsonReader {
 			throw new SerializationException("Error parsing file: " + file, ex);
 		}
 	}
-
+	
 	public JsonValue parse(final DataInputStream din) throws IOException {
 		try {
 			return parse(din, din.readByte());
@@ -68,7 +68,7 @@ public class UBJsonReader implements BaseJsonReader {
 			StreamUtils.closeQuietly(din);
 		}
 	}
-
+	
 	protected JsonValue parse(final DataInputStream din, final byte type) throws IOException {
 		if (type == '[')
 			return parseArray(din);
@@ -105,7 +105,7 @@ public class UBJsonReader implements BaseJsonReader {
 		else
 			throw new GdxRuntimeException("Unrecognized data type");
 	}
-
+	
 	protected JsonValue parseArray(final DataInputStream din) throws IOException {
 		JsonValue result = new JsonValue(JsonValue.ValueType.array);
 		byte type = din.readByte();
@@ -143,7 +143,7 @@ public class UBJsonReader implements BaseJsonReader {
 		}
 		return result;
 	}
-
+	
 	protected JsonValue parseObject(final DataInputStream din) throws IOException {
 		JsonValue result = new JsonValue(JsonValue.ValueType.object);
 		byte type = din.readByte();
@@ -183,7 +183,7 @@ public class UBJsonReader implements BaseJsonReader {
 		}
 		return result;
 	}
-
+	
 	protected JsonValue parseData(final DataInputStream din, final byte blockType) throws IOException {
 		// FIXME: a/A is currently not following the specs because it lacks strong
 		// typed, fixed sized containers,
@@ -206,11 +206,11 @@ public class UBJsonReader implements BaseJsonReader {
 		}
 		return result;
 	}
-
+	
 	protected String parseString(final DataInputStream din, final byte type) throws IOException {
 		return parseString(din, false, type);
 	}
-
+	
 	protected String parseString(final DataInputStream din, final boolean sOptional, final byte type)
 			throws IOException {
 		long size = -1;
@@ -224,12 +224,12 @@ public class UBJsonReader implements BaseJsonReader {
 			throw new GdxRuntimeException("Unrecognized data type, string expected");
 		return size > 0 ? readString(din, size) : "";
 	}
-
+	
 	protected long parseSize(final DataInputStream din, final boolean useIntOnError, final long defaultValue)
 			throws IOException {
 		return parseSize(din, din.readByte(), useIntOnError, defaultValue);
 	}
-
+	
 	protected long parseSize(final DataInputStream din, final byte type, final boolean useIntOnError,
 			final long defaultValue) throws IOException {
 		if (type == 'i')
@@ -249,19 +249,19 @@ public class UBJsonReader implements BaseJsonReader {
 		}
 		return defaultValue;
 	}
-
+	
 	protected short readUChar(final DataInputStream din) throws IOException {
 		return (short) (din.readByte() & 0xFF);
 	}
-
+	
 	protected int readUShort(final DataInputStream din) throws IOException {
 		return (din.readShort() & 0xFFFF);
 	}
-
+	
 	protected long readUInt(final DataInputStream din) throws IOException {
 		return ((long) din.readInt() & 0xFFFFFFFF);
 	}
-
+	
 	protected String readString(final DataInputStream din, final long size) throws IOException {
 		final byte data[] = new byte[(int) size];
 		din.readFully(data);

@@ -25,12 +25,12 @@ import com.badlogic.gdx.utils.NumberUtils;
 public class Circle implements Serializable, Shape2D {
 	public float x, y;
 	public float radius;
-
+	
 	/** Constructs a new circle with all values set to zero */
 	public Circle() {
-
+		
 	}
-
+	
 	/**
 	 * Constructs a new circle with the given X and Y coordinates and the given
 	 * radius.
@@ -44,7 +44,7 @@ public class Circle implements Serializable, Shape2D {
 		this.y = y;
 		this.radius = radius;
 	}
-
+	
 	/**
 	 * Constructs a new circle using a given {@link Vector2} that contains the
 	 * desired X and Y coordinates, and a given radius.
@@ -57,7 +57,7 @@ public class Circle implements Serializable, Shape2D {
 		this.y = position.y;
 		this.radius = radius;
 	}
-
+	
 	/**
 	 * Copy constructor
 	 * 
@@ -68,7 +68,7 @@ public class Circle implements Serializable, Shape2D {
 		this.y = circle.y;
 		this.radius = circle.radius;
 	}
-
+	
 	/**
 	 * Creates a new {@link Circle} in terms of its center and a point on its edge.
 	 * 
@@ -80,7 +80,7 @@ public class Circle implements Serializable, Shape2D {
 		this.y = center.y;
 		this.radius = Vector2.len(center.x - edge.x, center.y - edge.y);
 	}
-
+	
 	/**
 	 * Sets a new location and radius for this circle.
 	 * 
@@ -93,7 +93,7 @@ public class Circle implements Serializable, Shape2D {
 		this.y = y;
 		this.radius = radius;
 	}
-
+	
 	/**
 	 * Sets a new location and radius for this circle.
 	 * 
@@ -105,7 +105,7 @@ public class Circle implements Serializable, Shape2D {
 		this.y = position.y;
 		this.radius = radius;
 	}
-
+	
 	/**
 	 * Sets a new location and radius for this circle, based upon another circle.
 	 * 
@@ -116,7 +116,7 @@ public class Circle implements Serializable, Shape2D {
 		this.y = circle.y;
 		this.radius = circle.radius;
 	}
-
+	
 	/**
 	 * Sets this {@link Circle}'s values in terms of its center and a point on its
 	 * edge.
@@ -129,7 +129,7 @@ public class Circle implements Serializable, Shape2D {
 		this.y = center.y;
 		this.radius = Vector2.len(center.x - edge.x, center.y - edge.y);
 	}
-
+	
 	/**
 	 * Sets the x and y-coordinates of circle center from vector
 	 * 
@@ -139,7 +139,7 @@ public class Circle implements Serializable, Shape2D {
 		this.x = position.x;
 		this.y = position.y;
 	}
-
+	
 	/**
 	 * Sets the x and y-coordinates of circle center
 	 * 
@@ -150,7 +150,7 @@ public class Circle implements Serializable, Shape2D {
 		this.x = x;
 		this.y = y;
 	}
-
+	
 	/**
 	 * Sets the x-coordinate of circle center
 	 * 
@@ -159,7 +159,7 @@ public class Circle implements Serializable, Shape2D {
 	public void setX(float x) {
 		this.x = x;
 	}
-
+	
 	/**
 	 * Sets the y-coordinate of circle center
 	 * 
@@ -168,7 +168,7 @@ public class Circle implements Serializable, Shape2D {
 	public void setY(float y) {
 		this.y = y;
 	}
-
+	
 	/**
 	 * Sets the radius of circle
 	 * 
@@ -177,7 +177,7 @@ public class Circle implements Serializable, Shape2D {
 	public void setRadius(float radius) {
 		this.radius = radius;
 	}
-
+	
 	/**
 	 * Checks whether or not this circle contains a given point.
 	 * 
@@ -192,7 +192,7 @@ public class Circle implements Serializable, Shape2D {
 		y = this.y - y;
 		return x * x + y * y <= radius * radius;
 	}
-
+	
 	/**
 	 * Checks whether or not this circle contains a given point.
 	 * 
@@ -206,7 +206,7 @@ public class Circle implements Serializable, Shape2D {
 		float dy = y - point.y;
 		return dx * dx + dy * dy <= radius * radius;
 	}
-
+	
 	/**
 	 * @param c the other {@link Circle}
 	 * @return whether this circle contains the other circle.
@@ -221,7 +221,7 @@ public class Circle implements Serializable, Shape2D {
 		final float radiusSum = radius + c.radius;
 		return (!(radiusDiff * radiusDiff < dst) && (dst < radiusSum * radiusSum));
 	}
-
+	
 	/**
 	 * @param c the other {@link Circle}
 	 * @return whether this circle overlaps the other circle.
@@ -233,7 +233,7 @@ public class Circle implements Serializable, Shape2D {
 		float radiusSum = radius + c.radius;
 		return distance < radiusSum * radiusSum;
 	}
-
+	
 	/**
 	 * Returns a {@link String} representation of this {@link Circle} of the form
 	 * {@code x,y,radius}.
@@ -242,7 +242,7 @@ public class Circle implements Serializable, Shape2D {
 	public String toString() {
 		return x + "," + y + "," + radius;
 	}
-
+	
 	/**
 	 * @return The circumference of this circle (as 2 * {@link MathUtils#PI2}) *
 	 *         {@code radius}
@@ -250,14 +250,14 @@ public class Circle implements Serializable, Shape2D {
 	public float circumference() {
 		return this.radius * MathUtils.PI2;
 	}
-
+	
 	/**
 	 * @return The area of this circle (as {@link MathUtils#PI} * radius * radius).
 	 */
 	public float area() {
 		return this.radius * this.radius * MathUtils.PI;
 	}
-
+	
 	@Override
 	public boolean equals(Object o) {
 		if (o == this)
@@ -267,7 +267,7 @@ public class Circle implements Serializable, Shape2D {
 		Circle c = (Circle) o;
 		return this.x == c.x && this.y == c.y && this.radius == c.radius;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 41;

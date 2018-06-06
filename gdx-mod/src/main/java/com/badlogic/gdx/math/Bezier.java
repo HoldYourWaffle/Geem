@@ -26,7 +26,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  */
 public class Bezier<T extends Vector<T>> implements Path<T> {
 	// TODO implement Serializable
-
+	
 	/**
 	 * Simple linear interpolation
 	 * 
@@ -41,7 +41,7 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 		// B1(t) = p0 + (p1-p0)*t
 		return out.set(p0).scl(1f - t).add(tmp.set(p1).scl(t)); // Could just use lerp...
 	}
-
+	
 	/**
 	 * Simple linear interpolation derivative
 	 * 
@@ -57,7 +57,7 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 		// B1'(t) = p1-p0
 		return out.set(p1).sub(p0);
 	}
-
+	
 	/**
 	 * Quadratic Bezier curve
 	 * 
@@ -75,7 +75,7 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 		final float dt = 1f - t;
 		return out.set(p0).scl(dt * dt).add(tmp.set(p1).scl(2 * dt * t)).add(tmp.set(p2).scl(t * t));
 	}
-
+	
 	/**
 	 * Quadratic Bezier curve derivative
 	 * 
@@ -93,7 +93,7 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 		final float dt = 1f - t;
 		return out.set(p1).sub(p0).scl(2).scl(1 - t).add(tmp.set(p2).sub(p1).scl(t).scl(2));
 	}
-
+	
 	/**
 	 * Cubic Bezier curve
 	 * 
@@ -116,7 +116,7 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 		return out.set(p0).scl(dt2 * dt).add(tmp.set(p1).scl(3 * dt2 * t)).add(tmp.set(p2).scl(3 * dt * t2))
 				.add(tmp.set(p3).scl(t2 * t));
 	}
-
+	
 	/**
 	 * Cubic Bezier curve derivative
 	 * 
@@ -139,31 +139,31 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 		return out.set(p1).sub(p0).scl(dt2 * 3).add(tmp.set(p2).sub(p1).scl(dt * t * 6))
 				.add(tmp.set(p3).sub(p2).scl(t2 * 3));
 	}
-
+	
 	public Array<T> points = new Array<>();
 	private T tmp;
 	private T tmp2;
 	private T tmp3;
-
+	
 	public Bezier() {
 	}
-
+	
 	public Bezier(final T... points) {
 		set(points);
 	}
-
+	
 	public Bezier(final T[] points, final int offset, final int length) {
 		set(points, offset, length);
 	}
-
+	
 	public Bezier(final Array<T> points, final int offset, final int length) {
 		set(points, offset, length);
 	}
-
+	
 	public Bezier set(final T... points) {
 		return set(points, 0, points.length);
 	}
-
+	
 	public Bezier set(final T[] points, final int offset, final int length) {
 		if (length < 2 || length > 4)
 			throw new GdxRuntimeException("Only first, second and third degree Bezier curves are supported.");
@@ -177,7 +177,7 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 		this.points.addAll(points, offset, length);
 		return this;
 	}
-
+	
 	public Bezier set(final Array<T> points, final int offset, final int length) {
 		if (length < 2 || length > 4)
 			throw new GdxRuntimeException("Only first, second and third degree Bezier curves are supported.");
@@ -191,7 +191,7 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 		this.points.addAll(points, offset, length);
 		return this;
 	}
-
+	
 	@Override
 	public T valueAt(final T out, final float t) {
 		final int n = points.size;
@@ -203,7 +203,7 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 			cubic(out, t, points.get(0), points.get(1), points.get(2), points.get(3), tmp);
 		return out;
 	}
-
+	
 	@Override
 	public T derivativeAt(final T out, final float t) {
 		final int n = points.size;
@@ -215,7 +215,7 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 			cubic_derivative(out, t, points.get(0), points.get(1), points.get(2), points.get(3), tmp);
 		return out;
 	}
-
+	
 	@Override
 	public float approximate(final T v) {
 		// TODO: make a real approximate method
@@ -229,13 +229,13 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 		float s = (l2Sqr + l1Sqr - l3Sqr) / (2 * l1);
 		return MathUtils.clamp((l1 - s) / l1, 0f, 1f);
 	}
-
+	
 	@Override
 	public float locate(T v) {
 		// TODO implement a precise method
 		return approximate(v);
 	}
-
+	
 	@Override
 	public float approxLength(int samples) {
 		float tempLength = 0;

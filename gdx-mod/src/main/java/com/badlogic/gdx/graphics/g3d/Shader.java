@@ -78,13 +78,13 @@ public interface Shader extends Disposable {
 	 * performs other preparations for usage of the Shader.
 	 */
 	void init();
-
+	
 	/**
 	 * Compare this shader against the other, used for sorting, light weight shaders
 	 * are rendered first.
 	 */
 	int compareTo(Shader other); // TODO: probably better to add some weight value to sort on
-
+	
 	/**
 	 * Checks whether this shader is intended to render the {@link Renderable}. Use
 	 * this to make sure a call to the {@link #render(Renderable)} method will
@@ -98,7 +98,7 @@ public interface Shader extends Disposable {
 	 *         false otherwise.
 	 */
 	boolean canRender(Renderable instance);
-
+	
 	/**
 	 * Initializes the context for exclusive rendering by this shader. Use the
 	 * {@link #render(Renderable)} method to render a {@link Renderable}. When done
@@ -109,7 +109,7 @@ public interface Shader extends Disposable {
 	 *                the shader until the call to the {@link #end()} method.
 	 */
 	void begin(Camera camera, RenderContext context);
-
+	
 	/**
 	 * Renders the {@link Renderable}, must be called between
 	 * {@link #begin(Camera, RenderContext)} and {@link #end()}. The Shader instance
@@ -122,7 +122,7 @@ public interface Shader extends Disposable {
 	 *                   {@link Renderable#shader} field will be ignored.
 	 */
 	void render(final Renderable renderable);
-
+	
 	/**
 	 * Cleanup the context so other shaders can render. Must be called when done
 	 * rendering using the {@link #render(Renderable)} method, which must be

@@ -29,24 +29,24 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 public class TiledDrawable extends TextureRegionDrawable {
 	private final Color color = new Color(1, 1, 1, 1);
-
+	
 	public TiledDrawable() {
 		super();
 	}
-
+	
 	public TiledDrawable(TextureRegion region) {
 		super(region);
 	}
-
+	
 	public TiledDrawable(TextureRegionDrawable drawable) {
 		super(drawable);
 	}
-
+	
 	@Override
 	public void draw(Batch batch, float x, float y, float width, float height) {
 		float batchColor = batch.getPackedColor();
 		batch.setColor(batch.getColor().mul(color));
-
+		
 		TextureRegion region = getRegion();
 		float regionWidth = region.getRegionWidth(), regionHeight = region.getRegionHeight();
 		int fullX = (int) (width / regionWidth), fullY = (int) (height / regionHeight);
@@ -89,20 +89,20 @@ public class TiledDrawable extends TextureRegionDrawable {
 				x += regionWidth;
 			}
 		}
-
+		
 		batch.setColor(batchColor);
 	}
-
+	
 	@Override
 	public void draw(Batch batch, float x, float y, float originX, float originY, float width, float height,
 			float scaleX, float scaleY, float rotation) {
 		throw new UnsupportedOperationException();
 	}
-
+	
 	public Color getColor() {
 		return color;
 	}
-
+	
 	@Override
 	public TiledDrawable tint(Color tint) {
 		TiledDrawable drawable = new TiledDrawable(this);

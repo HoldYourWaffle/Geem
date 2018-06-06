@@ -31,7 +31,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
  * @author realitix, xoppa
  */
 public class BoxShapeBuilder extends BaseShapeBuilder {
-
+	
 	/**
 	 * Build a box with the shape of the specified {@link BoundingBox}.
 	 * 
@@ -43,7 +43,7 @@ public class BoxShapeBuilder extends BaseShapeBuilder {
 				box.getCorner101(obtainV3()), box.getCorner111(obtainV3()));
 		freeAll();
 	}
-
+	
 	/** Add a box. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
 	public static void build(MeshPartBuilder builder, VertexInfo corner000, VertexInfo corner010, VertexInfo corner100,
 			VertexInfo corner110, VertexInfo corner001, VertexInfo corner011, VertexInfo corner101,
@@ -57,7 +57,7 @@ public class BoxShapeBuilder extends BaseShapeBuilder {
 		final short i101 = builder.vertex(corner101);
 		final short i111 = builder.vertex(corner111);
 		final short i011 = builder.vertex(corner011);
-
+		
 		final int primitiveType = builder.getPrimitiveType();
 		if (primitiveType == GL20.GL_LINES) {
 			builder.ensureIndices(24);
@@ -78,7 +78,7 @@ public class BoxShapeBuilder extends BaseShapeBuilder {
 			builder.rect(i110, i111, i011, i010);
 		}
 	}
-
+	
 	/** Add a box. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
 	public static void build(MeshPartBuilder builder, Vector3 corner000, Vector3 corner010, Vector3 corner100,
 			Vector3 corner110, Vector3 corner001, Vector3 corner011, Vector3 corner101, Vector3 corner111) {
@@ -103,7 +103,7 @@ public class BoxShapeBuilder extends BaseShapeBuilder {
 			builder.rect(corner100, corner110, corner111, corner101, nor.scl(-1));
 		}
 	}
-
+	
 	/**
 	 * Add a box given the matrix. Requires GL_POINTS, GL_LINES or GL_TRIANGLES
 	 * primitive type.
@@ -116,7 +116,7 @@ public class BoxShapeBuilder extends BaseShapeBuilder {
 				obtainV3().set(0.5f, 0.5f, 0.5f).mul(transform));
 		freeAll();
 	}
-
+	
 	/**
 	 * Add a box with the specified dimensions. Requires GL_POINTS, GL_LINES or
 	 * GL_TRIANGLES primitive type.
@@ -124,7 +124,7 @@ public class BoxShapeBuilder extends BaseShapeBuilder {
 	public static void build(MeshPartBuilder builder, float width, float height, float depth) {
 		build(builder, 0, 0, 0, width, height, depth);
 	}
-
+	
 	/** Add a box at the specified location, with the specified dimensions */
 	public static void build(MeshPartBuilder builder, float x, float y, float z, float width, float height,
 			float depth) {
@@ -139,5 +139,5 @@ public class BoxShapeBuilder extends BaseShapeBuilder {
 				obtainV3().set(x1, y1, z1));
 		freeAll();
 	}
-
+	
 }

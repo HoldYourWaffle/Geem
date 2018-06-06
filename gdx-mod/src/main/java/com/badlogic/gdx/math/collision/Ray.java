@@ -30,10 +30,10 @@ public class Ray implements Serializable {
 	private static final long serialVersionUID = -620692054835390878L;
 	public final Vector3 origin = new Vector3();
 	public final Vector3 direction = new Vector3();
-
+	
 	public Ray() {
 	}
-
+	
 	/**
 	 * Constructor, sets the starting position of the ray and the direction.
 	 * 
@@ -44,12 +44,12 @@ public class Ray implements Serializable {
 		this.origin.set(origin);
 		this.direction.set(direction).nor();
 	}
-
+	
 	/** @return a copy of this ray. */
 	public Ray cpy() {
 		return new Ray(this.origin, this.direction);
 	}
-
+	
 	/**
 	 * Returns the endpoint given the distance. This is calculated as startpoint +
 	 * distance * direction.
@@ -61,9 +61,9 @@ public class Ray implements Serializable {
 	public Vector3 getEndPoint(final Vector3 out, final float distance) {
 		return out.set(direction).scl(distance).add(origin);
 	}
-
+	
 	static Vector3 tmp = new Vector3();
-
+	
 	/**
 	 * Multiplies the ray by the given matrix. Use this to transform a ray into
 	 * another coordinate system.
@@ -78,13 +78,13 @@ public class Ray implements Serializable {
 		direction.set(tmp.sub(origin));
 		return this;
 	}
-
+	
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "ray [" + origin + ":" + direction + "]";
 	}
-
+	
 	/**
 	 * Sets the starting position and the direction of this ray.
 	 * 
@@ -97,7 +97,7 @@ public class Ray implements Serializable {
 		this.direction.set(direction);
 		return this;
 	}
-
+	
 	/**
 	 * Sets this ray from the given starting position and direction.
 	 * 
@@ -114,7 +114,7 @@ public class Ray implements Serializable {
 		this.direction.set(dx, dy, dz);
 		return this;
 	}
-
+	
 	/**
 	 * Sets the starting position and direction from the given ray
 	 * 
@@ -126,7 +126,7 @@ public class Ray implements Serializable {
 		this.direction.set(ray.direction);
 		return this;
 	}
-
+	
 	@Override
 	public boolean equals(Object o) {
 		if (o == this)
@@ -136,7 +136,7 @@ public class Ray implements Serializable {
 		Ray r = (Ray) o;
 		return this.direction.equals(r.direction) && this.origin.equals(r.origin);
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 73;

@@ -24,23 +24,23 @@ package com.badlogic.gdx.utils;
  */
 public class SerializationException extends RuntimeException {
 	private StringBuffer trace;
-
+	
 	public SerializationException() {
 		super();
 	}
-
+	
 	public SerializationException(String message, Throwable cause) {
 		super(message, cause);
 	}
-
+	
 	public SerializationException(String message) {
 		super(message);
 	}
-
+	
 	public SerializationException(Throwable cause) {
 		super("", cause);
 	}
-
+	
 	/**
 	 * Returns true if any of the exceptions that caused this exception are of the
 	 * specified type.
@@ -48,7 +48,7 @@ public class SerializationException extends RuntimeException {
 	public boolean causedBy(Class type) {
 		return causedBy(this, type);
 	}
-
+	
 	private boolean causedBy(Throwable ex, Class type) {
 		Throwable cause = ex.getCause();
 		if (cause == null || cause == ex)
@@ -57,7 +57,7 @@ public class SerializationException extends RuntimeException {
 			return true;
 		return causedBy(cause, type);
 	}
-
+	
 	@Override
 	public String getMessage() {
 		if (trace == null)
@@ -70,7 +70,7 @@ public class SerializationException extends RuntimeException {
 		buffer.append(trace);
 		return buffer.toString();
 	}
-
+	
 	/**
 	 * Adds information to the exception message about where in the the object graph
 	 * serialization failure occurred. Serializers can catch

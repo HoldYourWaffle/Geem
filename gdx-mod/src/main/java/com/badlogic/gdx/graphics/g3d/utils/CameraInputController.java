@@ -77,41 +77,41 @@ public class CameraInputController extends GestureDetector {
 	public Camera camera;
 	/** The current (first) button being pressed. */
 	protected int button = -1;
-
+	
 	private float startX, startY;
 	private final Vector3 tmpV1 = new Vector3();
 	private final Vector3 tmpV2 = new Vector3();
-
+	
 	protected static class CameraGestureListener extends GestureAdapter {
 		public CameraInputController controller;
 		private float previousZoom;
-
+		
 		@Override
 		public boolean touchDown(float x, float y, int pointer, int button) {
 			previousZoom = 0;
 			return false;
 		}
-
+		
 		@Override
 		public boolean tap(float x, float y, int count, int button) {
 			return false;
 		}
-
+		
 		@Override
 		public boolean longPress(float x, float y) {
 			return false;
 		}
-
+		
 		@Override
 		public boolean fling(float velocityX, float velocityY, int button) {
 			return false;
 		}
-
+		
 		@Override
 		public boolean pan(float x, float y, float deltaX, float deltaY) {
 			return false;
 		}
-
+		
 		@Override
 		public boolean zoom(float initialDistance, float distance) {
 			float newZoom = distance - initialDistance;
@@ -120,26 +120,26 @@ public class CameraInputController extends GestureDetector {
 			float w = Gdx.graphics.getWidth(), h = Gdx.graphics.getHeight();
 			return controller.pinchZoom(amount / ((w > h) ? h : w));
 		}
-
+		
 		@Override
 		public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
 			return false;
 		}
 	};
-
+	
 	protected final CameraGestureListener gestureListener;
-
+	
 	protected CameraInputController(final CameraGestureListener gestureListener, final Camera camera) {
 		super(gestureListener);
 		this.gestureListener = gestureListener;
 		this.gestureListener.controller = this;
 		this.camera = camera;
 	}
-
+	
 	public CameraInputController(final Camera camera) {
 		this(new CameraGestureListener(), camera);
 	}
-
+	
 	public void update() {
 		if (rotateRightPressed || rotateLeftPressed || forwardPressed || backwardPressed) {
 			final float delta = Gdx.graphics.getDeltaTime();
@@ -161,10 +161,10 @@ public class CameraInputController extends GestureDetector {
 				camera.update();
 		}
 	}
-
+	
 	private int touched;
 	private boolean multiTouch;
-
+	
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		touched |= (1 << pointer);
@@ -178,7 +178,7 @@ public class CameraInputController extends GestureDetector {
 		}
 		return super.touchDown(screenX, screenY, pointer, button) || (activateKey == 0 || activatePressed);
 	}
-
+	
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		touched &= -1 ^ (1 << pointer);
@@ -187,7 +187,7 @@ public class CameraInputController extends GestureDetector {
 			this.button = -1;
 		return super.touchUp(screenX, screenY, pointer, button) || activatePressed;
 	}
-
+	
 	protected boolean process(float deltaX, float deltaY, int button) {
 		if (button == rotateButton) {
 			tmpV1.set(camera.direction).crs(camera.up).y = 0f;
@@ -207,7 +207,7 @@ public class CameraInputController extends GestureDetector {
 			camera.update();
 		return true;
 	}
-
+	
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		boolean result = super.touchDragged(screenX, screenY, pointer);
@@ -219,12 +219,12 @@ public class CameraInputController extends GestureDetector {
 		startY = screenY;
 		return process(deltaX, deltaY, button);
 	}
-
+	
 	@Override
 	public boolean scrolled(int amount) {
 		return zoom(amount * scrollFactor * translateUnits);
 	}
-
+	
 	public boolean zoom(float amount) {
 		if (!alwaysScroll && activateKey != 0 && !activatePressed)
 			return false;
@@ -235,11 +235,11 @@ public class CameraInputController extends GestureDetector {
 			camera.update();
 		return true;
 	}
-
+	
 	protected boolean pinchZoom(float amount) {
 		return zoom(pinchZoomFactor * amount);
 	}
-
+	
 	@Override
 	public boolean keyDown(int keycode) {
 		if (keycode == activateKey)
@@ -254,7 +254,7 @@ public class CameraInputController extends GestureDetector {
 			rotateLeftPressed = true;
 		return false;
 	}
-
+	
 	@Override
 	public boolean keyUp(int keycode) {
 		if (keycode == activateKey) {

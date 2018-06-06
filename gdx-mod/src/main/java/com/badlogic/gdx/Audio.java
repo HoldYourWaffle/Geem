@@ -56,7 +56,7 @@ public interface Audio {
 	 * @throws GdxRuntimeException in case the device could not be created
 	 */
 	public AudioDevice newAudioDevice(int samplingRate, boolean isMono);
-
+	
 	/**
 	 * Creates a new {@link AudioRecorder}. The AudioRecorder has to be disposed
 	 * after it is no longer used.
@@ -68,7 +68,7 @@ public interface Audio {
 	 * @throws GdxRuntimeException in case the recorder could not be created
 	 */
 	public AudioRecorder newAudioRecorder(int samplingRate, boolean isMono);
-
+	
 	/**
 	 * <p>
 	 * Creates a new {@link Sound} which is used to play back audio effects such as
@@ -91,7 +91,7 @@ public interface Audio {
 	 * @throws GdxRuntimeException in case the sound could not be loaded
 	 */
 	public Sound newSound(FileHandle fileHandle);
-
+	
 	/**
 	 * Creates a new {@link Music} instance which is used to play back a music
 	 * stream from a file. Currently supported formats are WAV, MP3 and OGG. The

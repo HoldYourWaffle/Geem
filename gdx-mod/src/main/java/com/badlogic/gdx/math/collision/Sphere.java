@@ -33,9 +33,9 @@ public class Sphere implements Serializable {
 	public float radius;
 	/** the center of the sphere **/
 	public final Vector3 center;
-
+	
 	private static final float PI_4_3 = MathUtils.PI * 4f / 3f;
-
+	
 	/**
 	 * Constructs a sphere with the given center and radius
 	 * 
@@ -46,7 +46,7 @@ public class Sphere implements Serializable {
 		this.center = new Vector3(center);
 		this.radius = radius;
 	}
-
+	
 	/**
 	 * @param sphere the other sphere
 	 * @return whether this and the other sphere overlap
@@ -54,7 +54,7 @@ public class Sphere implements Serializable {
 	public boolean overlaps(Sphere sphere) {
 		return center.dst2(sphere.center) < (radius + sphere.radius) * (radius + sphere.radius);
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 71;
@@ -63,7 +63,7 @@ public class Sphere implements Serializable {
 		result = prime * result + NumberUtils.floatToRawIntBits(this.radius);
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
@@ -73,11 +73,11 @@ public class Sphere implements Serializable {
 		Sphere s = (Sphere) o;
 		return this.radius == s.radius && this.center.equals(s.center);
 	}
-
+	
 	public float volume() {
 		return PI_4_3 * this.radius * this.radius * this.radius;
 	}
-
+	
 	public float surfaceArea() {
 		return 4 * MathUtils.PI * this.radius * this.radius;
 	}

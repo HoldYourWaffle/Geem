@@ -27,19 +27,19 @@ import java.io.OutputStream;
  * @author Justin Shapcott
  */
 public class UBJsonWriter implements Closeable {
-
+	
 	final DataOutputStream out;
-
+	
 	private JsonObject current;
 	private boolean named;
 	private final Array<JsonObject> stack = new Array();
-
+	
 	public UBJsonWriter(OutputStream out) {
 		if (!(out instanceof DataOutputStream))
 			out = new DataOutputStream(out);
 		this.out = (DataOutputStream) out;
 	}
-
+	
 	/**
 	 * Begins a new object container. To finish the object call {@link #pop()}.
 	 * 
@@ -56,7 +56,7 @@ public class UBJsonWriter implements Closeable {
 		stack.add(current = new JsonObject(false));
 		return this;
 	}
-
+	
 	/**
 	 * Begins a new named object container, having the given name. To finish the
 	 * object call {@link #pop()}.
@@ -67,7 +67,7 @@ public class UBJsonWriter implements Closeable {
 		name(name).object();
 		return this;
 	}
-
+	
 	/**
 	 * Begins a new array container. To finish the array call {@link #pop()}.
 	 * 
@@ -84,7 +84,7 @@ public class UBJsonWriter implements Closeable {
 		stack.add(current = new JsonObject(true));
 		return this;
 	}
-
+	
 	/**
 	 * Begins a new named array container, having the given name. To finish the
 	 * array call {@link #pop()}.
@@ -95,7 +95,7 @@ public class UBJsonWriter implements Closeable {
 		name(name).array();
 		return this;
 	}
-
+	
 	/**
 	 * Appends a name for the next object, array, or value.
 	 * 
@@ -119,7 +119,7 @@ public class UBJsonWriter implements Closeable {
 		named = true;
 		return this;
 	}
-
+	
 	/**
 	 * Appends a {@code byte} value to the stream. This corresponds to the
 	 * {@code int8} value type in the UBJSON specification.
@@ -132,7 +132,7 @@ public class UBJsonWriter implements Closeable {
 		out.writeByte(value);
 		return this;
 	}
-
+	
 	/**
 	 * Appends a {@code short} value to the stream. This corresponds to the
 	 * {@code int16} value type in the UBJSON specification.
@@ -145,7 +145,7 @@ public class UBJsonWriter implements Closeable {
 		out.writeShort(value);
 		return this;
 	}
-
+	
 	/**
 	 * Appends an {@code int} value to the stream. This corresponds to the
 	 * {@code int32} value type in the UBJSON specification.
@@ -158,7 +158,7 @@ public class UBJsonWriter implements Closeable {
 		out.writeInt(value);
 		return this;
 	}
-
+	
 	/**
 	 * Appends a {@code long} value to the stream. This corresponds to the
 	 * {@code int64} value type in the UBJSON specification.
@@ -171,7 +171,7 @@ public class UBJsonWriter implements Closeable {
 		out.writeLong(value);
 		return this;
 	}
-
+	
 	/**
 	 * Appends a {@code float} value to the stream. This corresponds to the
 	 * {@code float32} value type in the UBJSON specification.
@@ -184,7 +184,7 @@ public class UBJsonWriter implements Closeable {
 		out.writeFloat(value);
 		return this;
 	}
-
+	
 	/**
 	 * Appends a {@code double} value to the stream. This corresponds to the
 	 * {@code float64} value type in the UBJSON specification.
@@ -197,7 +197,7 @@ public class UBJsonWriter implements Closeable {
 		out.writeDouble(value);
 		return this;
 	}
-
+	
 	/**
 	 * Appends a {@code boolean} value to the stream. This corresponds to the
 	 * {@code boolean} value type in the UBJSON specification.
@@ -209,7 +209,7 @@ public class UBJsonWriter implements Closeable {
 		out.writeByte(value ? 'T' : 'F');
 		return this;
 	}
-
+	
 	/**
 	 * Appends a {@code char} value to the stream. Because, in Java, a {@code char}
 	 * is 16 bytes, this corresponds to the {@code int16} value type in the UBJSON
@@ -223,7 +223,7 @@ public class UBJsonWriter implements Closeable {
 		out.writeChar(value);
 		return this;
 	}
-
+	
 	/**
 	 * Appends a {@code String} value to the stream. This corresponds to the
 	 * {@code string} value type in the UBJSON specification.
@@ -247,7 +247,7 @@ public class UBJsonWriter implements Closeable {
 		out.write(bytes);
 		return this;
 	}
-
+	
 	/**
 	 * Appends an optimized {@code byte array} value to the stream. As an optimized
 	 * array, the {@code int8} value type marker and element count are encoded once
@@ -267,7 +267,7 @@ public class UBJsonWriter implements Closeable {
 		pop(true);
 		return this;
 	}
-
+	
 	/**
 	 * Appends an optimized {@code short array} value to the stream. As an optimized
 	 * array, the {@code int16} value type marker and element count are encoded once
@@ -287,7 +287,7 @@ public class UBJsonWriter implements Closeable {
 		pop(true);
 		return this;
 	}
-
+	
 	/**
 	 * Appends an optimized {@code int array} value to the stream. As an optimized
 	 * array, the {@code int32} value type marker and element count are encoded once
@@ -307,7 +307,7 @@ public class UBJsonWriter implements Closeable {
 		pop(true);
 		return this;
 	}
-
+	
 	/**
 	 * Appends an optimized {@code long array} value to the stream. As an optimized
 	 * array, the {@code int64} value type marker and element count are encoded once
@@ -327,7 +327,7 @@ public class UBJsonWriter implements Closeable {
 		pop(true);
 		return this;
 	}
-
+	
 	/**
 	 * Appends an optimized {@code float array} value to the stream. As an optimized
 	 * array, the {@code float32} value type marker and element count are encoded
@@ -348,7 +348,7 @@ public class UBJsonWriter implements Closeable {
 		pop(true);
 		return this;
 	}
-
+	
 	/**
 	 * Appends an optimized {@code double array} value to the stream. As an
 	 * optimized array, the {@code float64} value type marker and element count are
@@ -370,7 +370,7 @@ public class UBJsonWriter implements Closeable {
 		pop(true);
 		return this;
 	}
-
+	
 	/**
 	 * Appends a {@code boolean array} value to the stream.
 	 * 
@@ -384,7 +384,7 @@ public class UBJsonWriter implements Closeable {
 		pop();
 		return this;
 	}
-
+	
 	/**
 	 * Appends an optimized {@code char array} value to the stream. As an optimized
 	 * array, the {@code int16} value type marker and element count are encoded once
@@ -404,7 +404,7 @@ public class UBJsonWriter implements Closeable {
 		pop(true);
 		return this;
 	}
-
+	
 	/**
 	 * Appends an optimized {@code String array} value to the stream. As an
 	 * optimized array, the {@code String} value type marker and element count are
@@ -436,7 +436,7 @@ public class UBJsonWriter implements Closeable {
 		pop(true);
 		return this;
 	}
-
+	
 	/**
 	 * Appends the given JsonValue, including all its fields recursively, to the
 	 * stream.
@@ -485,7 +485,7 @@ public class UBJsonWriter implements Closeable {
 		}
 		return this;
 	}
-
+	
 	/**
 	 * Appends the object to the stream, if it is a known value type. This is a
 	 * convenience method that calls through to the appropriate value method.
@@ -515,10 +515,10 @@ public class UBJsonWriter implements Closeable {
 			return value(object.toString());
 		} else
 			throw new IOException("Unknown object type.");
-
+		
 		return this;
 	}
-
+	
 	/**
 	 * Appends a {@code null} value to the stream.
 	 * 
@@ -529,7 +529,7 @@ public class UBJsonWriter implements Closeable {
 		out.writeByte('Z');
 		return this;
 	}
-
+	
 	/**
 	 * Appends a named {@code byte} value to the stream.
 	 * 
@@ -538,7 +538,7 @@ public class UBJsonWriter implements Closeable {
 	public UBJsonWriter set(String name, byte value) throws IOException {
 		return name(name).value(value);
 	}
-
+	
 	/**
 	 * Appends a named {@code short} value to the stream.
 	 * 
@@ -547,7 +547,7 @@ public class UBJsonWriter implements Closeable {
 	public UBJsonWriter set(String name, short value) throws IOException {
 		return name(name).value(value);
 	}
-
+	
 	/**
 	 * Appends a named {@code int} value to the stream.
 	 * 
@@ -556,7 +556,7 @@ public class UBJsonWriter implements Closeable {
 	public UBJsonWriter set(String name, int value) throws IOException {
 		return name(name).value(value);
 	}
-
+	
 	/**
 	 * Appends a named {@code long} value to the stream.
 	 * 
@@ -565,7 +565,7 @@ public class UBJsonWriter implements Closeable {
 	public UBJsonWriter set(String name, long value) throws IOException {
 		return name(name).value(value);
 	}
-
+	
 	/**
 	 * Appends a named {@code float} value to the stream.
 	 * 
@@ -574,7 +574,7 @@ public class UBJsonWriter implements Closeable {
 	public UBJsonWriter set(String name, float value) throws IOException {
 		return name(name).value(value);
 	}
-
+	
 	/**
 	 * Appends a named {@code double} value to the stream.
 	 * 
@@ -583,7 +583,7 @@ public class UBJsonWriter implements Closeable {
 	public UBJsonWriter set(String name, double value) throws IOException {
 		return name(name).value(value);
 	}
-
+	
 	/**
 	 * Appends a named {@code boolean} value to the stream.
 	 * 
@@ -592,7 +592,7 @@ public class UBJsonWriter implements Closeable {
 	public UBJsonWriter set(String name, boolean value) throws IOException {
 		return name(name).value(value);
 	}
-
+	
 	/**
 	 * Appends a named {@code char} value to the stream.
 	 * 
@@ -601,7 +601,7 @@ public class UBJsonWriter implements Closeable {
 	public UBJsonWriter set(String name, char value) throws IOException {
 		return name(name).value(value);
 	}
-
+	
 	/**
 	 * Appends a named {@code String} value to the stream.
 	 * 
@@ -610,7 +610,7 @@ public class UBJsonWriter implements Closeable {
 	public UBJsonWriter set(String name, String value) throws IOException {
 		return name(name).value(value);
 	}
-
+	
 	/**
 	 * Appends a named {@code byte} array value to the stream.
 	 * 
@@ -619,7 +619,7 @@ public class UBJsonWriter implements Closeable {
 	public UBJsonWriter set(String name, byte[] value) throws IOException {
 		return name(name).value(value);
 	}
-
+	
 	/**
 	 * Appends a named {@code short} array value to the stream.
 	 * 
@@ -628,7 +628,7 @@ public class UBJsonWriter implements Closeable {
 	public UBJsonWriter set(String name, short[] value) throws IOException {
 		return name(name).value(value);
 	}
-
+	
 	/**
 	 * Appends a named {@code int} array value to the stream.
 	 * 
@@ -637,7 +637,7 @@ public class UBJsonWriter implements Closeable {
 	public UBJsonWriter set(String name, int[] value) throws IOException {
 		return name(name).value(value);
 	}
-
+	
 	/**
 	 * Appends a named {@code long} array value to the stream.
 	 * 
@@ -646,7 +646,7 @@ public class UBJsonWriter implements Closeable {
 	public UBJsonWriter set(String name, long[] value) throws IOException {
 		return name(name).value(value);
 	}
-
+	
 	/**
 	 * Appends a named {@code float} array value to the stream.
 	 * 
@@ -655,7 +655,7 @@ public class UBJsonWriter implements Closeable {
 	public UBJsonWriter set(String name, float[] value) throws IOException {
 		return name(name).value(value);
 	}
-
+	
 	/**
 	 * Appends a named {@code double} array value to the stream.
 	 * 
@@ -664,7 +664,7 @@ public class UBJsonWriter implements Closeable {
 	public UBJsonWriter set(String name, double[] value) throws IOException {
 		return name(name).value(value);
 	}
-
+	
 	/**
 	 * Appends a named {@code boolean} array value to the stream.
 	 * 
@@ -673,7 +673,7 @@ public class UBJsonWriter implements Closeable {
 	public UBJsonWriter set(String name, boolean[] value) throws IOException {
 		return name(name).value(value);
 	}
-
+	
 	/**
 	 * Appends a named {@code char} array value to the stream.
 	 * 
@@ -682,7 +682,7 @@ public class UBJsonWriter implements Closeable {
 	public UBJsonWriter set(String name, char[] value) throws IOException {
 		return name(name).value(value);
 	}
-
+	
 	/**
 	 * Appends a named {@code String} array value to the stream.
 	 * 
@@ -691,7 +691,7 @@ public class UBJsonWriter implements Closeable {
 	public UBJsonWriter set(String name, String[] value) throws IOException {
 		return name(name).value(value);
 	}
-
+	
 	/**
 	 * Appends a named {@code null} array value to the stream.
 	 * 
@@ -700,7 +700,7 @@ public class UBJsonWriter implements Closeable {
 	public UBJsonWriter set(String name) throws IOException {
 		return name(name).value();
 	}
-
+	
 	private void checkName() {
 		if (current != null) {
 			if (!current.array) {
@@ -710,7 +710,7 @@ public class UBJsonWriter implements Closeable {
 			}
 		}
 	}
-
+	
 	/**
 	 * Ends the current object or array and pops it off of the element stack.
 	 * 
@@ -719,7 +719,7 @@ public class UBJsonWriter implements Closeable {
 	public UBJsonWriter pop() throws IOException {
 		return pop(false);
 	}
-
+	
 	protected UBJsonWriter pop(boolean silent) throws IOException {
 		if (named)
 			throw new IllegalStateException("Expected an object, array, or value since a name was set.");
@@ -730,7 +730,7 @@ public class UBJsonWriter implements Closeable {
 		current = stack.size == 0 ? null : stack.peek();
 		return this;
 	}
-
+	
 	/**
 	 * Flushes the underlying stream. This forces any buffered output bytes to be
 	 * written out to the stream.
@@ -738,7 +738,7 @@ public class UBJsonWriter implements Closeable {
 	public void flush() throws IOException {
 		out.flush();
 	}
-
+	
 	/**
 	 * Closes the underlying output stream and releases any system resources
 	 * associated with the stream.
@@ -749,18 +749,18 @@ public class UBJsonWriter implements Closeable {
 			pop();
 		out.close();
 	}
-
+	
 	private class JsonObject {
 		final boolean array;
-
+		
 		JsonObject(boolean array) throws IOException {
 			this.array = array;
 			out.writeByte(array ? '[' : '{');
 		}
-
+		
 		void close() throws IOException {
 			out.writeByte(array ? ']' : '}');
 		}
 	}
-
+	
 }

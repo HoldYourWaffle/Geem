@@ -22,14 +22,14 @@ import com.badlogic.gdx.utils.Array;
 
 /** @brief Collection of {@link TiledMapTileSet} */
 public class TiledMapTileSets implements Iterable<TiledMapTileSet> {
-
+	
 	private Array<TiledMapTileSet> tilesets;
-
+	
 	/** Creates an empty collection of tilesets. */
 	public TiledMapTileSets() {
 		tilesets = new Array<>();
 	}
-
+	
 	/**
 	 * @param index index to get the desired {@link TiledMapTileSet} at.
 	 * @return tileset at index
@@ -37,7 +37,7 @@ public class TiledMapTileSets implements Iterable<TiledMapTileSet> {
 	public TiledMapTileSet getTileSet(int index) {
 		return tilesets.get(index);
 	}
-
+	
 	/**
 	 * @param name Name of the {@link TiledMapTileSet} to retrieve.
 	 * @return tileset with matching name, null if it doesn't exist
@@ -50,12 +50,12 @@ public class TiledMapTileSets implements Iterable<TiledMapTileSet> {
 		}
 		return null;
 	}
-
+	
 	/** @param tileset set to be added to the collection */
 	public void addTileSet(TiledMapTileSet tileset) {
 		tilesets.add(tileset);
 	}
-
+	
 	/**
 	 * Removes tileset at index
 	 * 
@@ -64,12 +64,12 @@ public class TiledMapTileSets implements Iterable<TiledMapTileSet> {
 	public void removeTileSet(int index) {
 		tilesets.removeIndex(index);
 	}
-
+	
 	/** @param tileset set to be removed */
 	public void removeTileSet(TiledMapTileSet tileset) {
 		tilesets.removeValue(tileset, true);
 	}
-
+	
 	/**
 	 * @param id id of the {@link TiledMapTile} to get.
 	 * @return tile with matching id, null if it doesn't exist
@@ -90,11 +90,11 @@ public class TiledMapTileSets implements Iterable<TiledMapTileSet> {
 		}
 		return null;
 	}
-
+	
 	/** @return iterator to tilesets */
 	@Override
 	public Iterator<TiledMapTileSet> iterator() {
 		return tilesets.iterator();
 	}
-
+	
 }

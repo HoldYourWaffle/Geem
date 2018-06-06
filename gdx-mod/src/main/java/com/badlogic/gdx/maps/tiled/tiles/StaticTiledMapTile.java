@@ -23,41 +23,41 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 
 /** @brief Represents a non changing {@link TiledMapTile} (can be cached) */
 public class StaticTiledMapTile implements TiledMapTile {
-
+	
 	private int id;
-
+	
 	private BlendMode blendMode = BlendMode.ALPHA;
-
+	
 	private MapProperties properties;
-
+	
 	private MapObjects objects;
-
+	
 	private TextureRegion textureRegion;
-
+	
 	private float offsetX;
-
+	
 	private float offsetY;
-
+	
 	@Override
 	public int getId() {
 		return id;
 	}
-
+	
 	@Override
 	public void setId(int id) {
 		this.id = id;
 	}
-
+	
 	@Override
 	public BlendMode getBlendMode() {
 		return blendMode;
 	}
-
+	
 	@Override
 	public void setBlendMode(BlendMode blendMode) {
 		this.blendMode = blendMode;
 	}
-
+	
 	@Override
 	public MapProperties getProperties() {
 		if (properties == null) {
@@ -65,7 +65,7 @@ public class StaticTiledMapTile implements TiledMapTile {
 		}
 		return properties;
 	}
-
+	
 	@Override
 	public MapObjects getObjects() {
 		if (objects == null) {
@@ -73,37 +73,37 @@ public class StaticTiledMapTile implements TiledMapTile {
 		}
 		return objects;
 	}
-
+	
 	@Override
 	public TextureRegion getTextureRegion() {
 		return textureRegion;
 	}
-
+	
 	@Override
 	public void setTextureRegion(TextureRegion textureRegion) {
 		this.textureRegion = textureRegion;
 	}
-
+	
 	@Override
 	public float getOffsetX() {
 		return offsetX;
 	}
-
+	
 	@Override
 	public void setOffsetX(float offsetX) {
 		this.offsetX = offsetX;
 	}
-
+	
 	@Override
 	public float getOffsetY() {
 		return offsetY;
 	}
-
+	
 	@Override
 	public void setOffsetY(float offsetY) {
 		this.offsetY = offsetY;
 	}
-
+	
 	/**
 	 * Creates a static tile with the given region
 	 * 
@@ -112,7 +112,7 @@ public class StaticTiledMapTile implements TiledMapTile {
 	public StaticTiledMapTile(TextureRegion textureRegion) {
 		this.textureRegion = textureRegion;
 	}
-
+	
 	/**
 	 * Copy constructor
 	 * 
@@ -126,5 +126,5 @@ public class StaticTiledMapTile implements TiledMapTile {
 		this.textureRegion = copy.textureRegion;
 		this.id = copy.id;
 	}
-
+	
 }

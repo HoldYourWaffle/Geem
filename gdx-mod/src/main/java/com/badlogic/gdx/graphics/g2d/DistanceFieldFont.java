@@ -39,59 +39,59 @@ import com.badlogic.gdx.utils.Array;
  */
 public class DistanceFieldFont extends BitmapFont {
 	private float distanceFieldSmoothing;
-
+	
 	public DistanceFieldFont(BitmapFontData data, Array<TextureRegion> pageRegions, boolean integer) {
 		super(data, pageRegions, integer);
 	}
-
+	
 	public DistanceFieldFont(BitmapFontData data, TextureRegion region, boolean integer) {
 		super(data, region, integer);
 	}
-
+	
 	public DistanceFieldFont(FileHandle fontFile, boolean flip) {
 		super(fontFile, flip);
 	}
-
+	
 	public DistanceFieldFont(FileHandle fontFile, FileHandle imageFile, boolean flip, boolean integer) {
 		super(fontFile, imageFile, flip, integer);
 	}
-
+	
 	public DistanceFieldFont(FileHandle fontFile, FileHandle imageFile, boolean flip) {
 		super(fontFile, imageFile, flip);
 	}
-
+	
 	public DistanceFieldFont(FileHandle fontFile, TextureRegion region, boolean flip) {
 		super(fontFile, region, flip);
 	}
-
+	
 	public DistanceFieldFont(FileHandle fontFile, TextureRegion region) {
 		super(fontFile, region);
 	}
-
+	
 	public DistanceFieldFont(FileHandle fontFile) {
 		super(fontFile);
 	}
-
+	
 	@Override
 	protected void load(BitmapFontData data) {
 		super.load(data);
-
+		
 		// Distance field font rendering requires font texture to be filtered linear.
 		final Array<TextureRegion> regions = getRegions();
 		for (TextureRegion region : regions)
 			region.getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 	}
-
+	
 	@Override
 	public BitmapFontCache newFontCache() {
 		return new DistanceFieldFontCache(this, integer);
 	}
-
+	
 	/** @return The distance field smoothing factor for this font. */
 	public float getDistanceFieldSmoothing() {
 		return distanceFieldSmoothing;
 	}
-
+	
 	/**
 	 * @param distanceFieldSmoothing Set the distance field smoothing factor for
 	 *                               this font. SpriteBatch needs to have this
@@ -100,7 +100,7 @@ public class DistanceFieldFont extends BitmapFont {
 	public void setDistanceFieldSmoothing(float distanceFieldSmoothing) {
 		this.distanceFieldSmoothing = distanceFieldSmoothing;
 	}
-
+	
 	/**
 	 * Returns a new instance of the distance field shader, see
 	 * https://github.com/libgdx/libgdx/wiki/Distance-field-fonts if the u_smoothing
@@ -121,7 +121,7 @@ public class DistanceFieldFont extends BitmapFont {
 				+ "	v_texCoords = " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
 				+ "	gl_Position =  u_projTrans * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 				+ "}\n";
-
+		
 		String fragmentShader = "#ifdef GL_ES\n" //
 				+ "	precision mediump float;\n" //
 				+ "	precision mediump int;\n" //
@@ -142,13 +142,13 @@ public class DistanceFieldFont extends BitmapFont {
 				+ "		gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" //
 				+ "	}\n" //
 				+ "}\n";
-
+		
 		ShaderProgram shader = new ShaderProgram(vertexShader, fragmentShader);
 		if (shader.isCompiled() == false)
 			throw new IllegalArgumentException("Error compiling distance field shader: " + shader.getLog());
 		return shader;
 	}
-
+	
 	/**
 	 * Provides a font cache that uses distance field shader for rendering fonts.
 	 * Attention: breaks batching because uniform is needed for smoothing factor, so
@@ -160,28 +160,28 @@ public class DistanceFieldFont extends BitmapFont {
 		public DistanceFieldFontCache(DistanceFieldFont font) {
 			super(font, font.usesIntegerPositions());
 		}
-
+		
 		public DistanceFieldFontCache(DistanceFieldFont font, boolean integer) {
 			super(font, integer);
 		}
-
+		
 		private float getSmoothingFactor() {
 			final DistanceFieldFont font = (DistanceFieldFont) super.getFont();
 			return font.getDistanceFieldSmoothing() * font.getScaleX();
 		}
-
+		
 		private void setSmoothingUniform(Batch spriteBatch, float smoothing) {
 			spriteBatch.flush();
 			spriteBatch.getShader().setUniformf("u_smoothing", smoothing);
 		}
-
+		
 		@Override
 		public void draw(Batch spriteBatch) {
 			setSmoothingUniform(spriteBatch, getSmoothingFactor());
 			super.draw(spriteBatch);
 			setSmoothingUniform(spriteBatch, 0);
 		}
-
+		
 		@Override
 		public void draw(Batch spriteBatch, int start, int end) {
 			setSmoothingUniform(spriteBatch, getSmoothingFactor());

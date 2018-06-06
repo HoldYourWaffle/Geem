@@ -25,12 +25,12 @@ import com.badlogic.gdx.graphics.g3d.particles.ParticleControllerComponent;
  * @author Inferno
  */
 public class ScaleInfluencer extends SimpleInfluencer {
-
+	
 	public ScaleInfluencer() {
 		super();
 		valueChannelDescriptor = ParticleChannels.Scale;
 	}
-
+	
 	@Override
 	public void activateParticles(int startIndex, int count) {
 		if (value.isRelative()) {
@@ -53,14 +53,14 @@ public class ScaleInfluencer extends SimpleInfluencer {
 			}
 		}
 	}
-
+	
 	public ScaleInfluencer(ScaleInfluencer scaleInfluencer) {
 		super(scaleInfluencer);
 	}
-
+	
 	@Override
 	public ParticleControllerComponent copy() {
 		return new ScaleInfluencer(this);
 	}
-
+	
 }

@@ -25,6 +25,6 @@ import com.badlogic.gdx.utils.Array;
  */
 public interface GroupPlug {
 	public void beforeGroup(Array<Decal> contents);
-
+	
 	public void afterGroup();
 }

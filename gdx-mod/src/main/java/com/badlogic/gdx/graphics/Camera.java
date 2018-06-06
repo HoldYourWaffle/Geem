@@ -38,7 +38,7 @@ public abstract class Camera {
 	public final Vector3 direction = new Vector3(0, 0, -1);
 	/** the unit length up vector of the camera **/
 	public final Vector3 up = new Vector3(0, 1, 0);
-
+	
 	/** the projection matrix **/
 	public final Matrix4 projection = new Matrix4();
 	/** the view matrix **/
@@ -47,37 +47,37 @@ public abstract class Camera {
 	public final Matrix4 combined = new Matrix4();
 	/** the inverse combined projection and view matrix **/
 	public final Matrix4 invProjectionView = new Matrix4();
-
+	
 	/** the near clipping plane distance, has to be positive **/
 	public float near = 1;
 	/** the far clipping plane distance, has to be positive **/
 	public float far = 100;
-
+	
 	/** the viewport width **/
 	public float viewportWidth = 0;
 	/** the viewport height **/
 	public float viewportHeight = 0;
-
+	
 	/** the frustum **/
 	public final Frustum frustum = new Frustum();
-
+	
 	private final Vector3 tmpVec = new Vector3();
 	private final Ray ray = new Ray(new Vector3(), new Vector3());
-
+	
 	/**
 	 * Recalculates the projection and view matrix of this camera and the
 	 * {@link Frustum} planes. Use this after you've manipulated any of the
 	 * attributes of the camera.
 	 */
 	public abstract void update();
-
+	
 	/**
 	 * Recalculates the projection and view matrix of this camera and the
 	 * {@link Frustum} planes if <code>updateFrustum</code> is true. Use this after
 	 * you've manipulated any of the attributes of the camera.
 	 */
 	public abstract void update(boolean updateFrustum);
-
+	
 	/**
 	 * Recalculates the direction of the camera to look at the point (x, y, z). This
 	 * function assumes the up vector is normalized.
@@ -101,7 +101,7 @@ public abstract class Camera {
 			normalizeUp();
 		}
 	}
-
+	
 	/**
 	 * Recalculates the direction of the camera to look at the point (x, y, z).
 	 * 
@@ -110,7 +110,7 @@ public abstract class Camera {
 	public void lookAt(Vector3 target) {
 		lookAt(target.x, target.y, target.z);
 	}
-
+	
 	/**
 	 * Normalizes the up vector by first calculating the right vector via a cross
 	 * product between direction and up, and then recalculating the up vector via a
@@ -120,7 +120,7 @@ public abstract class Camera {
 		tmpVec.set(direction).crs(up).nor();
 		up.set(tmpVec).crs(direction).nor();
 	}
-
+	
 	/**
 	 * Rotates the direction and up vector of this camera by the given angle around
 	 * the given axis. The direction and up vector will not be orthogonalized.
@@ -134,7 +134,7 @@ public abstract class Camera {
 		direction.rotate(angle, axisX, axisY, axisZ);
 		up.rotate(angle, axisX, axisY, axisZ);
 	}
-
+	
 	/**
 	 * Rotates the direction and up vector of this camera by the given angle around
 	 * the given axis. The direction and up vector will not be orthogonalized.
@@ -146,7 +146,7 @@ public abstract class Camera {
 		direction.rotate(axis, angle);
 		up.rotate(axis, angle);
 	}
-
+	
 	/**
 	 * Rotates the direction and up vector of this camera by the given rotation
 	 * matrix. The direction and up vector will not be orthogonalized.
@@ -157,7 +157,7 @@ public abstract class Camera {
 		direction.rot(transform);
 		up.rot(transform);
 	}
-
+	
 	/**
 	 * Rotates the direction and up vector of this camera by the given
 	 * {@link Quaternion}. The direction and up vector will not be orthogonalized.
@@ -168,7 +168,7 @@ public abstract class Camera {
 		quat.transform(direction);
 		quat.transform(up);
 	}
-
+	
 	/**
 	 * Rotates the direction and up vector of this camera by the given angle around
 	 * the given axis, with the axis attached to given point. The direction and up
@@ -186,7 +186,7 @@ public abstract class Camera {
 		tmpVec.rotate(axis, angle);
 		translate(-tmpVec.x, -tmpVec.y, -tmpVec.z);
 	}
-
+	
 	/**
 	 * Transform the position, direction and up vector by the given matrix
 	 * 
@@ -196,7 +196,7 @@ public abstract class Camera {
 		position.mul(transform);
 		rotate(transform);
 	}
-
+	
 	/**
 	 * Moves the camera by the given amount on each axis.
 	 * 
@@ -207,7 +207,7 @@ public abstract class Camera {
 	public void translate(float x, float y, float z) {
 		position.add(x, y, z);
 	}
-
+	
 	/**
 	 * Moves the camera by the given vector.
 	 * 
@@ -216,7 +216,7 @@ public abstract class Camera {
 	public void translate(Vector3 vec) {
 		position.add(vec);
 	}
-
+	
 	/**
 	 * Function to translate a point given in screen coordinates to world space.
 	 * It's the same as GLU gluUnProject, but does not rely on OpenGL. The x- and
@@ -249,7 +249,7 @@ public abstract class Camera {
 		screenCoords.prj(invProjectionView);
 		return screenCoords;
 	}
-
+	
 	/**
 	 * Function to translate a point given in screen coordinates to world space.
 	 * It's the same as GLU gluUnProject but does not rely on OpenGL. The viewport
@@ -267,7 +267,7 @@ public abstract class Camera {
 		unproject(screenCoords, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		return screenCoords;
 	}
-
+	
 	/**
 	 * Projects the {@link Vector3} given in world space to screen coordinates. It's
 	 * the same as GLU gluProject with one small deviation: The viewport is assumed
@@ -282,7 +282,7 @@ public abstract class Camera {
 		project(worldCoords, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		return worldCoords;
 	}
-
+	
 	/**
 	 * Projects the {@link Vector3} given in world space to screen coordinates. It's
 	 * the same as GLU gluProject with one small deviation: The viewport is assumed
@@ -310,7 +310,7 @@ public abstract class Camera {
 		worldCoords.z = (worldCoords.z + 1) / 2;
 		return worldCoords;
 	}
-
+	
 	/**
 	 * Creates a picking {@link Ray} from the coordinates given in screen
 	 * coordinates. It is assumed that the viewport spans the whole screen. The
@@ -333,7 +333,7 @@ public abstract class Camera {
 		ray.direction.sub(ray.origin).nor();
 		return ray;
 	}
-
+	
 	/**
 	 * Creates a picking {@link Ray} from the coordinates given in screen
 	 * coordinates. It is assumed that the viewport spans the whole screen. The

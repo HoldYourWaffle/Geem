@@ -55,7 +55,7 @@ public class PixmapIO {
 	static public void writeCIM(FileHandle file, Pixmap pixmap) {
 		CIM.write(file, pixmap);
 	}
-
+	
 	/**
 	 * Reads the {@link Pixmap} from the given file, assuming the Pixmap was written
 	 * with the {@link PixmapIO#writeCIM(FileHandle, Pixmap)} method. Throws a
@@ -66,7 +66,7 @@ public class PixmapIO {
 	static public Pixmap readCIM(FileHandle file) {
 		return CIM.read(file);
 	}
-
+	
 	/**
 	 * Writes the pixmap as a PNG with compression. See {@link PNG} to configure the
 	 * compression level, more efficiently flip the pixmap vertically, and to write
@@ -85,16 +85,16 @@ public class PixmapIO {
 			throw new GdxRuntimeException("Error writing PNG: " + file, ex);
 		}
 	}
-
+	
 	/** @author mzechner */
 	static private class CIM {
 		static private final int BUFFER_SIZE = 32000;
 		static private final byte[] writeBuffer = new byte[BUFFER_SIZE];
 		static private final byte[] readBuffer = new byte[BUFFER_SIZE];
-
+		
 		static public void write(FileHandle file, Pixmap pixmap) {
 			DataOutputStream out = null;
-
+			
 			try {
 				// long start = System.nanoTime();
 				DeflaterOutputStream deflaterOutputStream = new DeflaterOutputStream(file.write(false));
@@ -102,24 +102,24 @@ public class PixmapIO {
 				out.writeInt(pixmap.getWidth());
 				out.writeInt(pixmap.getHeight());
 				out.writeInt(Format.toGdx2DPixmapFormat(pixmap.getFormat()));
-
+				
 				ByteBuffer pixelBuf = pixmap.getPixels();
 				pixelBuf.position(0);
 				pixelBuf.limit(pixelBuf.capacity());
-
+				
 				int remainingBytes = pixelBuf.capacity() % BUFFER_SIZE;
 				int iterations = pixelBuf.capacity() / BUFFER_SIZE;
-
+				
 				synchronized (writeBuffer) {
 					for (int i = 0; i < iterations; i++) {
 						pixelBuf.get(writeBuffer);
 						out.write(writeBuffer);
 					}
-
+					
 					pixelBuf.get(writeBuffer, 0, remainingBytes);
 					out.write(writeBuffer, 0, remainingBytes);
 				}
-
+				
 				pixelBuf.position(0);
 				pixelBuf.limit(pixelBuf.capacity());
 				// Gdx.app.log("PixmapIO", "write (" + file.name() + "):" + (System.nanoTime() -
@@ -131,10 +131,10 @@ public class PixmapIO {
 				StreamUtils.closeQuietly(out);
 			}
 		}
-
+		
 		static public Pixmap read(FileHandle file) {
 			DataInputStream in = null;
-
+			
 			try {
 				// long start = System.nanoTime();
 				in = new DataInputStream(new InflaterInputStream(new BufferedInputStream(file.read())));
@@ -142,18 +142,18 @@ public class PixmapIO {
 				int height = in.readInt();
 				Format format = Format.fromGdx2DPixmapFormat(in.readInt());
 				Pixmap pixmap = new Pixmap(width, height, format);
-
+				
 				ByteBuffer pixelBuf = pixmap.getPixels();
 				pixelBuf.position(0);
 				pixelBuf.limit(pixelBuf.capacity());
-
+				
 				synchronized (readBuffer) {
 					int readBytes = 0;
 					while ((readBytes = in.read(readBuffer)) > 0) {
 						pixelBuf.put(readBuffer, 0, readBytes);
 					}
 				}
-
+				
 				pixelBuf.position(0);
 				pixelBuf.limit(pixelBuf.capacity());
 				// Gdx.app.log("PixmapIO", "read:" + (System.nanoTime() - start) /
@@ -166,7 +166,7 @@ public class PixmapIO {
 			}
 		}
 	}
-
+	
 	/**
 	 * PNG encoder with compression. An instance can be reused to encode multiple
 	 * PNGs with minimal allocation.
@@ -205,27 +205,27 @@ public class PixmapIO {
 		static private final byte FILTER_NONE = 0;
 		static private final byte INTERLACE_NONE = 0;
 		static private final byte PAETH = 4;
-
+		
 		private final ChunkBuffer buffer;
 		private final Deflater deflater;
 		private ByteArray lineOutBytes, curLineBytes, prevLineBytes;
 		private boolean flipY = true;
 		private int lastLineLen;
-
+		
 		public PNG() {
 			this(128 * 128);
 		}
-
+		
 		public PNG(int initialBufferSize) {
 			buffer = new ChunkBuffer(initialBufferSize);
 			deflater = new Deflater();
 		}
-
+		
 		/** If true, the resulting PNG is flipped vertically. Default is true. */
 		public void setFlipY(boolean flipY) {
 			this.flipY = flipY;
 		}
-
+		
 		/**
 		 * Sets the deflate compression level. Default is
 		 * {@link Deflater#DEFAULT_COMPRESSION}.
@@ -233,7 +233,7 @@ public class PixmapIO {
 		public void setCompression(int level) {
 			deflater.setLevel(level);
 		}
-
+		
 		public void write(FileHandle file, Pixmap pixmap) throws IOException {
 			OutputStream output = file.write(false);
 			try {
@@ -242,13 +242,13 @@ public class PixmapIO {
 				StreamUtils.closeQuietly(output);
 			}
 		}
-
+		
 		/** Writes the pixmap to the stream without closing the stream. */
 		public void write(OutputStream output, Pixmap pixmap) throws IOException {
 			DeflaterOutputStream deflaterOutput = new DeflaterOutputStream(buffer, deflater);
 			DataOutputStream dataOutput = new DataOutputStream(output);
 			dataOutput.write(SIGNATURE);
-
+			
 			buffer.writeInt(IHDR);
 			buffer.writeInt(pixmap.getWidth());
 			buffer.writeInt(pixmap.getHeight());
@@ -258,10 +258,10 @@ public class PixmapIO {
 			buffer.writeByte(FILTER_NONE);
 			buffer.writeByte(INTERLACE_NONE);
 			buffer.endChunk(dataOutput);
-
+			
 			buffer.writeInt(IDAT);
 			deflater.reset();
-
+			
 			int lineLen = pixmap.getWidth() * 4;
 			byte[] lineOut, curLine, prevLine;
 			if (lineOutBytes == null) {
@@ -276,7 +276,7 @@ public class PixmapIO {
 					prevLine[i] = 0;
 			}
 			lastLineLen = lineLen;
-
+			
 			ByteBuffer pixels = pixmap.getPixels();
 			int oldPosition = pixels.position();
 			boolean rgba8888 = pixmap.getFormat() == Format.RGBA8888;
@@ -294,12 +294,12 @@ public class PixmapIO {
 						curLine[x++] = (byte) (pixel & 0xff);
 					}
 				}
-
+				
 				lineOut[0] = (byte) (curLine[0] - prevLine[0]);
 				lineOut[1] = (byte) (curLine[1] - prevLine[1]);
 				lineOut[2] = (byte) (curLine[2] - prevLine[2]);
 				lineOut[3] = (byte) (curLine[3] - prevLine[3]);
-
+				
 				for (int x = 4; x < lineLen; x++) {
 					int a = curLine[x - 4] & 0xff;
 					int b = prevLine[x] & 0xff;
@@ -320,10 +320,10 @@ public class PixmapIO {
 						c = b;
 					lineOut[x] = (byte) (curLine[x] - c);
 				}
-
+				
 				deflaterOutput.write(PAETH);
 				deflaterOutput.write(lineOut, 0, lineLen);
-
+				
 				byte[] temp = curLine;
 				curLine = prevLine;
 				prevLine = temp;
@@ -331,13 +331,13 @@ public class PixmapIO {
 			pixels.position(oldPosition);
 			deflaterOutput.finish();
 			buffer.endChunk(dataOutput);
-
+			
 			buffer.writeInt(IEND);
 			buffer.endChunk(dataOutput);
-
+			
 			output.flush();
 		}
-
+		
 		/**
 		 * Disposal will happen automatically in {@link #finalize()} but can be done
 		 * explicitly if desired.
@@ -346,21 +346,21 @@ public class PixmapIO {
 		public void dispose() {
 			deflater.end();
 		}
-
+		
 		static class ChunkBuffer extends DataOutputStream {
 			final ByteArrayOutputStream buffer;
 			final CRC32 crc;
-
+			
 			ChunkBuffer(int initialSize) {
 				this(new ByteArrayOutputStream(initialSize), new CRC32());
 			}
-
+			
 			private ChunkBuffer(ByteArrayOutputStream buffer, CRC32 crc) {
 				super(new CheckedOutputStream(buffer, crc));
 				this.buffer = buffer;
 				this.crc = crc;
 			}
-
+			
 			public void endChunk(DataOutputStream target) throws IOException {
 				flush();
 				target.writeInt(buffer.size() - 4);

@@ -24,41 +24,41 @@ import com.badlogic.gdx.utils.BufferUtils;
 public class IndexArray implements IndexData {
 	final ShortBuffer buffer;
 	final ByteBuffer byteBuffer;
-
+	
 	// used to work around bug: https://android-review.googlesource.com/#/c/73175/
 	private final boolean empty;
-
+	
 	/**
 	 * Creates a new IndexArray to be used with vertex arrays.
 	 * 
 	 * @param maxIndices the maximum number of indices this buffer can hold
 	 */
 	public IndexArray(int maxIndices) {
-
+		
 		empty = maxIndices == 0;
 		if (empty) {
 			maxIndices = 1; // avoid allocating a zero-sized buffer because of bug in Android's ART <
 							// Android 5.0
 		}
-
+		
 		byteBuffer = BufferUtils.newUnsafeByteBuffer(maxIndices * 2);
 		buffer = byteBuffer.asShortBuffer();
 		buffer.flip();
 		byteBuffer.flip();
 	}
-
+	
 	/** @return the number of indices currently stored in this buffer */
 	@Override
 	public int getNumIndices() {
 		return empty ? 0 : buffer.limit();
 	}
-
+	
 	/** @return the maximum number of indices this IndexArray can store. */
 	@Override
 	public int getNumMaxIndices() {
 		return empty ? 0 : buffer.capacity();
 	}
-
+	
 	/**
 	 * <p>
 	 * Sets the indices of this IndexArray, discarding the old indices. The count
@@ -82,7 +82,7 @@ public class IndexArray implements IndexData {
 		byteBuffer.position(0);
 		byteBuffer.limit(count << 1);
 	}
-
+	
 	@Override
 	public void setIndices(ShortBuffer indices) {
 		int pos = indices.position();
@@ -94,7 +94,7 @@ public class IndexArray implements IndexData {
 		byteBuffer.position(0);
 		byteBuffer.limit(buffer.limit() << 1);
 	}
-
+	
 	@Override
 	public void updateIndices(int targetOffset, short[] indices, int offset, int count) {
 		final int pos = byteBuffer.position();
@@ -102,7 +102,7 @@ public class IndexArray implements IndexData {
 		BufferUtils.copy(indices, offset, byteBuffer, count);
 		byteBuffer.position(pos);
 	}
-
+	
 	/**
 	 * <p>
 	 * Returns the underlying ShortBuffer. If you modify the buffer contents they
@@ -116,17 +116,17 @@ public class IndexArray implements IndexData {
 	public ShortBuffer getBuffer() {
 		return buffer;
 	}
-
+	
 	/** Binds this IndexArray for rendering with glDrawElements. */
 	@Override
 	public void bind() {
 	}
-
+	
 	/** Unbinds this IndexArray. */
 	@Override
 	public void unbind() {
 	}
-
+	
 	/**
 	 * Invalidates the IndexArray so a new OpenGL buffer handle is created. Use this
 	 * in case of a context loss.
@@ -134,7 +134,7 @@ public class IndexArray implements IndexData {
 	@Override
 	public void invalidate() {
 	}
-
+	
 	/** Disposes this IndexArray and all its associated OpenGL resources. */
 	@Override
 	public void dispose() {

@@ -51,9 +51,9 @@ public class ModelBuilder {
 	private Node node;
 	/** The mesh builders created between begin and end */
 	private Array<MeshBuilder> builders = new Array<>();
-
+	
 	private Matrix4 tmpTransform = new Matrix4();
-
+	
 	private MeshBuilder getBuilder(final VertexAttributes attributes) {
 		for (final MeshBuilder mb : builders)
 			if (mb.getAttributes().equals(attributes) && mb.lastIndex() < Short.MAX_VALUE / 2)
@@ -63,7 +63,7 @@ public class ModelBuilder {
 		builders.add(result);
 		return result;
 	}
-
+	
 	/** Begin building a new model */
 	public void begin() {
 		if (model != null)
@@ -72,7 +72,7 @@ public class ModelBuilder {
 		model = new Model();
 		builders.clear();
 	}
-
+	
 	/**
 	 * End building the model.
 	 * 
@@ -85,21 +85,21 @@ public class ModelBuilder {
 		final Model result = model;
 		endnode();
 		model = null;
-
+		
 		for (final MeshBuilder mb : builders)
 			mb.end();
 		builders.clear();
-
+		
 		rebuildReferences(result);
 		return result;
 	}
-
+	
 	private void endnode() {
 		if (node != null) {
 			node = null;
 		}
 	}
-
+	
 	/**
 	 * Adds the {@link Node} to the model and sets it active for building. Use any
 	 * of the part(...) method to add a NodePart.
@@ -107,15 +107,15 @@ public class ModelBuilder {
 	protected Node node(final Node node) {
 		if (model == null)
 			throw new GdxRuntimeException("Call begin() first");
-
+		
 		endnode();
-
+		
 		model.nodes.add(node);
 		this.node = node;
-
+		
 		return node;
 	}
-
+	
 	/**
 	 * Add a node to the model. Use any of the part(...) method to add a NodePart.
 	 * 
@@ -127,7 +127,7 @@ public class ModelBuilder {
 		node.id = "node" + model.nodes.size;
 		return node;
 	}
-
+	
 	/**
 	 * Adds the nodes of the specified model to a new node of the model being build.
 	 * After this method the given model can no longer be used. Do not call the
@@ -144,7 +144,7 @@ public class ModelBuilder {
 			manage(disposable);
 		return node;
 	}
-
+	
 	/**
 	 * Add the {@link Disposable} object to the model, causing it to be disposed
 	 * when the model is disposed.
@@ -154,7 +154,7 @@ public class ModelBuilder {
 			throw new GdxRuntimeException("Call begin() first");
 		model.manageDisposable(disposable);
 	}
-
+	
 	/**
 	 * Adds the specified MeshPart to the current Node. The Mesh will be managed by
 	 * the model and disposed when the model is disposed. The resources the Material
@@ -166,7 +166,7 @@ public class ModelBuilder {
 			node();
 		node.parts.add(new NodePart(meshpart, material));
 	}
-
+	
 	/**
 	 * Adds the specified mesh part to the current node. The Mesh will be managed by
 	 * the model and disposed when the model is disposed. The resources the Material
@@ -186,7 +186,7 @@ public class ModelBuilder {
 		part(meshPart, material);
 		return meshPart;
 	}
-
+	
 	/**
 	 * Adds the specified mesh part to the current node. The Mesh will be managed by
 	 * the model and disposed when the model is disposed. The resources the Material
@@ -198,7 +198,7 @@ public class ModelBuilder {
 	public MeshPart part(final String id, final Mesh mesh, int primitiveType, final Material material) {
 		return part(id, mesh, primitiveType, 0, mesh.getNumIndices(), material);
 	}
-
+	
 	/**
 	 * Creates a new MeshPart within the current Node and returns a
 	 * {@link MeshPartBuilder} which can be used to build the shape of the part. If
@@ -215,7 +215,7 @@ public class ModelBuilder {
 		part(builder.part(id, primitiveType), material);
 		return builder;
 	}
-
+	
 	/**
 	 * Creates a new MeshPart within the current Node and returns a
 	 * {@link MeshPartBuilder} which can be used to build the shape of the part. If
@@ -233,7 +233,7 @@ public class ModelBuilder {
 	public MeshPartBuilder part(final String id, int primitiveType, final long attributes, final Material material) {
 		return part(id, primitiveType, MeshBuilder.createAttributes(attributes), material);
 	}
-
+	
 	/**
 	 * Convenience method to create a model with a single node containing a box
 	 * shape. The resources the Material might contain are not managed, use
@@ -247,7 +247,7 @@ public class ModelBuilder {
 	public Model createBox(float width, float height, float depth, final Material material, final long attributes) {
 		return createBox(width, height, depth, GL20.GL_TRIANGLES, material, attributes);
 	}
-
+	
 	/**
 	 * Convenience method to create a model with a single node containing a box
 	 * shape. The resources the Material might contain are not managed, use
@@ -264,7 +264,7 @@ public class ModelBuilder {
 		part("box", primitiveType, attributes, material).box(width, height, depth);
 		return end();
 	}
-
+	
 	/**
 	 * Convenience method to create a model with a single node containing a
 	 * rectangle shape. The resources the Material might contain are not managed,
@@ -281,7 +281,7 @@ public class ModelBuilder {
 		return createRect(x00, y00, z00, x10, y10, z10, x11, y11, z11, x01, y01, z01, normalX, normalY, normalZ,
 				GL20.GL_TRIANGLES, material, attributes);
 	}
-
+	
 	/**
 	 * Convenience method to create a model with a single node containing a
 	 * rectangle shape. The resources the Material might contain are not managed,
@@ -300,7 +300,7 @@ public class ModelBuilder {
 				z01, normalX, normalY, normalZ);
 		return end();
 	}
-
+	
 	/**
 	 * Convenience method to create a model with a single node containing a cylinder
 	 * shape. The resources the Material might contain are not managed, use
@@ -315,7 +315,7 @@ public class ModelBuilder {
 			final long attributes) {
 		return createCylinder(width, height, depth, divisions, GL20.GL_TRIANGLES, material, attributes);
 	}
-
+	
 	/**
 	 * Convenience method to create a model with a single node containing a cylinder
 	 * shape. The resources the Material might contain are not managed, use
@@ -330,7 +330,7 @@ public class ModelBuilder {
 			final Material material, final long attributes) {
 		return createCylinder(width, height, depth, divisions, primitiveType, material, attributes, 0, 360);
 	}
-
+	
 	/**
 	 * Convenience method to create a model with a single node containing a cylinder
 	 * shape. The resources the Material might contain are not managed, use
@@ -346,7 +346,7 @@ public class ModelBuilder {
 		return createCylinder(width, height, depth, divisions, GL20.GL_TRIANGLES, material, attributes, angleFrom,
 				angleTo);
 	}
-
+	
 	/**
 	 * Convenience method to create a model with a single node containing a cylinder
 	 * shape. The resources the Material might contain are not managed, use
@@ -364,7 +364,7 @@ public class ModelBuilder {
 				angleTo);
 		return end();
 	}
-
+	
 	/**
 	 * Convenience method to create a model with a single node containing a cone
 	 * shape. The resources the Material might contain are not managed, use
@@ -379,7 +379,7 @@ public class ModelBuilder {
 			final long attributes) {
 		return createCone(width, height, depth, divisions, GL20.GL_TRIANGLES, material, attributes);
 	}
-
+	
 	/**
 	 * Convenience method to create a model with a single node containing a cone
 	 * shape. The resources the Material might contain are not managed, use
@@ -394,7 +394,7 @@ public class ModelBuilder {
 			final Material material, final long attributes) {
 		return createCone(width, height, depth, divisions, primitiveType, material, attributes, 0, 360);
 	}
-
+	
 	/**
 	 * Convenience method to create a model with a single node containing a cone
 	 * shape. The resources the Material might contain are not managed, use
@@ -409,7 +409,7 @@ public class ModelBuilder {
 			final long attributes, float angleFrom, float angleTo) {
 		return createCone(width, height, depth, divisions, GL20.GL_TRIANGLES, material, attributes, angleFrom, angleTo);
 	}
-
+	
 	/**
 	 * Convenience method to create a model with a single node containing a cone
 	 * shape. The resources the Material might contain are not managed, use
@@ -426,7 +426,7 @@ public class ModelBuilder {
 		part("cone", primitiveType, attributes, material).cone(width, height, depth, divisions, angleFrom, angleTo);
 		return end();
 	}
-
+	
 	/**
 	 * Convenience method to create a model with a single node containing a sphere
 	 * shape. The resources the Material might contain are not managed, use
@@ -441,7 +441,7 @@ public class ModelBuilder {
 			final Material material, final long attributes) {
 		return createSphere(width, height, depth, divisionsU, divisionsV, GL20.GL_TRIANGLES, material, attributes);
 	}
-
+	
 	/**
 	 * Convenience method to create a model with a single node containing a sphere
 	 * shape. The resources the Material might contain are not managed, use
@@ -457,7 +457,7 @@ public class ModelBuilder {
 		return createSphere(width, height, depth, divisionsU, divisionsV, primitiveType, material, attributes, 0, 360,
 				0, 180);
 	}
-
+	
 	/**
 	 * Convenience method to create a model with a single node containing a sphere
 	 * shape. The resources the Material might contain are not managed, use
@@ -474,7 +474,7 @@ public class ModelBuilder {
 		return createSphere(width, height, depth, divisionsU, divisionsV, GL20.GL_TRIANGLES, material, attributes,
 				angleUFrom, angleUTo, angleVFrom, angleVTo);
 	}
-
+	
 	/**
 	 * Convenience method to create a model with a single node containing a sphere
 	 * shape. The resources the Material might contain are not managed, use
@@ -493,7 +493,7 @@ public class ModelBuilder {
 				angleUFrom, angleUTo, angleVFrom, angleVTo);
 		return end();
 	}
-
+	
 	/**
 	 * Convenience method to create a model with a single node containing a capsule
 	 * shape. The resources the Material might contain are not managed, use
@@ -508,7 +508,7 @@ public class ModelBuilder {
 			final long attributes) {
 		return createCapsule(radius, height, divisions, GL20.GL_TRIANGLES, material, attributes);
 	}
-
+	
 	/**
 	 * Convenience method to create a model with a single node containing a capsule
 	 * shape. The resources the Material might contain are not managed, use
@@ -525,7 +525,7 @@ public class ModelBuilder {
 		part("capsule", primitiveType, attributes, material).capsule(radius, height, divisions);
 		return end();
 	}
-
+	
 	/**
 	 * Resets the references to {@link Material}s, {@link Mesh}es and
 	 * {@link MeshPart}s within the model to the ones used within it's nodes. This
@@ -538,7 +538,7 @@ public class ModelBuilder {
 		for (final Node node : model.nodes)
 			rebuildReferences(model, node);
 	}
-
+	
 	private static void rebuildReferences(final Model model, final Node node) {
 		for (final NodePart mpm : node.parts) {
 			if (!model.materials.contains(mpm.material, true))
@@ -553,7 +553,7 @@ public class ModelBuilder {
 		for (final Node child : node.getChildren())
 			rebuildReferences(model, child);
 	}
-
+	
 	/**
 	 * Convenience method to create a model with three orthonormal vectors shapes.
 	 * The resources the Material might contain are not managed, use
@@ -571,7 +571,7 @@ public class ModelBuilder {
 		begin();
 		MeshPartBuilder partBuilder;
 		Node node = node();
-
+		
 		partBuilder = part("xyz", primitiveType, attributes, material);
 		partBuilder.setColor(Color.RED);
 		partBuilder.arrow(0, 0, 0, axisLength, 0, 0, capLength, stemThickness, divisions);
@@ -579,14 +579,14 @@ public class ModelBuilder {
 		partBuilder.arrow(0, 0, 0, 0, axisLength, 0, capLength, stemThickness, divisions);
 		partBuilder.setColor(Color.BLUE);
 		partBuilder.arrow(0, 0, 0, 0, 0, axisLength, capLength, stemThickness, divisions);
-
+		
 		return end();
 	}
-
+	
 	public Model createXYZCoordinates(float axisLength, Material material, long attributes) {
 		return createXYZCoordinates(axisLength, 0.1f, 0.1f, 5, GL20.GL_TRIANGLES, material, attributes);
 	}
-
+	
 	/**
 	 * Convenience method to create a model with an arrow. The resources the
 	 * Material might contain are not managed, use
@@ -606,7 +606,7 @@ public class ModelBuilder {
 				divisions);
 		return end();
 	}
-
+	
 	/**
 	 * Convenience method to create a model with an arrow. The resources the
 	 * Material might contain are not managed, use
@@ -616,7 +616,7 @@ public class ModelBuilder {
 		return createArrow(from.x, from.y, from.z, to.x, to.y, to.z, 0.1f, 0.1f, 5, GL20.GL_TRIANGLES, material,
 				attributes);
 	}
-
+	
 	/**
 	 * Convenience method to create a model which represents a grid of lines on the
 	 * XZ plane. The resources the Material might contain are not managed, use
@@ -639,7 +639,7 @@ public class ModelBuilder {
 			x1 += xSize;
 			x2 += xSize;
 		}
-
+		
 		x1 = -hxlength;
 		y1 = 0;
 		z1 = -hzlength;
@@ -651,8 +651,8 @@ public class ModelBuilder {
 			z1 += zSize;
 			z2 += zSize;
 		}
-
+		
 		return end();
 	}
-
+	
 }

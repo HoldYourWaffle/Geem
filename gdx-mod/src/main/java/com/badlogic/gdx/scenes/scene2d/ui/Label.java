@@ -37,7 +37,7 @@ import com.badlogic.gdx.utils.StringBuilder;
 public class Label extends Widget {
 	static private final Color tempColor = new Color();
 	static private final GlyphLayout prefSizeLayout = new GlyphLayout();
-
+	
 	private LabelStyle style;
 	private final GlyphLayout layout = new GlyphLayout();
 	private final Vector2 prefSize = new Vector2();
@@ -52,15 +52,15 @@ public class Label extends Widget {
 	private float fontScaleX = 1, fontScaleY = 1;
 	private boolean fontScaleChanged = false;
 	private String ellipsis;
-
+	
 	public Label(CharSequence text, Skin skin) {
 		this(text, skin.get(LabelStyle.class));
 	}
-
+	
 	public Label(CharSequence text, Skin skin, String styleName) {
 		this(text, skin.get(styleName, LabelStyle.class));
 	}
-
+	
 	/**
 	 * Creates a label, using a {@link LabelStyle} that has a BitmapFont with the
 	 * specified name from the skin and the specified color.
@@ -68,7 +68,7 @@ public class Label extends Widget {
 	public Label(CharSequence text, Skin skin, String fontName, Color color) {
 		this(text, new LabelStyle(skin.getFont(fontName), color));
 	}
-
+	
 	/**
 	 * Creates a label, using a {@link LabelStyle} that has a BitmapFont with the
 	 * specified name and the specified color from the skin.
@@ -76,7 +76,7 @@ public class Label extends Widget {
 	public Label(CharSequence text, Skin skin, String fontName, String colorName) {
 		this(text, new LabelStyle(skin.getFont(fontName), skin.getColor(colorName)));
 	}
-
+	
 	public Label(CharSequence text, LabelStyle style) {
 		if (text != null)
 			this.text.append(text);
@@ -84,7 +84,7 @@ public class Label extends Widget {
 		if (text != null && text.length() > 0)
 			setSize(getPrefWidth(), getPrefHeight());
 	}
-
+	
 	public void setStyle(LabelStyle style) {
 		if (style == null)
 			throw new IllegalArgumentException("style cannot be null.");
@@ -94,7 +94,7 @@ public class Label extends Widget {
 		cache = style.font.newFontCache();
 		invalidateHierarchy();
 	}
-
+	
 	/**
 	 * Returns the label's style. Modifying the returned style may not have an
 	 * effect until {@link #setStyle(LabelStyle)} is called.
@@ -102,7 +102,7 @@ public class Label extends Widget {
 	public LabelStyle getStyle() {
 		return style;
 	}
-
+	
 	/**
 	 * Sets the text to the specified integer value. If the text is already
 	 * equivalent to the specified value, a string is not allocated.
@@ -116,7 +116,7 @@ public class Label extends Widget {
 		intValue = value;
 		return true;
 	}
-
+	
 	/** @param newText May be null, "" will be used. */
 	public void setText(CharSequence newText) {
 		if (newText == null)
@@ -135,7 +135,7 @@ public class Label extends Widget {
 		intValue = Integer.MIN_VALUE;
 		invalidateHierarchy();
 	}
-
+	
 	public boolean textEquals(CharSequence other) {
 		int length = text.length;
 		char[] chars = text.chars;
@@ -146,30 +146,30 @@ public class Label extends Widget {
 				return false;
 		return true;
 	}
-
+	
 	public StringBuilder getText() {
 		return text;
 	}
-
+	
 	@Override
 	public void invalidate() {
 		super.invalidate();
 		prefSizeInvalid = true;
 	}
-
+	
 	private void scaleAndComputePrefSize() {
 		BitmapFont font = cache.getFont();
 		float oldScaleX = font.getScaleX();
 		float oldScaleY = font.getScaleY();
 		if (fontScaleChanged)
 			font.getData().setScale(fontScaleX, fontScaleY);
-
+		
 		computePrefSize();
-
+		
 		if (fontScaleChanged)
 			font.getData().setScale(oldScaleX, oldScaleY);
 	}
-
+	
 	private void computePrefSize() {
 		prefSizeInvalid = false;
 		GlyphLayout prefSizeLayout = Label.prefSizeLayout;
@@ -182,7 +182,7 @@ public class Label extends Widget {
 			prefSizeLayout.setText(cache.getFont(), text);
 		prefSize.set(prefSizeLayout.width, prefSizeLayout.height);
 	}
-
+	
 	@Override
 	public void layout() {
 		BitmapFont font = cache.getFont();
@@ -190,7 +190,7 @@ public class Label extends Widget {
 		float oldScaleY = font.getScaleY();
 		if (fontScaleChanged)
 			font.getData().setScale(fontScaleX, fontScaleY);
-
+		
 		boolean wrap = this.wrap && ellipsis == null;
 		if (wrap) {
 			float prefHeight = getPrefHeight();
@@ -199,7 +199,7 @@ public class Label extends Widget {
 				invalidateHierarchy();
 			}
 		}
-
+		
 		float width = getWidth(), height = getHeight();
 		Drawable background = style.background;
 		float x = 0, y = 0;
@@ -209,7 +209,7 @@ public class Label extends Widget {
 			width -= background.getLeftWidth() + background.getRightWidth();
 			height -= background.getBottomHeight() + background.getTopHeight();
 		}
-
+		
 		GlyphLayout layout = this.layout;
 		float textWidth, textHeight;
 		if (wrap || text.indexOf("\n") != -1) {
@@ -218,7 +218,7 @@ public class Label extends Widget {
 			layout.setText(font, text, 0, text.length, Color.WHITE, width, lineAlign, wrap, ellipsis);
 			textWidth = layout.width;
 			textHeight = layout.height;
-
+			
 			if ((labelAlign & Align.left) == 0) {
 				if ((labelAlign & Align.right) != 0)
 					x += width - textWidth;
@@ -229,7 +229,7 @@ public class Label extends Widget {
 			textWidth = width;
 			textHeight = font.getData().capHeight;
 		}
-
+		
 		if ((labelAlign & Align.top) != 0) {
 			y += cache.getFont().isFlipped() ? 0 : height - textHeight;
 			y += style.font.getDescent();
@@ -241,14 +241,14 @@ public class Label extends Widget {
 		}
 		if (!cache.getFont().isFlipped())
 			y += textHeight;
-
+		
 		layout.setText(font, text, 0, text.length, Color.WHITE, textWidth, lineAlign, wrap, ellipsis);
 		cache.setText(layout, x, y);
-
+		
 		if (fontScaleChanged)
 			font.getData().setScale(oldScaleX, oldScaleY);
 	}
-
+	
 	@Override
 	public void draw(Batch batch, float a) {
 		validate();
@@ -264,7 +264,7 @@ public class Label extends Widget {
 		cache.setPosition(getX(), getY());
 		cache.draw(batch);
 	}
-
+	
 	@Override
 	public float getPrefWidth() {
 		if (wrap)
@@ -277,7 +277,7 @@ public class Label extends Widget {
 			width += background.getLeftWidth() + background.getRightWidth();
 		return width;
 	}
-
+	
 	@Override
 	public float getPrefHeight() {
 		if (prefSizeInvalid)
@@ -291,11 +291,11 @@ public class Label extends Widget {
 			height += background.getTopHeight() + background.getBottomHeight();
 		return height;
 	}
-
+	
 	public GlyphLayout getGlyphLayout() {
 		return layout;
 	}
-
+	
 	/**
 	 * If false, the text will only wrap where it contains newlines (\n). The
 	 * preferred size of the label will be the text bounds. If true, the text will
@@ -312,15 +312,15 @@ public class Label extends Widget {
 		this.wrap = wrap;
 		invalidateHierarchy();
 	}
-
+	
 	public int getLabelAlign() {
 		return labelAlign;
 	}
-
+	
 	public int getLineAlign() {
 		return lineAlign;
 	}
-
+	
 	/**
 	 * @param alignment Aligns all the text within the label (default left center)
 	 *                  and each line of text horizontally (default left).
@@ -329,7 +329,7 @@ public class Label extends Widget {
 	public void setAlignment(int alignment) {
 		setAlignment(alignment, alignment);
 	}
-
+	
 	/**
 	 * @param labelAlign Aligns all the text within the label (default left center).
 	 * @param lineAlign  Aligns each line of text horizontally (default left).
@@ -337,44 +337,44 @@ public class Label extends Widget {
 	 */
 	public void setAlignment(int labelAlign, int lineAlign) {
 		this.labelAlign = labelAlign;
-
+		
 		if ((lineAlign & Align.left) != 0)
 			this.lineAlign = Align.left;
 		else if ((lineAlign & Align.right) != 0)
 			this.lineAlign = Align.right;
 		else
 			this.lineAlign = Align.center;
-
+		
 		invalidate();
 	}
-
+	
 	public void setFontScale(float fontScale) {
 		setFontScale(fontScale, fontScale);
 	}
-
+	
 	public void setFontScale(float fontScaleX, float fontScaleY) {
 		fontScaleChanged = true;
 		this.fontScaleX = fontScaleX;
 		this.fontScaleY = fontScaleY;
 		invalidateHierarchy();
 	}
-
+	
 	public float getFontScaleX() {
 		return fontScaleX;
 	}
-
+	
 	public void setFontScaleX(float fontScaleX) {
 		setFontScale(fontScaleX, fontScaleY);
 	}
-
+	
 	public float getFontScaleY() {
 		return fontScaleY;
 	}
-
+	
 	public void setFontScaleY(float fontScaleY) {
 		setFontScale(fontScaleX, fontScaleY);
 	}
-
+	
 	/**
 	 * When non-null the text will be truncated "..." if it does not fit within the
 	 * width of the label. Wrapping will not occur when ellipsis is enabled. Default
@@ -383,7 +383,7 @@ public class Label extends Widget {
 	public void setEllipsis(String ellipsis) {
 		this.ellipsis = ellipsis;
 	}
-
+	
 	/**
 	 * When true the text will be truncated "..." if it does not fit within the
 	 * width of the label. Wrapping will not occur when ellipsis is true. Default is
@@ -395,17 +395,17 @@ public class Label extends Widget {
 		else
 			this.ellipsis = null;
 	}
-
+	
 	/** Allows subclasses to access the cache in {@link #draw(Batch, float)}. */
 	protected BitmapFontCache getBitmapFontCache() {
 		return cache;
 	}
-
+	
 	@Override
 	public String toString() {
 		return super.toString() + ": " + text;
 	}
-
+	
 	/**
 	 * The style for a label, see {@link Label}.
 	 * 
@@ -417,15 +417,15 @@ public class Label extends Widget {
 		public Color fontColor;
 		/** Optional. */
 		public Drawable background;
-
+		
 		public LabelStyle() {
 		}
-
+		
 		public LabelStyle(BitmapFont font, Color fontColor) {
 			this.font = font;
 			this.fontColor = fontColor;
 		}
-
+		
 		public LabelStyle(LabelStyle style) {
 			this.font = style.font;
 			if (style.fontColor != null)

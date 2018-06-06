@@ -44,7 +44,7 @@ public class HdpiUtils {
 			Gdx.gl.glScissor(x, y, width, height);
 		}
 	}
-
+	
 	/**
 	 * Calls {@link GL20#glViewport(int, int, int, int)}, expecting the coordinates
 	 * and sizes given in logical coordinates and automatically converts them to
@@ -58,7 +58,7 @@ public class HdpiUtils {
 			Gdx.gl.glViewport(x, y, width, height);
 		}
 	}
-
+	
 	/**
 	 * Converts an x-coordinate given in backbuffer coordinates to logical screen
 	 * coordinates.
@@ -66,7 +66,7 @@ public class HdpiUtils {
 	public static int toLogicalX(int backBufferX) {
 		return (int) (backBufferX * Gdx.graphics.getWidth() / (float) Gdx.graphics.getBackBufferWidth());
 	}
-
+	
 	/**
 	 * Convers an y-coordinate given in backbuffer coordinates to logical screen
 	 * coordinates
@@ -74,7 +74,7 @@ public class HdpiUtils {
 	public static int toLogicalY(int backBufferY) {
 		return (int) (backBufferY * Gdx.graphics.getHeight() / (float) Gdx.graphics.getBackBufferHeight());
 	}
-
+	
 	/**
 	 * Converts an x-coordinate given in logical screen coordinates to backbuffer
 	 * coordinates.
@@ -82,7 +82,7 @@ public class HdpiUtils {
 	public static int toBackBufferX(int logicalX) {
 		return (int) (logicalX * Gdx.graphics.getBackBufferWidth() / (float) Gdx.graphics.getWidth());
 	}
-
+	
 	/**
 	 * Convers an y-coordinate given in backbuffer coordinates to logical screen
 	 * coordinates

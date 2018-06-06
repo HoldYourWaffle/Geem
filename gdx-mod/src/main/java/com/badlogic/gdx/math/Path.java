@@ -23,10 +23,10 @@ package com.badlogic.gdx.math;
  */
 public interface Path<T> {
 	T derivativeAt(T out, float t);
-
+	
 	/** @return The value of the path at t where 0<=t<=1 */
 	T valueAt(T out, float t);
-
+	
 	/**
 	 * @return The approximated value (between 0 and 1) on the path which is closest
 	 *         to the specified value. Note that the implementation of this method
@@ -35,7 +35,7 @@ public interface Path<T> {
 	 *         method.
 	 */
 	float approximate(T v);
-
+	
 	/**
 	 * @return The precise location (between 0 and 1) on the path which is closest
 	 *         to the specified value. Note that the implementation of this method
@@ -43,7 +43,7 @@ public interface Path<T> {
 	 *         (but less precise) method.
 	 */
 	float locate(T v);
-
+	
 	/**
 	 * @param samples The amount of divisions used to approximate length. Higher
 	 *                values will produce more precise results, but will be more CPU
@@ -52,5 +52,5 @@ public interface Path<T> {
 	 *         accumulating the euclidean distances between the sample points.
 	 */
 	float approxLength(int samples);
-
+	
 }

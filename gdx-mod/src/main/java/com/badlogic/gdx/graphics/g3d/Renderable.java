@@ -130,7 +130,7 @@ public class Renderable {
 	public Shader shader;
 	/** User definable value, may be null. */
 	public Object userData;
-
+	
 	public Renderable set(Renderable renderable) {
 		worldTransform.set(renderable.worldTransform);
 		material = renderable.material;

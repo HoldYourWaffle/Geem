@@ -19,19 +19,19 @@ package com.badlogic.gdx.utils;
 /** @author Nathan Sweet */
 public class BinaryHeap<T extends BinaryHeap.Node> {
 	public int size;
-
+	
 	private Node[] nodes;
 	private final boolean isMaxHeap;
-
+	
 	public BinaryHeap() {
 		this(16, false);
 	}
-
+	
 	public BinaryHeap(int capacity, boolean isMaxHeap) {
 		this.isMaxHeap = isMaxHeap;
 		nodes = new Node[capacity];
 	}
-
+	
 	public T add(T node) {
 		// Expand if necessary.
 		if (size == nodes.length) {
@@ -45,26 +45,26 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 		up(size++);
 		return node;
 	}
-
+	
 	public T add(T node, float value) {
 		node.value = value;
 		return add(node);
 	}
-
+	
 	public T peek() {
 		if (size == 0)
 			throw new IllegalStateException("The heap is empty.");
 		return (T) nodes[0];
 	}
-
+	
 	public T pop() {
 		return remove(0);
 	}
-
+	
 	public T remove(T node) {
 		return remove(node.index);
 	}
-
+	
 	private T remove(int index) {
 		Node[] nodes = this.nodes;
 		Node removed = nodes[index];
@@ -74,19 +74,19 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 			down(index);
 		return (T) removed;
 	}
-
+	
 	/** Returns true if the heap is empty. */
 	public boolean isEmpty() {
 		return size == 0;
 	}
-
+	
 	public void clear() {
 		Node[] nodes = this.nodes;
 		for (int i = 0, n = size; i < n; i++)
 			nodes[i] = null;
 		size = 0;
 	}
-
+	
 	public void setValue(T node, float value) {
 		float oldValue = node.value;
 		node.value = value;
@@ -95,7 +95,7 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 		else
 			down(node.index);
 	}
-
+	
 	private void up(int index) {
 		Node[] nodes = this.nodes;
 		Node node = nodes[index];
@@ -113,24 +113,24 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 		nodes[index] = node;
 		node.index = index;
 	}
-
+	
 	private void down(int index) {
 		Node[] nodes = this.nodes;
 		int size = this.size;
-
+		
 		Node node = nodes[index];
 		float value = node.value;
-
+		
 		while (true) {
 			int leftIndex = 1 + (index << 1);
 			if (leftIndex >= size)
 				break;
 			int rightIndex = leftIndex + 1;
-
+			
 			// Always have a left child.
 			Node leftNode = nodes[leftIndex];
 			float leftValue = leftNode.value;
-
+			
 			// May have a right child.
 			Node rightNode;
 			float rightValue;
@@ -141,7 +141,7 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 				rightNode = nodes[rightIndex];
 				rightValue = rightNode.value;
 			}
-
+			
 			// The smallest of the three values is the parent.
 			if (leftValue < rightValue ^ isMaxHeap) {
 				if (leftValue == value || (leftValue > value ^ isMaxHeap))
@@ -157,11 +157,11 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 				index = rightIndex;
 			}
 		}
-
+		
 		nodes[index] = node;
 		node.index = index;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof BinaryHeap))
@@ -174,7 +174,7 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 				return false;
 		return true;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		int h = 1;
@@ -182,7 +182,7 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 			h = h * 31 + Float.floatToIntBits(nodes[i].value);
 		return h;
 	}
-
+	
 	@Override
 	public String toString() {
 		if (size == 0)
@@ -198,20 +198,20 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 		buffer.append(']');
 		return buffer.toString();
 	}
-
+	
 	/** @author Nathan Sweet */
 	static public class Node {
 		float value;
 		int index;
-
+		
 		public Node(float value) {
 			this.value = value;
 		}
-
+		
 		public float getValue() {
 			return value;
 		}
-
+		
 		@Override
 		public String toString() {
 			return Float.toString(value);

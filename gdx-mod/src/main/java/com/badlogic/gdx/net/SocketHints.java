@@ -23,13 +23,13 @@ package com.badlogic.gdx.net;
  * @author noblemaster
  */
 public class SocketHints {
-
+	
 	/**
 	 * The connection timeout in milliseconds. Not used for sockets created via
 	 * server.accept().
 	 */
 	public int connectTimeout = 5000;
-
+	
 	/**
 	 * Performance preferences are described by three integers whose values indicate
 	 * the relative importance of short connection time, low latency, and high

@@ -31,13 +31,13 @@ import com.badlogic.gdx.utils.Array;
  * @author mzechner
  */
 public class MusicLoader extends AsynchronousAssetLoader<Music, MusicLoader.MusicParameter> {
-
+	
 	private Music music;
-
+	
 	public MusicLoader(FileHandleResolver resolver) {
 		super(resolver);
 	}
-
+	
 	/**
 	 * Returns the {@link Music} instance currently loaded by this
 	 * {@link MusicLoader}.
@@ -48,25 +48,25 @@ public class MusicLoader extends AsynchronousAssetLoader<Music, MusicLoader.Musi
 	protected Music getLoadedMusic() {
 		return music;
 	}
-
+	
 	@Override
 	public void loadAsync(AssetManager manager, String fileName, FileHandle file, MusicParameter parameter) {
 		music = Gdx.audio.newMusic(file);
 	}
-
+	
 	@Override
 	public Music loadSync(AssetManager manager, String fileName, FileHandle file, MusicParameter parameter) {
 		Music music = this.music;
 		this.music = null;
 		return music;
 	}
-
+	
 	@Override
 	public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, MusicParameter parameter) {
 		return null;
 	}
-
+	
 	static public class MusicParameter extends AssetLoaderParameters<Music> {
 	}
-
+	
 }

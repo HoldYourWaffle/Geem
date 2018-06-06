@@ -27,11 +27,11 @@ import java.io.InputStream;
  */
 public class DataInput extends DataInputStream {
 	private char[] chars = new char[32];
-
+	
 	public DataInput(InputStream in) {
 		super(in);
 	}
-
+	
 	/** Reads a 1-5 byte int. */
 	public int readInt(boolean optimizePositive) throws IOException {
 		int b = read();
@@ -54,7 +54,7 @@ public class DataInput extends DataInputStream {
 		}
 		return optimizePositive ? result : ((result >>> 1) ^ -(result & 1));
 	}
-
+	
 	/**
 	 * Reads the length and string of UTF8 characters, or null.
 	 * 
@@ -86,7 +86,7 @@ public class DataInput extends DataInputStream {
 			readUtf8_slow(charCount, charIndex, b);
 		return new String(chars, 0, charCount);
 	}
-
+	
 	private void readUtf8_slow(int charCount, int charIndex, int b) throws IOException {
 		char[] chars = this.chars;
 		while (true) {

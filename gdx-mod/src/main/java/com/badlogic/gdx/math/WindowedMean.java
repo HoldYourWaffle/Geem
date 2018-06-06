@@ -30,7 +30,7 @@ public final class WindowedMean {
 	int last_value;
 	float mean = 0;
 	boolean dirty = true;
-
+	
 	/**
 	 * constructor, window_size specifies the number of samples we will continuously
 	 * get the mean and variance from. the class will only return meaning full
@@ -41,12 +41,12 @@ public final class WindowedMean {
 	public WindowedMean(int window_size) {
 		values = new float[window_size];
 	}
-
+	
 	/** @return whether the value returned will be meaningful */
 	public boolean hasEnoughData() {
 		return added_values >= values.length;
 	}
-
+	
 	/**
 	 * clears this WindowedMean. The class will only return meaningful values after
 	 * enough data has been added again.
@@ -58,7 +58,7 @@ public final class WindowedMean {
 			values[i] = 0;
 		dirty = true;
 	}
-
+	
 	/**
 	 * adds a new sample to this mean. In case the window is full the oldest value
 	 * will be replaced by this new value.
@@ -73,7 +73,7 @@ public final class WindowedMean {
 			last_value = 0;
 		dirty = true;
 	}
-
+	
 	/**
 	 * returns the mean of the samples added to this instance. Only returns
 	 * meaningful results when at least window_size samples as specified in the
@@ -87,7 +87,7 @@ public final class WindowedMean {
 				float mean = 0;
 				for (float value : values)
 					mean += value;
-
+				
 				this.mean = mean / values.length;
 				dirty = false;
 			}
@@ -95,35 +95,35 @@ public final class WindowedMean {
 		} else
 			return 0;
 	}
-
+	
 	/** @return the oldest value in the window */
 	public float getOldest() {
 		return added_values < values.length ? values[0] : values[last_value];
 	}
-
+	
 	/** @return the value last added */
 	public float getLatest() {
 		return values[last_value - 1 == -1 ? values.length - 1 : last_value - 1];
 	}
-
+	
 	/** @return The standard deviation */
 	public float standardDeviation() {
 		if (!hasEnoughData())
 			return 0;
-
+		
 		float mean = getMean();
 		float sum = 0;
 		for (float value : values) {
 			sum += (value - mean) * (value - mean);
 		}
-
+		
 		return (float) Math.sqrt(sum / values.length);
 	}
-
+	
 	public int getWindowSize() {
 		return values.length;
 	}
-
+	
 	/**
 	 * @return A new <code>float[]</code> containing all values currently in the
 	 *         window of the stream, in order from oldest to latest. The length of

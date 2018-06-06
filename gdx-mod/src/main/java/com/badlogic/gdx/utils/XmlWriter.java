@@ -41,13 +41,13 @@ public class XmlWriter extends Writer {
 	private final Array<String> stack = new Array();
 	private String currentElement;
 	private boolean indentNextClose;
-
+	
 	public int indent;
-
+	
 	public XmlWriter(Writer writer) {
 		this.writer = writer;
 	}
-
+	
 	private void indent() throws IOException {
 		int count = indent;
 		if (currentElement != null)
@@ -55,7 +55,7 @@ public class XmlWriter extends Writer {
 		for (int i = 0; i < count; i++)
 			writer.write('\t');
 	}
-
+	
 	public XmlWriter element(String name) throws IOException {
 		if (startElementContent())
 			writer.write('\n');
@@ -65,11 +65,11 @@ public class XmlWriter extends Writer {
 		currentElement = name;
 		return this;
 	}
-
+	
 	public XmlWriter element(String name, Object text) throws IOException {
 		return element(name).text(text).pop();
 	}
-
+	
 	private boolean startElementContent() throws IOException {
 		if (currentElement == null)
 			return false;
@@ -79,7 +79,7 @@ public class XmlWriter extends Writer {
 		writer.write(">");
 		return true;
 	}
-
+	
 	public XmlWriter attribute(String name, Object value) throws IOException {
 		if (currentElement == null)
 			throw new IllegalStateException();
@@ -90,7 +90,7 @@ public class XmlWriter extends Writer {
 		writer.write('"');
 		return this;
 	}
-
+	
 	public XmlWriter text(Object text) throws IOException {
 		startElementContent();
 		String string = text == null ? "null" : text.toString();
@@ -104,7 +104,7 @@ public class XmlWriter extends Writer {
 			writer.write('\n');
 		return this;
 	}
-
+	
 	public XmlWriter pop() throws IOException {
 		if (currentElement != null) {
 			writer.write("/>\n");
@@ -120,7 +120,7 @@ public class XmlWriter extends Writer {
 		indentNextClose = true;
 		return this;
 	}
-
+	
 	/**
 	 * Calls {@link #pop()} for each remaining open element, if any, and closes the
 	 * stream.
@@ -131,13 +131,13 @@ public class XmlWriter extends Writer {
 			pop();
 		writer.close();
 	}
-
+	
 	@Override
 	public void write(char[] cbuf, int off, int len) throws IOException {
 		startElementContent();
 		writer.write(cbuf, off, len);
 	}
-
+	
 	@Override
 	public void flush() throws IOException {
 		writer.flush();

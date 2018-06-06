@@ -29,12 +29,12 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 abstract public class Action implements Poolable {
 	/** The actor this action is attached to, or null if it is not attached. */
 	protected Actor actor;
-
+	
 	/** The actor this action targets, or null if a target has not been set. */
 	protected Actor target;
-
+	
 	private Pool pool;
-
+	
 	/**
 	 * Updates the action based on time. Typically this is called each frame by
 	 * {@link Actor#act(float)}.
@@ -44,11 +44,11 @@ abstract public class Action implements Poolable {
 	 *         after the action is done.
 	 */
 	abstract public boolean act(float delta);
-
+	
 	/** Sets the state of the action so it can be run again. */
 	public void restart() {
 	}
-
+	
 	/**
 	 * Sets the actor this action is attached to. This also sets the
 	 * {@link #setTarget(Actor) target} actor if it is null. This method is called
@@ -77,12 +77,12 @@ abstract public class Action implements Poolable {
 			}
 		}
 	}
-
+	
 	/** @return null if the action is not attached to an actor. */
 	public Actor getActor() {
 		return actor;
 	}
-
+	
 	/**
 	 * Sets the actor this action will manipulate. If no target actor is set,
 	 * {@link #setActor(Actor)} will set the target actor when the action is added
@@ -91,12 +91,12 @@ abstract public class Action implements Poolable {
 	public void setTarget(Actor target) {
 		this.target = target;
 	}
-
+	
 	/** @return null if the action has no target. */
 	public Actor getTarget() {
 		return target;
 	}
-
+	
 	/**
 	 * Resets the optional state of this action to as if it were newly created,
 	 * allowing the action to be pooled and reused. State required to be set for
@@ -115,11 +115,11 @@ abstract public class Action implements Poolable {
 		pool = null;
 		restart();
 	}
-
+	
 	public Pool getPool() {
 		return pool;
 	}
-
+	
 	/**
 	 * Sets the pool that the action will be returned to when removed from the
 	 * actor.
@@ -130,7 +130,7 @@ abstract public class Action implements Poolable {
 	public void setPool(Pool pool) {
 		this.pool = pool;
 	}
-
+	
 	@Override
 	public String toString() {
 		String name = getClass().getName();

@@ -40,17 +40,17 @@ class AssetLoadingTask implements AsyncTask<Void> {
 	final AssetLoader loader;
 	final AsyncExecutor executor;
 	final long startTime;
-
+	
 	volatile boolean asyncDone = false;
 	volatile boolean dependenciesLoaded = false;
 	volatile Array<AssetDescriptor> dependencies;
 	volatile AsyncResult<Void> depsFuture = null;
 	volatile AsyncResult<Void> loadFuture = null;
 	volatile Object asset = null;
-
+	
 	int ticks = 0;
 	volatile boolean cancel = false;
-
+	
 	public AssetLoadingTask(AssetManager manager, AssetDescriptor assetDesc, AssetLoader loader,
 			AsyncExecutor threadPool) {
 		this.manager = manager;
@@ -59,7 +59,7 @@ class AssetLoadingTask implements AsyncTask<Void> {
 		this.executor = threadPool;
 		startTime = manager.log.getLevel() == Logger.DEBUG ? TimeUtils.nanoTime() : 0;
 	}
-
+	
 	/**
 	 * Loads parts of the asset asynchronously if the loader is an
 	 * {@link AsynchronousAssetLoader}.
@@ -83,7 +83,7 @@ class AssetLoadingTask implements AsyncTask<Void> {
 		}
 		return null;
 	}
-
+	
 	/**
 	 * Updates the loading of the asset. In case the asset is loaded with an
 	 * {@link AsynchronousAssetLoader}, the loaders
@@ -104,7 +104,7 @@ class AssetLoadingTask implements AsyncTask<Void> {
 		}
 		return asset != null;
 	}
-
+	
 	private void handleSyncLoader() {
 		SynchronousAssetLoader syncLoader = (SynchronousAssetLoader) loader;
 		if (!dependenciesLoaded) {
@@ -120,7 +120,7 @@ class AssetLoadingTask implements AsyncTask<Void> {
 			asset = syncLoader.load(manager, assetDesc.fileName, resolve(loader, assetDesc), assetDesc.params);
 		}
 	}
-
+	
 	private void handleAsyncLoader() {
 		AsynchronousAssetLoader asyncLoader = (AsynchronousAssetLoader) loader;
 		if (!dependenciesLoaded) {
@@ -159,17 +159,17 @@ class AssetLoadingTask implements AsyncTask<Void> {
 			}
 		}
 	}
-
+	
 	private FileHandle resolve(AssetLoader loader, AssetDescriptor assetDesc) {
 		if (assetDesc.file == null)
 			assetDesc.file = loader.resolve(assetDesc.fileName);
 		return assetDesc.file;
 	}
-
+	
 	public Object getAsset() {
 		return asset;
 	}
-
+	
 	private void removeDuplicates(Array<AssetDescriptor> array) {
 		boolean ordered = array.ordered;
 		array.ordered = true;
