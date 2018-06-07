@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.math;
 
+import java.awt.Point;
 import java.io.Serializable;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -857,5 +858,14 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		this.y = 0;
 		this.z = 0;
 		return this;
+	}
+
+	
+	public Vector2 flatten() {
+		return new Vector2(x, y);
+	}
+	
+	public Point asPoint() {
+		return new Point((int)x, (int)y);
 	}
 }

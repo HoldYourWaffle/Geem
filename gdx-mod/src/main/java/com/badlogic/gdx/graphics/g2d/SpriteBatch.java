@@ -1169,4 +1169,10 @@ public class SpriteBatch implements Batch {
 	public boolean isDrawing() {
 		return drawing;
 	}
+	
+	
+	
+	public void resetProjectionMatrix() {
+		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+	}
 }

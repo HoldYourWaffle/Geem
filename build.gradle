@@ -41,7 +41,8 @@ sourceCompatibility = targetCompatibility = '1.8'
 dependencies {
     //compile 'com.badlogicgames.gdx:gdx:1.9.8'
 	compile project(':gdx-mod')
-	compile 'com.badlogicgames.gdx:gdx-freetype:1.9.8'
+	//compile 'com.badlogicgames.gdx:gdx-freetype:-SNAPSHOT'
+	compile project(':gdx-freetype')
 	compile 'org.apache.commons:commons-lang3:3.7'
 }
 
