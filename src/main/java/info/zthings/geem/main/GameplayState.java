@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -23,6 +24,8 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 import info.zthings.geem.entities.Ship;
 import info.zthings.geem.structs.GameMode;
@@ -44,13 +47,16 @@ public class GameplayState implements IState {
 	private Model shipModel, box;
 	private Ship ship;
 	
-	private List<Pair<ModelInstance, Vector2>> gaps = new ArrayList<>();
+	private List<Astroid> obstacles = new ArrayList<>();
 	private final int gapWidth = 4;
 	
 	private boolean died = false;
 	
 	private final GameMode mode;
 	private int score;
+	
+	private Timer timer;
+	private volatile int time;
 	
 	public GameplayState(GameMode mode) {
 		this.mode = mode;
@@ -82,6 +88,7 @@ public class GameplayState implements IState {
 		ass.load("sfx/oof.wav", Sound.class);
 		ass.load("sfx/fail.wav", Sound.class);
 		ass.load("sfx/yeet.wav", Sound.class);
+		ass.load("music/ingame.mp3", Music.class);
 		
 		ModelBuilder boxbuilder = new ModelBuilder();
 		box = boxbuilder.createBox(gapWidth, .5F, .5F, new Material(ColorAttribute.createDiffuse(Color.RED)), Usage.Position | Usage.Normal);
@@ -93,27 +100,33 @@ public class GameplayState implements IState {
 		ModelInstance gap = new ModelInstance(box);
 		Vector2 vec = lg.next();
 		vec.add(-5, 0);
-		vec.set(0, vec.y);
+		//vec.set(0, vec.y);
 		//vec.set(0, 10);
 		
 		gap.transform.setTranslation(vec.x, 0, vec.y);
-		gaps.add(Pair.of(gap, vec));
+		astroid.add(new Astroid(GeemLoop.rc.ass.get("astroid.g3db", Model.class), cam.position.z + 100));
 	}
 	
 	@Override
 	public void postLoad(AssetManager ass) {
 		shipModel = ass.get("ships/ship.g3db", Model.class);
-		ship = new Ship(new ModelInstance(shipModel), 3, 8, .5F, 1.5F);
+		ship = new Ship(new ModelInstance(shipModel), 3, 10, .5F, 1.5F);
+		
+		Music m = ass.get("music/ingame.mp3", Music.class);
+		m.setVolume(.25F);
+		m.setLooping(true);
+		m.play();
+		
+		timer = new Timer();
+		timer.scheduleTask(new Task(()->time++), 0, 1);
+		timer.start();
 	}
 
 	@Override
 	public void update(float dt) {
-		if (died) {
-			return;
-		}
+		if (died) return;
 		
 		ship.update(dt, cam);
-		
 		cam.lookAt(0, 0, cam.position.z+200);
 		cam.update();
 		debugRender.update(dt, cam);
@@ -156,8 +169,11 @@ public class GameplayState implements IState {
 			
 			rc.sprites.begin();
 			fnt.draw(rc.sprites, "SPEED ", 10, 720);
+			fnt.draw(rc.sprites, "TIME  "+time, 10, 665);
+			fnt.draw(rc.sprites, "" + String.valueOf(score/(float)time).substring(0, 3), 225 + (int)Math.max(25 * (int)Math.log10(score), 25 * (int)Math.log10(time)), 638);
 			if (mode == GameMode.INFINITE)
-				fnt.draw(rc.sprites, "SCORE "+score, 10, 665);
+				fnt.draw(rc.sprites, "SCORE "+score, 10, 610);
+			
 			rc.sprites.draw(rc.ass.get("hpbar.png", Texture.class), 170, 690, 0, 0, (int)((1280-170-10)/2 * ship.hp), 20);
 			rc.sprites.end();
 		} else {

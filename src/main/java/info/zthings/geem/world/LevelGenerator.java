@@ -23,7 +23,7 @@ public class LevelGenerator {
 		// TODO add deviation rule (further than 50% from middle? -> bias)
 		ydiv = tightness;
 		
-		float roomLeft = currentPos.x, roomRight = ww - currentPos.x;
+		float roomLeft = currentPos.x - 2, roomRight = ww - currentPos.x - 2;
 		
 		alphaMin = Math.atan(ydiv / roomLeft);
 		alphaMax = Math.PI - Math.atan(ydiv / roomRight);

@@ -40,9 +40,11 @@ public /*abstract*/ class Ship {
 		return hp <= 0;
 	}
 	
+	boolean debug = true;
+	
 	public void update(float dt, PerspectiveCamera cam) {
 		float dz = 0;
-		if (Gdx.input.isKeyPressed(Keys.W))
+		if (Gdx.input.isKeyPressed(Keys.W) || !debug)
 			dz = dt*baseSpeedZ*hp;
 		else if (Gdx.input.isKeyPressed(Keys.S))
 			dz = dt*-baseSpeedZ*hp;
@@ -62,7 +64,7 @@ public /*abstract*/ class Ship {
 		else if (position.x > 5) position.x = 5;
 		
 		model.transform.setToTranslation(position);
-		model.transform.scale(1.5F, 1.5F, 1.5F);
+		model.transform.scale(modelScale, modelScale, modelScale);
 		model.transform.rotate(0, -dx*3, dx, 35);
 	}
 	

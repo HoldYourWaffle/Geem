@@ -11,7 +11,7 @@ jar {
         archivesBaseName = rootProject.name
         classifier = project.name
     }
-
+	
     manifest {
         attributes 'Main-Class': mainClassName
     }
@@ -23,19 +23,21 @@ jar {
 
 dependencies {
     compile rootProject
-    compile 'com.badlogicgames.gdx:gdx-backend-lwjgl:1.9.8'
+    compile('com.badlogicgames.gdx:gdx-backend-lwjgl:1.9.8') {
+    	exclude group: 'com.badlogicgames.gdx', module: 'gdx'
+    }
 	compile 'com.badlogicgames.gdx:gdx-platform:1.9.8:natives-desktop'
 	compile 'com.badlogicgames.gdx:gdx-freetype-platform:1.9.8:natives-desktop'
 }
 
-task dist(type: Jar) {
+/*task dist(type: Jar) {
     from files(sourceSets.main.output.classesDir)
     from files(sourceSets.main.output.resourcesDir)
     from { configurations.compile.collect { zipTree(it) } }
     //from files(executableDir);
-
+	
     manifest {
         attributes 'Main-Class': mainClassName
     }
 }
-dist.dependsOn classes
+dist.dependsOn classes*/

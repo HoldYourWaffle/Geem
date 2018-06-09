@@ -228,16 +228,20 @@ public class Timer {
 	 * 
 	 * @author Nathan Sweet
 	 */
-	static abstract public class Task implements Runnable {
+	static public class Task implements Runnable {
 		final Application app;
 		long executeTimeMillis, intervalMillis;
 		int repeatCount;
 		volatile Timer timer;
+		final Runnable action;
 		
-		public Task() {
+		public Task() { this(null); }
+		
+		public Task(Runnable action) {
 			app = Gdx.app; // Store which app to postRunnable (eg for multiple LwjglAWTCanvas).
 			if (app == null)
 				throw new IllegalStateException("Gdx.app not available.");
+			this.action = action;
 		}
 		
 		/**
@@ -245,7 +249,9 @@ public class Timer {
 		 * it may be scheduled again in this method.
 		 */
 		@Override
-		abstract public void run();
+		public void run() {
+			action.run();
+		}
 		
 		/**
 		 * Cancels the task. It will not be executed until it is scheduled again. This
