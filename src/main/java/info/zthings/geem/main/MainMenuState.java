@@ -132,6 +132,8 @@ public class MainMenuState extends AStateAdapter {
 	@Override
 	public void render(RenderContext rc) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
+		rc.shapes.setProjectionMatrix(cam.combined);
+		rc.sprites.setProjectionMatrix(cam.combined);
 		
 		rc.shapes.begin(ShapeType.Filled);
 		stars.forEach(vec->rc.shapes.circle(vec.x, vec.y, 1));

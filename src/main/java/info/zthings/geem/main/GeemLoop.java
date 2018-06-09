@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import info.zthings.geem.structs.GameMode;
 import info.zthings.geem.structs.IState;
 import info.zthings.geem.structs.RenderContext;
 
@@ -28,7 +29,7 @@ public class GeemLoop implements ApplicationListener {
 		
 		rc = new RenderContext(new ModelBatch(), new DecalBatch(null), new SpriteBatch(), new ShapeRenderer());
 		//setState(new MainMenuState());
-		setState(new GameplayState());
+		setState(new GameplayState(GameMode.INFINITE));
 	}
 	
 	@Override

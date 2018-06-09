@@ -35,7 +35,8 @@ public /*abstract*/ class Ship {
 	}
 	
 	public boolean hit() {
-		hp -= 1 - defence;
+		if (hp > 1) hp = 1;
+		else hp -= 1 - defence;
 		return hp <= 0;
 	}
 	
@@ -51,7 +52,7 @@ public /*abstract*/ class Ship {
 		else if (Gdx.input.isKeyPressed(Keys.D)) dx = 1;
 		else dx = 0;
 		
-		hp += (dt/10) * (hp > 1 ? (2 / hp * .2) : 1);
+		//hp += (dt/10) * (hp > 1 ? (2 / hp * .2) : 1);
 		if (hp > 2) hp = 2;
 		
 		position.add(-dx*baseSpeedX*hp*dt, 0, dz);

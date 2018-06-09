@@ -6,8 +6,11 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -22,6 +25,7 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector2;
 
 import info.zthings.geem.entities.Ship;
+import info.zthings.geem.structs.GameMode;
 import info.zthings.geem.structs.IState;
 import info.zthings.geem.structs.RenderContext;
 import info.zthings.geem.world.DebugRenderer;
@@ -29,6 +33,7 @@ import info.zthings.geem.world.LevelGenerator;
 
 public class GameplayState implements IState {
 	private PerspectiveCamera cam;
+	private OrthographicCamera camUi;
 	private Environment env;
 	private DebugRenderer debugRender;
 	private LevelGenerator lg = new LevelGenerator(10, 10);
@@ -44,24 +49,39 @@ public class GameplayState implements IState {
 	
 	private boolean died = false;
 	
+	private final GameMode mode;
+	private int score;
+	
+	public GameplayState(GameMode mode) {
+		this.mode = mode;
+	}
+	
 	@Override
 	public void create(AssetManager ass) {
 		cam = new PerspectiveCamera(69, 1280, 720);
-		cam.position.set(0, 3, -4);
+		cam.position.set(0, 3, -5);
 		cam.lookAt(0, 0, 200);
 		cam.near = 0.1f;
 		cam.far = 100;
 		cam.update();
 		
+		camUi = new OrthographicCamera(1280, 720);
+		camUi.position.set(1280/2, 720/2, 0);
+		camUi.update();
+		
 		env = new Environment();
         env.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-        env.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+        env.add(new DirectionalLight().set(0.4f, 0.4f, 0.4f, -1f, -0.8f, -0.2f));
 		
         fnt = GeemLoop.rc.fntVT323.generateFont(new FreeTypeFontParameter(69));
         glyphDied = new GlyphLayout(fnt, "YOU DIED");
         
 		debugRender = new DebugRenderer();
 		ass.load("ships/ship.g3db", Model.class);
+		ass.load("hpbar.png", Texture.class);
+		ass.load("sfx/oof.wav", Sound.class);
+		ass.load("sfx/fail.wav", Sound.class);
+		ass.load("sfx/yeet.wav", Sound.class);
 		
 		ModelBuilder boxbuilder = new ModelBuilder();
 		box = boxbuilder.createBox(gapWidth, .5F, .5F, new Material(ColorAttribute.createDiffuse(Color.RED)), Usage.Position | Usage.Normal);
@@ -103,30 +123,44 @@ public class GameplayState implements IState {
 							 ship.position.x-ship.bounds.getWidth()*ship.modelScale/2 > gaps.get(1).getRight().x-gapWidth/2;
 			
 			if (!passed) {
-				//TODO play oof
+				score--;
 				//TODO animation
 				died = ship.hit();
-				System.out.println(ship.hp);
-				
 				if (died) {
-					//TODO play fail
-				}
+					GeemLoop.rc.ass.get("sfx/fail.wav", Sound.class).play();
+					//TODO continue
+				} else GeemLoop.rc.ass.get("sfx/oof.wav", Sound.class).play(.8F);
+			} else {
+				score++;
+				ship.hp += ship.hp < 1 ? .2F : .1F;
+				GeemLoop.rc.ass.get("sfx/yeet.wav", Sound.class).play(.6F, Math.max(1, ship.hp), 0);
 			}
 			
 			gaps.remove(0);
+			nextGap();
 		}
 	}
 	
 	@Override
 	public void render(RenderContext rc) {
 		debugRender.render(rc, cam);
+		rc.sprites.setProjectionMatrix(camUi.combined);
+		//rc.shapes.setProjectionMatrix(camUi.combined);
 
 		rc.models.begin(cam);
 		gaps.forEach(box->rc.models.render(box.getLeft(), env));
 		rc.models.end();
 		
-		if (!died) ship.render(rc, env, cam);
-		else {
+		if (!died) {
+			ship.render(rc, env, cam);
+			
+			rc.sprites.begin();
+			fnt.draw(rc.sprites, "SPEED ", 10, 720);
+			if (mode == GameMode.INFINITE)
+				fnt.draw(rc.sprites, "SCORE "+score, 10, 665);
+			rc.sprites.draw(rc.ass.get("hpbar.png", Texture.class), 170, 690, 0, 0, (int)((1280-170-10)/2 * ship.hp), 20);
+			rc.sprites.end();
+		} else {
 			rc.sprites.begin();
 			fnt.draw(rc.sprites, glyphDied, 1280/2-glyphDied.width/2, 720/1.3F);
 			rc.sprites.end();
