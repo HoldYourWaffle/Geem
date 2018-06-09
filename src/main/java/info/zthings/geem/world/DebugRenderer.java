@@ -20,7 +20,7 @@ public class DebugRenderer implements Disposable {
 	public DebugRenderer() {
 		final float GRID_W = 20,
 				GRID_D = 20,
-				GRID_STEP = .5f,
+				GRID_STEP = 1f,
 				y = .1f;
 		
 		ModelBuilder modelBuilder = new ModelBuilder();

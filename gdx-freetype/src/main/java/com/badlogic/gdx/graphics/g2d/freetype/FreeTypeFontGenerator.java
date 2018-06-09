@@ -845,6 +845,12 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * @author Nathan Sweet
 	 */
 	public static class FreeTypeFontParameter {
+		public FreeTypeFontParameter(int s) {
+			size = s;
+		}
+		
+		public FreeTypeFontParameter() {}
+		
 		/** The size in pixels */
 		public int size = 16;
 		/** If true, font smoothing is disabled. */
