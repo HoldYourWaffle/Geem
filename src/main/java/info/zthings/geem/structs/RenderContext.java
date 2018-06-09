@@ -27,8 +27,8 @@ public class RenderContext implements Disposable {
 		this.shapes = sr;
 		this.fnt = new BitmapFont();
 		
-		this.fntOswald = new FreeTypeFontGenerator(Gdx.files.internal("Oswald-Medium.ttf"));
-		this.fntVT323 = new FreeTypeFontGenerator(Gdx.files.internal("VT323-Regular.ttf"));
+		this.fntOswald = new FreeTypeFontGenerator(Gdx.files.internal("fonts/oswald.ttf"));
+		this.fntVT323 = new FreeTypeFontGenerator(Gdx.files.internal("fonts/vt323.ttf"));
 	}
 	
 	public void update(Camera cam) {
