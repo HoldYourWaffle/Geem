@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import info.zthings.geem.structs.IState;
 import info.zthings.geem.structs.RenderContext;
@@ -16,17 +18,22 @@ import info.zthings.geem.structs.RenderContext;
 public class GeemLoop implements ApplicationListener {
 	public static RenderContext rc;
 	private IState state;
+	private Viewport vp;
 	
 	@Override
-	public void create() { //TODO viewport
+	public void create() {
+		vp = new StretchViewport(1280, 720);
+		vp.apply();
+		
 		rc = new RenderContext(new ModelBatch(), new DecalBatch(null), new SpriteBatch(), new ShapeRenderer());
-		setState(new MainMenuState()); //NOW skip, do 3D stuff
+		//setState(new MainMenuState()); //NOW skip, do 3D stuff
+		setState(new GameplayState());
 	}
 	
 	@Override
 	public void render() {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-		Gdx.gl.glClearColor(.5f, 0, .8f, 1); // purple "alert" color
+		Gdx.gl.glClearColor(1f, .6f, .6f, 1); // purple "alert" color
 		
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE))
 			Gdx.app.exit();
