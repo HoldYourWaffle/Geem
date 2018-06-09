@@ -15,10 +15,10 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
+import info.zthings.geem.entities.Ship;
 import info.zthings.geem.structs.GameMode;
 import info.zthings.geem.structs.IState.AStateAdapter;
 import info.zthings.geem.structs.RenderContext;
-import info.zthings.geem.structs.Ship;
 import info.zthings.geem.ui.Button;
 
 public class MainMenuState extends AStateAdapter {
