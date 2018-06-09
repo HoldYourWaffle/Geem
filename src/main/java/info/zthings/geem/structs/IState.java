@@ -1,7 +1,10 @@
 package info.zthings.geem.structs;
 
+import com.badlogic.gdx.assets.AssetManager;
+
 public interface IState {
-	public abstract void create();
+	public abstract void create(AssetManager ass);
+	public abstract void postLoad(AssetManager ass);
 	public abstract void dispose();
 	
 	public abstract void update(float dt);
@@ -22,4 +25,5 @@ public interface IState {
 		public void resume() {}
 		public void resize(int width, int height) {}
 	}
+
 }

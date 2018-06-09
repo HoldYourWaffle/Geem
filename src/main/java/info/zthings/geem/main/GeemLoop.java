@@ -18,6 +18,7 @@ import info.zthings.geem.structs.RenderContext;
 public class GeemLoop implements ApplicationListener {
 	public static RenderContext rc;
 	private IState state;
+	private boolean posted;
 	private Viewport vp;
 	
 	@Override
@@ -26,14 +27,25 @@ public class GeemLoop implements ApplicationListener {
 		vp.apply();
 		
 		rc = new RenderContext(new ModelBatch(), new DecalBatch(null), new SpriteBatch(), new ShapeRenderer());
-		//setState(new MainMenuState()); //NOW skip, do 3D stuff
+		//setState(new MainMenuState());
 		setState(new GameplayState());
 	}
 	
 	@Override
 	public void render() {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-		Gdx.gl.glClearColor(1f, .6f, .6f, 1); // purple "alert" color
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+		
+		if (!rc.ass.update()) {
+			rc.sprites.begin();
+			rc.sprites.draw(rc.loading, 0, 0);
+			rc.sprites.end();
+			return;
+		} else if (!posted) {
+			state.postLoad(rc.ass);
+			posted = true;
+			return;
+		}
 		
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE))
 			Gdx.app.exit();
@@ -56,9 +68,10 @@ public class GeemLoop implements ApplicationListener {
 	}
 	
 	public void setState(IState state) {
+		posted = false;
 		if (this.state != null) this.state.dispose();
 		this.state = state;
-		this.state.create();
+		this.state.create(rc.ass);
 	}
 	
 	@Override

@@ -15,12 +15,11 @@ public class GameplayState implements IState {
 	private PerspectiveCamera cam;
 	private DebugRenderer debugRender;
 	
-	private AssetManager ass;
 	private Model shipModel;
 	private Ship ship;
 	
 	@Override
-	public void create() {
+	public void create(AssetManager ass) {
 		cam = new PerspectiveCamera(69, 1280, 720);
 		cam.position.set(0, 3, -4);
 		cam.lookAt(0, 0, 200);
@@ -29,11 +28,11 @@ public class GameplayState implements IState {
 		cam.update();
 		
 		debugRender = new DebugRenderer();
-		ass = new AssetManager();
-		
 		ass.load("ships/ship.g3db", Model.class);
-		ass.finishLoading();
-		
+	}
+	
+	@Override
+	public void postLoad(AssetManager ass) {
 		shipModel = ass.get("ships/ship.g3db", Model.class);
 		ship = new Ship(new ModelInstance(shipModel), 3, 8, 1);
 	}
@@ -59,7 +58,6 @@ public class GameplayState implements IState {
 	@Override
 	public void dispose() {
 		debugRender.dispose();
-		ass.dispose();
 	}
 	
 	
@@ -68,5 +66,4 @@ public class GameplayState implements IState {
 	@Override public void pause() {}
 	@Override public void resume() {}
 	@Override public void resize(int width, int height) {}
-	
 }

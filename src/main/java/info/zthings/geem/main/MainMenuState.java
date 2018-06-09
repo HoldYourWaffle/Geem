@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -43,18 +44,9 @@ public class MainMenuState extends AStateAdapter {
 	private OrthographicCamera cam;
 	
 	@Override
-	public void create() {
+	public void create(AssetManager ass) {
 		cam = new OrthographicCamera(1280, 720);
 		cam.position.set(1280/2, 720/2, 0);
-		
-		textures = new TextureAtlas("mainmenu.atlas");
-		texInfinite = textures.findRegion("infinity");
-		texRace = textures.findRegion("race");
-		
-		music = Gdx.audio.newMusic(Gdx.files.internal("music/circus.wav"));
-		music.setLooping(true);
-		music.setVolume(.1f);
-		music.play();
 		
 		FreeTypeFontParameter ftfp = new FreeTypeFontParameter();
 		ftfp.borderWidth = 2;
@@ -66,7 +58,23 @@ public class MainMenuState extends AStateAdapter {
 		ftfp.size = 38;
 		btnFnt = GeemLoop.rc.fntVT323.generateFont(ftfp);
 		
+		glyphTitle = new GlyphLayout(titleFnt, "GEEM");
+		glyphCharacter = new GlyphLayout(titleFnt, "SELECT SHIP");
 		
+		ass.load("mainmenu.atlas", TextureAtlas.class);
+		ass.load("music/circus.wav", Music.class);
+	}
+	
+	@Override
+	public void postLoad(AssetManager ass) {
+		textures = ass.get("mainmenu.atlas");
+		texInfinite = textures.findRegion("infinity");
+		texRace = textures.findRegion("race");
+		
+		music = ass.get("music/circus.wav");
+		music.setLooping(true);
+		music.setVolume(.1f);
+		music.play();
 		
 		int bp = 100, by = 720/2 - textures.findRegion("button1").getRegionHeight();
 		
@@ -85,15 +93,11 @@ public class MainMenuState extends AStateAdapter {
 			state = State.MAIN;
 		}, t->t.flip(true, false));
 		btnBack.setSize(50, 50);
-		
-		glyphTitle = new GlyphLayout(titleFnt, "GEEM");
-		glyphCharacter = new GlyphLayout(titleFnt, "SELECT SHIP");
 	}
 	
 	@Override
 	public void update(float dt) {
 		cam.update();
-		GeemLoop.rc.update(cam);
 		
 		switch (state) {
 			case MAIN:
