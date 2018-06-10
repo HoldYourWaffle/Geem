@@ -16,7 +16,6 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -96,13 +95,16 @@ public class GameplayState implements IState {
 		if (debug) time = 4;
 		if (ship.hp <= 0 || (!debug && !focus)) return;
 		
-		if (Gdx.input.isKeyJustPressed(Keys.SPACE) && time > 0)
+		if (Gdx.input.isKeyJustPressed(Keys.SPACE) && time >= 0) //NOW fix bullet starting point
 			bullets.add(new Bullet(ship));
-		 
-		bullets.forEach(b->b.update(dt));
+		
+		bullets.forEach(b->{
+			b.update(dt, cam);
+			//obstacles.removeIf(a->a.getCurrentBounds().intersects(b.getCurrentBounds())); NOW shoot asteroids (+ sfx & explosion)
+		});
 		bullets.removeIf(b->b.position.z - ship.position.z > 100);
-		obstacles.forEach(a->a.update(dt));
-		obstacles.removeIf(a->a.position.y < cam.position.z);
+		obstacles.forEach(a->a.update(dt, cam));
+		obstacles.removeIf(a->a.position.z < cam.position.z);
 		
 		//bullets.clear();
 		
@@ -110,7 +112,7 @@ public class GameplayState implements IState {
 		ship.update(dt, cam);
 		
 		if (Math.random() < .3) {
-			obstacles.add(new Asteroid(new Vector2(80*Math.random() - 40, ship.position.z + 120)));
+			obstacles.add(new Asteroid((float)(80*Math.random() - 40), ship.position.z + 120));
 		}
 		if (time >= 0 && !music.isPlaying()) music.play();
 		
@@ -128,10 +130,10 @@ public class GameplayState implements IState {
 		rc.models.begin(cam);
 		bullets.forEach(b->b.render(rc, env));
 		obstacles.forEach(a->a.render(rc, env));
-		rc.models.end();
 		
 		if (ship.hp > 0) {
-			ship.render(rc, env, cam);
+			ship.render(rc, env);
+			rc.models.end();
 			
 			rc.sprites.begin();
 			
@@ -152,6 +154,8 @@ public class GameplayState implements IState {
 			
 			rc.sprites.end();
 		} else {
+			rc.models.end();
+			
 			rc.sprites.begin();
 			fnt.draw(rc.sprites, glyphDied, 1280/2-glyphDied.width/2, 720/1.3F);
 			rc.sprites.end();

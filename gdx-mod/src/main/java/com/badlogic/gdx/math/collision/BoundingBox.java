@@ -390,4 +390,10 @@ public class BoundingBox implements Serializable {
 	static final float max(final float a, final float b) {
 		return a > b ? a : b;
 	}
+
+	public BoundingBox mul2(Matrix4 transform) {
+		BoundingBox bb = new BoundingBox(this);
+		bb.mul(transform);
+		return bb;
+	}
 }

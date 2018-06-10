@@ -13,7 +13,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import info.zthings.geem.entities.Ship.ShipNormal;
+import info.zthings.geem.entities.Ship.ShipUfo;
 import info.zthings.geem.structs.IState;
 import info.zthings.geem.structs.ResourceContext;
 
@@ -45,8 +45,8 @@ public class GeemLoop implements ApplicationListener {
 			return;
 		} else if (state == null) {
 			//setState(new MainMenuState());
-			setState(new GameplayState(new ShipNormal()));
-			//setState(new GameplayState(new ShipUfo()));
+			//setState(new GameplayState(new ShipNormal()));
+			setState(new GameplayState(new ShipUfo()));
 		}
 		
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE))

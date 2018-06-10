@@ -1,31 +1,24 @@
 package info.zthings.geem.entities;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 import info.zthings.geem.main.GeemLoop;
-import info.zthings.geem.structs.ResourceContext;
 
-public class Asteroid {
-	private ModelInstance model;
-	public Vector2 position;
+public class Asteroid extends Entity { //TODO base entity class
 	
-	public Asteroid(Vector2 position) {
-		model = new ModelInstance(GeemLoop.rc.asteroidModels[(int)(Math.random()*29)]);
-		this.position = position;
+	public Asteroid(float x, float z) {
+		super(GeemLoop.rc.asteroidModels[(int)(Math.random()*29)]);
+		this.position = new Vector3(x, .5F, z);
 		model.materials.get(0).set(ColorAttribute.createDiffuse(Color.DARK_GRAY));
 		model.transform.scale(.025F, .025F, .025F);
 	}
 	
-	public void update(float dt) {
-		model.transform.setTranslation(position.x, .5F, position.y);
+	@Override
+	public void update(float dt, PerspectiveCamera cam) {
+		super.update(dt, cam);
 	}
 
-	public void render(ResourceContext rc, Environment env) {
-		rc.models.render(model, env);
-	}
-	
 }

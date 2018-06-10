@@ -699,11 +699,15 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return new Point((int)x, (int)y);
 	}
 
-	public Vector3 deepen() {
+	public Vector3 deepenZ() {
 		return new Vector3(x, y, 0);
 	}
 	
-	public Vector3 deepen(float z) {
+	public Vector3 deepenZ(float z) {
 		return new Vector3(x, y, z);
+	}
+
+	public Vector3 deepenY(float y) {
+		return new Vector3(this.x, y, this.y);
 	}
 }

@@ -25,6 +25,7 @@ public class StarBox {
 		if (stars.size() < 700) {
 			for (int i = 0; i < 4; i++) {
 				Decal d = Decal.newDecal(texStar);
+				
 				radius = 20;
 				double a = Math.random() * Math.PI * 2,
 					   min = 3.5,
