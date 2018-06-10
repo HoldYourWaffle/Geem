@@ -13,13 +13,14 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
-import info.zthings.geem.entities.Astroid;
+import info.zthings.geem.entities.Asteroid;
 import info.zthings.geem.entities.Ship;
 import info.zthings.geem.structs.IState;
 import info.zthings.geem.structs.RenderContext;
@@ -38,7 +39,7 @@ public class GameplayState implements IState {
 	private Music music;
 	
 	private final Ship ship;
-	private List<Astroid> obstacles = new ArrayList<>();
+	private List<Asteroid> obstacles = new ArrayList<>();
 	private StarBox stars = new StarBox(5);
 	
 	private int score;
@@ -53,7 +54,7 @@ public class GameplayState implements IState {
 	@Override
 	public void create() {
 		cam = new PerspectiveCamera(69, 1280, 720);
-		cam.position.set(0, 3, -5);
+		cam.position.set(0, 3, -6);
 		cam.lookAt(0, 0, 200);
 		cam.near = 0.1f;
 		cam.far = 100;
@@ -171,6 +172,12 @@ public class GameplayState implements IState {
 			fnt.draw(rc.sprites, glyphDied, 1280/2-glyphDied.width/2, 720/1.3F);
 			rc.sprites.end();
 		}
+		
+		ModelInstance mi = new ModelInstance(rc.asteroidModel);
+		mi.transform.setToTranslation(ship.position);
+		rc.models.begin(cam);
+		rc.models.render(mi, env);
+		rc.models.end();
 	}
 	
 	

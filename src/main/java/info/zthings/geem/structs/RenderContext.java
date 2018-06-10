@@ -26,7 +26,7 @@ public class RenderContext implements Disposable {
 	public final BitmapFont fntDefault;
 	public final FreeTypeFontGenerator fntOswald, fntVT323;
 	
-	public Model shipNormalModel;//, shipPirateModel;
+	public Model shipNormalModel, asteroidModel, shipUfoModel;//, shipPirateModel;
 	
 	public RenderContext(ModelBatch mb, DecalBatch db, SpriteBatch sb, ShapeRenderer sr) {
 		this.models = mb;
@@ -40,7 +40,10 @@ public class RenderContext implements Disposable {
 		
 		this.ass = new AssetManager();
 		ass.load("ships/normal.g3db", Model.class);
+		ass.load("ships/ufo/ufo.g3db", Model.class);
 		//ass.load("ships/pirate.g3db", Model.class);
+				
+		ass.load("asteroid/asteroid.g3db", Model.class);
 		
 		ass.load("music/ingame.wav", Music.class);
 		ass.load("music/circus.wav", Music.class);
@@ -56,7 +59,11 @@ public class RenderContext implements Disposable {
 	public boolean updateAss() {
 		if (ass.update()) {
 			this.shipNormalModel = ass.get("ships/normal.g3db", Model.class);
+			this.shipUfoModel = ass.get("ships/ufo/ufo.g3db", Model.class);
 			//this.shipPirateModel = ass.get("ships/pirate.g3db", Model.class);
+			
+			this.asteroidModel = ass.get("asteroid/asteroid.g3db", Model.class);
+			
 			return true;
 		} else return false;
 	}

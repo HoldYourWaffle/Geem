@@ -41,9 +41,6 @@ public class StarBox {
 				stars.add(d);
 			}
 		}
-		
-		System.out.println(stars.size());
-		
 		stars.removeIf(d->d.getPosition().z < cam.position.z);
 	}
 	

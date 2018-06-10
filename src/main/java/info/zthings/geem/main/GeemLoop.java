@@ -44,6 +44,7 @@ public class GeemLoop implements ApplicationListener {
 			rc.sprites.end();
 			return;
 		} else if (state == null) {
+			//setState(new GameplayState(new ShipUfo()));
 			setState(new GameplayState(new ShipNormal()));
 			//setState(new MainMenuState());
 		}

@@ -5,16 +5,15 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.BoundingBox;
 
 import info.zthings.geem.main.GeemLoop;
 import info.zthings.geem.structs.RenderContext;
 
 public abstract class Ship {
-	public final float modelScale;
-	public final Vector3 position;
-	public final BoundingBox bounds;
+	public final Vector3 position, scale;
+	protected final Quaternion rotXZ, rotY;
 	
 	private final ModelInstance model;
 	
@@ -28,11 +27,10 @@ public abstract class Ship {
 		this.defence = defence;
 		this.position = new Vector3(0, 1, 0);
 		this.model = model;
-		this.model.transform.scale(modelScale, modelScale, modelScale);
-		this.modelScale = modelScale;
-		
-		bounds = new BoundingBox();
-		model.calculateBoundingBox(bounds);
+		//this.model.transform.scale(modelScale, modelScale, modelScale);
+		this.scale = new Vector3(modelScale, modelScale, modelScale);
+		this.rotXZ = new Quaternion();
+		this.rotY = new Quaternion();
 	}
 	
 	public boolean hit() {
@@ -64,9 +62,12 @@ public abstract class Ship {
 		if (position.x < -6) position.x = -6;
 		else if (position.x > 6) position.x = 6;
 		
-		model.transform.setToTranslation(position);
-		model.transform.scale(modelScale, modelScale, modelScale);
-		model.transform.rotate(0, -dx*3, dx, 35);
+		//System.out.println(dx);
+		//dx = -1;
+		rotXZ.setFromAxis(Math.abs(dx/3F), 0, dx/2F, 30);
+		rotXZ.mul(rotY);
+		model.transform.set(position, rotXZ.nor(), scale);
+		//model.transform.setScale(modelScale, modelScale, modelScale);
 	}
 	
 	public void render(RenderContext rc, Environment env, PerspectiveCamera cam) {
@@ -77,11 +78,28 @@ public abstract class Ship {
 	
 	
 	
-	
-	
 	public static class ShipNormal extends Ship {
 		public ShipNormal() {
 			super(new ModelInstance(GeemLoop.rc.shipNormalModel), 3, 10, .5F, 1.5F);
+		}
+	}
+	
+	public static class ShipUfo extends Ship {
+		
+		public ShipUfo() {
+			super(new ModelInstance(GeemLoop.rc.shipUfoModel), 3, 10, .5F, .025F);
+			position.y -= .5F;
+		}
+		
+		private float a = 0;
+		
+		@Override
+		public void update(float dt, PerspectiveCamera cam) {
+			a += dt * 100;
+			rotY.setFromAxis(0, 1, 0, a);
+			super.update(dt, cam);
+			
+			//System.out.println(rotation.y);
 		}
 	}
 	
