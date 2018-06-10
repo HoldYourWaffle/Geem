@@ -868,4 +868,10 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	public Point asPoint() {
 		return new Point((int)x, (int)y);
 	}
+
+	public Vector3 scl2(float f) {
+		Vector3 vec = new Vector3(this);
+		vec.scl(f);
+		return vec;
+	}
 }

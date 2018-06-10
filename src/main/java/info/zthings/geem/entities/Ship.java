@@ -39,7 +39,7 @@ public abstract class Ship {
 		return hp <= 0;
 	}
 	
-	private boolean debug = true;
+	private boolean debug = false;
 	
 	public void update(float dt, PerspectiveCamera cam) {
 		float dz = 0;
@@ -80,14 +80,14 @@ public abstract class Ship {
 	
 	public static class ShipNormal extends Ship {
 		public ShipNormal() {
-			super(new ModelInstance(GeemLoop.rc.shipNormalModel), 6, 10, .5F, 1.5F);
+			super(new ModelInstance(GeemLoop.rc.shipNormalModel), 6, 20, .5F, 1.5F);
 		}
 	}
 	
 	public static class ShipUfo extends Ship {
 		
 		public ShipUfo() {
-			super(new ModelInstance(GeemLoop.rc.shipUfoModel), 6, 10, .5F, .025F);
+			super(new ModelInstance(GeemLoop.rc.shipUfoModel), 6, 15, .5F, .025F);
 			position.y -= .5F;
 		}
 		

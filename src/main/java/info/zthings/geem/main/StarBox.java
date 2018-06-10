@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.math.Vector3;
@@ -18,7 +17,7 @@ public class StarBox {
 	private int radius; //TODO final
 	
 	public StarBox(int radius) {
-		texStar = GeemLoop.rc.ass.get("star.png", Texture.class).asRegion();
+		texStar = GeemLoop.rc.atlas.findRegion("star"); //ass.get("star.png", Texture.class).asRegion();
 		this.radius = radius;
 	}
 	

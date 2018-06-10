@@ -1,0 +1,90 @@
+
+sprites.png
+size: 2048,128
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+arrow1
+  rotate: false
+  xy: 758, 2
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+arrow2
+  rotate: false
+  xy: 860, 2
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+arrow3
+  rotate: false
+  xy: 962, 2
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+button1
+  rotate: false
+  xy: 506, 12
+  size: 250, 90
+  orig: 250, 90
+  offset: 0, 0
+  index: -1
+button2
+  rotate: false
+  xy: 2, 12
+  size: 250, 90
+  orig: 250, 90
+  offset: 0, 0
+  index: -1
+button3
+  rotate: false
+  xy: 254, 12
+  size: 250, 90
+  orig: 250, 90
+  offset: 0, 0
+  index: -1
+control1
+  rotate: false
+  xy: 1104, 66
+  size: 127, 58
+  orig: 127, 58
+  offset: 0, 0
+  index: -1
+control2
+  rotate: false
+  xy: 1233, 66
+  size: 127, 58
+  orig: 127, 58
+  offset: 0, 0
+  index: -1
+hpbar
+  rotate: false
+  xy: 2, 104
+  size: 1100, 20
+  orig: 1100, 20
+  offset: 0, 0
+  index: -1
+pew1
+  rotate: false
+  xy: 1362, 3
+  size: 121, 121
+  orig: 121, 121
+  offset: 0, 0
+  index: -1
+pew2
+  rotate: false
+  xy: 1485, 3
+  size: 121, 121
+  orig: 121, 121
+  offset: 0, 0
+  index: -1
+star
+  rotate: false
+  xy: 2, 5
+  size: 5, 5
+  orig: 5, 5
+  offset: 0, 0
+  index: -1

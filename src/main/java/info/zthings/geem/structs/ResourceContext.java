@@ -5,7 +5,6 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -31,7 +30,10 @@ public class ResourceContext implements Disposable {
 	public final BitmapFont fntDefault;
 	public final FreeTypeFontGenerator fntOswald, fntVT323;
 	
-	public Model shipNormalModel, asteroidModel, shipUfoModel, bulletModel;
+	public TextureAtlas atlas;
+	
+	public Model shipNormalModel, shipUfoModel, bulletModel, fuelModel;
+	public Model[] asteroidModels = new Model[30];
 	
 	public ResourceContext(ModelBatch mb, DecalBatch db, SpriteBatch sb, ShapeRenderer sr) {
 		this.models = mb;
@@ -50,8 +52,11 @@ public class ResourceContext implements Disposable {
 		ass.load("ships/normal.g3db", Model.class);
 		ass.load("ships/ufo/ufo.g3db", Model.class);
 		//ass.load("ships/pirate.g3db", Model.class);
-				
-		ass.load("asteroid/asteroid.g3db", Model.class);
+		
+		ass.load("models/canister.g3db", Model.class);
+		for (int i = 1; i <= 30; i++)
+			ass.load("models/asteroids/asteroid"+i+".g3dj", Model.class);
+			//ass.load("asteroid1.g3dj", Model.class);
 		
 		ass.load("music/ingame.wav", Music.class);
 		ass.load("music/circus.wav", Music.class);
@@ -60,18 +65,21 @@ public class ResourceContext implements Disposable {
 		ass.load("sfx/yeet.wav", Sound.class);
 		ass.load("sfx/laser.wav", Sound.class);
 		
-		ass.load("hpbar.png", Texture.class);
-		ass.load("star.png", Texture.class);
-		ass.load("mainmenu.atlas", TextureAtlas.class);
+		ass.load("sprites.atlas", TextureAtlas.class);
+		/*ass.load("hpbar.png", Texture.class);
+		ass.load("star.png", Texture.class);*/
 	}
 	
 	public boolean updateAss() {
 		if (ass.update()) {
-			this.shipNormalModel = ass.get("ships/normal.g3db", Model.class);
-			this.shipUfoModel = ass.get("ships/ufo/ufo.g3db", Model.class);
-			//this.shipPirateModel = ass.get("ships/pirate.g3db", Model.class);
+			this.shipNormalModel = ass.get("ships/normal.g3db");
+			this.shipUfoModel = ass.get("ships/ufo/ufo.g3db");
+			this.fuelModel = ass.get("models/canister.g3db");
+			for (int i = 1; i <= 30; i++)
+				this.asteroidModels[i-1] = ass.get("models/asteroids/asteroid"+i+".g3dj");
+				//this.asteroidModels[i-1] = ass.get("asteroid1.g3dj");
 			
-			this.asteroidModel = ass.get("asteroid/asteroid.g3db", Model.class);
+			atlas = ass.get("sprites.atlas");
 			
 			return true;
 		} else return false;

@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
@@ -27,8 +26,6 @@ public class MainMenuState implements IState {
 	private boolean stateShip = false, fading = false;
 	
 	private List<Vector2> stars = new ArrayList<>(100);
-	
-	private TextureAtlas textures;
 	
 	private BitmapFont fntBtn, fntTitle;
 	private Music music;
@@ -56,7 +53,7 @@ public class MainMenuState implements IState {
 		glyphTitle = new GlyphLayout(fntTitle, "GEEM");
 		glyphCharacter = new GlyphLayout(fntTitle, "SELECT SHIP");
 		
-		textures = GeemLoop.rc.ass.get("mainmenu.atlas"); //TODO update atlas
+		//textures = GeemLoop.rc.ass.get("sprites.atlas");
 		
 		music = GeemLoop.rc.ass.get("music/circus.wav");
 		music.setLooping(true);
@@ -65,12 +62,12 @@ public class MainMenuState implements IState {
 		
 		selectedShip = new Ship.ShipNormal();
 		
-		btnStart = new Button("Start", fntBtn, Color.BLACK, "button", textures,
-				1280/2 - textures.findRegion("button1").getRegionWidth()/2, 720/2 - textures.findRegion("button1").getRegionHeight(),
+		btnStart = new Button("Start", fntBtn, Color.BLACK, "button", GeemLoop.rc.atlas,
+				1280/2 - GeemLoop.rc.atlas.findRegion("button1").getRegionWidth()/2, 720/2 - GeemLoop.rc.atlas.findRegion("button1").getRegionHeight(),
 				()->stateShip = true, t->{});
 		
-		btnGo = new Button("Go!", fntBtn, Color.BLACK, "button", textures,
-				1280/2 - textures.findRegion("button1").getRegionWidth()/2, textures.findRegion("button1").getRegionHeight()/2,
+		btnGo = new Button("Go!", fntBtn, Color.BLACK, "button", GeemLoop.rc.atlas,
+				1280/2 - GeemLoop.rc.atlas.findRegion("button1").getRegionWidth()/2, GeemLoop.rc.atlas.findRegion("button1").getRegionHeight()/2,
 				()->{
 					fading = true;
 					music.stop();
@@ -81,7 +78,7 @@ public class MainMenuState implements IState {
 					t.start();
 				}, t->{});
 		
-		btnBack = new Button("", fntBtn, Color.BLACK, "arrow", textures, 50, textures.findRegion("button1").getRegionHeight()/2, ()->stateShip = false, t->t.flip(true, false));
+		btnBack = new Button("", fntBtn, Color.BLACK, "arrow", GeemLoop.rc.atlas, 50, GeemLoop.rc.atlas.findRegion("button1").getRegionHeight()/2, ()->stateShip = false, t->t.flip(true, false));
 		btnBack.setSize(50, 50);
 	}
 	

@@ -1,7 +1,6 @@
 package info.zthings.geem.entities;
 
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
@@ -13,21 +12,27 @@ public class Bullet {
 	private final ModelInstance model;
 	
 	public Vector3 position;
-	public final float speed;
+	public final float speed, divX, divZ; //TODO accuracy stat?
 	
 	public Bullet(Ship shooter) {
-		this.model = new ModelInstance(GeemLoop.rc.bulletModel);
+		model = new ModelInstance(GeemLoop.rc.bulletModel);
 		position = new Vector3(shooter.position.x, shooter.position.y, shooter.position.z);
-		this.speed = shooter.baseSpeedZ * shooter.hp * 5F;
+		
+		double ma = 3, a = (Math.random() * Math.toRadians(ma*2)) - Math.toRadians(ma);
+		speed = shooter.baseSpeedZ * shooter.hp * 4F;
+		divX = (float) (speed * Math.sin(a));
+		divZ = (float) (speed * Math.cos(a));
+		
+		model.transform.rotate(0, 1, 0, (float)Math.toDegrees(a));
 		GeemLoop.rc.ass.get("sfx/laser.wav", Sound.class).play(.3F);
 	}
 	
 	public void update(float dt) {
-		position.add(0, 0, speed * dt);
+		position.add(divX * dt, 0, divZ * dt);
 		model.transform.setTranslation(position);
 	}
 
-	public void render(ResourceContext rc, PerspectiveCamera cam, Environment env) {
+	public void render(ResourceContext rc, Environment env) {
 		rc.models.render(model, env);
 	}
 	

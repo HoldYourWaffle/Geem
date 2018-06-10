@@ -9,15 +9,14 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -35,7 +34,6 @@ public class GameplayState implements IState {
 	
 	private Environment env;
 	private DebugRenderer debugRenderer;
-	//private LevelGenerator lg = new LevelGenerator(10, 10);
 	
 	private BitmapFont fnt;
 	private GlyphLayout glyphDied;
@@ -91,14 +89,7 @@ public class GameplayState implements IState {
 		//for (int i = 0; i < 10; i++) nextGap();
 	}
 	
-	/*private void nextGap() {
-		ModelInstance mi = new ModelInstance(GeemLoop.rc.ass.get("astroid.g3db", Model.class));
-		Vector2 vec = new Vector2(cam.position.z + 100, Math.random() * 10 - 5);
-		mi.transform.setTranslation(vec.x, 0, vec.y);
-		obstacles.add(new Astroid(mi, vec));
-	}*/
-	
-	boolean debug = true;
+	boolean debug = false;
 	
 	@Override
 	public void update(float dt) {
@@ -107,41 +98,25 @@ public class GameplayState implements IState {
 		
 		if (Gdx.input.isKeyJustPressed(Keys.SPACE) && time > 0)
 			bullets.add(new Bullet(ship));
-		
+		 
 		bullets.forEach(b->b.update(dt));
 		bullets.removeIf(b->b.position.z - ship.position.z > 100);
+		obstacles.forEach(a->a.update(dt));
+		obstacles.removeIf(a->a.position.y < cam.position.z);
 		
-		if (time >= 0) {
-			if (!music.isPlaying()) music.play();
-			stars.update(dt, cam, ship);
-			ship.update(dt, cam);
+		//bullets.clear();
+		
+		stars.update(dt, cam, ship);
+		ship.update(dt, cam);
+		
+		if (Math.random() < .3) {
+			obstacles.add(new Asteroid(new Vector2(80*Math.random() - 40, ship.position.z + 120)));
 		}
+		if (time >= 0 && !music.isPlaying()) music.play();
 		
 		cam.lookAt(0, 0, cam.position.z+200);
 		cam.update();
 		debugRenderer.update(dt, cam);
-		
-		/*if (ship.position.z > gaps.get(1).getRight().y) { //y in Vector2 = z
-			boolean passed = ship.position.x+ship.bounds.getWidth()*ship.modelScale/2 < gaps.get(1).getRight().x+gapWidth/2 &&
-							 ship.position.x-ship.bounds.getWidth()*ship.modelScale/2 > gaps.get(1).getRight().x-gapWidth/2;
-			
-			if (!passed) {
-				score--;
-				//TO DO animation
-				died = ship.hit();
-				if (died) {
-					GeemLoop.rc.ass.get("sfx/fail.wav", Sound.class).play();
-					//TO DO continue
-				} else GeemLoop.rc.ass.get("sfx/oof.wav", Sound.class).play(.8F);
-			} else {
-				score++;
-				ship.hp += ship.hp < 1 ? .2F : .1F;
-				GeemLoop.rc.ass.get("sfx/yeet.wav", Sound.class).play(.6F, Math.max(1, ship.hp), 0);
-			}
-			
-			gaps.remove(0);
-			nextGap();
-		}*/
 	}
 	
 	@Override
@@ -151,20 +126,19 @@ public class GameplayState implements IState {
 		
 		stars.render(rc, cam);
 		rc.models.begin(cam);
-		bullets.forEach(b->b.render(rc, cam, env));
+		bullets.forEach(b->b.render(rc, env));
+		obstacles.forEach(a->a.render(rc, env));
 		rc.models.end();
 		
 		if (ship.hp > 0) {
 			ship.render(rc, env, cam);
 			
 			rc.sprites.begin();
-			//time = 2;
 			
 			if (time >= 0) {
 				fnt.setColor(Color.WHITE);
 				fnt.draw(rc.sprites, "SPEED ", 10, 720);
-				rc.sprites.draw(rc.ass.get("hpbar.png", Texture.class), 170, 690, 0, 0,
-						(int) ((1280 - 170 - 10) / 2 * ship.hp), 20);
+				rc.sprites.draw(rc.atlas.findRegion("hpbar"), 170, 690, (int) ((1280 - 170 - 10) / 2 * ship.hp), 20);
 				fnt.draw(rc.sprites, "TIME  " + time, 10, 665);
 				fnt.draw(rc.sprites, "SCORE " + score, 10, 610);
 				if (time < 3) {
@@ -182,12 +156,6 @@ public class GameplayState implements IState {
 			fnt.draw(rc.sprites, glyphDied, 1280/2-glyphDied.width/2, 720/1.3F);
 			rc.sprites.end();
 		}
-		
-		ModelInstance mi = new ModelInstance(rc.asteroidModel);
-		mi.transform.setToTranslation(ship.position);
-		rc.models.begin(cam);
-		rc.models.render(mi, env);
-		rc.models.end();
 	}
 	
 	
@@ -201,6 +169,7 @@ public class GameplayState implements IState {
 	
 	
 	long timerDelay;
+	
 	@Override
 	public void resume() {
 		timer.delay(TimeUtils.nanosToMillis(TimeUtils.nanoTime()) - timerDelay);
