@@ -6,6 +6,7 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -25,6 +26,8 @@ import info.zthings.geem.world.DebugRenderer;
 
 public class GameplayState implements IState {
 	private PerspectiveCamera cam;
+	private OrthographicCamera camUi;
+	
 	private Environment env;
 	private DebugRenderer debugRenderer;
 	//private LevelGenerator lg = new LevelGenerator(10, 10);
@@ -53,6 +56,10 @@ public class GameplayState implements IState {
 		cam.near = 0.1f;
 		cam.far = 100;
 		cam.update();
+		
+		camUi = new OrthographicCamera(1280, 720);
+		camUi.position.set(1280/2, 720/2, 0);
+		camUi.update();
 		
 		env = new Environment();
 		env.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
@@ -121,6 +128,7 @@ public class GameplayState implements IState {
 	@Override
 	public void render(RenderContext rc) {
 		debugRenderer.render(rc, cam);
+		rc.sprites.setProjectionMatrix(camUi.combined);
 		
 		rc.models.begin(cam);
 		//gaps.forEach(box->rc.models.render(box.getLeft(), env));
