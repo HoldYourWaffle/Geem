@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.utils.Disposable;
 
-import info.zthings.geem.structs.RenderContext;
+import info.zthings.geem.structs.ResourceContext;
 
 public class DebugRenderer implements Disposable {
 	private Model gridModel, axesModel;
@@ -59,7 +59,7 @@ public class DebugRenderer implements Disposable {
 		gridInstance.transform.set((int)cam.position.x, 0, (int)cam.position.z, 0, 0, 0, 0);
 	}
 	
-	public void render(RenderContext rc, PerspectiveCamera cam) {
+	public void render(ResourceContext rc, PerspectiveCamera cam) {
 		rc.models.begin(cam);
 		rc.models.render(gridInstance);
 		rc.models.render(axesInstance);

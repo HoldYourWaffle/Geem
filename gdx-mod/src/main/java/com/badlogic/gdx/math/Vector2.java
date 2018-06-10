@@ -702,4 +702,8 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	public Vector3 deepen() {
 		return new Vector3(x, y, 0);
 	}
+	
+	public Vector3 deepen(float z) {
+		return new Vector3(x, y, z);
+	}
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -17,13 +18,15 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
 import info.zthings.geem.entities.Asteroid;
+import info.zthings.geem.entities.Bullet;
 import info.zthings.geem.entities.Ship;
 import info.zthings.geem.structs.IState;
-import info.zthings.geem.structs.RenderContext;
+import info.zthings.geem.structs.ResourceContext;
 import info.zthings.geem.world.DebugRenderer;
 
 public class GameplayState implements IState {
@@ -40,6 +43,7 @@ public class GameplayState implements IState {
 	
 	private final Ship ship;
 	private List<Asteroid> obstacles = new ArrayList<>();
+	private List<Bullet> bullets = new ArrayList<>();
 	private StarBox stars = new StarBox(5);
 	
 	private int score;
@@ -98,7 +102,14 @@ public class GameplayState implements IState {
 	
 	@Override
 	public void update(float dt) {
+		if (debug) time = 4;
 		if (ship.hp <= 0 || (!debug && !focus)) return;
+		
+		if (Gdx.input.isKeyJustPressed(Keys.SPACE) && time > 0)
+			bullets.add(new Bullet(ship));
+		
+		bullets.forEach(b->b.update(dt));
+		bullets.removeIf(b->b.position.z - ship.position.z > 100);
 		
 		if (time >= 0) {
 			if (!music.isPlaying()) music.play();
@@ -134,14 +145,13 @@ public class GameplayState implements IState {
 	}
 	
 	@Override
-	public void render(RenderContext rc) {
+	public void render(ResourceContext rc) {
 		//debugRenderer.render(rc, cam);
 		rc.sprites.setProjectionMatrix(camUi.combined);
 		
 		stars.render(rc, cam);
-		
 		rc.models.begin(cam);
-		//gaps.forEach(box->rc.models.render(box.getLeft(), env));
+		bullets.forEach(b->b.render(rc, cam, env));
 		rc.models.end();
 		
 		if (ship.hp > 0) {
@@ -190,8 +200,21 @@ public class GameplayState implements IState {
 	
 	
 	
+	long timerDelay;
+	@Override
+	public void resume() {
+		timer.delay(TimeUtils.nanosToMillis(TimeUtils.nanoTime()) - timerDelay);
+	    timer.start();
+		focus = true;
+	}
 	
-	@Override public void pause() { focus = false; }
-	@Override public void resume() { focus = true; }
+	@Override
+	public void pause() {
+		timerDelay = TimeUtils.nanosToMillis(TimeUtils.nanoTime());
+		timer.stop();
+		focus = false;
+	}
+	
+	
 	@Override public void resize(int width, int height) {}
 }

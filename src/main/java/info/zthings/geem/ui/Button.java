@@ -13,7 +13,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
-import info.zthings.geem.structs.RenderContext;
+import info.zthings.geem.structs.ResourceContext;
 
 public class Button implements UiElement {
 	private Vector2 pos;
@@ -62,7 +62,7 @@ public class Button implements UiElement {
 	}
 	
 	@Override
-	public void render(RenderContext rc) {
+	public void render(ResourceContext rc) {
 		TextureRegion r;
 		switch (state) {
 			case CLICK:

@@ -15,10 +15,10 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import info.zthings.geem.entities.Ship.ShipNormal;
 import info.zthings.geem.structs.IState;
-import info.zthings.geem.structs.RenderContext;
+import info.zthings.geem.structs.ResourceContext;
 
 public class GeemLoop implements ApplicationListener {
-	public static RenderContext rc;
+	public static ResourceContext rc;
 	
 	private IState state;
 	private Viewport vp;
@@ -30,7 +30,7 @@ public class GeemLoop implements ApplicationListener {
 		vp.apply();
 		
 		loading = new Texture("loading.png");
-		rc = new RenderContext(new ModelBatch(), new DecalBatch(null), new SpriteBatch(), new ShapeRenderer());
+		rc = new ResourceContext(new ModelBatch(), new DecalBatch(null), new SpriteBatch(), new ShapeRenderer());
 	}
 	
 	@Override
@@ -44,8 +44,8 @@ public class GeemLoop implements ApplicationListener {
 			rc.sprites.end();
 			return;
 		} else if (state == null) {
-			//setState(new GameplayState(new ShipUfo()));
 			setState(new GameplayState(new ShipNormal()));
+			//setState(new GameplayState(new ShipUfo()));
 			//setState(new MainMenuState());
 		}
 		

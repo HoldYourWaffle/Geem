@@ -7,7 +7,7 @@ public interface IState {
 	public abstract void dispose();
 	
 	public abstract void update(float dt);
-	public abstract void render(RenderContext rc);
+	public abstract void render(ResourceContext rc);
 	
 	public abstract void pause();
 	public abstract void resume();

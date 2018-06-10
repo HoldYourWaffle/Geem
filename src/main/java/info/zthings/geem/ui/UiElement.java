@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-import info.zthings.geem.structs.RenderContext;
+import info.zthings.geem.structs.ResourceContext;
 
 public interface UiElement {
 	
@@ -15,6 +15,6 @@ public interface UiElement {
 	public abstract void setLocation(int x, int y);
 	
 	public abstract void update(float dt, Camera cam);
-	public abstract void render(RenderContext rc);
+	public abstract void render(ResourceContext rc);
 	
 }

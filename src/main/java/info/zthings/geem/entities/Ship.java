@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
 import info.zthings.geem.main.GeemLoop;
-import info.zthings.geem.structs.RenderContext;
+import info.zthings.geem.structs.ResourceContext;
 
 public abstract class Ship {
 	public final Vector3 position, scale;
@@ -17,7 +17,7 @@ public abstract class Ship {
 	
 	private final ModelInstance model;
 	
-	private final int baseSpeedX, baseSpeedZ;
+	public final int baseSpeedX, baseSpeedZ;
 	private final float defence;
 	public float hp = 1;
 	
@@ -39,7 +39,7 @@ public abstract class Ship {
 		return hp <= 0;
 	}
 	
-	boolean debug = false;
+	private boolean debug = true;
 	
 	public void update(float dt, PerspectiveCamera cam) {
 		float dz = 0;
@@ -70,7 +70,7 @@ public abstract class Ship {
 		//model.transform.setScale(modelScale, modelScale, modelScale);
 	}
 	
-	public void render(RenderContext rc, Environment env, PerspectiveCamera cam) {
+	public void render(ResourceContext rc, Environment env, PerspectiveCamera cam) {
 		rc.models.begin(cam);
 		rc.models.render(model, env);
 		rc.models.end();
@@ -80,14 +80,14 @@ public abstract class Ship {
 	
 	public static class ShipNormal extends Ship {
 		public ShipNormal() {
-			super(new ModelInstance(GeemLoop.rc.shipNormalModel), 3, 10, .5F, 1.5F);
+			super(new ModelInstance(GeemLoop.rc.shipNormalModel), 6, 10, .5F, 1.5F);
 		}
 	}
 	
 	public static class ShipUfo extends Ship {
 		
 		public ShipUfo() {
-			super(new ModelInstance(GeemLoop.rc.shipUfoModel), 3, 10, .5F, .025F);
+			super(new ModelInstance(GeemLoop.rc.shipUfoModel), 6, 10, .5F, .025F);
 			position.y -= .5F;
 		}
 		

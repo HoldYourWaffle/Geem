@@ -18,7 +18,7 @@ import com.badlogic.gdx.utils.Timer.Task;
 
 import info.zthings.geem.entities.Ship;
 import info.zthings.geem.structs.IState;
-import info.zthings.geem.structs.RenderContext;
+import info.zthings.geem.structs.ResourceContext;
 import info.zthings.geem.ui.Button;
 
 public class MainMenuState implements IState {
@@ -104,7 +104,7 @@ public class MainMenuState implements IState {
 	}
 	
 	@Override
-	public void render(RenderContext rc) {
+	public void render(ResourceContext rc) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		rc.shapes.setProjectionMatrix(cam.combined);
 		rc.sprites.setProjectionMatrix(cam.combined);
@@ -119,14 +119,14 @@ public class MainMenuState implements IState {
 		else renderMain(rc);
 	}
 	
-	private void renderMain(RenderContext rc) {
+	private void renderMain(ResourceContext rc) {
 		btnStart.render(rc);
 		rc.sprites.begin();
 		fntTitle.draw(rc.sprites, glyphTitle, 1280/2 - glyphTitle.width/2, 720 - glyphTitle.height);
 		rc.sprites.end();
 	}
 	
-	private void renderShipSelect(RenderContext rc) {
+	private void renderShipSelect(ResourceContext rc) {
 		btnBack.render(rc);
 		btnGo.render(rc);
 		

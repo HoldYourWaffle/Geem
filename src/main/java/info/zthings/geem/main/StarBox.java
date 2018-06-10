@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.math.Vector3;
 
 import info.zthings.geem.entities.Ship;
-import info.zthings.geem.structs.RenderContext;
+import info.zthings.geem.structs.ResourceContext;
 
 public class StarBox {
 	private final TextureRegion texStar;
@@ -44,7 +44,7 @@ public class StarBox {
 		stars.removeIf(d->d.getPosition().z < cam.position.z);
 	}
 	
-	public void render(RenderContext rc, PerspectiveCamera cam) {
+	public void render(ResourceContext rc, PerspectiveCamera cam) {
 		stars.forEach(rc.decals::add);
 		rc.decals.flush();
 	}
