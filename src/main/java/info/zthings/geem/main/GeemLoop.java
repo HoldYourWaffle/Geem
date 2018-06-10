@@ -44,8 +44,8 @@ public class GeemLoop implements ApplicationListener {
 			rc.sprites.end();
 			return;
 		} else if (state == null) {
-			//setState(new GameplayState(new ShipNormal()));
-			setState(new MainMenuState());
+			setState(new GameplayState(new ShipNormal()));
+			//setState(new MainMenuState());
 		}
 		
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE))

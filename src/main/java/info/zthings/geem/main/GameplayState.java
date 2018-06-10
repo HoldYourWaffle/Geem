@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -38,6 +39,7 @@ public class GameplayState implements IState {
 	
 	private final Ship ship;
 	private List<Astroid> obstacles = new ArrayList<>();
+	private StarBox stars = new StarBox(5);
 	
 	private int score;
 	private Timer timer;
@@ -56,6 +58,7 @@ public class GameplayState implements IState {
 		cam.near = 0.1f;
 		cam.far = 100;
 		cam.update();
+		GeemLoop.rc.decals.setGroupStrategy(new CameraGroupStrategy(cam));
 		
 		camUi = new OrthographicCamera(1280, 720);
 		camUi.position.set(1280/2, 720/2, 0);
@@ -78,6 +81,7 @@ public class GameplayState implements IState {
 		timer.start();
 		
 		ship.update(Gdx.graphics.getDeltaTime(), cam);
+		stars.update(Gdx.graphics.getDeltaTime(), cam, ship);
 		
 		//for (int i = 0; i < 10; i++) nextGap();
 	}
@@ -89,12 +93,15 @@ public class GameplayState implements IState {
 		obstacles.add(new Astroid(mi, vec));
 	}*/
 	
+	boolean debug = true;
+	
 	@Override
 	public void update(float dt) {
-		if (ship.hp <= 0 || !focus) return;
+		if (ship.hp <= 0 || (!debug && !focus)) return;
 		
 		if (time >= 0) {
 			if (!music.isPlaying()) music.play();
+			stars.update(dt, cam, ship);
 			ship.update(dt, cam);
 		}
 		
@@ -127,8 +134,10 @@ public class GameplayState implements IState {
 	
 	@Override
 	public void render(RenderContext rc) {
-		debugRenderer.render(rc, cam);
+		//debugRenderer.render(rc, cam);
 		rc.sprites.setProjectionMatrix(camUi.combined);
+		
+		stars.render(rc, cam);
 		
 		rc.models.begin(cam);
 		//gaps.forEach(box->rc.models.render(box.getLeft(), env));

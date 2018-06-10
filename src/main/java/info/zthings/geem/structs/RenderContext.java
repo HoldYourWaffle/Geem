@@ -49,6 +49,7 @@ public class RenderContext implements Disposable {
 		ass.load("sfx/yeet.wav", Sound.class);
 		
 		ass.load("hpbar.png", Texture.class);
+		ass.load("star.png", Texture.class);
 		ass.load("mainmenu.atlas", TextureAtlas.class);
 	}
 	
