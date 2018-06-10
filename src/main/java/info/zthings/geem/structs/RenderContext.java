@@ -2,10 +2,14 @@ package info.zthings.geem.structs;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -13,15 +17,16 @@ import com.badlogic.gdx.utils.Disposable;
 
 public class RenderContext implements Disposable {
 	public final AssetManager ass;
-	public final Texture loading;
 	
 	public final ModelBatch models;
 	public final DecalBatch decals;
 	public final SpriteBatch sprites;
 	public final ShapeRenderer shapes;
 	
-	public final BitmapFont fnt;
+	public final BitmapFont fntDefault;
 	public final FreeTypeFontGenerator fntOswald, fntVT323;
+	
+	public Model shipNormalModel;//, shipPirateModel;
 	
 	public RenderContext(ModelBatch mb, DecalBatch db, SpriteBatch sb, ShapeRenderer sr) {
 		this.models = mb;
@@ -29,25 +34,42 @@ public class RenderContext implements Disposable {
 		this.decals = db;
 		this.shapes = sr;
 		
-		this.fnt = new BitmapFont();
+		this.fntDefault = new BitmapFont();
 		this.fntOswald = new FreeTypeFontGenerator(Gdx.files.internal("fonts/oswald.ttf"));
 		this.fntVT323 = new FreeTypeFontGenerator(Gdx.files.internal("fonts/vt323.ttf"));
 		
 		this.ass = new AssetManager();
-		this.loading = new Texture("loading.png");
+		ass.load("ships/normal.g3db", Model.class);
+		//ass.load("ships/pirate.g3db", Model.class);
+		
+		ass.load("music/ingame.wav", Music.class);
+		ass.load("music/circus.wav", Music.class);
+		ass.load("sfx/oof.wav", Sound.class);
+		ass.load("sfx/fail.wav", Sound.class);
+		ass.load("sfx/yeet.wav", Sound.class);
+		
+		ass.load("hpbar.png", Texture.class);
+		ass.load("mainmenu.atlas", TextureAtlas.class);
 	}
-
+	
+	public boolean updateAss() {
+		if (ass.update()) {
+			this.shipNormalModel = ass.get("ships/normal.g3db", Model.class);
+			//this.shipPirateModel = ass.get("ships/pirate.g3db", Model.class);
+			return true;
+		} else return false;
+	}
+	
 	@Override
 	public void dispose() {
+		ass.dispose();
+		
 		models.dispose();
 		decals.dispose();
 		sprites.dispose();
 		shapes.dispose();
-		ass.dispose();
 		
-		loading.dispose();
-		
-		fnt.dispose();
+		fntDefault.dispose();
 		fntOswald.dispose();
 		fntVT323.dispose();
 	}

@@ -14,7 +14,7 @@ public class DesktopLauncher {
 		
 		config.x = -1600;
 		
-		config.foregroundFPS = 0;
+		//config.foregroundFPS = 0;
 		config.vSyncEnabled = false;
 		new LwjglApplication(new GeemLoop(), config);
 	}

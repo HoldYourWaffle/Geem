@@ -20,7 +20,7 @@ public class LevelGenerator {
 	public Vector2 next() {
 		double alpha, alphaMin, alphaMax, ydiv, xdiv;
 		
-		// TODO add deviation rule (further than 50% from middle? -> bias)
+		//TODO add deviation rule (further than 50% from middle? -> bias)
 		ydiv = tightness;
 		
 		float roomLeft = currentPos.x - 2, roomRight = ww - currentPos.x - 2;

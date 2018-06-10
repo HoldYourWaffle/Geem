@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
@@ -12,24 +13,24 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import info.zthings.geem.structs.GameMode;
+import info.zthings.geem.entities.Ship.ShipNormal;
 import info.zthings.geem.structs.IState;
 import info.zthings.geem.structs.RenderContext;
 
 public class GeemLoop implements ApplicationListener {
 	public static RenderContext rc;
+	
 	private IState state;
-	private boolean posted;
 	private Viewport vp;
+	private Texture loading;
 	
 	@Override
 	public void create() {
 		vp = new StretchViewport(1280, 720);
 		vp.apply();
 		
+		loading = new Texture("loading.png");
 		rc = new RenderContext(new ModelBatch(), new DecalBatch(null), new SpriteBatch(), new ShapeRenderer());
-		//setState(new MainMenuState());
-		setState(new GameplayState(GameMode.INFINITE));
 	}
 	
 	@Override
@@ -37,15 +38,14 @@ public class GeemLoop implements ApplicationListener {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		
-		if (!rc.ass.update()) {
+		if (!rc.updateAss()) {
 			rc.sprites.begin();
-			rc.sprites.draw(rc.loading, 0, 0);
+			rc.sprites.draw(loading, 0, 0);
 			rc.sprites.end();
 			return;
-		} else if (!posted) {
-			state.postLoad(rc.ass);
-			posted = true;
-			return;
+		} else if (state == null) {
+			setState(new GameplayState(new ShipNormal()));
+			//setState(new MainMenuState());
 		}
 		
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE))
@@ -56,23 +56,23 @@ public class GeemLoop implements ApplicationListener {
 		
 		rc.sprites.resetProjectionMatrix();
 		rc.sprites.begin();
-		if (Gdx.graphics.getFramesPerSecond() < 60) rc.fnt.setColor(Color.RED);
-		else rc.fnt.setColor(Color.WHITE);
-		rc.fnt.draw(rc.sprites, "FPS: " + Gdx.graphics.getFramesPerSecond() + ", dt: " + Gdx.graphics.getDeltaTime(), 0, rc.fnt.getLineHeight());
+		if (Gdx.graphics.getFramesPerSecond() < 60) rc.fntDefault.setColor(Color.RED);
+		else rc.fntDefault.setColor(Color.WHITE);
+		rc.fntDefault.draw(rc.sprites, "FPS: " + Gdx.graphics.getFramesPerSecond() + ", dt: " + Gdx.graphics.getDeltaTime(), 0, rc.fntDefault.getLineHeight());
 		rc.sprites.end();
 	}
 	
 	@Override
 	public void dispose() {
+		loading.dispose();
 		state.dispose();
 		rc.dispose();
 	}
 	
 	public void setState(IState state) {
-		posted = false;
 		if (this.state != null) this.state.dispose();
 		this.state = state;
-		this.state.create(rc.ass);
+		this.state.create();
 	}
 	
 	@Override

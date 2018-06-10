@@ -60,7 +60,7 @@ public class Button implements UiElement {
 			state = Gdx.input.isTouched() ? BtnState.CLICK : BtnState.HOVER;
 		} else state = BtnState.NORMAL;
 	}
-
+	
 	@Override
 	public void render(RenderContext rc) {
 		TextureRegion r;
@@ -78,7 +78,7 @@ public class Button implements UiElement {
 		}
 		
 		rc.sprites.begin();
-		rc.sprites.setColor(Color.WHITE);
+		rc.sprites.setColor(1, 1, 1, rc.sprites.getColor().a);
 		rc.sprites.draw(r, pos.x, pos.y, width, height);
 		fnt.setColor(textColor);
 		fnt.draw(rc.sprites, text, pos.x + width/2 - text.width/2, pos.y + height/2 + text.height/2);
@@ -87,22 +87,22 @@ public class Button implements UiElement {
 	
 	
 	
-
+	
 	@Override
 	public Rectangle getBounds() {
 		return new Rectangle(pos.x, pos.y, width, height);
 	}
-
+	
 	@Override
 	public Vector2 getLocation() {
 		return pos;
 	}
-
+	
 	@Override
 	public void setLocation(Vector2 vec) {
 		pos = vec;
 	}
-
+	
 	@Override
 	public void setLocation(int x, int y) {
 		setLocation(new Vector2(x, y));
@@ -115,15 +115,15 @@ public class Button implements UiElement {
 	public void setCallback(Runnable r) {
 		callback = r;
 	}
-
+	
 	public Color getTextColor() {
 		return textColor;
 	}
-
+	
 	public void setTextColor(Color textColor) {
 		this.textColor = textColor;
 	}
-
+	
 	public void setSize(int w, int h) {
 		width = w;
 		height = h;

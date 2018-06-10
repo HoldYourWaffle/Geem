@@ -13,7 +13,7 @@ public interface UiElement {
 	
 	public abstract void setLocation(Vector2 vec);
 	public abstract void setLocation(int x, int y);
-		
+	
 	public abstract void update(float dt, Camera cam);
 	public abstract void render(RenderContext rc);
 	

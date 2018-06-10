@@ -33,7 +33,7 @@ public class DebugRenderer implements Disposable {
 				builder.line(x, 0, z, GRID_W, 0, z);
 		}
 		
-	
+		
 		gridModel = modelBuilder.end();
 		gridInstance = new ModelInstance(gridModel);
 		
@@ -53,12 +53,12 @@ public class DebugRenderer implements Disposable {
 		gridModel.dispose();
 		axesModel.dispose();
 	}
-
+	
 	public void update(float dt, PerspectiveCamera cam) {
 		axesInstance.transform.set(cam.position.x, 0, cam.position.z+4, 0, 0, 0, 0);
 		gridInstance.transform.set((int)cam.position.x, 0, (int)cam.position.z, 0, 0, 0, 0);
 	}
-
+	
 	public void render(RenderContext rc, PerspectiveCamera cam) {
 		rc.models.begin(cam);
 		rc.models.render(gridInstance);

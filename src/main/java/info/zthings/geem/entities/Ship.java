@@ -8,9 +8,10 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
+import info.zthings.geem.main.GeemLoop;
 import info.zthings.geem.structs.RenderContext;
 
-public /*abstract*/ class Ship {
+public abstract class Ship {
 	public final float modelScale;
 	public final Vector3 position;
 	public final BoundingBox bounds;
@@ -25,12 +26,12 @@ public /*abstract*/ class Ship {
 		this.baseSpeedX = speedX;
 		this.baseSpeedZ = speedZ;
 		this.defence = defence;
-		this.position = new Vector3(0, 0, 1);
+		this.position = new Vector3(0, 1, 0);
 		this.model = model;
 		this.model.transform.scale(modelScale, modelScale, modelScale);
 		this.modelScale = modelScale;
 		
-		bounds = new BoundingBox(); 
+		bounds = new BoundingBox();
 		model.calculateBoundingBox(bounds);
 	}
 	
@@ -40,7 +41,7 @@ public /*abstract*/ class Ship {
 		return hp <= 0;
 	}
 	
-	boolean debug = true;
+	boolean debug = false;
 	
 	public void update(float dt, PerspectiveCamera cam) {
 		float dz = 0;
@@ -60,8 +61,8 @@ public /*abstract*/ class Ship {
 		position.add(-dx*baseSpeedX*hp*dt, 0, dz);
 		cam.position.z += dz;
 		
-		if (position.x < -5) position.x = -5;
-		else if (position.x > 5) position.x = 5;
+		if (position.x < -6) position.x = -6;
+		else if (position.x > 6) position.x = 6;
 		
 		model.transform.setToTranslation(position);
 		model.transform.scale(modelScale, modelScale, modelScale);
@@ -72,6 +73,16 @@ public /*abstract*/ class Ship {
 		rc.models.begin(cam);
 		rc.models.render(model, env);
 		rc.models.end();
+	}
+	
+	
+	
+	
+	
+	public static class ShipNormal extends Ship {
+		public ShipNormal() {
+			super(new ModelInstance(GeemLoop.rc.shipNormalModel), 3, 10, .5F, 1.5F);
+		}
 	}
 	
 }

@@ -4,94 +4,84 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 import info.zthings.geem.entities.Ship;
-import info.zthings.geem.structs.GameMode;
-import info.zthings.geem.structs.IState.AStateAdapter;
+import info.zthings.geem.structs.IState;
 import info.zthings.geem.structs.RenderContext;
 import info.zthings.geem.ui.Button;
 
-public class MainMenuState extends AStateAdapter {
-	private GameMode selectedMode = null;
+public class MainMenuState implements IState {
 	private Ship selectedShip = null;
 	
-	private State state = State.MAIN;
-	private enum State { MAIN, CHARACTER, LOADSP, WAITMP }
+	private boolean stateShip = false, fading = false;
 	
 	private List<Vector2> stars = new ArrayList<>(100);
-	private float spawnTimer;
 	
 	private TextureAtlas textures;
-	private TextureRegion texInfinite, texRace;
 	
-	private BitmapFont btnFnt, titleFnt;
+	private BitmapFont fntBtn, fntTitle;
 	private Music music;
 	
-	private Button btnInfinite, btnRace, btnBack;
+	private Button btnStart, btnBack, btnGo;
 	private GlyphLayout glyphTitle, glyphCharacter;
 	
 	private OrthographicCamera cam;
 	
 	@Override
-	public void create(AssetManager ass) {
+	public void create() {
 		cam = new OrthographicCamera(1280, 720);
 		cam.position.set(1280/2, 720/2, 0);
 		
 		FreeTypeFontParameter ftfp = new FreeTypeFontParameter();
 		ftfp.borderWidth = 2;
 		ftfp.size = 128;
-		titleFnt = GeemLoop.rc.fntOswald.generateFont(ftfp);
+		fntTitle = GeemLoop.rc.fntOswald.generateFont(ftfp);
 		
 		ftfp.borderWidth = 0;
 		ftfp.color = Color.BLACK;
 		ftfp.size = 38;
-		btnFnt = GeemLoop.rc.fntVT323.generateFont(ftfp);
+		fntBtn = GeemLoop.rc.fntVT323.generateFont(ftfp);
 		
-		glyphTitle = new GlyphLayout(titleFnt, "GEEM");
-		glyphCharacter = new GlyphLayout(titleFnt, "SELECT SHIP");
+		glyphTitle = new GlyphLayout(fntTitle, "GEEM");
+		glyphCharacter = new GlyphLayout(fntTitle, "SELECT SHIP");
 		
-		ass.load("mainmenu.atlas", TextureAtlas.class);
-		ass.load("music/circus.wav", Music.class);
-	}
-	
-	@Override
-	public void postLoad(AssetManager ass) {
-		textures = ass.get("mainmenu.atlas");
-		texInfinite = textures.findRegion("infinity");
-		texRace = textures.findRegion("race");
+		textures = GeemLoop.rc.ass.get("mainmenu.atlas"); //TODO update atlas
 		
-		music = ass.get("music/circus.wav");
+		music = GeemLoop.rc.ass.get("music/circus.wav");
 		music.setLooping(true);
 		music.setVolume(.1f);
 		music.play();
 		
-		int bp = 100, by = 720/2 - textures.findRegion("button1").getRegionHeight();
+		selectedShip = new Ship.ShipNormal();
 		
-		btnInfinite = new Button("Infinite", btnFnt, Color.BLACK, "button", textures, 1280/2 - textures.findRegion("button1").getRegionWidth() - bp, by, ()->{
-			selectedMode = GameMode.INFINITE;
-			state = State.CHARACTER;
-		}, t->{});
+		btnStart = new Button("Start", fntBtn, Color.BLACK, "button", textures,
+				1280/2 - textures.findRegion("button1").getRegionWidth()/2, 720/2 - textures.findRegion("button1").getRegionHeight(),
+				()->stateShip = true, t->{});
 		
-		btnRace = new Button("Race", btnFnt, Color.BLACK, "button", textures, 1280/2 + bp, by, ()->{
-			selectedMode = GameMode.RACE;
-			state = State.CHARACTER;
-		}, t->{});
+		btnGo = new Button("Go!", fntBtn, Color.BLACK, "button", textures,
+				1280/2 - textures.findRegion("button1").getRegionWidth()/2, textures.findRegion("button1").getRegionHeight()/2,
+				()->{
+					fading = true;
+					music.stop();
+					Timer t = new Timer();
+					t.scheduleTask(new Task(()->{
+						((GeemLoop)Gdx.app.getApplicationListener()).setState(new GameplayState(selectedShip));
+					}), .25F);
+					t.start();
+				}, t->{});
 		
-		btnBack = new Button("", btnFnt, Color.BLACK, "arrow", textures, 50, 50, ()->{
-			selectedMode = null;
-			state = State.MAIN;
-		}, t->t.flip(true, false));
+		btnBack = new Button("", fntBtn, Color.BLACK, "arrow", textures, 50, textures.findRegion("button1").getRegionHeight()/2, ()->stateShip = false, t->t.flip(true, false));
 		btnBack.setSize(50, 50);
 	}
 	
@@ -99,31 +89,15 @@ public class MainMenuState extends AStateAdapter {
 	public void update(float dt) {
 		cam.update();
 		
-		switch (state) {
-			case MAIN:
-				btnInfinite.update(dt, cam);
-				btnRace.update(dt, cam);
-				break;
-				
-			case CHARACTER:
-				btnBack.update(dt, cam);
-				break;
-				
-			case LOADSP:
-				btnBack.update(dt, cam);
-				break;
-				
-			case WAITMP:
-				btnBack.update(dt, cam);
-				break;
-				
-			default: throw new AssertionError("wot");
-		}
+		if (stateShip) {
+			btnBack.update(dt, cam);
+			btnGo.update(dt, cam);
+		} else btnStart.update(dt, cam);
 		
-		if (spawnTimer > 10 && stars.size() < 250) {
+		if (stars.size() < 300) {
 			stars.add(new Vector2(0, Math.random() * 720));
-			spawnTimer = 0;
-		} else spawnTimer += 1000*dt;
+			stars.add(new Vector2(0, Math.random() * 720));
+		}
 		
 		stars.forEach(vec->vec.add(500 * dt, 0));
 		stars.removeIf(vec->vec.x > 1300);
@@ -135,69 +109,45 @@ public class MainMenuState extends AStateAdapter {
 		rc.shapes.setProjectionMatrix(cam.combined);
 		rc.sprites.setProjectionMatrix(cam.combined);
 		
+		if (fading) return;
+		
 		rc.shapes.begin(ShapeType.Filled);
 		stars.forEach(vec->rc.shapes.circle(vec.x, vec.y, 1));
 		rc.shapes.end();
 		
-		switch (state) {
-			case MAIN:
-				renderMain(rc);
-				break;
-				
-			case CHARACTER:
-				renderCharacter(rc);
-				btnBack.render(rc);
-				break;
-				
-			case LOADSP:
-				renderLsp(rc);
-				btnBack.render(rc);
-				break;
-				
-			case WAITMP:
-				renderWmp(rc);
-				btnBack.render(rc);
-				break;
-				
-			default: throw new AssertionError("wot");
-		}
+		if (stateShip) renderShipSelect(rc);
+		else renderMain(rc);
 	}
 	
 	private void renderMain(RenderContext rc) {
-		btnInfinite.render(rc);
-		btnRace.render(rc);
-		
+		btnStart.render(rc);
 		rc.sprites.begin();
-		titleFnt.draw(rc.sprites, glyphTitle, 1280/2 - glyphTitle.width/2, 720 - glyphTitle.height);
+		fntTitle.draw(rc.sprites, glyphTitle, 1280/2 - glyphTitle.width/2, 720 - glyphTitle.height);
 		rc.sprites.end();
 	}
 	
-	private void renderCharacter(RenderContext rc) {
+	private void renderShipSelect(RenderContext rc) {
+		btnBack.render(rc);
+		btnGo.render(rc);
+		
 		rc.sprites.begin();
-		titleFnt.draw(rc.sprites, glyphCharacter, 1280/2 - glyphCharacter.width/2, 720 - glyphCharacter.height);
-		rc.sprites.setColor(1, 1, 1, .4f);
-		rc.sprites.draw(selectedMode == GameMode.INFINITE ? texInfinite : texRace, 100, 100);
+		fntTitle.draw(rc.sprites, glyphCharacter, 1280/2 - glyphCharacter.width/2, 720 - glyphCharacter.height);
+		//rc.sprites.setColor(1, 1, 1, .4f);
 		rc.sprites.end();
 	}
-	
-	private void renderWmp(RenderContext rc) {
-		//STUB empty method
-		
-	}
-
-	private void renderLsp(RenderContext rc) {
-		//STUB empty method
-		
-	}
-	
-	
 	
 	@Override
 	public void dispose() {
-		btnFnt.dispose();
-		titleFnt.dispose();
+		System.out.println("Dispose");
 		music.dispose();
-		textures.dispose();
+		fntBtn.dispose();
+		fntTitle.dispose();
 	}
+	
+	
+	
+	@Override public void pause() {}
+	@Override public void resume() {}
+	@Override public void resize(int width, int height) {}
 	
 }

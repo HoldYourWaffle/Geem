@@ -3,67 +3,50 @@ package info.zthings.geem.main;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.tuple.Pair;
-
-import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
+import info.zthings.geem.entities.Astroid;
 import info.zthings.geem.entities.Ship;
-import info.zthings.geem.structs.GameMode;
 import info.zthings.geem.structs.IState;
 import info.zthings.geem.structs.RenderContext;
 import info.zthings.geem.world.DebugRenderer;
-import info.zthings.geem.world.LevelGenerator;
 
 public class GameplayState implements IState {
 	private PerspectiveCamera cam;
-	private OrthographicCamera camUi;
 	private Environment env;
-	private DebugRenderer debugRender;
-	private LevelGenerator lg = new LevelGenerator(10, 10);
+	private DebugRenderer debugRenderer;
+	//private LevelGenerator lg = new LevelGenerator(10, 10);
 	
 	private BitmapFont fnt;
 	private GlyphLayout glyphDied;
+	private Music music;
 	
-	private Model shipModel, box;
-	private Ship ship;
-	
+	private final Ship ship;
 	private List<Astroid> obstacles = new ArrayList<>();
-	private final int gapWidth = 4;
 	
-	private boolean died = false;
-	
-	private final GameMode mode;
 	private int score;
-	
 	private Timer timer;
-	private volatile int time;
+	private volatile int time = -3;
+	private boolean focus = true;
 	
-	public GameplayState(GameMode mode) {
-		this.mode = mode;
+	public GameplayState(Ship ship) {
+		this.ship = ship;
 	}
 	
 	@Override
-	public void create(AssetManager ass) {
+	public void create() {
 		cam = new PerspectiveCamera(69, 1280, 720);
 		cam.position.set(0, 3, -5);
 		cam.lookAt(0, 0, 200);
@@ -71,77 +54,58 @@ public class GameplayState implements IState {
 		cam.far = 100;
 		cam.update();
 		
-		camUi = new OrthographicCamera(1280, 720);
-		camUi.position.set(1280/2, 720/2, 0);
-		camUi.update();
-		
 		env = new Environment();
-        env.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-        env.add(new DirectionalLight().set(0.4f, 0.4f, 0.4f, -1f, -0.8f, -0.2f));
+		env.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
+		env.add(new DirectionalLight().set(0.4f, 0.4f, 0.4f, -1f, -0.8f, -0.2f));
 		
-        fnt = GeemLoop.rc.fntVT323.generateFont(new FreeTypeFontParameter(69));
-        glyphDied = new GlyphLayout(fnt, "YOU DIED");
-        
-		debugRender = new DebugRenderer();
-		ass.load("ships/ship.g3db", Model.class);
-		ass.load("hpbar.png", Texture.class);
-		ass.load("sfx/oof.wav", Sound.class);
-		ass.load("sfx/fail.wav", Sound.class);
-		ass.load("sfx/yeet.wav", Sound.class);
-		ass.load("music/ingame.mp3", Music.class);
+		fnt = GeemLoop.rc.fntVT323.generateFont(new FreeTypeFontParameter(69));
+		glyphDied = new GlyphLayout(fnt, "YOU DIED");
 		
-		ModelBuilder boxbuilder = new ModelBuilder();
-		box = boxbuilder.createBox(gapWidth, .5F, .5F, new Material(ColorAttribute.createDiffuse(Color.RED)), Usage.Position | Usage.Normal);
+		debugRenderer = new DebugRenderer();
 		
-		for (int i = 0; i < 10; i++) nextGap();
-	}
-	
-	private void nextGap() {
-		ModelInstance gap = new ModelInstance(box);
-		Vector2 vec = lg.next();
-		vec.add(-5, 0);
-		//vec.set(0, vec.y);
-		//vec.set(0, 10);
-		
-		gap.transform.setTranslation(vec.x, 0, vec.y);
-		astroid.add(new Astroid(GeemLoop.rc.ass.get("astroid.g3db", Model.class), cam.position.z + 100));
-	}
-	
-	@Override
-	public void postLoad(AssetManager ass) {
-		shipModel = ass.get("ships/ship.g3db", Model.class);
-		ship = new Ship(new ModelInstance(shipModel), 3, 10, .5F, 1.5F);
-		
-		Music m = ass.get("music/ingame.mp3", Music.class);
-		m.setVolume(.25F);
-		m.setLooping(true);
-		m.play();
+		music = GeemLoop.rc.ass.get("music/ingame.wav");
+		music.setLooping(true);
 		
 		timer = new Timer();
-		timer.scheduleTask(new Task(()->time++), 0, 1);
+		timer.scheduleTask(new Task(()->time++), 1, 1);
 		timer.start();
+		
+		ship.update(Gdx.graphics.getDeltaTime(), cam);
+		
+		//for (int i = 0; i < 10; i++) nextGap();
 	}
-
+	
+	/*private void nextGap() {
+		ModelInstance mi = new ModelInstance(GeemLoop.rc.ass.get("astroid.g3db", Model.class));
+		Vector2 vec = new Vector2(cam.position.z + 100, Math.random() * 10 - 5);
+		mi.transform.setTranslation(vec.x, 0, vec.y);
+		obstacles.add(new Astroid(mi, vec));
+	}*/
+	
 	@Override
 	public void update(float dt) {
-		if (died) return;
+		if (ship.hp <= 0 || !focus) return;
 		
-		ship.update(dt, cam);
+		if (time >= 0) {
+			if (!music.isPlaying()) music.play();
+			ship.update(dt, cam);
+		}
+		
 		cam.lookAt(0, 0, cam.position.z+200);
 		cam.update();
-		debugRender.update(dt, cam);
+		debugRenderer.update(dt, cam);
 		
-		if (ship.position.z > gaps.get(1).getRight().y) { //y in Vector2 = z
+		/*if (ship.position.z > gaps.get(1).getRight().y) { //y in Vector2 = z
 			boolean passed = ship.position.x+ship.bounds.getWidth()*ship.modelScale/2 < gaps.get(1).getRight().x+gapWidth/2 &&
 							 ship.position.x-ship.bounds.getWidth()*ship.modelScale/2 > gaps.get(1).getRight().x-gapWidth/2;
 			
 			if (!passed) {
 				score--;
-				//TODO animation
+				//TO DO animation
 				died = ship.hit();
 				if (died) {
 					GeemLoop.rc.ass.get("sfx/fail.wav", Sound.class).play();
-					//TODO continue
+					//TO DO continue
 				} else GeemLoop.rc.ass.get("sfx/oof.wav", Sound.class).play(.8F);
 			} else {
 				score++;
@@ -151,30 +115,39 @@ public class GameplayState implements IState {
 			
 			gaps.remove(0);
 			nextGap();
-		}
+		}*/
 	}
 	
 	@Override
 	public void render(RenderContext rc) {
-		debugRender.render(rc, cam);
-		rc.sprites.setProjectionMatrix(camUi.combined);
-		//rc.shapes.setProjectionMatrix(camUi.combined);
-
+		debugRenderer.render(rc, cam);
+		
 		rc.models.begin(cam);
-		gaps.forEach(box->rc.models.render(box.getLeft(), env));
+		//gaps.forEach(box->rc.models.render(box.getLeft(), env));
 		rc.models.end();
 		
-		if (!died) {
+		if (ship.hp > 0) {
 			ship.render(rc, env, cam);
 			
 			rc.sprites.begin();
-			fnt.draw(rc.sprites, "SPEED ", 10, 720);
-			fnt.draw(rc.sprites, "TIME  "+time, 10, 665);
-			fnt.draw(rc.sprites, "" + String.valueOf(score/(float)time).substring(0, 3), 225 + (int)Math.max(25 * (int)Math.log10(score), 25 * (int)Math.log10(time)), 638);
-			if (mode == GameMode.INFINITE)
-				fnt.draw(rc.sprites, "SCORE "+score, 10, 610);
+			//time = 2;
 			
-			rc.sprites.draw(rc.ass.get("hpbar.png", Texture.class), 170, 690, 0, 0, (int)((1280-170-10)/2 * ship.hp), 20);
+			if (time >= 0) {
+				fnt.setColor(Color.WHITE);
+				fnt.draw(rc.sprites, "SPEED ", 10, 720);
+				rc.sprites.draw(rc.ass.get("hpbar.png", Texture.class), 170, 690, 0, 0,
+						(int) ((1280 - 170 - 10) / 2 * ship.hp), 20);
+				fnt.draw(rc.sprites, "TIME  " + time, 10, 665);
+				fnt.draw(rc.sprites, "SCORE " + score, 10, 610);
+				if (time < 3) {
+					fnt.setColor(Color.GREEN);
+					fnt.draw(rc.sprites, "GO!", 1280/2-35, 720/2+150);
+				}
+			} else {
+				fnt.setColor(time == -3 ? Color.RED : time == -2 ? Color.ORANGE : Color.GREEN);
+				fnt.draw(rc.sprites, ""+Math.abs(time), 1280/2-10, 720/2+150);
+			}
+			
 			rc.sprites.end();
 		} else {
 			rc.sprites.begin();
@@ -184,17 +157,17 @@ public class GameplayState implements IState {
 	}
 	
 	
-
+	
 	@Override
 	public void dispose() {
-		debugRender.dispose();
-		box.dispose();
+		debugRenderer.dispose();
+		fnt.dispose();
 	}
 	
 	
 	
 	
-	@Override public void pause() {}
-	@Override public void resume() {}
+	@Override public void pause() { focus = false; }
+	@Override public void resume() { focus = true; }
 	@Override public void resize(int width, int height) {}
 }
