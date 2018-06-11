@@ -43,8 +43,7 @@ public abstract class Ship extends Entity {
 	public void update(float dt) {
 		super.update(dt);
 		
-		//fuel = 60; //TODO remove
-		//hp = 100;
+		//fuel = 1;
 		
 		float dz = 0;
 		if (Gdx.input.isKeyPressed(Keys.W) || !debug)

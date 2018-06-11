@@ -34,7 +34,7 @@ public class GameplayState implements IState {
 	private OrthographicCamera camUi;
 	
 	private Environment env;
-	private Music music;
+	private Music music, beep;
 	private DebugRenderer debugRenderer;
 	
 	private Button btnRestart;
@@ -79,6 +79,8 @@ public class GameplayState implements IState {
 		
 		music = GeemLoop.rc.ass.get("music/ingame.wav");
 		music.setLooping(true);
+		beep = GeemLoop.rc.ass.get("sfx/beep.wav");
+		beep.setLooping(true);
 		
 		timer = new Timer();
 		timer.scheduleTask(new Task(()->time++), 1, 1);
@@ -111,7 +113,15 @@ public class GameplayState implements IState {
 				btnRestart.update(dt, camUi);
 			return;
 		}
-		if (time >= 0 && !music.isPlaying()) music.play();
+		
+		if (time == 0) ship.fuel = 100;
+		
+		if (time >= 0 && !music.isPlaying())
+			music.play();
+		
+		if (ship.fuel < 25) {
+			if (!beep.isPlaying()) beep.play();
+		} else beep.stop();
 		
 		stars.update(dt, cam, ship);
 		ship.update(dt);
@@ -180,6 +190,7 @@ public class GameplayState implements IState {
 			GeemLoop.rc.updateHighscore((int) (kills + time / 2));
 			glyphScore = new GlyphLayout(GeemLoop.rc.fntUi, "SCORE: " + (int) (kills + time / 2));
 			timer.stop();
+			beep.stop();
 			music.stop();
 			GeemLoop.rc.ass.get("sfx/fail.wav", Sound.class).play(.8F);
 		}
@@ -215,7 +226,7 @@ public class GameplayState implements IState {
 				if (ship.fuel < 25) rc.fntUi.setColor(Color.RED); //TODO warning sfx
 				else if (ship.fuel < 50) rc.fntUi.setColor(Color.ORANGE);
 				else rc.fntUi.setColor(Color.GREEN);
-				rc.fntUi.draw(rc.sprites, "FUEL: " + (int)ship.fuel + "%", 10, 665);
+				rc.fntUi.draw(rc.sprites, "FUEL: " + (int)Math.ceil(ship.fuel) + "%", 10, 665);
 				
 				rc.fntUi.setColor(Color.WHITE);
 				rc.fntUi.draw(rc.sprites, "TIME  " + time, 10, 610);
