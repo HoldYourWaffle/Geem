@@ -28,8 +28,8 @@ public abstract class Ship extends Entity {
 		this.turnAngle = turnAngle;
 	}
 	
-	public boolean hit() {
-		hp -= 100 - defence;
+	public boolean hit(boolean hard) {
+		hp -= (100 - defence) * (hard ? 2 : 1);
 		return hp <= 0;
 	}
 	
@@ -43,7 +43,8 @@ public abstract class Ship extends Entity {
 	public void update(float dt) {
 		super.update(dt);
 		
-		//fuel = 1;
+		fuel = 100;
+		hp = 100;
 		
 		float dz = 0;
 		if (Gdx.input.isKeyPressed(Keys.W) || !debug)

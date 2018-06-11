@@ -147,17 +147,20 @@ public class GameplayState implements IState {
 			if (a.getCurrentBounds().intersects(ship.getCurrentBounds())) {
 				a.destroyed = true;
 				kills--;
-				if (!ship.hit()) //!died from hit
+				if (!ship.hit(a.hard)) //!died from hit
 					GeemLoop.rc.ass.get("sfx/oof.wav", Sound.class).play(.8F);
 				continue;
 			} else for (Bullet b : bullets) {
 				vecBuf.set(b.position.x, a.getCurrentBounds().getCenterY(), b.position.z);				
 				if (a.getCurrentBounds().contains(vecBuf)) {
-					a.destroyed = b.destroyed = true;
+					if (a.hit()) { //broken
+						//TODO play explosion
+						b.destroyed = true;
+						kills++;
+						continue;
+					}
 					float dist = a.position.z - ship.position.z;
-					GeemLoop.rc.ass.get("sfx/biem.wav", Sound.class).play((dist < 60 ? 1 - dist/60 : 0) * .8F);
-					kills++;
-					continue;
+					GeemLoop.rc.ass.get("sfx/biem.wav", Sound.class).play((dist < 60 ? 1 - dist / 60 : 0) * .8F);
 				}
 			}
 		}
