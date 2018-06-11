@@ -132,9 +132,7 @@ public class GameplayState implements IState {
 		
 		if (true //TODO conditional
 				&& fuelcan.position.z < cam.position.z) {
-			System.out.println((float)Math.random() * 2*xb - xb);
 			fuelcan.position.set((float)Math.random() * 2*xb - xb, ship.position.y + .3F, ship.position.z + 100);
-			System.out.println("Spawn "+fuelcan.position);
 		}
 		
 		final Vector3 vecBuf = new Vector3();

@@ -87,7 +87,7 @@ public class ResourceContext implements Disposable {
 		ftfp.size = 38;
 		fntBtn = fntGenVT323.generateFont(ftfp);
 		
-		highscore = Gdx.app.getPreferences("highscore").getInteger("highscore");
+		highscore = Gdx.app.getPreferences("geem-highscore").getInteger("highscore");
 		glyphHighscore = new GlyphLayout(fntUi, "HIGHSCORE: " + highscore);
 	}
 	
@@ -116,8 +116,8 @@ public class ResourceContext implements Disposable {
 		if (score > highscore) {
 			highscore = score;
 			glyphHighscore = new GlyphLayout(GeemLoop.rc.fntUi, "HIGHSCORE: " + highscore);
-			Gdx.app.getPreferences("highscore").putInteger("highscore", highscore);
-			Gdx.app.getPreferences("highscore").flush();
+			Gdx.app.getPreferences("geem-highscore").putInteger("highscore", highscore);
+			Gdx.app.getPreferences("geem-highscore").flush();
 		}
 	}
 	
