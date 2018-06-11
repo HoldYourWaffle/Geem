@@ -148,7 +148,7 @@ public class GameplayState implements IState {
 		if (Gdx.input.isKeyJustPressed(Keys.SPACE) && time >= 0)
 			bullets.add(new Bullet(ship));
 		
-		if (Math.random() < .3) {
+		if (Math.random() < .2 + (.8 / 6000) * ship.position.z ) {
 			Asteroid a = new Asteroid((float)(80*Math.random() - 40), ship.position.z + 120);
 			if (obstacles.stream().noneMatch(ac->ac.getCurrentBounds().intersects(a.getCurrentBounds())))
 				obstacles.add(a);
