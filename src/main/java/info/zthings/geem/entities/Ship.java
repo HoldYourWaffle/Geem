@@ -56,14 +56,15 @@ public abstract class Ship extends Entity {
 		if (hp > 2) hp = 2;
 		
 		position.add(-dx*baseSpeedX*hp*dt, 0, dz);
-		cam.position.z += dz;
-		
-		if (position.x < -6) position.x = -6;
-		else if (position.x > 6) position.x = 6;
+		cam.position.z += dz; //TODO move cam control to state update
 		
 		rotXZ.setFromAxis(Math.abs(dx/3F), 0, dx/2F, turnAngle);
 		rotXZ.mul(rotY);
 		model.transform.set(position, rotXZ.nor(), scale);
+	}
+	
+	public float getGunY() {
+		return position.y;
 	}
 	
 	public static class ShipNormal extends Ship {
@@ -86,9 +87,13 @@ public abstract class Ship extends Entity {
 			a += dt * 500;
 			rotY.setFromAxis(0, 1, 0, a);
 			super.update(dt, cam);
-			
-			//System.out.println(rotation.y);
 		}
+		
+		@Override
+		public float getGunY() {
+			return position.y + .5F;
+		}
+		
 	}
 	
 }

@@ -13,11 +13,14 @@ public abstract class Entity {
 	protected final ModelInstance model;
 	private BoundingBox bb = new BoundingBox(), bbc;
 	
+	public boolean destroyed = false;
+	
 	public Vector3 position;
 	
 	public Entity(Model model) {
 		this.model = new ModelInstance(model);
 		this.model.calculateBoundingBox(bb);
+		bbc = new BoundingBox(Vector3.Zero, Vector3.Zero);
 	}
 	
 	public BoundingBox getCurrentBounds() {

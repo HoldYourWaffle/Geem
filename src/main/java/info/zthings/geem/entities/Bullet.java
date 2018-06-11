@@ -11,7 +11,7 @@ public class Bullet extends Entity {
 	
 	public Bullet(Ship shooter) {
 		super(GeemLoop.rc.bulletModel);
-		position = new Vector3(shooter.position.x, shooter.position.y, shooter.position.z+1);
+		position = new Vector3(shooter.position.x, shooter.getGunY(), shooter.position.z+1);
 		
 		double ma = 3, a = (Math.random() * Math.toRadians(ma*2)) - Math.toRadians(ma);
 		speed = shooter.baseSpeedZ * shooter.hp * 4F;
