@@ -153,14 +153,14 @@ public class GameplayState implements IState {
 			} else for (Bullet b : bullets) {
 				vecBuf.set(b.position.x, a.getCurrentBounds().getCenterY(), b.position.z);				
 				if (a.getCurrentBounds().contains(vecBuf)) {
+					b.destroyed = true;
+					float dist = a.position.z - ship.position.z;
+					GeemLoop.rc.ass.get("sfx/biem.wav", Sound.class).play((dist < 60 ? 1 - dist / 60 : 0) * .8F);
 					if (a.hit()) { //broken
-						//TODO play explosion
-						b.destroyed = true;
+						//TODO explosion
 						kills++;
 						continue;
 					}
-					float dist = a.position.z - ship.position.z;
-					GeemLoop.rc.ass.get("sfx/biem.wav", Sound.class).play((dist < 60 ? 1 - dist / 60 : 0) * .8F);
 				}
 			}
 		}
@@ -224,7 +224,7 @@ public class GameplayState implements IState {
 				}
 				rc.fntUi.draw(rc.sprites, "HP " + ship.hp + "%", 10, 720);
 				
-				if (ship.fuel < 25) rc.fntUi.setColor(Color.RED); //TODO warning sfx
+				if (ship.fuel < 25) rc.fntUi.setColor(Color.RED);
 				else if (ship.fuel < 50) rc.fntUi.setColor(Color.ORANGE);
 				else rc.fntUi.setColor(Color.GREEN);
 				rc.fntUi.draw(rc.sprites, "FUEL: " + (int)Math.ceil(ship.fuel) + "%", 10, 665);

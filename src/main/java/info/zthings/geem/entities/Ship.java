@@ -43,8 +43,8 @@ public abstract class Ship extends Entity {
 	public void update(float dt) {
 		super.update(dt);
 		
-		fuel = 100;
-		hp = 100;
+		//fuel = 100;
+		//hp = 100;
 		
 		float dz = 0;
 		if (Gdx.input.isKeyPressed(Keys.W) || !debug)
@@ -56,9 +56,8 @@ public abstract class Ship extends Entity {
 		dz *= dt * ff;
 		fuel -= dz / 15F;
 		
-		if (fuel < -.25F) { //TODO sfx?
+		if (fuel < -.25F)
 			hp = 0;
-		}
 		
 		int dx;
 		if (Gdx.input.isKeyPressed(Keys.A)) dx = -1;

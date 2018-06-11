@@ -14,9 +14,8 @@ public class Asteroid extends Entity {
 		super(GeemLoop.rc.asteroidModels[(int)(Math.random()*29)]);
 		this.position = new Vector3(x, .5F, z);
 		
-		float rc = .000000125F;
+		float rc = .0000125F; //TODO test
 		hard = Math.random() < rc * (z - 2000);
-		hard = true;
 		
 		if (hard) System.out.println(z);
 		
