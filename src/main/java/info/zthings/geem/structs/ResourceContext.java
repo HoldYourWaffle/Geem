@@ -56,7 +56,6 @@ public class ResourceContext implements Disposable {
 		ass.load("models/canister.g3db", Model.class);
 		for (int i = 1; i <= 30; i++)
 			ass.load("models/asteroids/asteroid"+i+".g3dj", Model.class);
-			//ass.load("asteroid1.g3dj", Model.class);
 		
 		ass.load("music/ingame.wav", Music.class);
 		ass.load("music/circus.wav", Music.class);
@@ -67,8 +66,6 @@ public class ResourceContext implements Disposable {
 		ass.load("sfx/biem.wav", Sound.class);
 		
 		ass.load("sprites.atlas", TextureAtlas.class);
-		/*ass.load("hpbar.png", Texture.class);
-		ass.load("star.png", Texture.class);*/
 	}
 	
 	public boolean updateAss() {
@@ -78,10 +75,8 @@ public class ResourceContext implements Disposable {
 			this.fuelModel = ass.get("models/canister.g3db");
 			for (int i = 1; i <= 30; i++)
 				this.asteroidModels[i-1] = ass.get("models/asteroids/asteroid"+i+".g3dj");
-				//this.asteroidModels[i-1] = ass.get("asteroid1.g3dj");
 			
 			atlas = ass.get("sprites.atlas");
-			
 			return true;
 		} else return false;
 	}

@@ -13,11 +13,10 @@ public abstract class Ship extends Entity {
 	public final Vector3 scale;
 	protected final Quaternion rotXZ, rotY;
 	
-	public final int baseSpeedX, baseSpeedZ, turnAngle;
-	private final float defence;
-	public float hp = 1;
+	public final int baseSpeedX, baseSpeedZ, turnAngle, defence;
+	public int hp = 100;
 	
-	public Ship(Model model, int speedX, int speedZ, float defence, float modelScale, int turnAngle) {
+	public Ship(Model model, int speedX, int speedZ, int defence, float modelScale, int turnAngle) {
 		super(model);
 		this.baseSpeedX = speedX;
 		this.baseSpeedZ = speedZ;
@@ -31,31 +30,32 @@ public abstract class Ship extends Entity {
 	}
 	
 	public boolean hit() {
-		if (hp > 1) hp = 1;
-		else hp -= 1 - defence;
+		hp -= 100 - defence;
 		return hp <= 0;
+	}
+	
+	public int hitsLeft() {
+		return (int)Math.ceil(hp / (100-defence));
 	}
 	
 	private boolean debug = false;
 	
 	@Override
 	public void update(float dt, PerspectiveCamera cam) {
-		super.update(dt, cam);
+		super.update(dt, cam); //TODO slow down with low fuel
 		
 		float dz = 0;
 		if (Gdx.input.isKeyPressed(Keys.W) || !debug)
-			dz = dt*baseSpeedZ*hp;
+			dz = dt*baseSpeedZ;
 		else if (Gdx.input.isKeyPressed(Keys.S))
-			dz = dt*-baseSpeedZ*hp;
+			dz = dt*-baseSpeedZ;
 		
 		int dx;
 		if (Gdx.input.isKeyPressed(Keys.A)) dx = -1;
 		else if (Gdx.input.isKeyPressed(Keys.D)) dx = 1;
 		else dx = 0;
 		
-		if (hp > 2) hp = 2;
-		
-		position.add(-dx*baseSpeedX*hp*dt, 0, dz);
+		position.add(-dx*baseSpeedX*dt, 0, dz);
 		cam.position.z += dz; //TODO move cam control to state update
 		
 		rotXZ.setFromAxis(Math.abs(dx/3F), 0, dx/2F, turnAngle);
@@ -69,14 +69,14 @@ public abstract class Ship extends Entity {
 	
 	public static class ShipNormal extends Ship {
 		public ShipNormal() {
-			super(GeemLoop.rc.shipNormalModel, 6, 20, .5F, 1.5F, 30);
+			super(GeemLoop.rc.shipNormalModel, 6, 20, 90, 1.5F, 30);
 		}
 	}
 	
 	public static class ShipUfo extends Ship {
 		
 		public ShipUfo() {
-			super(GeemLoop.rc.shipUfoModel, 6, 15, .5F, .025F, 15);
+			super(GeemLoop.rc.shipUfoModel, 6, 15, 90, .025F, 15);
 			position.y -= .5F;
 		}
 		

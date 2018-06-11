@@ -14,7 +14,7 @@ public class Bullet extends Entity {
 		position = new Vector3(shooter.position.x, shooter.getGunY(), shooter.position.z+1);
 		
 		double ma = 3, a = (Math.random() * Math.toRadians(ma*2)) - Math.toRadians(ma);
-		speed = shooter.baseSpeedZ * shooter.hp * 4F;
+		speed = shooter.baseSpeedZ * 4F; //TODO slow down with fuel
 		divX = (float) (speed * Math.sin(a));
 		divZ = (float) (speed * Math.cos(a));
 		

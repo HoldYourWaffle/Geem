@@ -102,7 +102,8 @@ public class GameplayState implements IState {
 		obstacles.forEach(a->a.update(dt, cam));
 		obstacles.removeIf(a->a.position.z < cam.position.z || a.destroyed);
 		
-		if (ship.hp <= 0 || (!debug && !focus)) return;		if (time >= 0 && !music.isPlaying()) music.play();
+		if (ship.hp <= 0 || (!debug && !focus)) return;
+		if (time >= 0 && !music.isPlaying()) music.play();
 		
 		stars.update(dt, cam, ship);
 		ship.update(dt, cam);
@@ -163,9 +164,15 @@ public class GameplayState implements IState {
 			rc.sprites.begin();
 			
 			if (time >= 0) {
+				switch (ship.hitsLeft()) {
+					case 0: throw new AssertionError("I should be dead");
+					case 1: fnt.setColor(Color.RED); break;
+					case 2: fnt.setColor(Color.ORANGE); break;
+					default: fnt.setColor(Color.GREEN);
+				}
+				fnt.draw(rc.sprites, "HP " + ship.hp + "%", 10, 720);
+				
 				fnt.setColor(Color.WHITE);
-				fnt.draw(rc.sprites, "SPEED ", 10, 720);
-				rc.sprites.draw(rc.atlas.findRegion("hpbar"), 170, 690, (int) ((1280 - 170 - 10) / 2 * ship.hp), 20);
 				fnt.draw(rc.sprites, "TIME  " + time, 10, 665);
 				fnt.draw(rc.sprites, "SCORE " + score, 10, 610);
 				if (time < 3) {
