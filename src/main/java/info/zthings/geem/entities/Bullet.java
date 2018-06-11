@@ -1,7 +1,6 @@
 package info.zthings.geem.entities;
 
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Vector3;
 
 import info.zthings.geem.main.GeemLoop;
@@ -23,8 +22,8 @@ public class Bullet extends Entity {
 	}
 	
 	@Override
-	public void update(float dt, PerspectiveCamera cam) {
-		super.update(dt, cam);
+	public void update(float dt) {
+		super.update(dt);
 		position.add(divX * dt, 0, divZ * dt);
 	}
 	

@@ -84,29 +84,29 @@ public class GameplayState implements IState {
 		timer.scheduleTask(new Task(()->time++), 1, 1);
 		timer.start();
 		
-		ship.update(Gdx.graphics.getDeltaTime(), cam);
+		ship.update(Gdx.graphics.getDeltaTime());
 		stars.update(Gdx.graphics.getDeltaTime(), cam, ship);
 		
 		//for (int i = 0; i < 10; i++) nextGap();
 	}
 	
-	boolean debug = false;
+	boolean debug = true;
 	
 	@Override
 	public void update(float dt) {
 		if (debug) time = 4;
 		
-		bullets.forEach(b->b.update(dt, cam));
+		bullets.forEach(b->b.update(dt));
 		bullets.removeIf(b->b.position.z - ship.position.z > 100 || b.destroyed);
 		
-		obstacles.forEach(a->a.update(dt, cam));
+		obstacles.forEach(a->a.update(dt));
 		obstacles.removeIf(a->a.position.z < cam.position.z || a.destroyed);
 		
 		if (ship.hp <= 0 || (!debug && !focus)) return;
 		if (time >= 0 && !music.isPlaying()) music.play();
 		
 		stars.update(dt, cam, ship);
-		ship.update(dt, cam);
+		ship.update(dt);
 		
 		final float xb = 7;
 		if (ship.position.x < -xb) ship.position.x = -xb;
@@ -139,9 +139,13 @@ public class GameplayState implements IState {
 		if (Gdx.input.isKeyJustPressed(Keys.SPACE) && time >= 0) //NOW fix bullet starting point
 			bullets.add(new Bullet(ship));
 		
-		if (Math.random() < .3)
-			obstacles.add(new Asteroid((float)(80*Math.random() - 40), ship.position.z + 120));
+		if (Math.random() < .3) {
+			Asteroid a = new Asteroid((float)(80*Math.random() - 40), ship.position.z + 120);
+			if (obstacles.stream().noneMatch(ac->ac.getCurrentBounds().intersects(a.getCurrentBounds())))
+				obstacles.add(a);
+		}
 		
+		cam.position.z = ship.position.z - 6;
 		cam.lookAt(0, 0, cam.position.z+200);
 		cam.update();
 		debugRenderer.update(dt, cam);

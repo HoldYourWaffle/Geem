@@ -1,6 +1,5 @@
 package info.zthings.geem.entities;
 
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -27,7 +26,7 @@ public abstract class Entity {
 		return bbc;
 	}
 	
-	public void update(float dt, PerspectiveCamera cam) {
+	public void update(float dt) {
 		model.transform.setTranslation(position);
 		bbc = bb.mul2(model.transform);
 	}

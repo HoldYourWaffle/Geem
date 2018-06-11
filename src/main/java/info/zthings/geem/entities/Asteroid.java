@@ -2,7 +2,6 @@ package info.zthings.geem.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.math.Vector3;
 
@@ -15,11 +14,11 @@ public class Asteroid extends Entity {
 		this.position = new Vector3(x, .5F, z);
 		model.materials.get(0).set(ColorAttribute.createDiffuse(Color.DARK_GRAY));
 		model.transform.scale(.025F, .025F, .025F);
-		super.update(Gdx.graphics.getDeltaTime(), null);
+		super.update(Gdx.graphics.getDeltaTime());
 	}
 	
 	@Override
-	public void update(float dt, PerspectiveCamera cam) {
+	public void update(float dt) {
 		//super.update(dt, cam); I never move
 	}
 

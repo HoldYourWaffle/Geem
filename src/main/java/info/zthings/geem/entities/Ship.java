@@ -2,7 +2,6 @@ package info.zthings.geem.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -38,12 +37,13 @@ public abstract class Ship extends Entity {
 		return (int)Math.ceil(hp / (100-defence));
 	}
 	
-	private boolean debug = false;
+	private boolean debug = true;
 	
 	@Override
-	public void update(float dt, PerspectiveCamera cam) {
-		super.update(dt, cam); //TODO slow down with low fuel
+	public void update(float dt) {
+		super.update(dt);
 		
+		//TODO slow down with low fuel
 		float dz = 0;
 		if (Gdx.input.isKeyPressed(Keys.W) || !debug)
 			dz = dt*baseSpeedZ;
@@ -56,7 +56,6 @@ public abstract class Ship extends Entity {
 		else dx = 0;
 		
 		position.add(-dx*baseSpeedX*dt, 0, dz);
-		cam.position.z += dz; //TODO move cam control to state update
 		
 		rotXZ.setFromAxis(Math.abs(dx/3F), 0, dx/2F, turnAngle);
 		rotXZ.mul(rotY);
@@ -83,10 +82,10 @@ public abstract class Ship extends Entity {
 		private float a = 0;
 		
 		@Override
-		public void update(float dt, PerspectiveCamera cam) {
+		public void update(float dt) {
 			a += dt * 500;
 			rotY.setFromAxis(0, 1, 0, a);
-			super.update(dt, cam);
+			super.update(dt);
 		}
 		
 		@Override
