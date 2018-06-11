@@ -10,9 +10,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
@@ -27,6 +25,7 @@ import info.zthings.geem.entities.Bullet;
 import info.zthings.geem.entities.Ship;
 import info.zthings.geem.structs.IState;
 import info.zthings.geem.structs.ResourceContext;
+import info.zthings.geem.ui.Button;
 import info.zthings.geem.world.DebugRenderer;
 
 public class GameplayState implements IState {
@@ -36,19 +35,21 @@ public class GameplayState implements IState {
 	private Environment env;
 	private DebugRenderer debugRenderer;
 	
-	private BitmapFont fnt;
-	private GlyphLayout glyphDied;
+	
+	private GlyphLayout glyphDied, glyphScore;
 	private Music music;
 	
 	private final Ship ship;
 	private List<Asteroid> obstacles = new ArrayList<>();
 	private List<Bullet> bullets = new ArrayList<>();
-	private StarBox stars = new StarBox(5);
+	private StarBox stars = new StarBox(20);
 	
 	private int kills;
 	private Timer timer;
 	private volatile int time = -3;
 	private boolean focus = true;
+	
+	private Button btnRestart;
 	
 	public GameplayState(Ship ship) {
 		this.ship = ship;
@@ -72,10 +73,8 @@ public class GameplayState implements IState {
 		env.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
 		env.add(new DirectionalLight().set(0.4f, 0.4f, 0.4f, -1f, -0.8f, -0.2f));
 		
-		fnt = GeemLoop.rc.fntVT323.generateFont(new FreeTypeFontParameter(69));
-		glyphDied = new GlyphLayout(fnt, "YOU DIED");
-		
 		debugRenderer = new DebugRenderer();
+		glyphDied = new GlyphLayout(GeemLoop.rc.fntUi, "YOU DIED");
 		
 		music = GeemLoop.rc.ass.get("music/ingame.wav");
 		music.setLooping(true);
@@ -84,10 +83,12 @@ public class GameplayState implements IState {
 		timer.scheduleTask(new Task(()->time++), 1, 1);
 		timer.start();
 		
+		btnRestart = new Button("Restart", GeemLoop.rc.fntBtn, Color.BLACK, "button", GeemLoop.rc.atlas,
+				1280/2 - GeemLoop.rc.atlas.findRegion("button1").getRegionWidth()/2, 720/2 - GeemLoop.rc.atlas.findRegion("button1").getRegionHeight()*2,
+				()->((GeemLoop)Gdx.app.getApplicationListener()).setState(new MainMenuState(true)));
+		
 		ship.update(Gdx.graphics.getDeltaTime());
 		stars.update(Gdx.graphics.getDeltaTime(), cam, ship);
-		
-		//for (int i = 0; i < 10; i++) nextGap();
 	}
 	
 	boolean debug = false;
@@ -102,7 +103,11 @@ public class GameplayState implements IState {
 		obstacles.forEach(a->a.update(dt));
 		obstacles.removeIf(a->a.position.z < cam.position.z || a.destroyed);
 		
-		if (ship.hp <= 0 || (!debug && !focus)) return;
+		if (ship.hp <= 0 || (!debug && !focus)) {
+			if (ship.hp <= 0)
+				btnRestart.update(dt, camUi);
+			return;
+		}
 		if (time >= 0 && !music.isPlaying()) music.play();
 		
 		stars.update(dt, cam, ship);
@@ -120,6 +125,10 @@ public class GameplayState implements IState {
 				a.destroyed = true;
 				kills--;
 				if (ship.hit()) {
+					GeemLoop.rc.updateHighscore((int)(kills + time/2));
+					glyphScore = new GlyphLayout(GeemLoop.rc.fntUi, "SCORE: "+(int)(kills + time/2));
+					
+					timer.stop();
 					music.stop();
 					GeemLoop.rc.ass.get("sfx/fail.wav", Sound.class).play(.8F);
 				} else GeemLoop.rc.ass.get("sfx/oof.wav", Sound.class).play(.8F);
@@ -136,7 +145,7 @@ public class GameplayState implements IState {
 			}
 		}
 		
-		if (Gdx.input.isKeyJustPressed(Keys.SPACE) && time >= 0) //NOW fix bullet starting point
+		if (Gdx.input.isKeyJustPressed(Keys.SPACE) && time >= 0)
 			bullets.add(new Bullet(ship));
 		
 		if (Math.random() < .3) {
@@ -148,7 +157,7 @@ public class GameplayState implements IState {
 		cam.position.z = ship.position.z - 6;
 		cam.lookAt(0, 0, cam.position.z+200);
 		cam.update();
-		debugRenderer.update(dt, cam);
+		//debugRenderer.update(dt, cam);
 	}
 	
 	@Override
@@ -170,30 +179,39 @@ public class GameplayState implements IState {
 			if (time >= 0) {
 				switch (ship.hitsLeft()) {
 					case 0: throw new AssertionError("I should be dead");
-					case 1: fnt.setColor(Color.RED); break;
-					case 2: fnt.setColor(Color.ORANGE); break;
-					default: fnt.setColor(Color.GREEN);
+					case 1: rc.fntUi.setColor(Color.RED); break;
+					case 2: rc.fntUi.setColor(Color.ORANGE); break;
+					default: rc.fntUi.setColor(Color.GREEN);
 				}
-				fnt.draw(rc.sprites, "HP " + ship.hp + "%", 10, 720);
+				rc.fntUi.draw(rc.sprites, "HP " + ship.hp + "%", 10, 720);
 				
-				fnt.setColor(Color.WHITE);
-				fnt.draw(rc.sprites, "TIME  " + time, 10, 665);
-				fnt.draw(rc.sprites, "SCORE " + (kills + time/2), 10, 610);
+				rc.fntUi.setColor((int)(kills + time/2) > rc.getHighscore() ? Color.GOLD : Color.WHITE);
+				rc.fntUi.draw(rc.sprites, "SCORE " + (int)(kills + time/2), 10, 610);
+				
+				rc.fntUi.setColor(Color.WHITE);
+				rc.fntUi.draw(rc.sprites, "TIME  " + time, 10, 665);
+				
 				if (time < 3) {
-					fnt.setColor(Color.GREEN);
-					fnt.draw(rc.sprites, "GO!", 1280/2-35, 720/2+150);
+					rc.fntUi.setColor(Color.GREEN);
+					rc.fntUi.draw(rc.sprites, "GO!", 1280/2-35, 720/2+150);
 				}
 			} else {
-				fnt.setColor(time == -3 ? Color.RED : time == -2 ? Color.ORANGE : Color.GREEN);
-				fnt.draw(rc.sprites, ""+Math.abs(time), 1280/2-10, 720/2+150);
+				rc.fntUi.setColor(time == -3 ? Color.RED : time == -2 ? Color.ORANGE : Color.GREEN);
+				rc.fntUi.draw(rc.sprites, ""+Math.abs(time), 1280/2-10, 720/2+150);
 			}
 			
 			rc.sprites.end();
 		} else {
 			rc.models.end();
 			
+			btnRestart.render(rc);
+			
 			rc.sprites.begin();
-			fnt.draw(rc.sprites, glyphDied, 1280/2-glyphDied.width/2, 720/1.3F);
+			rc.fntUi.draw(rc.sprites, glyphDied, 1280/2-glyphDied.width/2, 720/1.3F);
+			
+			rc.fntUi.draw(rc.sprites, glyphScore, 1280/2-glyphScore.width/2, 440);
+			rc.fntUi.draw(rc.sprites, rc.getHighscoreGlyph(), 1280/2-rc.getHighscoreGlyph().width/2, 380);
+			
 			rc.sprites.end();
 		}
 	}
@@ -203,7 +221,6 @@ public class GameplayState implements IState {
 	@Override
 	public void dispose() {
 		debugRenderer.dispose();
-		fnt.dispose();
 	}
 	
 	

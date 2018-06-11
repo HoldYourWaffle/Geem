@@ -7,9 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
@@ -27,7 +25,6 @@ public class MainMenuState implements IState {
 	
 	private List<Vector2> stars = new ArrayList<>(100);
 	
-	private BitmapFont fntBtn, fntTitle;
 	private Music music;
 	
 	private Button btnStart, btnBack, btnGo;
@@ -35,25 +32,17 @@ public class MainMenuState implements IState {
 	
 	private OrthographicCamera cam;
 	
+	public MainMenuState(boolean charScreen) {
+		this.stateShip = charScreen;
+	}
+
 	@Override
 	public void create() {
 		cam = new OrthographicCamera(1280, 720);
 		cam.position.set(1280/2, 720/2, 0);
 		
-		FreeTypeFontParameter ftfp = new FreeTypeFontParameter();
-		ftfp.borderWidth = 2;
-		ftfp.size = 128;
-		fntTitle = GeemLoop.rc.fntOswald.generateFont(ftfp);
-		
-		ftfp.borderWidth = 0;
-		ftfp.color = Color.BLACK;
-		ftfp.size = 38;
-		fntBtn = GeemLoop.rc.fntVT323.generateFont(ftfp);
-		
-		glyphTitle = new GlyphLayout(fntTitle, "GEEM");
-		glyphCharacter = new GlyphLayout(fntTitle, "SELECT SHIP");
-		
-		//textures = GeemLoop.rc.ass.get("sprites.atlas");
+		glyphTitle = new GlyphLayout(GeemLoop.rc.fntTitle, "GEEM");
+		glyphCharacter = new GlyphLayout(GeemLoop.rc.fntTitle, "SELECT SHIP");
 		
 		music = GeemLoop.rc.ass.get("music/circus.wav");
 		music.setLooping(true);
@@ -62,23 +51,23 @@ public class MainMenuState implements IState {
 		
 		selectedShip = new Ship.ShipNormal();
 		
-		btnStart = new Button("Start", fntBtn, Color.BLACK, "button", GeemLoop.rc.atlas,
+		btnStart = new Button("Start", GeemLoop.rc.fntBtn, Color.BLACK, "button", GeemLoop.rc.atlas,
 				1280/2 - GeemLoop.rc.atlas.findRegion("button1").getRegionWidth()/2, 720/2 - GeemLoop.rc.atlas.findRegion("button1").getRegionHeight(),
-				()->stateShip = true, t->{});
+				()->stateShip = true);
 		
-		btnGo = new Button("Go!", fntBtn, Color.BLACK, "button", GeemLoop.rc.atlas,
+		btnGo = new Button("Go!", GeemLoop.rc.fntBtn, Color.BLACK, "button", GeemLoop.rc.atlas,
 				1280/2 - GeemLoop.rc.atlas.findRegion("button1").getRegionWidth()/2, GeemLoop.rc.atlas.findRegion("button1").getRegionHeight()/2,
 				()->{
 					fading = true;
 					music.stop();
 					Timer t = new Timer();
-					t.scheduleTask(new Task(()->{
-						((GeemLoop)Gdx.app.getApplicationListener()).setState(new GameplayState(selectedShip));
-					}), .25F);
+					t.scheduleTask(new Task(()->
+						((GeemLoop)Gdx.app.getApplicationListener()).setState(new GameplayState(selectedShip))
+					), .25F);
 					t.start();
-				}, t->{});
+				});
 		
-		btnBack = new Button("", fntBtn, Color.BLACK, "arrow", GeemLoop.rc.atlas, 50, GeemLoop.rc.atlas.findRegion("button1").getRegionHeight()/2, ()->stateShip = false, t->t.flip(true, false));
+		btnBack = new Button("", GeemLoop.rc.fntBtn, Color.BLACK, "arrow", GeemLoop.rc.atlas, 50, GeemLoop.rc.atlas.findRegion("button1").getRegionHeight()/2, ()->stateShip = false);
 		btnBack.setSize(50, 50);
 	}
 	
@@ -119,7 +108,7 @@ public class MainMenuState implements IState {
 	private void renderMain(ResourceContext rc) {
 		btnStart.render(rc);
 		rc.sprites.begin();
-		fntTitle.draw(rc.sprites, glyphTitle, 1280/2 - glyphTitle.width/2, 720 - glyphTitle.height);
+		rc.fntTitle.draw(rc.sprites, glyphTitle, 1280/2 - glyphTitle.width/2, 720 - glyphTitle.height);
 		rc.sprites.end();
 	}
 	
@@ -128,17 +117,14 @@ public class MainMenuState implements IState {
 		btnGo.render(rc);
 		
 		rc.sprites.begin();
-		fntTitle.draw(rc.sprites, glyphCharacter, 1280/2 - glyphCharacter.width/2, 720 - glyphCharacter.height);
+		rc.fntTitle.draw(rc.sprites, glyphCharacter, 1280/2 - glyphCharacter.width/2, 720 - glyphCharacter.height);
 		//rc.sprites.setColor(1, 1, 1, .4f);
 		rc.sprites.end();
 	}
 	
 	@Override
 	public void dispose() {
-		System.out.println("Dispose");
 		music.dispose();
-		fntBtn.dispose();
-		fntTitle.dispose();
 	}
 	
 	

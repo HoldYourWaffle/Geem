@@ -7,9 +7,11 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -19,6 +21,8 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Disposable;
 
+import info.zthings.geem.main.GeemLoop;
+
 public class ResourceContext implements Disposable {
 	public final AssetManager ass;
 	
@@ -27,13 +31,16 @@ public class ResourceContext implements Disposable {
 	public final SpriteBatch sprites;
 	public final ShapeRenderer shapes;
 	
-	public final BitmapFont fntDefault;
-	public final FreeTypeFontGenerator fntOswald, fntVT323;
+	public final BitmapFont fntDefault, fntBtn, fntTitle, fntUi;
+	public final FreeTypeFontGenerator fntGenOswald, fntGenVT323;
 	
 	public TextureAtlas atlas;
 	
 	public Model shipNormalModel, shipUfoModel, bulletModel, fuelModel;
 	public Model[] asteroidModels = new Model[30];
+	
+	private int highscore;
+	private GlyphLayout glyphHighscore;
 	
 	public ResourceContext(ModelBatch mb, DecalBatch db, SpriteBatch sb, ShapeRenderer sr) {
 		this.models = mb;
@@ -42,8 +49,8 @@ public class ResourceContext implements Disposable {
 		this.shapes = sr;
 		
 		this.fntDefault = new BitmapFont();
-		this.fntOswald = new FreeTypeFontGenerator(Gdx.files.internal("fonts/oswald.ttf"));
-		this.fntVT323 = new FreeTypeFontGenerator(Gdx.files.internal("fonts/vt323.ttf"));
+		this.fntGenOswald = new FreeTypeFontGenerator(Gdx.files.internal("fonts/oswald.ttf"));
+		this.fntGenVT323 = new FreeTypeFontGenerator(Gdx.files.internal("fonts/vt323.ttf"));
 		
 		ModelBuilder bb = new ModelBuilder();
 		bulletModel = bb.createBox(.1F, .1F, 2F, new Material(ColorAttribute.createDiffuse(Color.GREEN)), Usage.Position | Usage.Normal);
@@ -66,6 +73,20 @@ public class ResourceContext implements Disposable {
 		ass.load("sfx/biem.wav", Sound.class);
 		
 		ass.load("sprites.atlas", TextureAtlas.class);
+		
+		fntUi = fntGenVT323.generateFont(new FreeTypeFontParameter(69));
+		FreeTypeFontParameter ftfp = new FreeTypeFontParameter();
+		ftfp.borderWidth = 2;
+		ftfp.size = 128;
+		fntTitle = fntGenOswald.generateFont(ftfp);
+		
+		ftfp.borderWidth = 0;
+		ftfp.color = Color.BLACK;
+		ftfp.size = 38;
+		fntBtn = fntGenVT323.generateFont(ftfp);
+		
+		highscore = Gdx.app.getPreferences("highscore").getInteger("highscore");
+		glyphHighscore = new GlyphLayout(fntUi, "HIGHSCORE: " + highscore);
 	}
 	
 	public boolean updateAss() {
@@ -81,6 +102,23 @@ public class ResourceContext implements Disposable {
 		} else return false;
 	}
 	
+	public GlyphLayout getHighscoreGlyph() {
+		return glyphHighscore;
+	}
+	
+	public int getHighscore() {
+		return highscore;
+	}
+	
+	public void updateHighscore(int score) {
+		if (score > highscore) {
+			highscore = score;
+			glyphHighscore = new GlyphLayout(GeemLoop.rc.fntUi, "HIGHSCORE: " + highscore);
+			Gdx.app.getPreferences("highscore").putInteger("highscore", highscore);
+			Gdx.app.getPreferences("highscore").flush();
+		}
+	}
+	
 	@Override
 	public void dispose() {
 		ass.dispose();
@@ -93,8 +131,12 @@ public class ResourceContext implements Disposable {
 		bulletModel.dispose();
 		
 		fntDefault.dispose();
-		fntOswald.dispose();
-		fntVT323.dispose();
+		fntGenOswald.dispose();
+		fntGenVT323.dispose();
+		
+		fntUi.dispose();
+		fntBtn.dispose();
+		fntTitle.dispose();
 	}
 	
 }

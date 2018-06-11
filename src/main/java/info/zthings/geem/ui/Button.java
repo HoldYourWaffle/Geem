@@ -1,7 +1,5 @@
 package info.zthings.geem.ui;
 
-import java.util.function.Consumer;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
@@ -26,7 +24,7 @@ public class Button implements UiElement {
 	private final BitmapFont fnt;
 	private Color textColor;
 	
-	public Button(String txt, BitmapFont fnt, Color txtColor, String atlasName, TextureAtlas tex, int x, int y, Runnable callback, Consumer<TextureRegion> modder) {
+	public Button(String txt, BitmapFont fnt, Color txtColor, String atlasName, TextureAtlas tex, int x, int y, Runnable callback) {
 		pos = new Vector2(x, y);
 		
 		this.fnt = fnt;
@@ -38,10 +36,6 @@ public class Button implements UiElement {
 		btnNormal = tex.findRegion(atlasName + 1);
 		btnHover =  tex.findRegion(atlasName + 2);
 		btnClick =  tex.findRegion(atlasName + 3);
-		
-		modder.accept(btnNormal);
-		modder.accept(btnHover);
-		modder.accept(btnClick);
 		
 		width = btnNormal.getRegionWidth();
 		height = btnNormal.getRegionHeight();

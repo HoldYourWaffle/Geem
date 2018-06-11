@@ -14,7 +14,7 @@ import info.zthings.geem.structs.ResourceContext;
 public class StarBox {
 	private final TextureRegion texStar;
 	private List<Decal> stars = new ArrayList<>(100);
-	private int radius; //TODO final
+	private final int radius;
 	
 	public StarBox(int radius) {
 		texStar = GeemLoop.rc.atlas.findRegion("star"); //ass.get("star.png", Texture.class).asRegion();
@@ -26,7 +26,6 @@ public class StarBox {
 			for (int i = 0; i < 4; i++) {
 				Decal d = Decal.newDecal(texStar);
 				
-				radius = 20;
 				double a = Math.random() * Math.PI * 2,
 					   min = 3.5,
 					   L = min + Math.random() * (radius - min);
