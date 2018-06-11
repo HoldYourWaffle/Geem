@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.Timer.Task;
 
 import info.zthings.geem.entities.Asteroid;
 import info.zthings.geem.entities.Bullet;
+import info.zthings.geem.entities.FuelCan;
 import info.zthings.geem.entities.Ship;
 import info.zthings.geem.structs.IState;
 import info.zthings.geem.structs.ResourceContext;
@@ -33,26 +34,26 @@ public class GameplayState implements IState {
 	private OrthographicCamera camUi;
 	
 	private Environment env;
+	private Music music;
 	private DebugRenderer debugRenderer;
 	
-	
+	private Button btnRestart;
 	private GlyphLayout glyphDied, glyphScore;
-	private Music music;
 	
 	private final Ship ship;
 	private List<Asteroid> obstacles = new ArrayList<>();
 	private List<Bullet> bullets = new ArrayList<>();
 	private StarBox stars = new StarBox(20);
+	private final FuelCan fuelcan;
 	
 	private int kills;
 	private Timer timer;
 	private volatile int time = -3;
 	private boolean focus = true;
 	
-	private Button btnRestart;
-	
 	public GameplayState(Ship ship) {
 		this.ship = ship;
+		this.fuelcan = new FuelCan();
 	}
 	
 	@Override
@@ -97,6 +98,8 @@ public class GameplayState implements IState {
 	public void update(float dt) {
 		if (debug) time = 4;
 		
+		fuelcan.update(dt);
+		
 		bullets.forEach(b->b.update(dt));
 		bullets.removeIf(b->b.position.z - ship.position.z > 100 || b.destroyed);
 		
@@ -117,21 +120,27 @@ public class GameplayState implements IState {
 		if (ship.position.x < -xb) ship.position.x = -xb;
 		else if (ship.position.x > xb) ship.position.x = xb;
 		
+		if (true //TODO conditional
+				&& fuelcan.position.z < cam.position.z) {
+			System.out.println((float)Math.random() * 2*xb - xb);
+			fuelcan.position.set((float)Math.random() * 2*xb - xb, ship.position.y + .3F, ship.position.z + 100);
+			System.out.println("Spawn "+fuelcan.position);
+		}
+		
 		final Vector3 vecBuf = new Vector3();
 		for (Asteroid a : obstacles) {
 			if (a.position.x < -xb || a.position.x > xb) continue;
 			
+			if (a.getCurrentBounds().intersects(fuelcan.getCurrentBounds())) {
+				a.destroyed = true;
+				continue;
+			}
+			
 			if (a.getCurrentBounds().intersects(ship.getCurrentBounds())) {
 				a.destroyed = true;
 				kills--;
-				if (ship.hit()) {
-					GeemLoop.rc.updateHighscore((int)(kills + time/2));
-					glyphScore = new GlyphLayout(GeemLoop.rc.fntUi, "SCORE: "+(int)(kills + time/2));
-					
-					timer.stop();
-					music.stop();
-					GeemLoop.rc.ass.get("sfx/fail.wav", Sound.class).play(.8F);
-				} else GeemLoop.rc.ass.get("sfx/oof.wav", Sound.class).play(.8F);
+				if (!ship.hit()) //!died from hit
+					GeemLoop.rc.ass.get("sfx/oof.wav", Sound.class).play(.8F);
 				continue;
 			} else for (Bullet b : bullets) {
 				vecBuf.set(b.position.x, a.getCurrentBounds().getCenterY(), b.position.z);				
@@ -144,6 +153,13 @@ public class GameplayState implements IState {
 				}
 			}
 		}
+		
+		if (ship.getCurrentBounds().intersects(fuelcan.getCurrentBounds())) {
+			fuelcan.position.set(0, 0, 0);
+			ship.fuel = 100;
+			GeemLoop.rc.ass.get("sfx/fuel.wav", Sound.class).play();
+		}
+		
 		
 		if (Gdx.input.isKeyJustPressed(Keys.SPACE) && time >= 0)
 			bullets.add(new Bullet(ship));
@@ -158,6 +174,15 @@ public class GameplayState implements IState {
 		cam.lookAt(0, 0, cam.position.z+200);
 		cam.update();
 		//debugRenderer.update(dt, cam);
+		
+		
+		if (ship.hp <= 0) {
+			GeemLoop.rc.updateHighscore((int) (kills + time / 2));
+			glyphScore = new GlyphLayout(GeemLoop.rc.fntUi, "SCORE: " + (int) (kills + time / 2));
+			timer.stop();
+			music.stop();
+			GeemLoop.rc.ass.get("sfx/fail.wav", Sound.class).play(.8F);
+		}
 	}
 	
 	@Override
@@ -166,7 +191,9 @@ public class GameplayState implements IState {
 		rc.sprites.setProjectionMatrix(camUi.combined);
 		
 		stars.render(rc, cam);
+		
 		rc.models.begin(cam);
+		fuelcan.render(rc, env);
 		bullets.forEach(b->b.render(rc, env));
 		obstacles.forEach(a->a.render(rc, env));
 		
@@ -185,11 +212,17 @@ public class GameplayState implements IState {
 				}
 				rc.fntUi.draw(rc.sprites, "HP " + ship.hp + "%", 10, 720);
 				
-				rc.fntUi.setColor((int)(kills + time/2) > rc.getHighscore() ? Color.GOLD : Color.WHITE);
-				rc.fntUi.draw(rc.sprites, "SCORE " + (int)(kills + time/2), 10, 610);
+				if (ship.fuel < 25) rc.fntUi.setColor(Color.RED); //TODO warning sfx
+				else if (ship.fuel < 50) rc.fntUi.setColor(Color.ORANGE);
+				else rc.fntUi.setColor(Color.GREEN);
+				rc.fntUi.draw(rc.sprites, "FUEL: " + (int)ship.fuel + "%", 10, 665);
 				
 				rc.fntUi.setColor(Color.WHITE);
-				rc.fntUi.draw(rc.sprites, "TIME  " + time, 10, 665);
+				rc.fntUi.draw(rc.sprites, "TIME  " + time, 10, 610);
+				
+				rc.fntUi.setColor((int)(kills + time/2) > rc.getHighscore() ? Color.GOLD : Color.WHITE);
+				rc.fntUi.draw(rc.sprites, "SCORE " + (int)(kills + time/2), 10, 555);
+				
 				
 				if (time < 3) {
 					rc.fntUi.setColor(Color.GREEN);

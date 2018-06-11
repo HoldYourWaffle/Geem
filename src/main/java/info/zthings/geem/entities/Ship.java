@@ -14,6 +14,7 @@ public abstract class Ship extends Entity {
 	
 	public final int baseSpeedX, baseSpeedZ, turnAngle, defence;
 	public int hp = 100;
+	public float fuel = 100;
 	
 	public Ship(Model model, int speedX, int speedZ, int defence, float modelScale, int turnAngle) {
 		super(model);
@@ -21,7 +22,6 @@ public abstract class Ship extends Entity {
 		this.baseSpeedZ = speedZ;
 		this.defence = defence;
 		this.position = new Vector3(0, 1, 0);
-		//this.model.transform.scale(modelScale, modelScale, modelScale);
 		this.scale = new Vector3(modelScale, modelScale, modelScale);
 		this.rotXZ = new Quaternion();
 		this.rotY = new Quaternion();
@@ -37,25 +37,35 @@ public abstract class Ship extends Entity {
 		return (int)Math.ceil(hp / (100-defence));
 	}
 	
-	private boolean debug = true;
+	private boolean debug = false;
 	
 	@Override
 	public void update(float dt) {
 		super.update(dt);
 		
-		//TODO slow down with low fuel
+		//fuel = 60; //TODO remove
+		//hp = 100;
+		
 		float dz = 0;
 		if (Gdx.input.isKeyPressed(Keys.W) || !debug)
-			dz = dt*baseSpeedZ;
+			dz = baseSpeedZ;
 		else if (Gdx.input.isKeyPressed(Keys.S))
-			dz = dt*-baseSpeedZ;
+			dz = -baseSpeedZ;
+		
+		float ff = fuel < 50 ? .3F + .7F/50F * fuel : 1;
+		dz *= dt * ff;
+		fuel -= dz / 15F;
+		
+		if (fuel < -.25F) { //TODO sfx?
+			hp = 0;
+		}
 		
 		int dx;
 		if (Gdx.input.isKeyPressed(Keys.A)) dx = -1;
 		else if (Gdx.input.isKeyPressed(Keys.D)) dx = 1;
 		else dx = 0;
 		
-		position.add(-dx*baseSpeedX*dt, 0, dz);
+		position.add(-dx*baseSpeedX*dt*ff, 0, dz);
 		
 		rotXZ.setFromAxis(Math.abs(dx/3F), 0, dx/2F, turnAngle);
 		rotXZ.mul(rotY);
