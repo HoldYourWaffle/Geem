@@ -45,7 +45,7 @@ public class GameplayState implements IState {
 	private List<Bullet> bullets = new ArrayList<>();
 	private StarBox stars = new StarBox(5);
 	
-	private int score;
+	private int kills;
 	private Timer timer;
 	private volatile int time = -3;
 	private boolean focus = true;
@@ -90,7 +90,7 @@ public class GameplayState implements IState {
 		//for (int i = 0; i < 10; i++) nextGap();
 	}
 	
-	boolean debug = true;
+	boolean debug = false;
 	
 	@Override
 	public void update(float dt) {
@@ -118,7 +118,7 @@ public class GameplayState implements IState {
 			
 			if (a.getCurrentBounds().intersects(ship.getCurrentBounds())) {
 				a.destroyed = true;
-				score--;
+				kills--;
 				if (ship.hit()) {
 					music.stop();
 					GeemLoop.rc.ass.get("sfx/fail.wav", Sound.class).play(.8F);
@@ -129,8 +129,8 @@ public class GameplayState implements IState {
 				if (a.getCurrentBounds().contains(vecBuf)) {
 					a.destroyed = b.destroyed = true;
 					float dist = a.position.z - ship.position.z;
-					GeemLoop.rc.ass.get("sfx/biem.wav", Sound.class).play(dist < 60 ? 1 - dist/60 : 0);
-					score++;
+					GeemLoop.rc.ass.get("sfx/biem.wav", Sound.class).play((dist < 60 ? 1 - dist/60 : 0) * .8F);
+					kills++;
 					continue;
 				}
 			}
@@ -178,7 +178,7 @@ public class GameplayState implements IState {
 				
 				fnt.setColor(Color.WHITE);
 				fnt.draw(rc.sprites, "TIME  " + time, 10, 665);
-				fnt.draw(rc.sprites, "SCORE " + score, 10, 610);
+				fnt.draw(rc.sprites, "SCORE " + (kills + time/2), 10, 610);
 				if (time < 3) {
 					fnt.setColor(Color.GREEN);
 					fnt.draw(rc.sprites, "GO!", 1280/2-35, 720/2+150);
