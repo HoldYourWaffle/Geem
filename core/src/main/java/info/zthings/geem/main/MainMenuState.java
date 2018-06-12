@@ -47,6 +47,7 @@ public class MainMenuState implements IState {
 		music = GeemLoop.rc.ass.get("music/circus.wav");
 		music.setLooping(true);
 		music.setVolume(.1f);
+		music.setPosition(0);
 		music.play();
 		
 		selectedShip = new Ship.ShipNormal();
@@ -91,6 +92,7 @@ public class MainMenuState implements IState {
 	
 	@Override
 	public void render(ResourceContext rc) {
+		System.out.println("RENDER");
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		rc.shapes.setProjectionMatrix(cam.combined);
 		rc.sprites.setProjectionMatrix(cam.combined);

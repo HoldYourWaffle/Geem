@@ -16,13 +16,13 @@ jar {
         attributes 'Main-Class': mainClassName
     }
 
-    from {
+    /*from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
+    }*/
 }
 
 dependencies {
-    compile rootProject
+    compile project(':core')
     compile('com.badlogicgames.gdx:gdx-backend-lwjgl:1.9.9-SNAPSHOT') {
     	exclude group: 'com.badlogicgames.gdx', module: 'gdx'
     }

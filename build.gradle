@@ -21,7 +21,7 @@ allprojects {
         maven { url 'https://oss.sonatype.org/content/repositories/releases/' }
     }
 	
-    buildDir = rootProject.buildDir
+    //buildDir = rootProject.buildDir
 }
 
 subprojects {
@@ -32,18 +32,4 @@ subprojects {
 			name = rootProject.name + '-' + project.name
 		}
 	}
-}
-
-apply plugin: 'java'
-
-sourceCompatibility = targetCompatibility = '1.8'
-
-dependencies {
-	compile project(':gdx-mod')
-	compile 'org.apache.commons:commons-lang3:3.7'
-}
-
-jar {
-    archivesBaseName = rootProject.name
-    classifier = 'core'
 }
