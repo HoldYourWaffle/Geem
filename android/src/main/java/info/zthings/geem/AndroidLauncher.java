@@ -5,13 +5,15 @@ import android.os.Bundle;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
-import info.zthings.geem.launching.MainTrackTest;
+import info.zthings.geem.main.GeemLoop;
 
 public class AndroidLauncher extends AndroidApplication {
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		initialize(new MainTrackTest(), config);
+		initialize(new GeemLoop(), config);
 	}
+	
 }

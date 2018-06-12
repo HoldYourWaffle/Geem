@@ -23,10 +23,10 @@ jar {
 
 dependencies {
     compile rootProject
-    compile('com.badlogicgames.gdx:gdx-backend-lwjgl:1.9.8') {
+    compile('com.badlogicgames.gdx:gdx-backend-lwjgl:1.9.9-SNAPSHOT') {
     	exclude group: 'com.badlogicgames.gdx', module: 'gdx'
     }
-	compile 'com.badlogicgames.gdx:gdx-platform:1.9.8:natives-desktop'
+	compile 'com.badlogicgames.gdx:gdx-platform:1.9.9-SNAPSHOT:natives-desktop'
 	compile 'com.badlogicgames.gdx:gdx-freetype-platform:1.9.8:natives-desktop'
 }
 

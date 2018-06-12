@@ -1,12 +1,6 @@
 apply plugin: 'com.android.application'
 
 android {
-	sourceSets {
-		main {
-			assets.srcDirs = rootProject.sourceSets.main.resources.srcDirs
-		}
-	}
-	
 	compileSdkVersion 27
 	defaultConfig {
 		applicationId 'info.zthings.geem'
@@ -15,6 +9,7 @@ android {
 		versionCode 1
 		versionName rootProject.version
 		testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+		multiDexEnabled true
 		setProperty('archivesBaseName', "GEEM-$versionName")
 	}
 	
