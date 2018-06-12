@@ -17,7 +17,7 @@ import info.zthings.geem.structs.IState;
 import info.zthings.geem.structs.ResourceContext;
 
 public class GeemLoop implements ApplicationListener {
-	public static ResourceContext rc;
+	private ResourceContext rc;
 	
 	private IState state;
 	private Viewport vp;
@@ -60,6 +60,14 @@ public class GeemLoop implements ApplicationListener {
 		else rc.fntDefault.setColor(Color.WHITE);
 		rc.fntDefault.draw(rc.sprites, "FPS: " + Gdx.graphics.getFramesPerSecond() + ", dt: " + Gdx.graphics.getDeltaTime(), 0, rc.fntDefault.getLineHeight());
 		rc.sprites.end();
+	}
+	
+	public static GeemLoop getLoop() {
+		return ((GeemLoop)Gdx.app.getApplicationListener());
+	}
+	
+	public static ResourceContext getRC() {
+		return getLoop().rc;
 	}
 	
 	@Override

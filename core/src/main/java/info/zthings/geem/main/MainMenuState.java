@@ -41,34 +41,33 @@ public class MainMenuState implements IState {
 		cam = new OrthographicCamera(1280, 720);
 		cam.position.set(1280/2, 720/2, 0);
 		
-		glyphTitle = new GlyphLayout(GeemLoop.rc.fntTitle, "GEEM");
-		glyphCharacter = new GlyphLayout(GeemLoop.rc.fntTitle, "SELECT SHIP");
+		glyphTitle = new GlyphLayout(GeemLoop.getRC().fntTitle, "GEEM");
+		glyphCharacter = new GlyphLayout(GeemLoop.getRC().fntTitle, "SELECT SHIP");
 		
-		music = GeemLoop.rc.ass.get("music/circus.wav");
+		music = GeemLoop.getRC().ass.get("music/circus.wav");
 		music.setLooping(true);
 		music.setVolume(.1f);
-		music.setPosition(0);
 		music.play();
 		
 		selectedShip = new Ship.ShipNormal();
 		
-		btnStart = new Button("Start", GeemLoop.rc.fntBtn, Color.BLACK, "button", GeemLoop.rc.atlas,
-				1280/2 - GeemLoop.rc.atlas.findRegion("button1").getRegionWidth()/2, 720/2 - GeemLoop.rc.atlas.findRegion("button1").getRegionHeight(),
+		btnStart = new Button("Start", GeemLoop.getRC().fntBtn, Color.BLACK, "button", GeemLoop.getRC().atlas,
+				1280/2 - GeemLoop.getRC().atlas.findRegion("button1").getRegionWidth()/2, 720/2 - GeemLoop.getRC().atlas.findRegion("button1").getRegionHeight(),
 				()->stateShip = true);
 		
-		btnGo = new Button("Go!", GeemLoop.rc.fntBtn, Color.BLACK, "button", GeemLoop.rc.atlas,
-				1280/2 - GeemLoop.rc.atlas.findRegion("button1").getRegionWidth()/2, GeemLoop.rc.atlas.findRegion("button1").getRegionHeight()/2,
+		btnGo = new Button("Go!", GeemLoop.getRC().fntBtn, Color.BLACK, "button", GeemLoop.getRC().atlas,
+				1280/2 - GeemLoop.getRC().atlas.findRegion("button1").getRegionWidth()/2, GeemLoop.getRC().atlas.findRegion("button1").getRegionHeight()/2,
 				()->{
 					fading = true;
 					music.stop();
 					Timer t = new Timer();
 					t.scheduleTask(new Task(()->
-						((GeemLoop)Gdx.app.getApplicationListener()).setState(new GameplayState(selectedShip))
+						GeemLoop.getLoop().setState(new GameplayState(selectedShip))
 					), .25F);
 					t.start();
 				});
 		
-		btnBack = new Button("", GeemLoop.rc.fntBtn, Color.BLACK, "arrow", GeemLoop.rc.atlas, 50, GeemLoop.rc.atlas.findRegion("button1").getRegionHeight()/2, ()->stateShip = false);
+		btnBack = new Button("", GeemLoop.getRC().fntBtn, Color.BLACK, "arrow", GeemLoop.getRC().atlas, 50, GeemLoop.getRC().atlas.findRegion("button1").getRegionHeight()/2, ()->stateShip = false);
 		btnBack.setSize(50, 50);
 	}
 	
@@ -124,13 +123,7 @@ public class MainMenuState implements IState {
 		rc.sprites.end();
 	}
 	
-	@Override
-	public void dispose() {
-		music.dispose();
-	}
-	
-	
-	
+	@Override public void dispose() {}
 	@Override public void pause() {}
 	@Override public void resume() {}
 	@Override public void resize(int width, int height) {}

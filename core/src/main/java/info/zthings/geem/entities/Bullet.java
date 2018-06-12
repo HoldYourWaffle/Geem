@@ -9,7 +9,7 @@ public class Bullet extends Entity {
 	public final float speed, divX, divZ; //TODO accuracy stat?
 	
 	public Bullet(Ship shooter) {
-		super(GeemLoop.rc.bulletModel);
+		super(GeemLoop.getRC().bulletModel);
 		position = new Vector3(shooter.position.x, shooter.getGunY(), shooter.position.z+1);
 		
 		double ma = 3, a = (Math.random() * Math.toRadians(ma*2)) - Math.toRadians(ma);
@@ -18,7 +18,7 @@ public class Bullet extends Entity {
 		divZ = (float) (speed * Math.cos(a));
 		
 		model.transform.rotate(0, 1, 0, (float)Math.toDegrees(a));
-		GeemLoop.rc.ass.get("sfx/laser.wav", Sound.class).play(.3F);
+		GeemLoop.getRC().ass.get("sfx/laser.wav", Sound.class).play(.3F);
 	}
 	
 	@Override

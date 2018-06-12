@@ -77,14 +77,14 @@ public abstract class Ship extends Entity {
 	
 	public static class ShipNormal extends Ship {
 		public ShipNormal() {
-			super(GeemLoop.rc.shipNormalModel, 6, 20, 90, 1.5F, 30);
+			super(GeemLoop.getRC().shipNormalModel, 6, 20, 90, 1.5F, 30);
 		}
 	}
 	
 	public static class ShipUfo extends Ship {
 		
 		public ShipUfo() {
-			super(GeemLoop.rc.shipUfoModel, 6, 15, 90, .025F, 15);
+			super(GeemLoop.getRC().shipUfoModel, 6, 15, 90, .025F, 15);
 			position.y -= .5F;
 		}
 		

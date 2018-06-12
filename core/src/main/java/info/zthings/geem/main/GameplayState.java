@@ -64,7 +64,7 @@ public class GameplayState implements IState {
 		cam.near = 0.1f;
 		cam.far = 100;
 		cam.update();
-		GeemLoop.rc.decals.setGroupStrategy(new CameraGroupStrategy(cam));
+		GeemLoop.getRC().decals.setGroupStrategy(new CameraGroupStrategy(cam));
 		
 		camUi = new OrthographicCamera(1280, 720);
 		camUi.position.set(1280/2, 720/2, 0);
@@ -75,20 +75,20 @@ public class GameplayState implements IState {
 		env.add(new DirectionalLight().set(0.4f, 0.4f, 0.4f, -1f, -0.8f, -0.2f));
 		
 		debugRenderer = new DebugRenderer();
-		glyphDied = new GlyphLayout(GeemLoop.rc.fntUi, "YOU DIED");
+		glyphDied = new GlyphLayout(GeemLoop.getRC().fntUi, "YOU DIED");
 		
-		music = GeemLoop.rc.ass.get("music/ingame.wav");
+		music = GeemLoop.getRC().ass.get("music/ingame.wav");
 		music.setLooping(true);
-		beep = GeemLoop.rc.ass.get("sfx/beep.wav");
+		beep = GeemLoop.getRC().ass.get("sfx/beep.wav");
 		beep.setLooping(true);
 		
 		timer = new Timer();
 		timer.scheduleTask(new Task(()->time++), 1, 1);
 		timer.start();
 		
-		btnRestart = new Button("Restart", GeemLoop.rc.fntBtn, Color.BLACK, "button", GeemLoop.rc.atlas,
-				1280/2 - GeemLoop.rc.atlas.findRegion("button1").getRegionWidth()/2, 720/2 - GeemLoop.rc.atlas.findRegion("button1").getRegionHeight()*2,
-				()->((GeemLoop)Gdx.app.getApplicationListener()).setState(new MainMenuState(true)));
+		btnRestart = new Button("Restart", GeemLoop.getRC().fntBtn, Color.BLACK, "button", GeemLoop.getRC().atlas,
+				1280/2 - GeemLoop.getRC().atlas.findRegion("button1").getRegionWidth()/2, 720/2 - GeemLoop.getRC().atlas.findRegion("button1").getRegionHeight()*2,
+				()->GeemLoop.getLoop().setState(new MainMenuState(true)));
 		
 		ship.update(Gdx.graphics.getDeltaTime());
 		stars.update(Gdx.graphics.getDeltaTime(), cam, ship);
@@ -148,14 +148,14 @@ public class GameplayState implements IState {
 				a.destroyed = true;
 				kills--;
 				if (!ship.hit(a.hard)) //!died from hit
-					GeemLoop.rc.ass.get("sfx/oof.wav", Sound.class).play(.8F);
+					GeemLoop.getRC().ass.get("sfx/oof.wav", Sound.class).play(.8F);
 				continue;
 			} else for (Bullet b : bullets) {
 				vecBuf.set(b.position.x, a.getCurrentBounds().getCenterY(), b.position.z);				
 				if (a.getCurrentBounds().contains(vecBuf)) {
 					b.destroyed = true;
 					float dist = a.position.z - ship.position.z;
-					GeemLoop.rc.ass.get("sfx/biem.wav", Sound.class).play((dist < 60 ? 1 - dist / 60 : 0) * .8F);
+					GeemLoop.getRC().ass.get("sfx/biem.wav", Sound.class).play((dist < 60 ? 1 - dist / 60 : 0) * .8F);
 					if (a.hit()) { //broken
 						//TODO explosion
 						kills++;
@@ -168,7 +168,7 @@ public class GameplayState implements IState {
 		if (ship.getCurrentBounds().intersects(fuelcan.getCurrentBounds())) {
 			fuelcan.position.set(0, 0, 0);
 			ship.fuel = 100;
-			GeemLoop.rc.ass.get("sfx/fuel.wav", Sound.class).play();
+			GeemLoop.getRC().ass.get("sfx/fuel.wav", Sound.class).play();
 		}
 		
 		
@@ -188,12 +188,12 @@ public class GameplayState implements IState {
 		
 		
 		if (ship.hp <= 0) {
-			GeemLoop.rc.updateHighscore((int) (kills + time / 2));
-			glyphScore = new GlyphLayout(GeemLoop.rc.fntUi, "SCORE: " + (int) (kills + time / 2));
+			GeemLoop.getRC().updateHighscore((int) (kills + time / 2));
+			glyphScore = new GlyphLayout(GeemLoop.getRC().fntUi, "SCORE: " + (int) (kills + time / 2));
 			timer.stop();
 			beep.stop();
 			music.stop();
-			GeemLoop.rc.ass.get("sfx/fail.wav", Sound.class).play(.8F);
+			GeemLoop.getRC().ass.get("sfx/fail.wav", Sound.class).play(.8F);
 		}
 	}
 	
@@ -252,6 +252,7 @@ public class GameplayState implements IState {
 			btnRestart.render(rc);
 			
 			rc.sprites.begin();
+			rc.fntUi.setColor(Color.WHITE);
 			rc.fntUi.draw(rc.sprites, glyphDied, 1280/2-glyphDied.width/2, 720/1.3F);
 			
 			rc.fntUi.draw(rc.sprites, glyphScore, 1280/2-glyphScore.width/2, 440);

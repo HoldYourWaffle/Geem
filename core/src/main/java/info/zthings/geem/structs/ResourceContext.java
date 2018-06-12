@@ -21,8 +21,6 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Disposable;
 
-import info.zthings.geem.main.GeemLoop;
-
 public class ResourceContext implements Disposable {
 	public final AssetManager ass;
 	
@@ -115,7 +113,7 @@ public class ResourceContext implements Disposable {
 	public void updateHighscore(int score) {
 		if (score > highscore) {
 			highscore = score;
-			glyphHighscore = new GlyphLayout(GeemLoop.rc.fntUi, "HIGHSCORE: " + highscore);
+			glyphHighscore = new GlyphLayout(fntUi, "HIGHSCORE: " + highscore);
 			Gdx.app.getPreferences("geem-highscore").putInteger("highscore", highscore);
 			Gdx.app.getPreferences("geem-highscore").flush();
 		}

@@ -17,7 +17,7 @@ public class StarBox {
 	private final int radius;
 	
 	public StarBox(int radius) {
-		texStar = GeemLoop.rc.atlas.findRegion("star"); //ass.get("star.png", Texture.class).asRegion();
+		texStar = GeemLoop.getRC().atlas.findRegion("star"); //ass.get("star.png", Texture.class).asRegion();
 		this.radius = radius;
 	}
 	

@@ -7,7 +7,7 @@ import info.zthings.geem.main.GeemLoop;
 public class FuelCan extends Entity {
 
 	public FuelCan() {
-		super(GeemLoop.rc.fuelModel);
+		super(GeemLoop.getRC().fuelModel);
 		position = new Vector3(0, 0, 0); 
 		model.transform.scale(.15F, .15F, .15F);
 	}
