@@ -12,15 +12,16 @@ public abstract class Ship extends Entity {
 	public final Vector3 scale;
 	protected final Quaternion rotXZ, rotY;
 	
-	public final int baseSpeedX, baseSpeedZ, turnAngle, defence;
+	public final int baseSpeedX, baseSpeedZ, turnAngle, defence, accuracy; //accuracy = max deviation (bigger is worse)
 	public int hp = 100;
 	public float fuel = 100;
 	
-	public Ship(Model model, int speedX, int speedZ, int defence, float modelScale, int turnAngle) {
+	public Ship(Model model, int speedX, int speedZ, int defence, int accuracy, float modelScale, int turnAngle) {
 		super(model);
 		this.baseSpeedX = speedX;
 		this.baseSpeedZ = speedZ;
 		this.defence = defence;
+		this.accuracy = accuracy;
 		this.position = new Vector3(0, 1, 0);
 		this.scale = new Vector3(modelScale, modelScale, modelScale);
 		this.rotXZ = new Quaternion();
@@ -77,14 +78,14 @@ public abstract class Ship extends Entity {
 	
 	public static class ShipNormal extends Ship {
 		public ShipNormal() {
-			super(GeemLoop.getRC().shipNormalModel, 6, 20, 90, 1.5F, 30);
+			super(GeemLoop.getRC().shipNormalModel, 6, 20, 90, 3, 1.5F, 30);
 		}
 	}
 	
 	public static class ShipUfo extends Ship {
 		
 		public ShipUfo() {
-			super(GeemLoop.getRC().shipUfoModel, 6, 15, 90, .025F, 15);
+			super(GeemLoop.getRC().shipUfoModel, 10, 30, 90, 6, .025F, 15);
 			position.y -= .5F;
 		}
 		

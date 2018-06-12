@@ -6,13 +6,13 @@ import com.badlogic.gdx.math.Vector3;
 import info.zthings.geem.main.GeemLoop;
 
 public class Bullet extends Entity {
-	public final float speed, divX, divZ; //TODO accuracy stat?
+	public final float speed, divX, divZ;
 	
 	public Bullet(Ship shooter) {
 		super(GeemLoop.getRC().bulletModel);
 		position = new Vector3(shooter.position.x, shooter.getGunY(), shooter.position.z+1);
 		
-		double ma = 3, a = (Math.random() * Math.toRadians(ma*2)) - Math.toRadians(ma);
+		double a = (Math.random() * Math.toRadians(shooter.accuracy*2)) - Math.toRadians(shooter.accuracy);
 		speed = shooter.baseSpeedZ * 4F * (shooter.fuel/100F);
 		divX = (float) (speed * Math.sin(a));
 		divZ = (float) (speed * Math.cos(a));
