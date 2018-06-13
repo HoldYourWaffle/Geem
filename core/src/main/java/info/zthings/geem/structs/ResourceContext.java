@@ -1,6 +1,7 @@
 package info.zthings.geem.structs;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -35,7 +36,8 @@ public class ResourceContext implements Disposable {
 	
 	public TextureAtlas atlas;
 	
-	public Model shipNormalModel, shipUfoModel, bulletModel, fuelModel;
+	public Model shipNormalModel, shipUfoModel, shipSubModel,
+					bulletModel, fuelModel;
 	public Model[] asteroidModels = new Model[30];
 	public TextureRegion[] explosionFrames = new TextureRegion[48];
 	
@@ -58,7 +60,7 @@ public class ResourceContext implements Disposable {
 		this.ass = new AssetManager();
 		ass.load("ships/normal.g3db", Model.class);
 		ass.load("ships/ufo/ufo.g3db", Model.class);
-		//ass.load("ships/pirate.g3db", Model.class);
+		ass.load("ships/sub.g3dj", Model.class);
 		
 		ass.load("models/canister.g3db", Model.class);
 		for (int i = 1; i <= 30; i++)
@@ -88,7 +90,7 @@ public class ResourceContext implements Disposable {
 		ftfp.size = 38;
 		fntBtn = fntGenVT323.generateFont(ftfp);
 		
-		highscore = Gdx.app.getPreferences("geem-highscore").getInteger("highscore");
+		highscore = getPrefs().getInteger("highscore");
 		glyphHighscore = new GlyphLayout(fntUi, "HIGHSCORE: " + highscore);
 	}
 	
@@ -96,6 +98,8 @@ public class ResourceContext implements Disposable {
 		if (ass.update()) {
 			this.shipNormalModel = ass.get("ships/normal.g3db");
 			this.shipUfoModel = ass.get("ships/ufo/ufo.g3db");
+			this.shipSubModel = ass.get("ships/sub.g3dj");
+			
 			this.fuelModel = ass.get("models/canister.g3db");
 			
 			for (int i = 1; i <= 30; i++)
@@ -112,6 +116,14 @@ public class ResourceContext implements Disposable {
 		return glyphHighscore;
 	}
 	
+	private Preferences preferences;
+	
+	protected Preferences getPrefs() {
+	    if (preferences == null)
+	        preferences = Gdx.app.getPreferences("geem-highscore");
+	    return preferences;
+	}
+	
 	public int getHighscore() {
 		return highscore;
 	}
@@ -120,8 +132,8 @@ public class ResourceContext implements Disposable {
 		if (score > highscore) {
 			highscore = score;
 			glyphHighscore = new GlyphLayout(fntUi, "HIGHSCORE: " + highscore);
-			Gdx.app.getPreferences("geem-highscore").putInteger("highscore", highscore);
-			Gdx.app.getPreferences("geem-highscore").flush();
+			getPrefs().putInteger("highscore", highscore);
+			getPrefs().flush();
 		}
 	}
 	

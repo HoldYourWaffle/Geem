@@ -46,6 +46,7 @@ public abstract class Ship extends Entity {
 	public void update(float dt) {
 		super.update(dt);
 		
+		//TODO REMOVE COMMENTS FOR CHEATS
 		//fuel = 100;
 		//hp = 100;
 		
@@ -76,16 +77,41 @@ public abstract class Ship extends Entity {
 		return position.y;
 	}
 	
+	//TODO balance (ship stats)
 	public static class ShipNormal extends Ship {
 		public ShipNormal() {
-			super(GeemLoop.getRC().shipNormalModel, 6, 20, 90, 3, 1.5F, 30);
+			super(GeemLoop.getRC().shipNormalModel, 6, 20, 80, 3, 1.5F, 30); //speedLinksRechts, speedForward, defence, accuracy (laatste 2 gwn laten)
+			
+			/*
+			 * Accuracy is de maximale angle dat ie kan afwijken (dus hoger is slechter)
+			 * Als je gehit wordt doet ie 100 - defence damage, dus als je 90 defence hebt doet ie maar 10 damage
+			 */
+		}
+	}
+		
+	//TODO balance (ship stats)
+	public static class ShipSub extends Ship {
+		public ShipSub() {
+			super(GeemLoop.getRC().shipSubModel, 2, 10, 90, 1, 0.0045F, 10); //speedLinksRechts, speedForward, defence, accuracy (laatste 2 gwn laten)
+			rotY.setFromAxis(0, 1, 0, -90);
+			
+			/*
+			 * Accuracy is de maximale angle dat ie kan afwijken (dus hoger is slechter)
+			 * Als je gehit wordt doet ie 100 - defence damage, dus als je 90 defence hebt doet ie maar 10 damage
+			 */
 		}
 	}
 	
+	//TODO balance (ship stats)
 	public static class ShipUfo extends Ship {
 		
 		public ShipUfo() {
-			super(GeemLoop.getRC().shipUfoModel, 10, 30, 90, 6, .025F, 15);
+			super(GeemLoop.getRC().shipUfoModel, 10, 30, 40, 6, .025F, 15); //speedLinksRechts, speedForward, defence, accuracy (laatste 2 gwn laten)
+			
+			/*
+			 * Accuracy is de maximale angle dat ie kan afwijken (dus hoger is slechter)
+			 * Als je gehit wordt doet ie 100 - defence damage, dus als je 90 defence hebt doet ie maar 10 damage
+			 */
 			position.y -= .5F;
 		}
 		

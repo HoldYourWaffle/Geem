@@ -56,6 +56,8 @@ public class GameplayState implements IState {
 	private volatile int time = -3;
 	private boolean focus = true, fireJustClicked;
 	
+	private final int xb = 7;
+	
 	public GameplayState(Ship ship) {
 		this.ship = ship;
 		this.fuelcan = new FuelCan();
@@ -88,7 +90,7 @@ public class GameplayState implements IState {
 		beep.setLooping(true);
 		
 		timer = new Timer();
-		timer.scheduleTask(new Task(()->time++), 1, 1);
+		timer.scheduleTask(new Task(this::onSecond), 1, 1);
 		timer.start();
 		
 		btnRestart = new TextButton("Restart", "button",
@@ -101,6 +103,17 @@ public class GameplayState implements IState {
 		
 		ship.update(Gdx.graphics.getDeltaTime());
 		stars.update(Gdx.graphics.getDeltaTime(), cam, ship);
+	}
+	
+	private void onSecond() {
+		time++;
+		
+		double r = Math.random(), chance = ((60 - ship.fuel)/100F); //TODO balance (fuel)
+		System.out.println(chance * 100);
+		if (ship.fuel < 60 && (chance > r || ship.fuel < 25)
+				&& fuelcan.position.z < cam.position.z) {
+			fuelcan.position.set((float)Math.random() * 2*xb - xb, ship.position.y + .3F, ship.position.z + 100);
+		}
 	}
 	
 	boolean debug = false;
@@ -146,14 +159,8 @@ public class GameplayState implements IState {
 		stars.update(dt, cam, ship);
 		ship.update(dt);
 		
-		final float xb = 7;
 		if (ship.position.x < -xb) ship.position.x = -xb;
 		else if (ship.position.x > xb) ship.position.x = xb;
-		
-		if (true //TODO conditional
-				&& fuelcan.position.z < cam.position.z) {
-			fuelcan.position.set((float)Math.random() * 2*xb - xb, ship.position.y + .3F, ship.position.z + 100);
-		}
 		
 		final Vector3 vecBuf = new Vector3();
 		for (Asteroid a : obstacles) {
@@ -205,7 +212,7 @@ public class GameplayState implements IState {
 			} else GeemLoop.getRC().ass.get("sfx/click.wav", Sound.class).play();
 		}
 		
-		if (Math.random() < .2 + (.8 / 6000) * ship.position.z ) {
+		if (Math.random() < .2 + (.8 / 6000) * ship.position.z ) { //TODO balance (asteroid density)
 			Asteroid a = new Asteroid((float)(80*Math.random() - 40), ship.position.z + 120);
 			if (obstacles.stream().noneMatch(ac->ac.getCurrentBounds().intersects(a.getCurrentBounds())))
 				obstacles.add(a);
@@ -218,13 +225,17 @@ public class GameplayState implements IState {
 		
 		
 		if (ship.hp <= 0) {
-			GeemLoop.getRC().updateHighscore((int) (kills + time / 2));
-			glyphScore = new GlyphLayout(GeemLoop.getRC().fntUi, "SCORE: " + (int) (kills + time / 2));
+			GeemLoop.getRC().updateHighscore(getScore());
+			glyphScore = new GlyphLayout(GeemLoop.getRC().fntUi, "SCORE: " + getScore());
 			timer.stop();
 			beep.stop();
 			music.stop();
 			GeemLoop.getRC().ass.get("sfx/fail.wav", Sound.class).play(.8F);
 		}
+	}
+	
+	private int getScore() {
+		return (int) (kills + ship.position.z / 100);
 	}
 	
 	@Override
@@ -242,22 +253,6 @@ public class GameplayState implements IState {
 			rc.models.end();
 			
 			rc.sprites.begin();
-			rc.sprites.setColor(1, 1, 1, .5F);
-			
-			float f = 1.2F;
-			btnLeft.render(rc);
-			btnLeft.setLocation(75, 75);
-			btnLeft.setSize((int)(127*f), (int)(58*f));
-			
-			btnRight.render(rc);
-			btnRight.setLocation(300, 75);
-			btnRight.setSize((int)(127*f), (int)(58*f));
-			
-			btnFire.render(rc);
-			btnFire.setLocation(1280 - 200, 50);
-			
-			rc.sprites.setColor(Color.WHITE);
-			
 			if (time >= 0) {
 				switch (ship.hitsLeft()) {
 					case 0: throw new AssertionError("I should be dead");
@@ -280,8 +275,8 @@ public class GameplayState implements IState {
 				rc.fntUi.setColor(Color.WHITE);
 				rc.fntUi.draw(rc.sprites, "TIME  " + time, 10, 555);
 				
-				rc.fntUi.setColor((int)(kills + time/2) > rc.getHighscore() ? Color.GOLD : Color.WHITE);
-				rc.fntUi.draw(rc.sprites, "SCORE " + (int)(kills + time/2), 10, 500);
+				rc.fntUi.setColor(getScore() > rc.getHighscore() ? Color.GOLD : Color.WHITE);
+				rc.fntUi.draw(rc.sprites, "SCORE " + getScore(), 10, 500);
 				
 				
 				if (time < 3) {
@@ -311,6 +306,24 @@ public class GameplayState implements IState {
 		stars.render(rc, cam);
 		explosions.forEach(e->e.render(rc));
 		rc.decals.flush();
+		
+		rc.sprites.begin();
+		rc.sprites.setColor(1, 1, 1, .5F);
+		
+		float f = 1.2F;
+		btnLeft.render(rc);
+		btnLeft.setLocation(75, 75);
+		btnLeft.setSize((int)(127*f), (int)(58*f));
+		
+		btnRight.render(rc);
+		btnRight.setLocation(300, 75);
+		btnRight.setSize((int)(127*f), (int)(58*f));
+		
+		btnFire.render(rc);
+		btnFire.setLocation(1280 - 200, 50);
+		
+		rc.sprites.setColor(Color.WHITE);
+		rc.sprites.end();
 	}
 	
 	
