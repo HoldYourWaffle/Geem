@@ -271,12 +271,7 @@ public class GameplayState implements IState {
 			
 			rc.sprites.begin();
 			if (time >= 0) {
-				switch (ship.hitsLeft()) {
-					//case 0: throw new AssertionError("I should be dead"); FIXME
-					case 1: rc.fntUi.setColor(Color.RED); break;
-					case 2: rc.fntUi.setColor(Color.ORANGE); break;
-					default: rc.fntUi.setColor(Color.GREEN);
-				}
+				rc.fntUi.setColor(ship.hitsLeft() > 2 ? Color.GREEN : ship.hitsLeft() == 2 ? Color.ORANGE : Color.RED);
 				rc.fntUi.draw(rc.sprites, "HP " + ship.hp + "%", 10, 720);
 				
 				if (ship.fuel < 25) rc.fntUi.setColor(Color.RED);

@@ -37,7 +37,7 @@ public abstract class Ship extends Entity {
 	}
 	
 	public int hitsLeft() {
-		return (int)Math.ceil(hp / (100-defence));
+		return (int)Math.ceil(hp / (float)(100-defence));
 	}
 	
 	private boolean debug = false;
@@ -93,7 +93,7 @@ public abstract class Ship extends Entity {
 	public static class ShipUfo extends Ship {
 		
 		public ShipUfo() {
-			super(GeemLoop.getRC().shipUfoModel, 10, 30, 35, 6, .025F, 15); //speedLinksRechts, speedForward, defence, accuracy (laatste 2 gwn laten)
+			super(GeemLoop.getRC().shipUfoModel, 10, 30, 65, 6, .025F, 15); //speedLinksRechts, speedForward, defence, accuracy (laatste 2 gwn laten)
 			position.y -= .5F;
 		}
 		
