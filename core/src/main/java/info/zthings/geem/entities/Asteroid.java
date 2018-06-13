@@ -14,7 +14,7 @@ public class Asteroid extends Entity {
 		super(GeemLoop.getRC().asteroidModels[(int)(Math.random()*29)]);
 		this.position = new Vector3(x, .5F, z);
 		
-		float rc = .0000125F; //TODO balance (red rocks)
+		float rc = .0000125F;
 		hard = Math.random() < rc * (z - 1500);
 		
 		model.materials.get(0).set(ColorAttribute.createDiffuse(hard ? Color.FIREBRICK : Color.DARK_GRAY));

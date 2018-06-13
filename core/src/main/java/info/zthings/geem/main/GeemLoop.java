@@ -13,9 +13,25 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import info.zthings.geem.entities.Ship.ShipSub;
+import info.zthings.geem.entities.Ship.ShipUfo;
 import info.zthings.geem.structs.IState;
 import info.zthings.geem.structs.ResourceContext;
+
+/* TODO variables
+ * 
+ * Gameplaystate:
+ * ship.position.z = hoe ver je bent
+ * ship.ammo
+ * ship.fuel
+ * ship.hp
+ * time = seconden
+ * 
+ * Math.random() - 0.0 - 1.0
+ * 
+ * Ship:
+ * position.z = hoe ver je bent
+ * 
+ */
 
 public class GeemLoop implements ApplicationListener {
 	private ResourceContext rc;
@@ -48,8 +64,8 @@ public class GeemLoop implements ApplicationListener {
 			
 			//TODO hier van ship wisselen
 			//setState(new GameplayState(new ShipNormal()));
-			//setState(new GameplayState(new ShipUfo()));
-			setState(new GameplayState(new ShipSub()));
+			setState(new GameplayState(new ShipUfo()));
+			//setState(new GameplayState(new ShipSub()));
 		}
 		
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE))

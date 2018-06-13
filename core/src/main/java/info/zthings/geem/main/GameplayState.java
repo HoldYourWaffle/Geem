@@ -212,7 +212,7 @@ public class GameplayState implements IState {
 			} else GeemLoop.getRC().ass.get("sfx/click.wav", Sound.class).play();
 		}
 		
-		if (Math.random() < .2 + (.8 / 6000) * ship.position.z ) { //TODO balance (asteroid density)
+		if (Math.random() < .2 + (.8 / 6000) * ship.position.z) { //TODO balance (asteroid density)
 			Asteroid a = new Asteroid((float)(80*Math.random() - 40), ship.position.z + 120);
 			if (obstacles.stream().noneMatch(ac->ac.getCurrentBounds().intersects(a.getCurrentBounds())))
 				obstacles.add(a);
