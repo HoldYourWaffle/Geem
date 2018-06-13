@@ -178,8 +178,12 @@ public class GameplayState implements IState {
 		}
 		
 		
-		if (Gdx.input.isKeyJustPressed(Keys.SPACE) && time >= 0)
-			bullets.add(new Bullet(ship));
+		if (Gdx.input.isKeyJustPressed(Keys.SPACE) && time >= 0) {
+			if (ship.ammo > 0) {
+				bullets.add(new Bullet(ship));
+				ship.ammo--;
+			} else GeemLoop.getRC().ass.get("sfx/click.wav", Sound.class).play();
+		}
 		
 		if (Math.random() < .2 + (.8 / 6000) * ship.position.z ) {
 			Asteroid a = new Asteroid((float)(80*Math.random() - 40), ship.position.z + 120);
@@ -231,13 +235,18 @@ public class GameplayState implements IState {
 				if (ship.fuel < 25) rc.fntUi.setColor(Color.RED);
 				else if (ship.fuel < 50) rc.fntUi.setColor(Color.ORANGE);
 				else rc.fntUi.setColor(Color.GREEN);
-				rc.fntUi.draw(rc.sprites, "FUEL: " + (int)Math.ceil(ship.fuel) + "%", 10, 665);
+				rc.fntUi.draw(rc.sprites, "FUEL " + (int)Math.ceil(ship.fuel) + "%", 10, 665);
+				
+				if (ship.ammo == 0) rc.fntUi.setColor(Color.RED);
+				else if (ship.ammo <= 3) rc.fntUi.setColor(Color.ORANGE);
+				else rc.fntUi.setColor(Color.GREEN);
+				rc.fntUi.draw(rc.sprites, "AMMO " + ship.ammo, 10, 610);
 				
 				rc.fntUi.setColor(Color.WHITE);
-				rc.fntUi.draw(rc.sprites, "TIME  " + time, 10, 610);
+				rc.fntUi.draw(rc.sprites, "TIME  " + time, 10, 555);
 				
 				rc.fntUi.setColor((int)(kills + time/2) > rc.getHighscore() ? Color.GOLD : Color.WHITE);
-				rc.fntUi.draw(rc.sprites, "SCORE " + (int)(kills + time/2), 10, 555);
+				rc.fntUi.draw(rc.sprites, "SCORE " + (int)(kills + time/2), 10, 500);
 				
 				
 				if (time < 3) {

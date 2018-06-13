@@ -13,7 +13,7 @@ public class Bullet extends Entity {
 		position = new Vector3(shooter.position.x, shooter.getGunY(), shooter.position.z+1);
 		
 		double a = (Math.random() * Math.toRadians(shooter.accuracy*2)) - Math.toRadians(shooter.accuracy);
-		speed = shooter.baseSpeedZ * 4F * (shooter.fuel/100F);
+		speed = shooter.baseSpeedZ * 4F;
 		divX = (float) (speed * Math.sin(a));
 		divZ = (float) (speed * Math.cos(a));
 		

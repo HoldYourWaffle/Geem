@@ -13,7 +13,7 @@ public abstract class Ship extends Entity {
 	protected final Quaternion rotXZ, rotY;
 	
 	public final int baseSpeedX, baseSpeedZ, turnAngle, defence, accuracy; //accuracy = max deviation (bigger is worse)
-	public int hp = 100;
+	public int hp = 100, ammo = 10;
 	public float fuel = 100;
 	
 	public Ship(Model model, int speedX, int speedZ, int defence, int accuracy, float modelScale, int turnAngle) {

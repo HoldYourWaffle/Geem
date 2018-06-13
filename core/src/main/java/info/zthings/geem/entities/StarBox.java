@@ -1,4 +1,4 @@
-package info.zthings.geem.main;
+package info.zthings.geem.entities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.math.Vector3;
 
-import info.zthings.geem.entities.Ship;
+import info.zthings.geem.main.GeemLoop;
 import info.zthings.geem.structs.ResourceContext;
 
 public class StarBox {
@@ -45,7 +45,6 @@ public class StarBox {
 	
 	public void render(ResourceContext rc, PerspectiveCamera cam) {
 		stars.forEach(rc.decals::add);
-		rc.decals.flush();
 	}
 	
 }
