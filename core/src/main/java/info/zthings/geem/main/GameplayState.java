@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
+import info.zthings.geem.entities.AmmoPack;
 import info.zthings.geem.entities.Asteroid;
 import info.zthings.geem.entities.Bullet;
 import info.zthings.geem.entities.Explosion;
@@ -47,6 +48,8 @@ public class GameplayState implements IState {
 	private final Ship ship;
 	private StarBox stars = new StarBox(20);
 	private final FuelCan fuelcan;
+	private final AmmoPack ammo;
+	
 	private List<Asteroid> obstacles = new ArrayList<>();
 	private List<Bullet> bullets = new ArrayList<>();
 	private List<Explosion> explosions = new ArrayList<>();
@@ -61,6 +64,7 @@ public class GameplayState implements IState {
 	public GameplayState(Ship ship) {
 		this.ship = ship;
 		this.fuelcan = new FuelCan();
+		this.ammo = new AmmoPack();
 	}
 	
 	@Override
@@ -95,7 +99,7 @@ public class GameplayState implements IState {
 		
 		btnRestart = new TextButton("Restart", "button",
 				1280/2 - GeemLoop.getRC().atlas.findRegion("button1").getRegionWidth()/2, 720/2 - GeemLoop.getRC().atlas.findRegion("button1").getRegionHeight()*2,
-				false, false, ()->GeemLoop.getLoop().setState(new MainMenuState(true)));
+				false, false, ()->GeemLoop.getLoop().setState(new MainMenuState(true))); //TODO remember last ship
 		
 		btnLeft = new Button("control", 0, 100, null, true, false);
 		btnRight = new Button("control", 0, 100, null, false, false);
@@ -108,11 +112,15 @@ public class GameplayState implements IState {
 	private void onSecond() {
 		time++;
 		
-		double r = Math.random(), chance = ((60 - ship.fuel)/100F); //TODO balance (fuel)
-		System.out.println(chance * 100);
-		if (ship.fuel < 60 && (chance > r || ship.fuel < 25)
+		double r = Math.random(), chanceFuel = ((60 - ship.fuel)/100F);
+		if (ship.fuel < 60 && (chanceFuel > r || ship.fuel < 25)
 				&& fuelcan.position.z < cam.position.z) {
 			fuelcan.position.set((float)Math.random() * 2*xb - xb, ship.position.y + .3F, ship.position.z + 100);
+		}
+		
+		double chanceAmmo = ship.ammo > 3 ? .1 : 4-ship.ammo * .2;
+		if (chanceAmmo > r && ammo.position.z < cam.position.z) {
+			ammo.position.set((float)Math.random() * 2*xb - xb, ship.position.y + .3F, ship.position.z + 100);
 		}
 	}
 	
@@ -123,6 +131,7 @@ public class GameplayState implements IState {
 		if (debug) time = 4;
 		
 		fuelcan.update(dt);
+		ammo.update(dt);
 		
 		bullets.forEach(b->b.update(dt));
 		bullets.removeIf(b->b.position.z - ship.position.z > 100 || b.destroyed);
@@ -166,7 +175,8 @@ public class GameplayState implements IState {
 		for (Asteroid a : obstacles) {
 			if (a.position.x < -xb || a.position.x > xb) continue;
 			
-			if (a.getCurrentBounds().intersects(fuelcan.getCurrentBounds())) {
+			if (a.getCurrentBounds().intersects(fuelcan.getCurrentBounds()) ||
+				a.getCurrentBounds().intersects(ammo.getCurrentBounds())) {
 				a.destroyed = true;
 				continue;
 			}
@@ -199,6 +209,12 @@ public class GameplayState implements IState {
 			GeemLoop.getRC().ass.get("sfx/fuel.wav", Sound.class).play();
 		}
 		
+		if (ship.getCurrentBounds().intersects(ammo.getCurrentBounds())) {
+			ammo.position.set(0, 0, 0);
+			ship.ammo += 10; //TODO balance bullet amount
+			GeemLoop.getRC().ass.get("sfx/fuel.wav", Sound.class).play();
+		}
+		
 		boolean fire = false;
 		if (btnFire.isClicked() && !fireJustClicked) {
 			fire = true;
@@ -212,7 +228,7 @@ public class GameplayState implements IState {
 			} else GeemLoop.getRC().ass.get("sfx/click.wav", Sound.class).play();
 		}
 		
-		if (Math.random() < .2 + (.8 / 6000) * ship.position.z) { //TODO balance (asteroid density)
+		if (Math.random() < .2 + (.8 / 6000) * ship.position.z) {
 			Asteroid a = new Asteroid((float)(80*Math.random() - 40), ship.position.z + 120);
 			if (obstacles.stream().noneMatch(ac->ac.getCurrentBounds().intersects(a.getCurrentBounds())))
 				obstacles.add(a);
@@ -235,7 +251,7 @@ public class GameplayState implements IState {
 	}
 	
 	private int getScore() {
-		return (int) (kills + ship.position.z / 100);
+		return (int) (kills + ship.position.z / 30);
 	}
 	
 	@Override
@@ -245,6 +261,7 @@ public class GameplayState implements IState {
 		
 		rc.models.begin(cam);
 		fuelcan.render(rc, env);
+		ammo.render(rc, env);
 		bullets.forEach(b->b.render(rc, env));
 		obstacles.forEach(a->a.render(rc, env));
 		
@@ -255,7 +272,7 @@ public class GameplayState implements IState {
 			rc.sprites.begin();
 			if (time >= 0) {
 				switch (ship.hitsLeft()) {
-					case 0: throw new AssertionError("I should be dead");
+					//case 0: throw new AssertionError("I should be dead"); FIXME
 					case 1: rc.fntUi.setColor(Color.RED); break;
 					case 2: rc.fntUi.setColor(Color.ORANGE); break;
 					default: rc.fntUi.setColor(Color.GREEN);

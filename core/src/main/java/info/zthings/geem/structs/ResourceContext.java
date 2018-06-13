@@ -37,7 +37,7 @@ public class ResourceContext implements Disposable {
 	public TextureAtlas atlas;
 	
 	public Model shipNormalModel, shipUfoModel, shipSubModel,
-					bulletModel, fuelModel;
+					bulletModel, fuelModel, ammoPackModel;
 	public Model[] asteroidModels = new Model[30];
 	public TextureRegion[] explosionFrames = new TextureRegion[48];
 	
@@ -65,6 +65,7 @@ public class ResourceContext implements Disposable {
 		ass.load("models/canister.g3db", Model.class);
 		for (int i = 1; i <= 30; i++)
 			ass.load("models/asteroids/asteroid"+i+".g3dj", Model.class);
+		ass.load("models/box.g3dj", Model.class);
 		
 		ass.load("music/ingame.wav", Music.class);
 		ass.load("music/circus.wav", Music.class);
@@ -101,6 +102,7 @@ public class ResourceContext implements Disposable {
 			this.shipSubModel = ass.get("ships/sub.g3dj");
 			
 			this.fuelModel = ass.get("models/canister.g3db");
+			this.ammoPackModel = ass.get("models/box.g3dj");
 			
 			for (int i = 1; i <= 30; i++)
 				this.asteroidModels[i-1] = ass.get("models/asteroids/asteroid"+i+".g3dj");

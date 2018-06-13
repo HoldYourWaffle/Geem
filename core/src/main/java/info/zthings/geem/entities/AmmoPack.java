@@ -4,12 +4,12 @@ import com.badlogic.gdx.math.Vector3;
 
 import info.zthings.geem.main.GeemLoop;
 
-public class FuelCan extends Entity {
+public class AmmoPack extends Entity {
 
-	public FuelCan() {
-		super(GeemLoop.getRC().fuelModel);
+	public AmmoPack() {
+		super(GeemLoop.getRC().ammoPackModel);
 		position = new Vector3(0, 0, -10); 
-		model.transform.scale(.15F, .15F, .15F);
+		model.transform.scale(.5F, .5F, .5F);
 	}
 	
 	@Override

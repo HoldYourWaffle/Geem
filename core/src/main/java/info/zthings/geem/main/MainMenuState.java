@@ -32,8 +32,9 @@ public class MainMenuState implements IState {
 	
 	private OrthographicCamera cam;
 	
-	public MainMenuState(boolean charScreen) {
+	public MainMenuState(boolean charScreen) {//, Class<? extends Ship> ship) {
 		this.stateShip = charScreen;
+		
 	}
 
 	@Override
