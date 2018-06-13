@@ -126,7 +126,8 @@ public class GameplayState implements IState {
 			music.play();
 		
 		if (ship.fuel < 25) {
-			if (!beep.isPlaying()) beep.play();
+			if (!beep.isPlaying())
+				beep.play();
 		} else beep.stop();
 		
 		stars.update(dt, cam, ship);
@@ -155,6 +156,8 @@ public class GameplayState implements IState {
 				kills--;
 				if (!ship.hit(a.hard)) //!died from hit
 					GeemLoop.getRC().ass.get("sfx/oof.wav", Sound.class).play(.8F);
+				else
+					explosions.add(new Explosion(a.position));
 				continue;
 			} else for (Bullet b : bullets) {
 				vecBuf.set(b.position.x, a.getCurrentBounds().getCenterY(), b.position.z);				
@@ -162,7 +165,7 @@ public class GameplayState implements IState {
 					b.destroyed = true;
 					float dist = a.position.z - ship.position.z;
 					GeemLoop.getRC().ass.get("sfx/biem.wav", Sound.class).play((dist < 60 ? 1 - dist / 60 : 0) * .8F);
-					if (a.hit()) { //broken
+					if (a.hit()) { //asteroid dead
 						explosions.add(new Explosion(a.position));
 						kills++;
 						continue;
