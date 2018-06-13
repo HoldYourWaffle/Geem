@@ -48,7 +48,7 @@ button3
   index: -1
 control1
   rotate: false
-  xy: 2, 12
+  xy: 131, 12
   size: 127, 58
   orig: 127, 58
   offset: 0, 0
@@ -56,6 +56,13 @@ control1
 control2
   rotate: false
   xy: 131, 12
+  size: 127, 58
+  orig: 127, 58
+  offset: 0, 0
+  index: -1
+control3
+  rotate: false
+  xy: 2, 12
   size: 127, 58
   orig: 127, 58
   offset: 0, 0
@@ -69,14 +76,14 @@ explosion0
   index: -1
 explosion1
   rotate: false
-  xy: 998, 174
+  xy: 336, 82
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
 explosion10
   rotate: false
-  xy: 1162, 174
+  xy: 998, 174
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
@@ -307,14 +314,14 @@ explosion4
   index: -1
 explosion40
   rotate: false
-  xy: 260, 2
+  xy: 342, 2
   size: 80, 78
   orig: 80, 78
   offset: 0, 0
   index: -1
 explosion41
   rotate: false
-  xy: 342, 2
+  xy: 260, 2
   size: 80, 78
   orig: 80, 78
   offset: 0, 0
@@ -370,7 +377,7 @@ explosion5
   index: -1
 explosion6
   rotate: false
-  xy: 336, 82
+  xy: 1080, 10
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
@@ -384,21 +391,21 @@ explosion7
   index: -1
 explosion8
   rotate: false
-  xy: 1080, 10
+  xy: 1156, 92
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
 explosion9
   rotate: false
-  xy: 1156, 92
+  xy: 1162, 174
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
 pew1
   rotate: false
-  xy: 1642, 133
+  xy: 1648, 10
   size: 121, 121
   orig: 121, 121
   offset: 0, 0
@@ -406,6 +413,13 @@ pew1
 pew2
   rotate: false
   xy: 1648, 10
+  size: 121, 121
+  orig: 121, 121
+  offset: 0, 0
+  index: -1
+pew3
+  rotate: false
+  xy: 1642, 133
   size: 121, 121
   orig: 121, 121
   offset: 0, 0

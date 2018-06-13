@@ -874,4 +874,10 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		vec.scl(f);
 		return vec;
 	}
+
+	public Vector3 add2(float x, float y, float z) {
+		Vector3 vec = new Vector3(this);
+		vec.add(x, y, z);
+		return vec;
+	}
 }

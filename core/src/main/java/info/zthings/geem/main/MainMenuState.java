@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -17,6 +16,7 @@ import info.zthings.geem.entities.Ship;
 import info.zthings.geem.structs.IState;
 import info.zthings.geem.structs.ResourceContext;
 import info.zthings.geem.ui.Button;
+import info.zthings.geem.ui.TextButton;
 
 public class MainMenuState implements IState {
 	private Ship selectedShip = null;
@@ -51,13 +51,13 @@ public class MainMenuState implements IState {
 		
 		selectedShip = new Ship.ShipNormal();
 		
-		btnStart = new Button("Start", GeemLoop.getRC().fntBtn, Color.BLACK, "button", GeemLoop.getRC().atlas,
+		btnStart = new TextButton("Start", "button",
 				1280/2 - GeemLoop.getRC().atlas.findRegion("button1").getRegionWidth()/2, 720/2 - GeemLoop.getRC().atlas.findRegion("button1").getRegionHeight(),
-				()->stateShip = true);
+				false, false, ()->stateShip = true);
 		
-		btnGo = new Button("Go!", GeemLoop.getRC().fntBtn, Color.BLACK, "button", GeemLoop.getRC().atlas,
+		btnGo = new TextButton("Go!", "button",
 				1280/2 - GeemLoop.getRC().atlas.findRegion("button1").getRegionWidth()/2, GeemLoop.getRC().atlas.findRegion("button1").getRegionHeight()/2,
-				()->{
+				false, false, ()->{
 					fading = true;
 					music.stop();
 					Timer t = new Timer();
@@ -67,8 +67,8 @@ public class MainMenuState implements IState {
 					t.start();
 				});
 		
-		btnBack = new Button("", GeemLoop.getRC().fntBtn, Color.BLACK, "arrow", GeemLoop.getRC().atlas, 50, GeemLoop.getRC().atlas.findRegion("button1").getRegionHeight()/2, ()->stateShip = false);
-		btnBack.setSize(50, 50);
+		btnBack = new Button("arrow", 50, GeemLoop.getRC().atlas.findRegion("button1").getRegionHeight()/2, ()->stateShip = false, false, false);
+		btnBack.setSize(80, 80);
 	}
 	
 	@Override
@@ -106,17 +106,16 @@ public class MainMenuState implements IState {
 	}
 	
 	private void renderMain(ResourceContext rc) {
-		btnStart.render(rc);
 		rc.sprites.begin();
+		btnStart.render(rc);
 		rc.fntTitle.draw(rc.sprites, glyphTitle, 1280/2 - glyphTitle.width/2, 720 - glyphTitle.height);
 		rc.sprites.end();
 	}
 	
 	private void renderShipSelect(ResourceContext rc) {
+		rc.sprites.begin();
 		btnBack.render(rc);
 		btnGo.render(rc);
-		
-		rc.sprites.begin();
 		rc.fntTitle.draw(rc.sprites, glyphCharacter, 1280/2 - glyphCharacter.width/2, 720 - glyphCharacter.height);
 		//rc.sprites.setColor(1, 1, 1, .4f);
 		rc.sprites.end();

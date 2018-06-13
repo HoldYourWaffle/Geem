@@ -29,6 +29,7 @@ import info.zthings.geem.entities.StarBox;
 import info.zthings.geem.structs.IState;
 import info.zthings.geem.structs.ResourceContext;
 import info.zthings.geem.ui.Button;
+import info.zthings.geem.ui.TextButton;
 import info.zthings.geem.world.DebugRenderer;
 
 public class GameplayState implements IState {
@@ -39,7 +40,8 @@ public class GameplayState implements IState {
 	private Music music, beep;
 	private DebugRenderer debugRenderer;
 	
-	private Button btnRestart;
+	private TextButton btnRestart;
+	private Button btnLeft, btnRight, btnFire;
 	private GlyphLayout glyphDied, glyphScore;
 	
 	private final Ship ship;
@@ -52,7 +54,7 @@ public class GameplayState implements IState {
 	private int kills;
 	private Timer timer;
 	private volatile int time = -3;
-	private boolean focus = true;
+	private boolean focus = true, fireJustClicked;
 	
 	public GameplayState(Ship ship) {
 		this.ship = ship;
@@ -89,9 +91,13 @@ public class GameplayState implements IState {
 		timer.scheduleTask(new Task(()->time++), 1, 1);
 		timer.start();
 		
-		btnRestart = new Button("Restart", GeemLoop.getRC().fntBtn, Color.BLACK, "button", GeemLoop.getRC().atlas,
+		btnRestart = new TextButton("Restart", "button",
 				1280/2 - GeemLoop.getRC().atlas.findRegion("button1").getRegionWidth()/2, 720/2 - GeemLoop.getRC().atlas.findRegion("button1").getRegionHeight()*2,
-				()->GeemLoop.getLoop().setState(new MainMenuState(true)));
+				false, false, ()->GeemLoop.getLoop().setState(new MainMenuState(true)));
+		
+		btnLeft = new Button("control", 0, 100, null, true, false);
+		btnRight = new Button("control", 0, 100, null, false, false);
+		btnFire = new Button("pew", 0, 100, null, false, false);
 		
 		ship.update(Gdx.graphics.getDeltaTime());
 		stars.update(Gdx.graphics.getDeltaTime(), cam, ship);
@@ -120,6 +126,10 @@ public class GameplayState implements IState {
 			return;
 		}
 		
+		btnLeft.update(dt, camUi);
+		btnRight.update(dt, camUi);
+		btnFire.update(dt, camUi);
+		
 		if (time == 0) ship.fuel = 100;
 		
 		if (time >= 0 && !music.isPlaying())
@@ -129,6 +139,9 @@ public class GameplayState implements IState {
 			if (!beep.isPlaying())
 				beep.play();
 		} else beep.stop();
+		
+		ship.movingLeft = btnLeft.isClicked();
+		ship.movingRight = btnRight.isClicked();
 		
 		stars.update(dt, cam, ship);
 		ship.update(dt);
@@ -152,12 +165,11 @@ public class GameplayState implements IState {
 			}
 			
 			if (a.getCurrentBounds().intersects(ship.getCurrentBounds())) {
+				explosions.add(new Explosion(ship.position.add2(0, 0, -.1F)));
 				a.destroyed = true;
 				kills--;
 				if (!ship.hit(a.hard)) //!died from hit
 					GeemLoop.getRC().ass.get("sfx/oof.wav", Sound.class).play(.8F);
-				else
-					explosions.add(new Explosion(a.position));
 				continue;
 			} else for (Bullet b : bullets) {
 				vecBuf.set(b.position.x, a.getCurrentBounds().getCenterY(), b.position.z);				
@@ -180,8 +192,13 @@ public class GameplayState implements IState {
 			GeemLoop.getRC().ass.get("sfx/fuel.wav", Sound.class).play();
 		}
 		
+		boolean fire = false;
+		if (btnFire.isClicked() && !fireJustClicked) {
+			fire = true;
+			fireJustClicked = true;
+		} else if (!btnFire.isClicked()) fireJustClicked = false;
 		
-		if (Gdx.input.isKeyJustPressed(Keys.SPACE) && time >= 0) {
+		if ((Gdx.input.isKeyJustPressed(Keys.SPACE) || fire) && time >= 0) {
 			if (ship.ammo > 0) {
 				bullets.add(new Bullet(ship));
 				ship.ammo--;
@@ -225,6 +242,21 @@ public class GameplayState implements IState {
 			rc.models.end();
 			
 			rc.sprites.begin();
+			rc.sprites.setColor(1, 1, 1, .5F);
+			
+			float f = 1.2F;
+			btnLeft.render(rc);
+			btnLeft.setLocation(75, 75);
+			btnLeft.setSize((int)(127*f), (int)(58*f));
+			
+			btnRight.render(rc);
+			btnRight.setLocation(300, 75);
+			btnRight.setSize((int)(127*f), (int)(58*f));
+			
+			btnFire.render(rc);
+			btnFire.setLocation(1280 - 200, 50);
+			
+			rc.sprites.setColor(Color.WHITE);
 			
 			if (time >= 0) {
 				switch (ship.hitsLeft()) {
@@ -265,9 +297,8 @@ public class GameplayState implements IState {
 		} else {
 			rc.models.end();
 			
-			btnRestart.render(rc);
-			
 			rc.sprites.begin();
+			btnRestart.render(rc);
 			rc.fntUi.setColor(Color.WHITE);
 			rc.fntUi.draw(rc.sprites, glyphDied, 1280/2-glyphDied.width/2, 720/1.3F);
 			

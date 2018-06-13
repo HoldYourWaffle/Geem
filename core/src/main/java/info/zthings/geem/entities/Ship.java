@@ -16,6 +16,8 @@ public abstract class Ship extends Entity {
 	public int hp = 100, ammo = 10;
 	public float fuel = 100;
 	
+	public boolean movingLeft, movingRight;
+	
 	public Ship(Model model, int speedX, int speedZ, int defence, int accuracy, float modelScale, int turnAngle) {
 		super(model);
 		this.baseSpeedX = speedX;
@@ -50,8 +52,6 @@ public abstract class Ship extends Entity {
 		float dz = 0;
 		if (Gdx.input.isKeyPressed(Keys.W) || !debug)
 			dz = baseSpeedZ;
-		else if (Gdx.input.isKeyPressed(Keys.S))
-			dz = -baseSpeedZ;
 		
 		float ff = fuel < 50 ? .3F + .7F/50F * fuel : 1;
 		dz *= dt * ff;
@@ -61,8 +61,8 @@ public abstract class Ship extends Entity {
 			hp = 0;
 		
 		int dx;
-		if (Gdx.input.isKeyPressed(Keys.A)) dx = -1;
-		else if (Gdx.input.isKeyPressed(Keys.D)) dx = 1;
+		if (Gdx.input.isKeyPressed(Keys.A) || movingLeft) dx = -1;
+		else if (Gdx.input.isKeyPressed(Keys.D) || movingRight) dx = 1;
 		else dx = 0;
 		
 		position.add(-dx*baseSpeedX*dt*ff, 0, dz);

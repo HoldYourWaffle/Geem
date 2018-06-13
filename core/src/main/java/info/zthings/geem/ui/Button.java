@@ -2,40 +2,32 @@ package info.zthings.geem.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
+import info.zthings.geem.main.GeemLoop;
 import info.zthings.geem.structs.ResourceContext;
 
-public class Button implements UiElement {
-	private Vector2 pos;
-	private int width, height;
-	private GlyphLayout text;
+public class Button {
+	protected Vector2 pos;
+	protected int width, height;
 	
 	private BtnState state = BtnState.NORMAL;
 	private Runnable callback;
 	private final TextureRegion btnNormal, btnHover, btnClick;
-	private final BitmapFont fnt;
-	private Color textColor;
 	
-	public Button(String txt, BitmapFont fnt, Color txtColor, String atlasName, TextureAtlas tex, int x, int y, Runnable callback) {
+	public Button(String atlasName, int x, int y, Runnable callback, boolean flipX, boolean flipY) {
 		pos = new Vector2(x, y);
-		
-		this.fnt = fnt;
 		this.callback = callback;
 		
-		setText(txt);
-		setTextColor(txtColor);
-		
-		btnNormal = tex.findRegion(atlasName + 1);
-		btnHover =  tex.findRegion(atlasName + 2);
-		btnClick =  tex.findRegion(atlasName + 3);
+		btnNormal = new TextureRegion(GeemLoop.getRC().atlas.findRegion(atlasName + 1));
+		btnNormal.flip(flipX, flipY);
+		btnHover = new TextureRegion(GeemLoop.getRC().atlas.findRegion(atlasName + 2));
+		btnHover.flip(flipX, flipY);
+		btnClick = new TextureRegion(GeemLoop.getRC().atlas.findRegion(atlasName + 3));
+		btnClick.flip(flipX, flipY);
 		
 		width = btnNormal.getRegionWidth();
 		height = btnNormal.getRegionHeight();
@@ -43,19 +35,17 @@ public class Button implements UiElement {
 	
 	private enum BtnState { NORMAL, HOVER, CLICK; }
 	
-	@Override
 	public void update(float dt, Camera cam) {
-		if (getBounds().contains(cam.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0)).flatten())) { //hover
+		if (new Rectangle(pos.x, pos.y, width, height).contains(cam.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0)).flatten())) { //hover
 			if (Gdx.input.isTouched()) state = BtnState.CLICK; //hover + click
 			else if (state == BtnState.CLICK) { //not touched but in click state -> released
-				callback.run();
+				if (callback != null) callback.run();
 			} else state = BtnState.HOVER; //never touched but hovered
 			
 			state = Gdx.input.isTouched() ? BtnState.CLICK : BtnState.HOVER;
 		} else state = BtnState.NORMAL;
 	}
 	
-	@Override
 	public void render(ResourceContext rc) {
 		TextureRegion r;
 		switch (state) {
@@ -71,51 +61,20 @@ public class Button implements UiElement {
 			default: throw new AssertionError("Undefined state");
 		}
 		
-		rc.sprites.begin();
+		//rc.sprites.begin();
 		rc.sprites.setColor(1, 1, 1, rc.sprites.getColor().a);
 		rc.sprites.draw(r, pos.x, pos.y, width, height);
-		fnt.setColor(textColor);
-		fnt.draw(rc.sprites, text, pos.x + width/2 - text.width/2, pos.y + height/2 + text.height/2);
-		rc.sprites.end();
+		
+		//rc.sprites.end();
 	}
 	
 	
-	
-	
-	@Override
-	public Rectangle getBounds() {
-		return new Rectangle(pos.x, pos.y, width, height);
+	public boolean isClicked() {
+		return state == BtnState.CLICK;
 	}
 	
-	@Override
-	public Vector2 getLocation() {
-		return pos;
-	}
-	
-	@Override
-	public void setLocation(Vector2 vec) {
-		pos = vec;
-	}
-	
-	@Override
 	public void setLocation(int x, int y) {
-		setLocation(new Vector2(x, y));
-	}
-	
-	public void setText(String txt) {
-		text = new GlyphLayout(fnt, txt);
-	}
-	
-	public void setCallback(Runnable r) {
-		callback = r;
-	}
-	
-	public Color getTextColor() {
-		return textColor;
-	}
-	
-	public void setTextColor(Color textColor) {
-		this.textColor = textColor;
+		pos.set(x, y);
 	}
 	
 	public void setSize(int w, int h) {
