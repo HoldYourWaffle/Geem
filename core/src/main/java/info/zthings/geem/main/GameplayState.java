@@ -22,8 +22,10 @@ import com.badlogic.gdx.utils.Timer.Task;
 
 import info.zthings.geem.entities.Asteroid;
 import info.zthings.geem.entities.Bullet;
+import info.zthings.geem.entities.Explosion;
 import info.zthings.geem.entities.FuelCan;
 import info.zthings.geem.entities.Ship;
+import info.zthings.geem.entities.StarBox;
 import info.zthings.geem.structs.IState;
 import info.zthings.geem.structs.ResourceContext;
 import info.zthings.geem.ui.Button;
@@ -41,10 +43,11 @@ public class GameplayState implements IState {
 	private GlyphLayout glyphDied, glyphScore;
 	
 	private final Ship ship;
-	private List<Asteroid> obstacles = new ArrayList<>();
-	private List<Bullet> bullets = new ArrayList<>();
 	private StarBox stars = new StarBox(20);
 	private final FuelCan fuelcan;
+	private List<Asteroid> obstacles = new ArrayList<>();
+	private List<Bullet> bullets = new ArrayList<>();
+	private List<Explosion> explosions = new ArrayList<>();
 	
 	private int kills;
 	private Timer timer;
@@ -105,6 +108,9 @@ public class GameplayState implements IState {
 		bullets.forEach(b->b.update(dt));
 		bullets.removeIf(b->b.position.z - ship.position.z > 100 || b.destroyed);
 		
+		explosions.forEach(e->e.update(dt));
+		explosions.removeIf(e->e.destroyed);
+		
 		obstacles.forEach(a->a.update(dt));
 		obstacles.removeIf(a->a.position.z < cam.position.z || a.destroyed);
 		
@@ -157,7 +163,7 @@ public class GameplayState implements IState {
 					float dist = a.position.z - ship.position.z;
 					GeemLoop.getRC().ass.get("sfx/biem.wav", Sound.class).play((dist < 60 ? 1 - dist / 60 : 0) * .8F);
 					if (a.hit()) { //broken
-						//TODO explosion
+						explosions.add(new Explosion(a.position));
 						kills++;
 						continue;
 					}
@@ -201,8 +207,6 @@ public class GameplayState implements IState {
 	public void render(ResourceContext rc) {
 		//debugRenderer.render(rc, cam);
 		rc.sprites.setProjectionMatrix(camUi.combined);
-		
-		stars.render(rc, cam);
 		
 		rc.models.begin(cam);
 		fuelcan.render(rc, env);
@@ -260,6 +264,10 @@ public class GameplayState implements IState {
 			
 			rc.sprites.end();
 		}
+		
+		stars.render(rc, cam);
+		explosions.forEach(e->e.render(rc));
+		rc.decals.flush();
 	}
 	
 	

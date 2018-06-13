@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -36,6 +37,7 @@ public class ResourceContext implements Disposable {
 	
 	public Model shipNormalModel, shipUfoModel, bulletModel, fuelModel;
 	public Model[] asteroidModels = new Model[30];
+	public TextureRegion[] explosionFrames = new TextureRegion[48];
 	
 	private int highscore;
 	private GlyphLayout glyphHighscore;
@@ -94,10 +96,13 @@ public class ResourceContext implements Disposable {
 			this.shipNormalModel = ass.get("ships/normal.g3db");
 			this.shipUfoModel = ass.get("ships/ufo/ufo.g3db");
 			this.fuelModel = ass.get("models/canister.g3db");
+			
 			for (int i = 1; i <= 30; i++)
 				this.asteroidModels[i-1] = ass.get("models/asteroids/asteroid"+i+".g3dj");
 			
 			atlas = ass.get("sprites.atlas");
+			for (int i = 0; i <= 47; i++)
+				this.explosionFrames[i] = atlas.findRegion("explosion"+i);
 			return true;
 		} else return false;
 	}

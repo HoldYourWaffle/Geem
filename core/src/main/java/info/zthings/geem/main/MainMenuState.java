@@ -91,7 +91,6 @@ public class MainMenuState implements IState {
 	
 	@Override
 	public void render(ResourceContext rc) {
-		System.out.println("RENDER");
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		rc.shapes.setProjectionMatrix(cam.combined);
 		rc.sprites.setProjectionMatrix(cam.combined);
