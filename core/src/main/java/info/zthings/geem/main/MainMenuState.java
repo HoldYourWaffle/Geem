@@ -239,10 +239,17 @@ public class MainMenuState implements IState {
 		rc.models.end();
 		
 		rc.shapes.begin(ShapeType.Filled);
-		rc.shapes.rect(50, 120, 200*(speedZ/30F), 25, Color.RED, Color.GREEN, Color.GREEN, Color.RED);
-		rc.shapes.rect(360, 120, 200*(speedX/10F), 25, Color.RED, Color.GREEN, Color.GREEN, Color.RED);
-		rc.shapes.rect(670, 120, 200*((defence-50)/50F), 25, Color.RED, Color.GREEN, Color.GREEN, Color.RED);
-		rc.shapes.rect(995, 120, 200*((5-accuracy+.5F)/5F), 25, Color.RED, Color.GREEN, Color.GREEN, Color.RED);
+		rc.shapes.rect(50, 120, 200, 25, Color.RED, Color.GREEN, Color.GREEN, Color.RED);
+		rc.shapes.rect(360, 120, 200, 25, Color.RED, Color.GREEN, Color.GREEN, Color.RED);
+		rc.shapes.rect(670, 120, 200, 25, Color.RED, Color.GREEN, Color.GREEN, Color.RED);
+		rc.shapes.rect(995, 120, 200, 25, Color.RED, Color.GREEN, Color.GREEN, Color.RED);
+		
+		rc.shapes.setColor(Color.BLACK);
+		rc.shapes.rect(50+200, 120, -200*(1-speedZ/30F), 25);
+		rc.shapes.rect(360+200, 120, -200*(1-speedX/10F), 25);
+		rc.shapes.rect(670+200, 120, -200*(1-(defence-50)/50F), 25);
+		rc.shapes.rect(995+200, 120, -200*(1-(5-accuracy+.5F)/5F), 25);
+		
 		rc.shapes.end();
 		
 		rc.shapes.begin(ShapeType.Line);
