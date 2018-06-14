@@ -18,6 +18,9 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
 import info.zthings.geem.entities.Ship;
+import info.zthings.geem.entities.Ship.ShipNormal;
+import info.zthings.geem.entities.Ship.ShipSub;
+import info.zthings.geem.entities.Ship.ShipUfo;
 import info.zthings.geem.structs.IState;
 import info.zthings.geem.structs.ResourceContext;
 import info.zthings.geem.ui.Button;
@@ -72,7 +75,7 @@ public class MainMenuState implements IState {
 				false, false, ()->stateShip = true);
 		
 		btnGo = new TextButton("Go!", "button",
-				1280/2 - GeemLoop.getRC().atlas.findRegion("button1").getRegionWidth()/2, GeemLoop.getRC().atlas.findRegion("button1").getRegionHeight()/2,
+				1280/2 - GeemLoop.getRC().atlas.findRegion("button1").getRegionWidth()/2, GeemLoop.getRC().atlas.findRegion("button1").getRegionHeight()/10,
 				false, false, ()->{
 					fading = true;
 					music.stop();
@@ -83,7 +86,7 @@ public class MainMenuState implements IState {
 					t.start();
 				});
 		
-		btnBack = new Button("arrow", 50, GeemLoop.getRC().atlas.findRegion("button1").getRegionHeight()/2, ()->stateShip = false, false, false);
+		btnBack = new Button("arrow", 50, GeemLoop.getRC().atlas.findRegion("button1").getRegionHeight()/10, ()->stateShip = false, false, false);
 		btnBack.setSize(80, 80);
 		
 		miNormal = new ModelInstance(GeemLoop.getRC().shipNormalModel);
@@ -158,12 +161,6 @@ public class MainMenuState implements IState {
 	}
 	
 	private void renderShipSelect(ResourceContext rc) {
-		rc.sprites.begin();
-		btnBack.render(rc);
-		btnGo.render(rc);
-		rc.fntTitle.draw(rc.sprites, glyphCharacter, 1280/2 - glyphCharacter.width/2, 720 - glyphCharacter.height);
-		rc.sprites.end();
-		
 		cam3d.position.set(0, 2, -3);
 		cam3d.lookAt(0, 0, 10);
 		cam3d.far = 10;
@@ -176,21 +173,43 @@ public class MainMenuState implements IState {
 		miSub.transform.setTranslation(-2, 1.50F, 0);
 		miUfo.transform.setTranslation(2, .75F, 0);
 		
+		rc.sprites.begin();
+		btnBack.render(rc);
+		btnGo.render(rc);
+		rc.fntTitle.draw(rc.sprites, glyphCharacter, 1280/2 - glyphCharacter.width/2, 720 - glyphCharacter.height);
+		rc.fntStats.draw(rc.sprites, "SPEED", 100, 200);
+		rc.fntStats.draw(rc.sprites, "AGILITY", 400, 200);
+		rc.fntStats.draw(rc.sprites, "DEFENCE", 700, 200);
+		rc.fntStats.draw(rc.sprites, "ACCURACY", 1000, 200);
+		rc.sprites.end();
+		
+		int speedX, speedZ, defence, accuracy;
 		switch (selected) {
 			case NORMAL:
 				miNormal.transform.rotate(0, 1, 0, d);
 				selBoxX = 479;
+				speedX = ShipNormal.speedX;
+				speedZ = ShipNormal.speedZ;
+				defence = ShipNormal.defence;
+				accuracy = ShipNormal.accuracy;
 				break;
 			case SUB:
 				miSub.transform.rotate(0, 1, 0, d);
 				selBoxX = 830;
+				speedX = ShipSub.speedX;
+				speedZ = ShipSub.speedZ;
+				defence = ShipSub.defence;
+				accuracy = ShipSub.accuracy;
 				break;
 			case UFO:
 				miUfo.transform.rotate(0, 1, 0, d/1.125F);
 				selBoxX = 125;
+				speedX = ShipUfo.speedX;
+				speedZ = ShipUfo.speedZ;
+				defence = ShipUfo.defence;
+				accuracy = ShipUfo.accuracy;
 				break;
 			default: throw new AssertionError("gwut");
-			
 		}
 		
 		rc.models.begin(cam3d);
@@ -199,11 +218,26 @@ public class MainMenuState implements IState {
 		rc.models.render(miUfo);
 		rc.models.end();
 		
+		rc.shapes.begin(ShapeType.Filled);
+		rc.shapes.rect(50, 120, 200*(speedZ/30F), 25, Color.RED, Color.GREEN, Color.GREEN, Color.RED);
+		rc.shapes.rect(360, 120, 200*(speedX/10F), 25, Color.RED, Color.GREEN, Color.GREEN, Color.RED);
+		rc.shapes.rect(670, 120, 200*((defence-50)/50F), 25, Color.RED, Color.GREEN, Color.GREEN, Color.RED);
+		rc.shapes.rect(995, 120, 200*((5-accuracy+.5F)/5F), 25, Color.RED, Color.GREEN, Color.GREEN, Color.RED);
+		rc.shapes.end();
+		
 		rc.shapes.begin(ShapeType.Line);
 		rc.shapes.setColor(Color.RED);
 		rc.shapes.rect(selBoxX, 210, 325, 225);
+		
+		rc.shapes.setColor(Color.GOLD);
+		rc.shapes.rect(50, 120, 200, 25);
+		rc.shapes.rect(360, 120, 200, 25);
+		rc.shapes.rect(670, 120, 200, 25);
+		rc.shapes.rect(995, 120, 200, 25);
+		
 		rc.shapes.setColor(Color.WHITE);
 		rc.shapes.end();
+		
 	}
 	
 	@Override public void dispose() {}

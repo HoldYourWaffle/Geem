@@ -31,7 +31,7 @@ public class ResourceContext implements Disposable {
 	public final SpriteBatch sprites;
 	public final ShapeRenderer shapes;
 	
-	public final BitmapFont fntDefault, fntBtn, fntTitle, fntUi;
+	public final BitmapFont fntDefault, fntBtn, fntTitle, fntUi, fntStats;
 	public final FreeTypeFontGenerator fntGenOswald, fntGenVT323;
 	
 	public TextureAtlas atlas;
@@ -86,6 +86,8 @@ public class ResourceContext implements Disposable {
 		ftfp.borderWidth = 2;
 		ftfp.size = 128;
 		fntTitle = fntGenOswald.generateFont(ftfp);
+		ftfp.size = 40;
+		fntStats = fntGenOswald.generateFont(ftfp);
 		
 		ftfp.borderWidth = 0;
 		ftfp.color = Color.BLACK;

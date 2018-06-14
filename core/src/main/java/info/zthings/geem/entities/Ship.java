@@ -78,22 +78,27 @@ public abstract class Ship extends Entity {
 	}
 	
 	public static class ShipNormal extends Ship {
+		public static final int speedX = 6, speedZ = 20, defence = 83, accuracy = 3;
+		
 		public ShipNormal() {
-			super(GeemLoop.getRC().shipNormalModel, 6, 20, 80, 3, 1.5F, 30); //speedLinksRechts, speedForward, defence, accuracy (laatste 2 gwn laten)
+			super(GeemLoop.getRC().shipNormalModel, speedX, speedZ, defence, accuracy, 1.5F, 30); //speedLinksRechts, speedForward, defence, accuracy (laatste 2 gwn laten)
 		}
 	}
 	
 	public static class ShipSub extends Ship {
+		public static final int speedX = 3, speedZ = 10, defence = 90, accuracy = 1;
+		
 		public ShipSub() {
-			super(GeemLoop.getRC().shipSubModel, 3, 10, 90, 1, 0.0045F, 10); //speedLinksRechts, speedForward, defence, accuracy (laatste 2 gwn laten)
+			super(GeemLoop.getRC().shipSubModel, speedX, speedZ, defence, accuracy, 0.0045F, 10); //speedLinksRechts, speedForward, defence, accuracy (laatste 2 gwn laten)
 			rotY.setFromAxis(0, 1, 0, -90);
 		}
 	}
 	
 	public static class ShipUfo extends Ship {
+		public static final int speedX = 10, speedZ = 30, defence = 75, accuracy = 4;
 		
 		public ShipUfo() {
-			super(GeemLoop.getRC().shipUfoModel, 10, 30, 65, 6, .025F, 15); //speedLinksRechts, speedForward, defence, accuracy (laatste 2 gwn laten)
+			super(GeemLoop.getRC().shipUfoModel, speedX, speedZ, defence, accuracy, .025F, 15); //speedLinksRechts, speedForward, defence, accuracy (laatste 2 gwn laten)
 			position.y -= .5F;
 		}
 		
