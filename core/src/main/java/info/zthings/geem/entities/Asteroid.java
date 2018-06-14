@@ -15,7 +15,7 @@ public class Asteroid extends Entity {
 		this.position = new Vector3(x, .5F, z);
 		
 		float rc = .0000125F;
-		hard = Math.random() < rc * (z - 1500);
+		hard = Math.random() < rc * (z - 1200);
 		
 		model.materials.get(0).set(ColorAttribute.createDiffuse(hard ? Color.FIREBRICK : Color.GRAY));
 		model.transform.scale(.025F, .025F, .025F);
@@ -29,7 +29,7 @@ public class Asteroid extends Entity {
 	
 	public boolean hit() {
 		if (hard) {
-			model.materials.get(0).set(ColorAttribute.createDiffuse(Color.DARK_GRAY));
+			model.materials.get(0).set(ColorAttribute.createDiffuse(Color.GRAY));
 			hard = false;
 			return false;
 		} else {
