@@ -77,6 +77,7 @@ public class ResourceContext implements Disposable {
 		ass.load("sfx/laser.wav", Sound.class);
 		ass.load("sfx/biem.wav", Sound.class);
 		ass.load("sfx/click.wav", Sound.class);
+		ass.load("sfx/countdown.wav", Sound.class);
 		
 		ass.load("sprites.atlas", TextureAtlas.class);
 		

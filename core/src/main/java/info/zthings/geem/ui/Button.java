@@ -36,14 +36,19 @@ public class Button {
 	private enum BtnState { NORMAL, HOVER, CLICK; }
 	
 	public void update(float dt, Camera cam) {
-		if (new Rectangle(pos.x, pos.y, width, height).contains(cam.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0)).flatten())) { //hover
-			if (Gdx.input.isTouched()) state = BtnState.CLICK; //hover + click
-			else if (state == BtnState.CLICK) { //not touched but in click state -> released
-				if (callback != null) callback.run();
-			} else state = BtnState.HOVER; //never touched but hovered
-			
-			state = Gdx.input.isTouched() ? BtnState.CLICK : BtnState.HOVER;
-		} else state = BtnState.NORMAL;
+		for (int i = 0; i < 20; i++) {
+			if (new Rectangle(pos.x, pos.y, width, height).contains(
+					cam.unproject(new Vector3(Gdx.input.getX(i), Gdx.input.getY(i), 0)).flatten())) { //hover
+				if (Gdx.input.isTouched(i))
+					state = BtnState.CLICK; //hover + click
+				else if (state == BtnState.CLICK) { //not touched but in click state -> released
+					if (callback != null)
+						callback.run();
+				} else state = BtnState.HOVER; //never touched but hovered
+				state = Gdx.input.isTouched(i) ? BtnState.CLICK : BtnState.HOVER;
+				break;
+			} else state = BtnState.NORMAL;
+		}
 	}
 	
 	public void render(ResourceContext rc) {
@@ -61,11 +66,8 @@ public class Button {
 			default: throw new AssertionError("Undefined state");
 		}
 		
-		//rc.sprites.begin();
 		rc.sprites.setColor(1, 1, 1, rc.sprites.getColor().a);
 		rc.sprites.draw(r, pos.x, pos.y, width, height);
-		
-		//rc.sprites.end();
 	}
 	
 	

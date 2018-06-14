@@ -69,6 +69,7 @@ public class GameplayState implements IState {
 	
 	@Override
 	public void create() {
+		GeemLoop.getRC().ass.get("sfx/countdown.wav", Sound.class).play();
 		cam = new PerspectiveCamera(69, 1280, 720);
 		cam.position.set(0, 3, -6);
 		cam.lookAt(0, 0, 200);
@@ -99,11 +100,13 @@ public class GameplayState implements IState {
 		
 		btnRestart = new TextButton("Restart", "button",
 				1280/2 - GeemLoop.getRC().atlas.findRegion("button1").getRegionWidth()/2, 720/2 - GeemLoop.getRC().atlas.findRegion("button1").getRegionHeight()*2,
-				false, false, ()->GeemLoop.getLoop().setState(new MainMenuState(true))); //TODO remember last ship
+				false, false, ()->GeemLoop.getLoop().setState(new MainMenuState(true, ship.getClass())));
 		
-		btnLeft = new Button("control", 0, 100, null, true, false);
-		btnRight = new Button("control", 0, 100, null, false, false);
-		btnFire = new Button("pew", 0, 100, null, false, false);
+		btnLeft = new Button("control", 75, 75, null, true, false);
+		btnLeft.setSize(152, 128);
+		btnRight = new Button("control", 300, 75, null, false, false);
+		btnRight.setSize(152, 128);
+		btnFire = new Button("pew", 1280-200, 65, null, false, false);
 		
 		ship.update(Gdx.graphics.getDeltaTime());
 		stars.update(Gdx.graphics.getDeltaTime(), cam, ship);
@@ -142,15 +145,15 @@ public class GameplayState implements IState {
 		obstacles.forEach(a->a.update(dt));
 		obstacles.removeIf(a->a.position.z < cam.position.z || a.destroyed);
 		
+		btnLeft.update(dt, camUi);
+		btnRight.update(dt, camUi);
+		btnFire.update(dt, camUi);
+		
 		if (ship.hp <= 0 || (!debug && !focus)) {
 			if (ship.hp <= 0)
 				btnRestart.update(dt, camUi);
 			return;
 		}
-		
-		btnLeft.update(dt, camUi);
-		btnRight.update(dt, camUi);
-		btnFire.update(dt, camUi);
 		
 		if (time == 0) ship.fuel = 100;
 		
@@ -239,7 +242,6 @@ public class GameplayState implements IState {
 		cam.update();
 		//debugRenderer.update(dt, cam);
 		
-		
 		if (ship.hp <= 0) {
 			GeemLoop.getRC().updateHighscore(getScore());
 			glyphScore = new GlyphLayout(GeemLoop.getRC().fntUi, "SCORE: " + getScore());
@@ -300,6 +302,12 @@ public class GameplayState implements IState {
 				rc.fntUi.draw(rc.sprites, ""+Math.abs(time), 1280/2-10, 720/2+150);
 			}
 			
+			rc.sprites.setColor(1, 1, 1, .5F);
+			btnLeft.render(rc);
+			btnRight.render(rc);
+			btnFire.render(rc);
+			rc.sprites.setColor(Color.WHITE);
+			
 			rc.sprites.end();
 		} else {
 			rc.models.end();
@@ -318,24 +326,6 @@ public class GameplayState implements IState {
 		stars.render(rc, cam);
 		explosions.forEach(e->e.render(rc));
 		rc.decals.flush();
-		
-		rc.sprites.begin();
-		rc.sprites.setColor(1, 1, 1, .5F);
-		
-		float f = 1.2F;
-		btnLeft.render(rc);
-		btnLeft.setLocation(75, 75);
-		btnLeft.setSize((int)(127*f), (int)(58*f));
-		
-		btnRight.render(rc);
-		btnRight.setLocation(300, 75);
-		btnRight.setSize((int)(127*f), (int)(58*f));
-		
-		btnFire.render(rc);
-		btnFire.setLocation(1280 - 200, 50);
-		
-		rc.sprites.setColor(Color.WHITE);
-		rc.sprites.end();
 	}
 	
 	
