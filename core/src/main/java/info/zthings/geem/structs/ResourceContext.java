@@ -125,7 +125,7 @@ public class ResourceContext implements Disposable {
 	
 	protected Preferences getPrefs() {
 	    if (preferences == null)
-	        preferences = Gdx.app.getPreferences("geem-highscore");
+	        preferences = Gdx.app.getPreferences("geem-highscore-v1.2");
 	    return preferences;
 	}
 	
