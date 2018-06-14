@@ -86,7 +86,7 @@ public abstract class Ship extends Entity {
 	}
 	
 	public static class ShipSub extends Ship {
-		public static final int speedX = 3, speedZ = 10, defence = 90, accuracy = 1;
+		public static final int speedX = 3, speedZ = 10, defence = 87, accuracy = 1;
 		
 		public ShipSub() {
 			super(GeemLoop.getRC().shipSubModel, speedX, speedZ, defence, accuracy, 0.0045F, 10); //speedLinksRechts, speedForward, defence, accuracy (laatste 2 gwn laten)
