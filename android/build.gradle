@@ -4,7 +4,7 @@ evaluationDependsOn(':core')
 
 android {
 	buildToolsVersion '27.0.3'
-	compileSdkVersion 27
+	compileSdkVersion 9
 	
 	sourceSets {
 		main {
@@ -14,7 +14,7 @@ android {
 	
 	defaultConfig {
 		applicationId 'info.zthings.geem'
-		minSdkVersion 24
+		minSdkVersion 9
 		targetSdkVersion 27
 		versionCode 1
 		versionName rootProject.version

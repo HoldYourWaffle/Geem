@@ -16,9 +16,9 @@ jar {
         attributes 'Main-Class': mainClassName
     }
 
-    /*from {
+    from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }*/
+    }
 }
 
 dependencies {
