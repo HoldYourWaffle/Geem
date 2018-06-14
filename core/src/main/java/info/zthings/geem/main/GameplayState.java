@@ -16,7 +16,6 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -199,7 +198,7 @@ public class GameplayState implements IState {
 		if (ship.position.x < -xb) ship.position.x = -xb;
 		else if (ship.position.x > xb) ship.position.x = xb;
 		
-		final Vector3 vecBuf = new Vector3();
+		//final Vector3 vecBuf = new Vector3();
 		for (Asteroid a : obstacles) {
 			if (a.position.x < -xb || a.position.x > xb) continue;
 			
@@ -217,8 +216,8 @@ public class GameplayState implements IState {
 					GeemLoop.getRC().ass.get("sfx/oof.wav", Sound.class).play(.8F);
 				continue;
 			} else for (Bullet b : bullets) {
-				vecBuf.set(b.position.x, a.getCurrentBounds().getCenterY(), b.position.z);				
-				if (a.getCurrentBounds().contains(vecBuf)) {
+				//vecBuf.set(b.position.x, a.getCurrentBounds().getCenterY(), b.position.z);
+				if (a.getCurrentBounds().intersects(b.getCurrentBounds())) {
 					b.destroyed = true;
 					float dist = a.position.z - ship.position.z;
 					GeemLoop.getRC().ass.get("sfx/biem.wav", Sound.class).play((dist < 60 ? 1 - dist / 60 : 0) * .8F);
