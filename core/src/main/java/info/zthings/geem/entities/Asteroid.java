@@ -17,7 +17,7 @@ public class Asteroid extends Entity {
 		float rc = .0000125F;
 		hard = Math.random() < rc * (z - 1500);
 		
-		model.materials.get(0).set(ColorAttribute.createDiffuse(hard ? Color.FIREBRICK : Color.DARK_GRAY));
+		model.materials.get(0).set(ColorAttribute.createDiffuse(hard ? Color.FIREBRICK : Color.GRAY));
 		model.transform.scale(.025F, .025F, .025F);
 		super.update(Gdx.graphics.getDeltaTime());
 	}
