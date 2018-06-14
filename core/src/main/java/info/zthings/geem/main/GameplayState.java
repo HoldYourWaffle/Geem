@@ -1,6 +1,7 @@
 package info.zthings.geem.main;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
@@ -95,12 +96,22 @@ public class GameplayState implements IState {
 		beep.setLooping(true);
 		
 		timer = new Timer();
-		timer.scheduleTask(new Task(this::onSecond), 1, 1);
+		timer.scheduleTask(new Task(new Runnable() {
+			@Override
+			public void run() {
+				onSecond();
+			}
+		}), 1, 1);
 		timer.start();
 		
 		btnRestart = new TextButton("Restart", "button",
 				1280/2 - GeemLoop.getRC().atlas.findRegion("button1").getRegionWidth()/2, 720/2 - GeemLoop.getRC().atlas.findRegion("button1").getRegionHeight()*2,
-				false, false, ()->GeemLoop.getLoop().setState(new MainMenuState(true, ship.getClass())));
+				false, false, new Runnable() {
+					@Override
+					public void run() {
+						GeemLoop.getLoop().setState(new MainMenuState(true, ship.getClass()));
+					}
+				});
 		
 		btnLeft = new Button("control", 75, 75, null, true, false);
 		btnLeft.setSize(152, 128);
@@ -136,14 +147,28 @@ public class GameplayState implements IState {
 		fuelcan.update(dt);
 		ammo.update(dt);
 		
-		bullets.forEach(b->b.update(dt));
-		bullets.removeIf(b->b.position.z - ship.position.z > 100 || b.destroyed);
+		for (Bullet b : bullets) b.update(dt);
+		Iterator<Bullet> itb = bullets.iterator();
+		while(itb.hasNext()) {
+			Bullet b = itb.next();
+			if (b.position.z - ship.position.z > 100 || b.destroyed) {
+				itb.remove();
+			}
+		}
 		
-		explosions.forEach(e->e.update(dt));
-		explosions.removeIf(e->e.destroyed);
+		for (Explosion e : explosions) e.update(dt);
+		Iterator<Explosion> ite = explosions.iterator();
+		while(ite.hasNext())
+			if (ite.next().destroyed)
+				ite.remove();
 		
-		obstacles.forEach(a->a.update(dt));
-		obstacles.removeIf(a->a.position.z < cam.position.z || a.destroyed);
+		for (Asteroid a : obstacles) a.update(dt);
+		Iterator<Asteroid> ita = obstacles.iterator();
+		while(ita.hasNext()) {
+			Asteroid a = ita.next();
+			if (a.position.z < cam.position.z || a.destroyed)
+				ita.remove();
+		}
 		
 		btnLeft.update(dt, camUi);
 		btnRight.update(dt, camUi);
@@ -233,8 +258,16 @@ public class GameplayState implements IState {
 		
 		if (Math.random() < .2 + (.8 / 6000) * ship.position.z) {
 			Asteroid a = new Asteroid((float)(80*Math.random() - 40), ship.position.z + 120);
-			if (obstacles.stream().noneMatch(ac->ac.getCurrentBounds().intersects(a.getCurrentBounds())))
-				obstacles.add(a);
+			
+			boolean clear = true;
+			for (Asteroid am : obstacles) {
+				if (am.getCurrentBounds().intersects(a.getCurrentBounds())) {
+					clear = false;
+					break;
+				}
+			}
+			
+			if (clear) obstacles.add(a);
 		}
 		
 		cam.position.z = ship.position.z - 6;
@@ -264,8 +297,9 @@ public class GameplayState implements IState {
 		rc.models.begin(cam);
 		fuelcan.render(rc, env);
 		ammo.render(rc, env);
-		bullets.forEach(b->b.render(rc, env));
-		obstacles.forEach(a->a.render(rc, env));
+		
+		for (Bullet b : bullets) b.render(rc, env);
+		for (Asteroid a : obstacles) a.render(rc, env);
 		
 		if (ship.hp > 0) {
 			ship.render(rc, env);
@@ -324,7 +358,7 @@ public class GameplayState implements IState {
 		}
 		
 		stars.render(rc, cam);
-		explosions.forEach(e->e.render(rc));
+		for (Explosion e : explosions) e.render(rc);
 		rc.decals.flush();
 	}
 	

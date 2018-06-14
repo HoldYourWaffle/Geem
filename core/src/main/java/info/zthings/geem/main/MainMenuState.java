@@ -1,6 +1,7 @@
 package info.zthings.geem.main;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
@@ -72,21 +73,37 @@ public class MainMenuState implements IState {
 		
 		btnStart = new TextButton("Start", "button",
 				1280/2 - GeemLoop.getRC().atlas.findRegion("button1").getRegionWidth()/2, 720/2 - GeemLoop.getRC().atlas.findRegion("button1").getRegionHeight(),
-				false, false, ()->stateShip = true);
+				false, false, new Runnable() {
+					@Override
+					public void run() {
+						stateShip = true;
+					}
+				});
 		
 		btnGo = new TextButton("Go!", "button",
 				1280/2 - GeemLoop.getRC().atlas.findRegion("button1").getRegionWidth()/2, GeemLoop.getRC().atlas.findRegion("button1").getRegionHeight()/10,
-				false, false, ()->{
-					fading = true;
-					music.stop();
-					Timer t = new Timer();
-					t.scheduleTask(new Task(()->
-						GeemLoop.getLoop().setState(new GameplayState(makeShip()))
-					), .25F);
-					t.start();
+				false, false, new Runnable() {
+					@Override
+					public void run() {
+						fading = true;
+						music.stop();
+						Timer t = new Timer();
+						t.scheduleTask(new Task(new Runnable() {
+							@Override
+							public void run() {
+								GeemLoop.getLoop().setState(new GameplayState(makeShip()));
+							}
+						}), .25F);
+						t.start();
+					}
 				});
 		
-		btnBack = new Button("arrow", 50, GeemLoop.getRC().atlas.findRegion("button1").getRegionHeight()/10, ()->stateShip = false, false, false);
+		btnBack = new Button("arrow", 50, GeemLoop.getRC().atlas.findRegion("button1").getRegionHeight()/10, new Runnable() {
+			@Override
+			public void run() {
+				stateShip = false;
+			}
+		}, false, false);
 		btnBack.setSize(80, 80);
 		
 		miNormal = new ModelInstance(GeemLoop.getRC().shipNormalModel);
@@ -133,8 +150,11 @@ public class MainMenuState implements IState {
 			stars.add(new Vector2(0, Math.random() * 720));
 		}
 		
-		stars.forEach(vec->vec.add(500 * dt, 0));
-		stars.removeIf(vec->vec.x > 1300);
+		for (Vector2 vec : stars) vec.add(500*dt, 0);
+		Iterator<Vector2> it = stars.iterator();
+		while(it.hasNext())
+			if (it.next().x > 1300)
+				it.remove();
 	}
 	
 	@Override
@@ -146,7 +166,7 @@ public class MainMenuState implements IState {
 		if (fading) return;
 		
 		rc.shapes.begin(ShapeType.Filled);
-		stars.forEach(vec->rc.shapes.circle(vec.x, vec.y, 1));
+		for (Vector2 vec : stars) rc.shapes.circle(vec.x, vec.y, 1);
 		rc.shapes.end();
 		
 		if (stateShip) renderShipSelect(rc);

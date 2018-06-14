@@ -4,7 +4,7 @@ evaluationDependsOn(':core')
 
 android {
 	buildToolsVersion '27.0.3'
-	compileSdkVersion 9
+	compileSdkVersion 27
 	
 	sourceSets {
 		main {
@@ -24,8 +24,7 @@ android {
 	}
 	
 	compileOptions {
-		sourceCompatibility = 1.8
-		targetCompatibility = 1.8
+		sourceCompatibility = targetCompatibility = 1.7
 	}
 	
 	buildTypes {
@@ -66,7 +65,7 @@ dependencies {
 
 task copyOutput(type: Copy) {
 	from new File(buildDir, 'outputs/apk')
-	into new File(buildDir, 'libs/apk')
+	into new File(buildDir, 'libs/')
 }
 build.finalizedBy copyOutput
 

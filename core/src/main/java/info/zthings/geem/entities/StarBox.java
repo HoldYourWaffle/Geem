@@ -1,6 +1,7 @@
 package info.zthings.geem.entities;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -40,11 +41,17 @@ public class StarBox {
 				stars.add(d);
 			}
 		}
-		stars.removeIf(d->d.getPosition().z < cam.position.z);
+		
+		Iterator<Decal> it = stars.iterator();
+		while(it.hasNext()) {
+			if (it.next().getPosition().z < cam.position.z) {
+				it.remove();
+			}
+		}
 	}
 	
 	public void render(ResourceContext rc, PerspectiveCamera cam) {
-		stars.forEach(rc.decals::add);
+		for (Decal star : stars) rc.decals.add(star);
 	}
 	
 }
